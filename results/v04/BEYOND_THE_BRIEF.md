@@ -2,6 +2,8 @@
 
 Fable, 21 November 2026. Done after Prince said to go past the brief where something important was being missed. Exploratory, made after the v0.4 freeze; nothing frozen was changed. Tables in full: `results/v04/x/tables.md` (`v04/x_report.py`).
 
+> **Correction, added in v0.5 (same day).** The general claim below did not hold on rules I did not write. On eight public rule tables the same kind of program search, frozen in advance, failed all five of its pass rules, and a small network did better (`results/v05/REPORT_v05.md`). What follows is true of the v0.4 world, where the search language contained the rules because I wrote both. Read "search beats descent" as "search wins when the language fits".
+
 ## The idea
 
 Four versions gave the same result in different clothes. Wherever the thing to be learned was a small discrete object, a search that checks candidates against the evidence beat gradient descent, and its output could be verified:

@@ -16,6 +16,8 @@ For Prince Anozie, 21 November 2026. From Fable. One page plus one added section
 
 ## Added after the brief: search beats descent here (exploratory, five seeds)
 
+**Qualified by v0.5:** on rules I did not write this did not hold; see `docs/v05_decision_memo.md`.
+
 You said to go past the brief. I did: `results/v04/BEYOND_THE_BRIEF.md`. The bank should hold programs found by search and checked against the logs, not weights.
 
 | Experiment | Result |
