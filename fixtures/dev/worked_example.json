@@ -1,0 +1,312 @@
+{
+ "pair": {
+  "kind": "pair",
+  "class": "wiring_reversal",
+  "a": {
+   "id": "worked-normal",
+   "family": "KK-KT",
+   "layout": {
+    "leg1": {
+     "L": "K",
+     "R": "K"
+    },
+    "leg2": {
+     "L": "K",
+     "R": "T"
+    }
+   },
+   "gate0": 1,
+   "decor": 0,
+   "closed_bay": null,
+   "order": {
+    "dock": 1,
+    "gate": 1,
+    "bay": 2
+   },
+   "book": "closed",
+   "events": []
+  },
+  "b": {
+   "id": "worked-reversed",
+   "family": "KK-KT",
+   "layout": {
+    "leg1": {
+     "L": "K",
+     "R": "K"
+    },
+    "leg2": {
+     "L": "T",
+     "R": "K"
+    }
+   },
+   "gate0": 1,
+   "decor": 0,
+   "closed_bay": null,
+   "order": {
+    "dock": 1,
+    "gate": 1,
+    "bay": 2
+   },
+   "book": "closed",
+   "events": []
+  }
+ },
+ "route_swap": {
+  "kind": "pair",
+  "class": "route_swap",
+  "a": {
+   "id": "worked-normal",
+   "family": "KK-KT",
+   "layout": {
+    "leg1": {
+     "L": "K",
+     "R": "K"
+    },
+    "leg2": {
+     "L": "K",
+     "R": "T"
+    }
+   },
+   "gate0": 1,
+   "decor": 0,
+   "closed_bay": null,
+   "order": {
+    "dock": 1,
+    "gate": 1,
+    "bay": 2
+   },
+   "book": "closed",
+   "events": []
+  },
+  "b": {
+   "id": "worked-normal-closed",
+   "family": "KK-KT",
+   "layout": {
+    "leg1": {
+     "L": "K",
+     "R": "K"
+    },
+    "leg2": {
+     "L": "K",
+     "R": "T"
+    }
+   },
+   "gate0": 1,
+   "decor": 0,
+   "closed_bay": null,
+   "order": {
+    "dock": 1,
+    "gate": 0,
+    "bay": 2
+   },
+   "book": "closed",
+   "events": []
+  }
+ },
+ "swap": {
+  "kind": "swap",
+  "class": "swap",
+  "target": {
+   "id": "worked-target",
+   "family": "KK-KT",
+   "layout": {
+    "leg1": {
+     "L": "K",
+     "R": "K"
+    },
+    "leg2": {
+     "L": "T",
+     "R": "K"
+    }
+   },
+   "gate0": 1,
+   "decor": 0,
+   "closed_bay": null,
+   "order": {
+    "dock": 1,
+    "gate": 1,
+    "bay": 2
+   },
+   "book": "closed",
+   "events": []
+  },
+  "donor": {
+   "id": "worked-donor",
+   "family": "KK-KT",
+   "layout": {
+    "leg1": {
+     "L": "K",
+     "R": "K"
+    },
+    "leg2": {
+     "L": "K",
+     "R": "T"
+    }
+   },
+   "gate0": 1,
+   "decor": 0,
+   "closed_bay": null,
+   "order": {
+    "dock": 0,
+    "gate": 0,
+    "bay": 0
+   },
+   "book": "closed",
+   "events": []
+  },
+  "pause_after": "PLAN",
+  "expect": {
+   "gate": 0,
+   "dock": 1,
+   "bay": 2
+  }
+ },
+ "scores": {
+  "reference": {
+   "normal_actions": [
+    "L",
+    "D1",
+    "L",
+    "B2"
+   ],
+   "normal_credit": true,
+   "reversed_actions": [
+    "L",
+    "D1",
+    "R",
+    "B2"
+   ],
+   "reversed_credit": true,
+   "wiring_reversal_pair_credit": true,
+   "route_swap_pair_credit": true,
+   "swap_slots": [
+    1
+   ],
+   "swap_routes": [
+    "L",
+    "L"
+   ],
+   "swap_gate_arrival": 0,
+   "swap_dock": 1,
+   "swap_bay": 2,
+   "swap_credit": true
+  },
+  "impostor_lookup_lr": {
+   "normal_actions": [
+    "L",
+    "D1",
+    "L",
+    "B2"
+   ],
+   "normal_credit": true,
+   "reversed_actions": [
+    "L",
+    "D1",
+    "L",
+    "B2"
+   ],
+   "reversed_credit": false,
+   "wiring_reversal_pair_credit": false,
+   "route_swap_pair_credit": true,
+   "swap_slots": [
+    1
+   ],
+   "swap_routes": [
+    "L",
+    "R"
+   ],
+   "swap_gate_arrival": 1,
+   "swap_dock": 1,
+   "swap_bay": 2,
+   "swap_credit": false
+  },
+  "impostor_memoryless": {
+   "normal_actions": [
+    "L",
+    "D0",
+    "L",
+    "B0"
+   ],
+   "normal_credit": false,
+   "reversed_actions": [
+    "L",
+    "D0",
+    "L",
+    "B0"
+   ],
+   "reversed_credit": false,
+   "wiring_reversal_pair_credit": false,
+   "route_swap_pair_credit": false,
+   "swap_slots": [
+    0
+   ],
+   "swap_routes": [
+    "L",
+    "L"
+   ],
+   "swap_gate_arrival": 0,
+   "swap_dock": 0,
+   "swap_bay": 0,
+   "swap_credit": false
+  },
+  "impostor_plan_cache": {
+   "normal_actions": [
+    "L",
+    "D1",
+    "L",
+    "B2"
+   ],
+   "normal_credit": true,
+   "reversed_actions": [
+    "L",
+    "D1",
+    "R",
+    "B2"
+   ],
+   "reversed_credit": true,
+   "wiring_reversal_pair_credit": true,
+   "route_swap_pair_credit": true,
+   "swap_slots": [
+    0,
+    1
+   ],
+   "swap_routes": [
+    "L",
+    "R"
+   ],
+   "swap_gate_arrival": 1,
+   "swap_dock": 1,
+   "swap_bay": 2,
+   "swap_credit": false
+  },
+  "impostor_entangled": {
+   "normal_actions": [
+    "L",
+    "D1",
+    "L",
+    "B2"
+   ],
+   "normal_credit": true,
+   "reversed_actions": [
+    "L",
+    "D1",
+    "R",
+    "B2"
+   ],
+   "reversed_credit": true,
+   "wiring_reversal_pair_credit": true,
+   "route_swap_pair_credit": true,
+   "swap_slots": [
+    0
+   ],
+   "swap_routes": [
+    "L",
+    "L"
+   ],
+   "swap_gate_arrival": 0,
+   "swap_dock": 0,
+   "swap_bay": 0,
+   "swap_credit": false
+  }
+ }
+}

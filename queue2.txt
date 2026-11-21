@@ -1,0 +1,15 @@
+f_cont_s1 --quantizer none --seed 1
+f_cont_s2 --quantizer none --seed 2
+f_cont_s3 --quantizer none --seed 3
+f_contiit_s1 --quantizer none --iit 1.0 --seed 1
+f_contiit_s2 --quantizer none --iit 1.0 --seed 2
+f_contiit_s3 --quantizer none --iit 1.0 --seed 3
+f_static_s1 --profile static --seed 1
+f_static_s2 --profile static --seed 2
+f_hidden_s1 --aux hidden --aux-weight 0.3 --seed 1
+f_hidden_s2 --aux hidden --aux-weight 0.3 --seed 2
+f_iithidden_s1 --iit 1.0 --aux hidden --aux-weight 0.3 --seed 1
+f_sat_s1 --aux sat --seed 1
+f_sat_s2 --aux sat --seed 2
+f_unins_s1 --uninstructed --seed 1
+f_flat_s1 --reader flat --seed 1

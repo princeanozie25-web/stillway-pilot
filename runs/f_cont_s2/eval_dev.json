@@ -1,0 +1,267 @@
+{
+ "run": "f_cont_s2",
+ "checkpoint_sha256": "f059a9d988defc3110f559a6b0dc6ae5e53d1346cce6e2e25d730dc7fd3a0228",
+ "discrete": false,
+ "slots": [
+  1,
+  2
+ ],
+ "slot_table_dev": [
+  {
+   "slots": [
+    0
+   ],
+   "rate": 0.01125
+  },
+  {
+   "slots": [
+    1
+   ],
+   "rate": 0.06
+  },
+  {
+   "slots": [
+    0,
+    1
+   ],
+   "rate": 0.2925
+  },
+  {
+   "slots": [
+    2
+   ],
+   "rate": 0.049375
+  },
+  {
+   "slots": [
+    0,
+    2
+   ],
+   "rate": 0.246875
+  },
+  {
+   "slots": [
+    1,
+    2
+   ],
+   "rate": 0.294375
+  },
+  {
+   "slots": [
+    0,
+    1,
+    2
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    3
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    0,
+    3
+   ],
+   "rate": 0.2575
+  },
+  {
+   "slots": [
+    1,
+    3
+   ],
+   "rate": 0.2475
+  },
+  {
+   "slots": [
+    0,
+    1,
+    3
+   ],
+   "rate": 0.054375
+  },
+  {
+   "slots": [
+    2,
+    3
+   ],
+   "rate": 0.17625
+  },
+  {
+   "slots": [
+    0,
+    2,
+    3
+   ],
+   "rate": 0.00125
+  },
+  {
+   "slots": [
+    1,
+    2,
+    3
+   ],
+   "rate": 0.00125
+  },
+  {
+   "slots": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "rate": 0.0
+  }
+ ],
+ "classes_dev_in": {
+  "dynamic": 1.0,
+  "midplan_reversal": 1.0,
+  "open_revision": 1.0,
+  "plain": 1.0,
+  "route_swap": 1.0,
+  "swap": 0.29625,
+  "wiring_reversal": 1.0,
+  "_reload_ok": true
+ },
+ "classes_dev_out": {
+  "dynamic": 1.0,
+  "midplan_reversal": 1.0,
+  "open_revision": 1.0,
+  "plain": 1.0,
+  "route_swap": 1.0,
+  "swap": 0.2925,
+  "wiring_reversal": 1.0,
+  "_reload_ok": true
+ },
+ "replay_dev_out": {
+  "n_items": 800,
+  "n_pairs": 400,
+  "n_families": 8,
+  "primary_targeted_credit": {
+   "mean": 0.2925,
+   "ci95": [
+    0.25675675675675674,
+    0.3327205882352941
+   ]
+  },
+  "shuffled_credit": 0.205,
+  "paired_improvement_over_shuffled": {
+   "mean": 0.0875,
+   "ci95": [
+    0.054833721316927174,
+    0.125675860286516
+   ]
+  },
+  "unrelated_obligation_drop_vs_unchanged": {
+   "mean": 0.65625,
+   "ci95": [
+    0.617141795007966,
+    0.6925716603167044
+   ]
+  },
+  "both_unmodified_runs_valid": 1.0,
+  "resume_twice_identical": 1.0,
+  "targeted_parts": {
+   "gate": 0.57125,
+   "dock": 0.7575,
+   "bay": 0.465
+  },
+  "same_goal_donor_stable": 0.4175,
+  "blank_memory": {
+   "credit": 0.09875,
+   "gate": 0.50625,
+   "dock": 0.5025,
+   "bay": 0.38375
+  },
+  "whole_state_transplant": {
+   "credit": 0.0,
+   "gate": 1.0,
+   "dock": 0.37,
+   "bay": 0.245
+  },
+  "decor": {
+   "same_actions": 0.96375,
+   "still_valid": 1.0,
+   "slots_changed_next_step": 4.0,
+   "slots_changed_mean": 4.0
+  },
+  "message_revision": {
+   "credit": 1.0,
+   "slots_changed": 4.0
+  },
+  "restart_full_order": 1.0,
+  "complement_slots": {
+   "gate_follows_donor": 0.43125,
+   "gate_stays_target": 0.56875,
+   "dock_kept": 0.62,
+   "bay_kept": 0.715
+  }
+ },
+ "replay_dev_in": {
+  "n_items": 800,
+  "n_pairs": 400,
+  "n_families": 28,
+  "primary_targeted_credit": {
+   "mean": 0.29625,
+   "ci95": [
+    0.2684675444179997,
+    0.3246769982594725
+   ]
+  },
+  "shuffled_credit": 0.24375,
+  "paired_improvement_over_shuffled": {
+   "mean": 0.0525,
+   "ci95": [
+    0.01802799646529563,
+    0.09070016662450647
+   ]
+  },
+  "unrelated_obligation_drop_vs_unchanged": {
+   "mean": 0.64875,
+   "ci95": [
+    0.6218892990055518,
+    0.6746041239462293
+   ]
+  },
+  "both_unmodified_runs_valid": 1.0,
+  "resume_twice_identical": 1.0,
+  "targeted_parts": {
+   "gate": 0.57625,
+   "dock": 0.76375,
+   "bay": 0.4875
+  },
+  "same_goal_donor_stable": 0.40125,
+  "blank_memory": {
+   "credit": 0.11,
+   "gate": 0.5,
+   "dock": 0.52125,
+   "bay": 0.435
+  },
+  "whole_state_transplant": {
+   "credit": 0.0,
+   "gate": 1.0,
+   "dock": 0.3675,
+   "bay": 0.2525
+  },
+  "decor": {
+   "same_actions": 0.97125,
+   "still_valid": 1.0,
+   "slots_changed_next_step": 4.0,
+   "slots_changed_mean": 4.0
+  },
+  "message_revision": {
+   "credit": 1.0,
+   "slots_changed": 4.0
+  },
+  "restart_full_order": 1.0,
+  "complement_slots": {
+   "gate_follows_donor": 0.4175,
+   "gate_stays_target": 0.5825,
+   "dock_kept": 0.60375,
+   "bay_kept": 0.715
+  }
+ },
+ "seconds": 252.0
+}

@@ -1,0 +1,3259 @@
+{
+ "run": "f_iit_s5",
+ "checkpoint_sha256": "be1c8c2ea8985ecfa3974e94b7c7a696374355f0ba8777d40799c1288b8845aa",
+ "discrete": true,
+ "slots": [
+  0
+ ],
+ "slot_table_dev": [
+  {
+   "slots": [
+    0
+   ],
+   "rate": 1.0
+  },
+  {
+   "slots": [
+    1
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    0,
+    1
+   ],
+   "rate": 0.36875
+  },
+  {
+   "slots": [
+    2
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    0,
+    2
+   ],
+   "rate": 0.24875
+  },
+  {
+   "slots": [
+    1,
+    2
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    0,
+    1,
+    2
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    3
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    0,
+    3
+   ],
+   "rate": 1.0
+  },
+  {
+   "slots": [
+    1,
+    3
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    0,
+    1,
+    3
+   ],
+   "rate": 0.36875
+  },
+  {
+   "slots": [
+    2,
+    3
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    0,
+    2,
+    3
+   ],
+   "rate": 0.24875
+  },
+  {
+   "slots": [
+    1,
+    2,
+    3
+   ],
+   "rate": 0.0
+  },
+  {
+   "slots": [
+    0,
+    1,
+    2,
+    3
+   ],
+   "rate": 0.0
+  }
+ ],
+ "classes": {
+  "dynamic": 0.998,
+  "midplan_reversal": 0.99,
+  "open_revision": 0.984,
+  "plain": 1.0,
+  "route_swap": 1.0,
+  "swap": 0.996,
+  "wiring_reversal": 0.978,
+  "_reload_ok": true
+ },
+ "replay": {
+  "n_items": 2000,
+  "n_pairs": 1000,
+  "n_families": 16,
+  "primary_targeted_credit": {
+   "mean": 0.996,
+   "ci95": [
+    0.9865164747664968,
+    1.0
+   ]
+  },
+  "shuffled_credit": 0.5035,
+  "paired_improvement_over_shuffled": {
+   "mean": 0.4925,
+   "ci95": [
+    0.46875,
+    0.5143905883696405
+   ]
+  },
+  "unrelated_obligation_drop_vs_unchanged": {
+   "mean": 0.0,
+   "ci95": [
+    0.0,
+    0.0
+   ]
+  },
+  "both_unmodified_runs_valid": 0.997,
+  "resume_twice_identical": 1.0,
+  "targeted_parts": {
+   "gate": 0.996,
+   "dock": 1.0,
+   "bay": 1.0
+  },
+  "same_goal_donor_stable": 0.998,
+  "blank_memory": {
+   "credit": 0.0965,
+   "gate": 0.501,
+   "dock": 0.5165,
+   "bay": 0.3965
+  },
+  "whole_state_transplant": {
+   "credit": 0.0,
+   "gate": 0.997,
+   "dock": 0.379,
+   "bay": 0.239
+  },
+  "decor": {
+   "same_actions": 0.8885,
+   "still_valid": 0.997,
+   "slots_changed_next_step": 0.0275,
+   "slots_changed_mean": 0.01675
+  },
+  "message_revision": {
+   "credit": 1.0,
+   "slots_changed": 3.792
+  },
+  "restart_full_order": 0.9945,
+  "complement_slots": {
+   "gate_follows_donor": 0.002,
+   "gate_stays_target": 0.998,
+   "dock_kept": 0.379,
+   "bay_kept": 0.239
+  }
+ },
+ "machine": {
+  "families": 100,
+  "layouts": 256,
+  "pairs_checked": 133248000,
+  "violating_pairs": 24077,
+  "families_with_violations": [
+   "KC-KO",
+   "KO-KK",
+   "KT-KK",
+   "KT-KO"
+  ],
+  "seconds": 1424.0,
+  "mean_per_family": {
+   "code_states": [
+    12.0,
+    93.32,
+    145.47,
+    164.3,
+    245.12,
+    586.2
+   ],
+   "behaviour_classes": [
+    12.0,
+    85.71,
+    75.97,
+    92.83,
+    3.0,
+    1.0
+   ],
+   "spec_classes": [
+    12.0,
+    12.0,
+    12.0,
+    6.0,
+    3.0,
+    1.0
+   ],
+   "ambiguous_states": [
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0,
+    0.0
+   ],
+   "silent_bits": [
+    0.0,
+    0.128,
+    1.349,
+    1.515,
+    6.326,
+    9.187
+   ],
+   "tiebreak_bits": [
+    0.0,
+    2.829,
+    2.244,
+    3.255,
+    0.0,
+    0.0
+   ]
+  },
+  "stage_names": [
+   "INIT",
+   "PLAN",
+   "LEG1",
+   "DOCK",
+   "LEG2",
+   "BAY"
+  ],
+  "first_violations": [
+   {
+    "stage": 2,
+    "n_bad": 8,
+    "example_obs": 356,
+    "order_now": 8,
+    "proposed": 0,
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KC",
+      "leg2": "KO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       1
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KC",
+      "leg2": "KO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       1,
+       null
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "KC",
+     "leg2": "KO",
+     "gate": 1,
+     "closed_bay": null,
+     "decor": 1,
+     "message": [
+      1,
+      0,
+      2
+     ]
+    }
+   },
+   {
+    "stage": 2,
+    "n_bad": 1,
+    "example_obs": 5,
+    "order_now": 3,
+    "proposed": 0,
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       1,
+       2
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       1,
+       2
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "KO",
+     "leg2": "KK",
+     "gate": 0,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      null,
+      null,
+      0
+     ]
+    }
+   },
+   {
+    "stage": 2,
+    "n_bad": 37,
+    "example_obs": 330,
+    "order_now": 2,
+    "proposed": 0,
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KT",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       1,
+       2
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KT",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       1,
+       null
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "KT",
+     "leg2": "KK",
+     "gate": 1,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      0,
+      0,
+      2
+     ]
+    }
+   },
+   {
+    "stage": 2,
+    "n_bad": 89,
+    "example_obs": 330,
+    "order_now": 2,
+    "proposed": 0,
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KT",
+      "leg2": "KO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       1,
+       2
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KT",
+      "leg2": "KO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       1,
+       null
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "KT",
+     "leg2": "KO",
+     "gate": 1,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      0,
+      0,
+      2
+     ]
+    }
+   }
+  ],
+  "per_family": {
+   "CC-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 391040,
+    "code_states": [
+     12,
+     89,
+     126,
+     141,
+     176,
+     496
+    ],
+    "behaviour_classes": [
+     12,
+     76,
+     52,
+     87,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 938240,
+    "code_states": [
+     12,
+     91,
+     130,
+     157,
+     238,
+     569
+    ],
+    "behaviour_classes": [
+     12,
+     87,
+     88,
+     114,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-KK": {
+    "violating_pairs": 0,
+    "pairs_checked": 368640,
+    "code_states": [
+     12,
+     84,
+     124,
+     133,
+     158,
+     422
+    ],
+    "behaviour_classes": [
+     12,
+     75,
+     74,
+     98,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-KO": {
+    "violating_pairs": 0,
+    "pairs_checked": 888320,
+    "code_states": [
+     12,
+     85,
+     131,
+     138,
+     231,
+     558
+    ],
+    "behaviour_classes": [
+     12,
+     78,
+     68,
+     88,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 1018880,
+    "code_states": [
+     12,
+     88,
+     134,
+     162,
+     268,
+     601
+    ],
+    "behaviour_classes": [
+     12,
+     75,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 988160,
+    "code_states": [
+     12,
+     95,
+     126,
+     162,
+     255,
+     590
+    ],
+    "behaviour_classes": [
+     12,
+     83,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 380800,
+    "code_states": [
+     12,
+     88,
+     115,
+     135,
+     178,
+     491
+    ],
+    "behaviour_classes": [
+     12,
+     76,
+     45,
+     90,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 1026560,
+    "code_states": [
+     12,
+     93,
+     144,
+     162,
+     264,
+     605
+    ],
+    "behaviour_classes": [
+     12,
+     78,
+     35,
+     15,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 949760,
+    "code_states": [
+     12,
+     91,
+     134,
+     149,
+     246,
+     574
+    ],
+    "behaviour_classes": [
+     12,
+     88,
+     95,
+     123,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "CC-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 418560,
+    "code_states": [
+     12,
+     87,
+     126,
+     153,
+     196,
+     509
+    ],
+    "behaviour_classes": [
+     12,
+     80,
+     71,
+     111,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 903680,
+    "code_states": [
+     12,
+     94,
+     148,
+     154,
+     217,
+     538
+    ],
+    "behaviour_classes": [
+     12,
+     89,
+     105,
+     131,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2324480,
+    "code_states": [
+     12,
+     99,
+     159,
+     186,
+     311,
+     661
+    ],
+    "behaviour_classes": [
+     12,
+     98,
+     129,
+     151,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-KK": {
+    "violating_pairs": 0,
+    "pairs_checked": 875520,
+    "code_states": [
+     12,
+     90,
+     148,
+     152,
+     202,
+     531
+    ],
+    "behaviour_classes": [
+     12,
+     85,
+     110,
+     135,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-KO": {
+    "violating_pairs": 8,
+    "pairs_checked": 2193920,
+    "code_states": [
+     12,
+     95,
+     157,
+     173,
+     287,
+     643
+    ],
+    "behaviour_classes": [
+     12,
+     93,
+     131,
+     145,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 2370560,
+    "code_states": [
+     12,
+     95,
+     156,
+     184,
+     327,
+     659
+    ],
+    "behaviour_classes": [
+     12,
+     91,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2314240,
+    "code_states": [
+     12,
+     97,
+     155,
+     184,
+     310,
+     658
+    ],
+    "behaviour_classes": [
+     12,
+     92,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 919040,
+    "code_states": [
+     12,
+     94,
+     145,
+     163,
+     213,
+     563
+    ],
+    "behaviour_classes": [
+     12,
+     87,
+     98,
+     129,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2344960,
+    "code_states": [
+     12,
+     98,
+     169,
+     180,
+     310,
+     662
+    ],
+    "behaviour_classes": [
+     12,
+     64,
+     36,
+     29,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2316800,
+    "code_states": [
+     12,
+     99,
+     159,
+     182,
+     315,
+     644
+    ],
+    "behaviour_classes": [
+     12,
+     95,
+     131,
+     166,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KC-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 936960,
+    "code_states": [
+     12,
+     90,
+     146,
+     162,
+     221,
+     569
+    ],
+    "behaviour_classes": [
+     12,
+     83,
+     109,
+     149,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 371840,
+    "code_states": [
+     12,
+     85,
+     127,
+     137,
+     155,
+     454
+    ],
+    "behaviour_classes": [
+     12,
+     74,
+     45,
+     86,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 972800,
+    "code_states": [
+     12,
+     88,
+     144,
+     160,
+     244,
+     571
+    ],
+    "behaviour_classes": [
+     12,
+     86,
+     100,
+     122,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-KK": {
+    "violating_pairs": 0,
+    "pairs_checked": 424320,
+    "code_states": [
+     12,
+     86,
+     132,
+     157,
+     197,
+     534
+    ],
+    "behaviour_classes": [
+     12,
+     74,
+     70,
+     119,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-KO": {
+    "violating_pairs": 0,
+    "pairs_checked": 1000960,
+    "code_states": [
+     12,
+     86,
+     140,
+     163,
+     256,
+     590
+    ],
+    "behaviour_classes": [
+     12,
+     83,
+     75,
+     93,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 974080,
+    "code_states": [
+     12,
+     85,
+     144,
+     161,
+     239,
+     555
+    ],
+    "behaviour_classes": [
+     12,
+     72,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 986880,
+    "code_states": [
+     12,
+     90,
+     141,
+     160,
+     246,
+     582
+    ],
+    "behaviour_classes": [
+     12,
+     82,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 405120,
+    "code_states": [
+     12,
+     87,
+     125,
+     154,
+     183,
+     497
+    ],
+    "behaviour_classes": [
+     12,
+     76,
+     62,
+     111,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 981760,
+    "code_states": [
+     12,
+     93,
+     142,
+     158,
+     237,
+     568
+    ],
+    "behaviour_classes": [
+     12,
+     76,
+     16,
+     14,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 939520,
+    "code_states": [
+     12,
+     90,
+     137,
+     155,
+     231,
+     555
+    ],
+    "behaviour_classes": [
+     12,
+     88,
+     88,
+     126,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KK-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 416640,
+    "code_states": [
+     12,
+     86,
+     128,
+     148,
+     192,
+     517
+    ],
+    "behaviour_classes": [
+     12,
+     71,
+     56,
+     110,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 924160,
+    "code_states": [
+     12,
+     89,
+     142,
+     158,
+     217,
+     564
+    ],
+    "behaviour_classes": [
+     12,
+     86,
+     98,
+     128,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2232320,
+    "code_states": [
+     12,
+     97,
+     158,
+     172,
+     299,
+     622
+    ],
+    "behaviour_classes": [
+     12,
+     95,
+     131,
+     156,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-KK": {
+    "violating_pairs": 13,
+    "pairs_checked": 965120,
+    "code_states": [
+     12,
+     89,
+     153,
+     165,
+     229,
+     563
+    ],
+    "behaviour_classes": [
+     12,
+     84,
+     101,
+     140,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-KO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2283520,
+    "code_states": [
+     12,
+     93,
+     164,
+     170,
+     307,
+     642
+    ],
+    "behaviour_classes": [
+     12,
+     92,
+     125,
+     136,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 2206720,
+    "code_states": [
+     12,
+     95,
+     160,
+     175,
+     280,
+     637
+    ],
+    "behaviour_classes": [
+     12,
+     89,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2211840,
+    "code_states": [
+     12,
+     99,
+     161,
+     171,
+     282,
+     636
+    ],
+    "behaviour_classes": [
+     12,
+     95,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 916480,
+    "code_states": [
+     12,
+     87,
+     145,
+     160,
+     215,
+     558
+    ],
+    "behaviour_classes": [
+     12,
+     85,
+     94,
+     128,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2321920,
+    "code_states": [
+     12,
+     97,
+     172,
+     177,
+     300,
+     643
+    ],
+    "behaviour_classes": [
+     12,
+     75,
+     38,
+     20,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2094080,
+    "code_states": [
+     12,
+     95,
+     161,
+     164,
+     264,
+     602
+    ],
+    "behaviour_classes": [
+     12,
+     91,
+     131,
+     148,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KO-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 902400,
+    "code_states": [
+     12,
+     89,
+     145,
+     154,
+     210,
+     562
+    ],
+    "behaviour_classes": [
+     12,
+     83,
+     107,
+     141,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 881920,
+    "code_states": [
+     12,
+     97,
+     146,
+     151,
+     201,
+     527
+    ],
+    "behaviour_classes": [
+     12,
+     90,
+     106,
+     120,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2247680,
+    "code_states": [
+     12,
+     99,
+     161,
+     185,
+     288,
+     647
+    ],
+    "behaviour_classes": [
+     12,
+     97,
+     140,
+     169,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-KK": {
+    "violating_pairs": 6738,
+    "pairs_checked": 953600,
+    "code_states": [
+     12,
+     92,
+     151,
+     168,
+     223,
+     562
+    ],
+    "behaviour_classes": [
+     12,
+     87,
+     107,
+     148,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-KO": {
+    "violating_pairs": 17318,
+    "pairs_checked": 2252800,
+    "code_states": [
+     12,
+     95,
+     163,
+     183,
+     291,
+     628
+    ],
+    "behaviour_classes": [
+     12,
+     94,
+     137,
+     147,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 2429440,
+    "code_states": [
+     12,
+     99,
+     156,
+     189,
+     333,
+     654
+    ],
+    "behaviour_classes": [
+     12,
+     89,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2337280,
+    "code_states": [
+     12,
+     101,
+     157,
+     181,
+     309,
+     670
+    ],
+    "behaviour_classes": [
+     12,
+     97,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 965120,
+    "code_states": [
+     12,
+     93,
+     147,
+     169,
+     233,
+     581
+    ],
+    "behaviour_classes": [
+     12,
+     92,
+     115,
+     142,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2319360,
+    "code_states": [
+     12,
+     102,
+     160,
+     184,
+     303,
+     645
+    ],
+    "behaviour_classes": [
+     12,
+     78,
+     55,
+     28,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2298880,
+    "code_states": [
+     12,
+     101,
+     158,
+     187,
+     293,
+     648
+    ],
+    "behaviour_classes": [
+     12,
+     96,
+     131,
+     167,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "KT-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 961280,
+    "code_states": [
+     12,
+     96,
+     150,
+     166,
+     225,
+     579
+    ],
+    "behaviour_classes": [
+     12,
+     89,
+     118,
+     147,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 958720,
+    "code_states": [
+     12,
+     95,
+     155,
+     167,
+     225,
+     586
+    ],
+    "behaviour_classes": [
+     12,
+     86,
+     111,
+     146,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2344960,
+    "code_states": [
+     12,
+     99,
+     157,
+     182,
+     322,
+     680
+    ],
+    "behaviour_classes": [
+     12,
+     97,
+     139,
+     156,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-KK": {
+    "violating_pairs": 0,
+    "pairs_checked": 908800,
+    "code_states": [
+     12,
+     94,
+     147,
+     160,
+     209,
+     586
+    ],
+    "behaviour_classes": [
+     12,
+     92,
+     116,
+     132,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-KO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2191360,
+    "code_states": [
+     12,
+     99,
+     158,
+     176,
+     279,
+     650
+    ],
+    "behaviour_classes": [
+     12,
+     90,
+     108,
+     139,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 2442240,
+    "code_states": [
+     12,
+     101,
+     159,
+     195,
+     331,
+     682
+    ],
+    "behaviour_classes": [
+     12,
+     95,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2314240,
+    "code_states": [
+     12,
+     101,
+     161,
+     181,
+     308,
+     701
+    ],
+    "behaviour_classes": [
+     12,
+     93,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 993280,
+    "code_states": [
+     12,
+     93,
+     150,
+     168,
+     247,
+     614
+    ],
+    "behaviour_classes": [
+     12,
+     92,
+     102,
+     137,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2378240,
+    "code_states": [
+     12,
+     104,
+     169,
+     183,
+     315,
+     689
+    ],
+    "behaviour_classes": [
+     12,
+     82,
+     84,
+     27,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2301440,
+    "code_states": [
+     12,
+     100,
+     164,
+     186,
+     298,
+     653
+    ],
+    "behaviour_classes": [
+     12,
+     98,
+     148,
+     163,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OC-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 968960,
+    "code_states": [
+     12,
+     94,
+     151,
+     167,
+     229,
+     602
+    ],
+    "behaviour_classes": [
+     12,
+     78,
+     108,
+     142,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 378880,
+    "code_states": [
+     12,
+     88,
+     120,
+     137,
+     170,
+     496
+    ],
+    "behaviour_classes": [
+     12,
+     77,
+     65,
+     85,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 889600,
+    "code_states": [
+     12,
+     90,
+     125,
+     152,
+     220,
+     527
+    ],
+    "behaviour_classes": [
+     12,
+     86,
+     74,
+     109,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-KK": {
+    "violating_pairs": 0,
+    "pairs_checked": 386560,
+    "code_states": [
+     12,
+     82,
+     125,
+     142,
+     175,
+     487
+    ],
+    "behaviour_classes": [
+     12,
+     77,
+     59,
+     94,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-KO": {
+    "violating_pairs": 0,
+    "pairs_checked": 970240,
+    "code_states": [
+     12,
+     84,
+     130,
+     157,
+     255,
+     587
+    ],
+    "behaviour_classes": [
+     12,
+     80,
+     74,
+     104,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 963840,
+    "code_states": [
+     12,
+     87,
+     133,
+     160,
+     239,
+     573
+    ],
+    "behaviour_classes": [
+     12,
+     75,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 998400,
+    "code_states": [
+     12,
+     90,
+     133,
+     160,
+     259,
+     605
+    ],
+    "behaviour_classes": [
+     12,
+     77,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 368000,
+    "code_states": [
+     12,
+     88,
+     114,
+     139,
+     161,
+     477
+    ],
+    "behaviour_classes": [
+     12,
+     80,
+     58,
+     97,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 1035520,
+    "code_states": [
+     12,
+     93,
+     144,
+     160,
+     268,
+     608
+    ],
+    "behaviour_classes": [
+     12,
+     72,
+     21,
+     19,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 967680,
+    "code_states": [
+     12,
+     90,
+     135,
+     153,
+     249,
+     588
+    ],
+    "behaviour_classes": [
+     12,
+     88,
+     99,
+     132,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "OO-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 415360,
+    "code_states": [
+     12,
+     86,
+     130,
+     151,
+     189,
+     521
+    ],
+    "behaviour_classes": [
+     12,
+     70,
+     60,
+     106,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 934400,
+    "code_states": [
+     12,
+     96,
+     153,
+     167,
+     214,
+     565
+    ],
+    "behaviour_classes": [
+     12,
+     95,
+     110,
+     124,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2268160,
+    "code_states": [
+     12,
+     101,
+     161,
+     185,
+     290,
+     653
+    ],
+    "behaviour_classes": [
+     12,
+     98,
+     148,
+     164,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-KK": {
+    "violating_pairs": 0,
+    "pairs_checked": 926720,
+    "code_states": [
+     12,
+     93,
+     156,
+     163,
+     211,
+     564
+    ],
+    "behaviour_classes": [
+     12,
+     86,
+     114,
+     144,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-KO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2165760,
+    "code_states": [
+     12,
+     99,
+     163,
+     175,
+     271,
+     643
+    ],
+    "behaviour_classes": [
+     12,
+     97,
+     133,
+     132,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 2362880,
+    "code_states": [
+     12,
+     99,
+     152,
+     188,
+     318,
+     662
+    ],
+    "behaviour_classes": [
+     12,
+     91,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2324480,
+    "code_states": [
+     12,
+     105,
+     155,
+     191,
+     301,
+     665
+    ],
+    "behaviour_classes": [
+     12,
+     101,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 985600,
+    "code_states": [
+     12,
+     95,
+     151,
+     171,
+     235,
+     587
+    ],
+    "behaviour_classes": [
+     12,
+     94,
+     95,
+     141,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2278400,
+    "code_states": [
+     12,
+     103,
+     165,
+     185,
+     294,
+     641
+    ],
+    "behaviour_classes": [
+     12,
+     93,
+     45,
+     24,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2112000,
+    "code_states": [
+     12,
+     99,
+     156,
+     176,
+     262,
+     621
+    ],
+    "behaviour_classes": [
+     12,
+     98,
+     140,
+     160,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TC-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 967680,
+    "code_states": [
+     12,
+     96,
+     148,
+     175,
+     220,
+     589
+    ],
+    "behaviour_classes": [
+     12,
+     91,
+     110,
+     152,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 878080,
+    "code_states": [
+     12,
+     93,
+     148,
+     152,
+     198,
+     540
+    ],
+    "behaviour_classes": [
+     12,
+     89,
+     104,
+     115,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2191360,
+    "code_states": [
+     12,
+     99,
+     149,
+     173,
+     290,
+     667
+    ],
+    "behaviour_classes": [
+     12,
+     97,
+     126,
+     148,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-KK": {
+    "violating_pairs": 0,
+    "pairs_checked": 892160,
+    "code_states": [
+     12,
+     91,
+     146,
+     156,
+     207,
+     572
+    ],
+    "behaviour_classes": [
+     12,
+     84,
+     115,
+     138,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-KO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2088960,
+    "code_states": [
+     12,
+     94,
+     148,
+     167,
+     264,
+     628
+    ],
+    "behaviour_classes": [
+     12,
+     92,
+     115,
+     139,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 2163200,
+    "code_states": [
+     12,
+     97,
+     155,
+     179,
+     269,
+     649
+    ],
+    "behaviour_classes": [
+     12,
+     90,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2114560,
+    "code_states": [
+     12,
+     101,
+     148,
+     169,
+     276,
+     620
+    ],
+    "behaviour_classes": [
+     12,
+     99,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 912640,
+    "code_states": [
+     12,
+     91,
+     145,
+     163,
+     212,
+     576
+    ],
+    "behaviour_classes": [
+     12,
+     87,
+     104,
+     131,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 2270720,
+    "code_states": [
+     12,
+     99,
+     163,
+     189,
+     283,
+     640
+    ],
+    "behaviour_classes": [
+     12,
+     87,
+     32,
+     29,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 2112000,
+    "code_states": [
+     12,
+     102,
+     156,
+     163,
+     276,
+     610
+    ],
+    "behaviour_classes": [
+     12,
+     100,
+     137,
+     147,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TO-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 940800,
+    "code_states": [
+     12,
+     91,
+     144,
+     163,
+     225,
+     585
+    ],
+    "behaviour_classes": [
+     12,
+     86,
+     114,
+     138,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-CC": {
+    "violating_pairs": 0,
+    "pairs_checked": 389120,
+    "code_states": [
+     12,
+     93,
+     123,
+     150,
+     165,
+     478
+    ],
+    "behaviour_classes": [
+     12,
+     78,
+     70,
+     91,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-KC": {
+    "violating_pairs": 0,
+    "pairs_checked": 893440,
+    "code_states": [
+     12,
+     92,
+     130,
+     150,
+     216,
+     536
+    ],
+    "behaviour_classes": [
+     12,
+     85,
+     97,
+     114,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-KK": {
+    "violating_pairs": 0,
+    "pairs_checked": 378240,
+    "code_states": [
+     12,
+     85,
+     135,
+     140,
+     157,
+     429
+    ],
+    "behaviour_classes": [
+     12,
+     67,
+     72,
+     102,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-KO": {
+    "violating_pairs": 0,
+    "pairs_checked": 906240,
+    "code_states": [
+     12,
+     89,
+     138,
+     154,
+     223,
+     543
+    ],
+    "behaviour_classes": [
+     12,
+     83,
+     80,
+     95,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-KT": {
+    "violating_pairs": 0,
+    "pairs_checked": 893440,
+    "code_states": [
+     12,
+     90,
+     133,
+     150,
+     218,
+     547
+    ],
+    "behaviour_classes": [
+     12,
+     76,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-OC": {
+    "violating_pairs": 0,
+    "pairs_checked": 966400,
+    "code_states": [
+     12,
+     94,
+     141,
+     152,
+     235,
+     589
+    ],
+    "behaviour_classes": [
+     12,
+     86,
+     12,
+     6,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-OO": {
+    "violating_pairs": 0,
+    "pairs_checked": 382080,
+    "code_states": [
+     12,
+     88,
+     122,
+     142,
+     172,
+     485
+    ],
+    "behaviour_classes": [
+     12,
+     75,
+     60,
+     92,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-TC": {
+    "violating_pairs": 0,
+    "pairs_checked": 985600,
+    "code_states": [
+     12,
+     92,
+     142,
+     162,
+     248,
+     590
+    ],
+    "behaviour_classes": [
+     12,
+     76,
+     17,
+     17,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-TO": {
+    "violating_pairs": 0,
+    "pairs_checked": 924160,
+    "code_states": [
+     12,
+     91,
+     134,
+     161,
+     223,
+     569
+    ],
+    "behaviour_classes": [
+     12,
+     87,
+     106,
+     127,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   },
+   "TT-TT": {
+    "violating_pairs": 0,
+    "pairs_checked": 413440,
+    "code_states": [
+     12,
+     93,
+     125,
+     149,
+     186,
+     529
+    ],
+    "behaviour_classes": [
+     12,
+     79,
+     64,
+     104,
+     3,
+     1
+    ],
+    "spec_classes": [
+     12,
+     12,
+     12,
+     6,
+     3,
+     1
+    ]
+   }
+  }
+ },
+ "seconds": 1442.9
+}

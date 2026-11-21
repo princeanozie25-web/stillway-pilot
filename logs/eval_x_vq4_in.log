@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/Users/princ/Library/Application Support/Claude/scratch-workspaces/b995af70-8368-498c-8fa6-38a0cd90cc6e/8797244b-7709-42cc-86b9-bb1d2343425d/scratch-2026-11-20-3e326d/stillway/evaluate.py", line 125, in <module>
+    main()
+  File "/Users/princ/Library/Application Support/Claude/scratch-workspaces/b995af70-8368-498c-8fa6-38a0cd90cc6e/8797244b-7709-42cc-86b9-bb1d2343425d/scratch-2026-11-20-3e326d/stillway/evaluate.py", line 72, in main
+    model = load_checkpoint(os.path.join(run, "checkpoint.pt"))
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/princ/Library/Application Support/Claude/scratch-workspaces/b995af70-8368-498c-8fa6-38a0cd90cc6e/8797244b-7709-42cc-86b9-bb1d2343425d/scratch-2026-11-20-3e326d/stillway/model.py", line 171, in load_checkpoint
+    data = open(path, "rb").read()
+           ^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'runs/x_vq4_in/checkpoint.pt'
