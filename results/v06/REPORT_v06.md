@@ -109,3 +109,5 @@ Run once at commit `e84c46e`, outputs locked in `b7120cd` before the author's br
 | L5. Choosing audits helps the selector on novel rules | **Fail**: 512 either way |
 
 **The verdict of section 1 does not carry to this family.** "Experience makes a novel policy cheaper to learn" held on the two Unicode families and failed on the one family I had no hand in. Recognising a rule seen before held on all three. Section 5's design reading should be taken with that correction: the bank's value shown so far is recognition, not transfer.
+
+After the author's breakdown: `docs/v06_codex_reveal_note.md` (6 repeats, 8 variants, 6 new shapes; the bank is ahead on all repeats, on 3 of 8 variants and on no new shape).

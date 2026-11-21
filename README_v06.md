@@ -12,6 +12,7 @@ Start with `docs/v06_decision_memo.md`, then `results/v06/REPORT_v06.md`. All ve
 | `docs/v06_codex_hidden_memo.md` | Codex's hidden family: verdicts, the post-freeze L4 change, questions for the breakdown. |
 | `family_codex.json`, `results/v06/codex_hidden_*` | The hidden family as received, its raw curves, tables, rule outcomes, per-policy detail and lock file. |
 | `v06/l4_check.py`, `v06/per_policy.py`, `v06/lock_outputs.py` | Read-only helpers added after the freeze. |
+| `docs/v06_codex_reveal_note.md` | Codex's breakdown read against the locked results; one exploratory fix (`v06/x_features.py`). |
 | `data/external/cldr/` | `plurals.json`, `ordinals.json` (97 kB) and the two converted family files. |
 | `results/v06/` | Per-shard raw curves, tables, rule outcomes, report. |
 
