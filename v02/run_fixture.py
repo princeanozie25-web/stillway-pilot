@@ -8,7 +8,7 @@ Fixture format:
    "parcel": [true, false, true], "waits": [true, false, true],
    "gates": [1, 0], "closed": null,
    "order": {"gate0": 2, "gate1": 0, "parcels": [1, 0, 2, 0]},              gate: 0 none, 1 closed, 2 open
-   "edit": {"pause_slot": 5, "field": 0, "value": 1, "method": "slot_write"}}   method: slot_write | message | restart | none
+   "edit": {"pause_slot": 5, "field": 0, "value": 1, "method": "slot_write"}}   method: predictor | slot_write | message | restart | none
 """
 import json, os, sys
 import torch
@@ -22,6 +22,8 @@ KIND = ["INIT", "WAIT", "ROUTE", "DELIVER"]; ACT = ["L", "R", "D0", "D1", "D2"]
 def load(run):
     model = load3(os.path.join(run, "checkpoint.pt")); ck = torch.load(os.path.join(run, "editors.pt"), weights_only=True)
     sw = SlotWrite.__new__(SlotWrite); sw.table, sw.known, sw.purity = ck["slot_table"], ck["slot_known"], ck["slot_purity"]
+    from stillway2.editors import Predictor
+    pr = Predictor(model); pr.load_state_dict(ck["pred_state"]); pr.tau = ck["pred_tau"]; pr.eval(); sw.predictor = pr
     return model, sw
 
 
@@ -42,8 +44,8 @@ def run_fixture(model, sw, fx):
             f = torch.tensor([ed["field"]]); v = torch.tensor([ed["value"]]); rows = torch.ones(1, dtype=torch.bool)
             script = {"rows": rows, "field": f, "value": v, "show": ed["method"] == "message"}
             if ed["method"] == "restart": script["full_rows"] = rows; ids[:] = -1
-            if ed["method"] == "slot_write":
-                before = ids[0].tolist(); new, ab = sw(ids, f, v); abstained = bool(ab[0])
+            if ed["method"] in ("slot_write", "predictor"):
+                before = ids[0].tolist(); new, ab = (sw if ed["method"] == "slot_write" else sw.predictor)(ids, f, v); abstained = bool(ab[0])
                 if not abstained: ids = new
                 edit_note = {"ids_before": before, "ids_after": ids[0].tolist(), "abstained": abstained}
         obs, act = w.next_obs(script); kind, leg = w.slot(t)

@@ -10,7 +10,7 @@ with deadlines.  One tick = one step of one job.  At a random tick the operator 
 In a quarter of the shifts a gate fault hits a later job after the resume (nobody could predict it).
 
 Systems, on the same shifts
-  learned + edit      saved code IDs of the corrected job are rewritten by the frozen slot-write editor;
+  learned + edit      saved code IDs of the corrected job are rewritten by the frozen primary editor;
                       if the editor abstains the correction is sent as a message instead (counted)
   learned + message   the correction is an operator message at the job's next step (ordinary resume)
   learned + restart   every unfinished job is restarted: memory wiped, whole current order re-issued.
@@ -30,6 +30,9 @@ run = sys.argv[1].rstrip("/"); NS = int(sys.argv[2]) if len(sys.argv) > 2 else 3
 torch.set_num_threads(1); name = os.path.basename(run); model = load3(os.path.join(run, "checkpoint.pt")); S = model.cfg.n_slots
 ck = torch.load(os.path.join(run, "editors.pt"), weights_only=True)
 sw = SlotWrite.__new__(SlotWrite); sw.table, sw.known, sw.purity = ck["slot_table"], ck["slot_known"], ck["slot_purity"]
+from stillway2.editors import Predictor
+pr = Predictor(model); pr.load_state_dict(ck["pred_state"]); pr.tau = ck["pred_tau"]; pr.eval()
+PRIMARY = json.load(open("results/v02/FREEZE_v02.json"))["primary_editor"]; ED = pr if PRIMARY == "predictor" else sw
 J = 8; SPEC = {**EDIT_SPEC, "split": SPLIT, "env": "model"}
 ACT = ["L", "R", "D0", "D1", "D2"]
 
@@ -98,7 +101,7 @@ def simulate(sh, system, events=True, stop_before=None, state=None):
             rows[corr["job"]] = True; f = torch.full((J,), corr["field"]); v = torch.full((J,), corr["value"])
             show = system in ("learned_message",)
             if system == "learned_edit":
-                t0 = time.perf_counter(); new, ab = sw(ids[rows], f[rows], v[rows]); solver += time.perf_counter() - t0
+                t0 = time.perf_counter(); new, ab = ED(ids[rows], f[rows], v[rows]); solver += time.perf_counter() - t0
                 if bool(ab[0]): abstained = True; fell_back = True; show = True
                 else: ids[rows] = new
             script = {"rows": rows, "field": f, "value": v, "show": show}
@@ -113,7 +116,8 @@ def simulate(sh, system, events=True, stop_before=None, state=None):
             if kind in (ROUTE, DELIVER):
                 vm = w.valid_mask(); a = vm.float().argmax(1)
         else:
-            t0 = time.perf_counter(); logits, new_ids = model.infer(ids, obs); solver += time.perf_counter() - t0
+            t0 = time.perf_counter(); logits, new_ids = model.infer(ids, obs)
+            if t >= int(pause.min()): solver += time.perf_counter() - t0          # only the part of the shift after the pause
             ids = torch.where(act[:, None], new_ids, ids)
             if kind in (ROUTE, DELIVER): vm = w.valid_mask(); a = act_argmax(logits, kind)
         if kind in (ROUTE, DELIVER):
@@ -150,8 +154,8 @@ def symbolic_times(sh):
     return t_inc, time.perf_counter() - t0
 
 
-SYSTEMS = ["learned_edit", "learned_message", "learned_restart", "symbolic"]
-agg = {s: {"jobs": 0, "jobs_all_commitments_met": 0, "priority_jobs": 0, "priority_deadlines_missed": 0, "unfinished_job_steps": 0,
+SYSTEMS = ["symbolic", "learned_edit", "learned_message", "learned_restart"]
+agg = {s: {"jobs": 0, "extra_ticks": 0, "jobs_all_commitments_met": 0, "priority_jobs": 0, "priority_deadlines_missed": 0, "unfinished_job_steps": 0,
            "reassigned_steps": 0, "unnecessary_reassignments": 0, "invalid_actions": 0, "editor_abstained": 0, "solver_us": []} for s in SYSTEMS}
 agg["symbolic_incremental_us"] = []; agg["symbolic_restart_us"] = []; declines = {"requests": 0, "declined": 0}; pred = {"jobs": 0, "prediction_right": 0, "shifts_with_fault": 0}
 example = None
@@ -159,20 +163,16 @@ for k in range(NS):
     sh = make_shift(50000 + k)
     if sh["corr"] is None: continue
     base = {s: simulate(sh, s, events=False) for s in ("learned_message", "symbolic")}
-    nofault = dict(sh, fault=None)
+    nofault = dict(sh, fault=None); shift_runs = {}
     for s in SYSTEMS:
         r = simulate(sh, s); orig = base["symbolic" if s == "symbolic" else "learned_message"]; a = agg[s]
         pr_ = simulate(nofault, s)                                                    # the forecast made at the pause: nothing else changes
         un = np.array([[sh["act"][j, t] and t >= sh["pause"][j] and r["A"][j, t] >= 0 for t in range(r["A"].shape[1])] for j in range(J)])
         changed = un & (r["A"] != orig["A"])
-        # was the original action still valid in the situation the revised run was actually in?  (re-run with the old action forced is costly;
-        # we use the stricter proxy: the step belongs to a job the correction did not touch and whose dock choice was not hit by the closure)
-        touched = np.zeros(J, dtype=bool); touched[sh["corr"]["job"]] = True
-        if sh["fault"]: touched[sh["fault"]["job"]] = True
-        deliver_slot = np.array([[(t - 1) % 3 == 2 for t in range(r["A"].shape[1])] for _ in range(J)])
-        closure_hit = deliver_slot & (orig["A"] - 2 == sh["dock"])
-        unnecessary = changed & ~touched[:, None] & ~closure_hit
-        a["jobs"] += J; a["jobs_all_commitments_met"] += int(r["met"].sum()); a["priority_jobs"] += int(sh["prio"].sum())
+        # "changed without need": the step changed although the exact planner kept its own step at that place
+        if s == "symbolic": sym_changed = changed.copy()
+        unnecessary = changed & ~sym_changed
+        a["jobs"] += J; a["extra_ticks"] += int((r["finish"] - sh["start"] - sh["length"]).max()); a["jobs_all_commitments_met"] += int(r["met"].sum()); a["priority_jobs"] += int(sh["prio"].sum())
         a["priority_deadlines_missed"] += int((r["missed_deadline"] & sh["prio"]).sum()); a["unfinished_job_steps"] += int(un.sum())
         a["reassigned_steps"] += int(changed.sum()); a["unnecessary_reassignments"] += int(unnecessary.sum())
         a["invalid_actions"] += int((un & ~r["V"]).sum()); a["editor_abstained"] += int(r["abstained"]); a["solver_us"].append(r["solver_seconds"] * 1e6)
@@ -182,13 +182,13 @@ for k in range(NS):
             if sh["decline"]: declines["requests"] += 1; declines["declined"] += 1        # a delivered parcel: declined by rule, before any editor call
             if example is None and sh["decline"] and sh["fault"] and changed.any():
                 example = {"shift": {k_: (v.tolist() if hasattr(v, "tolist") else v) for k_, v in sh.items()}, "runs": {}, "original": orig["A"].tolist()}
-        if example is not None and example["shift"]["seed"] == sh["seed"]:
-            example["runs"][s] = {k_: (v.tolist() if hasattr(v, "tolist") else v) for k_, v in r.items()}
-            example["runs"][s]["predicted_gates"] = pr_["final_gates"].tolist(); example["runs"][s]["predicted_delivered"] = pr_["delivered"].tolist()
+        shift_runs[s] = {k_: (v.tolist() if hasattr(v, "tolist") else v) for k_, v in r.items()}
+        shift_runs[s]["predicted_gates"] = pr_["final_gates"].tolist(); shift_runs[s]["predicted_delivered"] = pr_["delivered"].tolist()
+    if example is not None and example["shift"]["seed"] == sh["seed"]: example["runs"] = dict(shift_runs)
     ti, tr = symbolic_times(sh); agg["symbolic_incremental_us"].append(ti * 1e6); agg["symbolic_restart_us"].append(tr * 1e6)
 
 q = lambda x, p: round(float(np.percentile(x, p)), 1)
-out = {"run": name, "shifts": NS, "jobs_per_shift": J, "families": SPLIT, "systems": {}, "declined_requests": declines, "forecast_at_pause_vs_realised": pred,
+out = {"run": name, "editor": PRIMARY, "shifts": NS, "jobs_per_shift": J, "families": SPLIT, "systems": {}, "declined_requests": declines, "forecast_at_pause_vs_realised": pred,
        "assumption": "re-briefing a restarted job costs one tick; sequencing is the same rule for every system"}
 for s in SYSTEMS:
     a = agg[s]; out["systems"][s] = {**{k: v for k, v in a.items() if k != "solver_us"}, "revision_compute_median_us": q(a["solver_us"], 50), "revision_compute_p99_us": q(a["solver_us"], 99)}

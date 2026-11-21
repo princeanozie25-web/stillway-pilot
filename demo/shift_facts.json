@@ -1,0 +1,5 @@
+{"facts": [["99.9%", "of corrections applied by the frozen memory editor succeed on unseen layout families of trained size (5 cores)"],
+           ["33 to 54%", "on four-leg jobs, which training never had. The planner itself fails there, with or without an edit"],
+           ["0 against 1,279 ticks", "lost to re-briefing over 300 shifts: edit and resume against full restart"],
+           ["29 µs against about 6 ms", "to revise the rest of a shift: exact planner against learned planner"]],
+ "foot": "Checkpoint v2_iit_s1 with the frozen predictor editor, frozen at commit 1470048. Jobs come from final families the planner never trained on. The exact planner is the cheaper system here and never changes a step without need; the learned planner matches its outcomes on these families and changes about 200 extra steps where two routes tie. Compute is for all steps after the pause on one CPU thread."}

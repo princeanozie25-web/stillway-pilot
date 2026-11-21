@@ -68,7 +68,7 @@ td.wrapok { white-space: normal; min-width: 180px; }
   </div>
   <div class="panel">
     <h2>All recorded shifts</h2>
-    <div class="scroll"><table><thead><tr><th>System</th><th>Jobs with every commitment met</th><th>Priority deadlines missed</th><th>Steps changed</th><th>Changed without need</th><th>Rejected steps</th><th>Editor declined</th><th>Compute for the revision, median (99th pct)</th></tr></thead><tbody id="metrics"></tbody></table></div>
+    <div class="scroll"><table><thead><tr><th>System</th><th>Jobs with every commitment met</th><th>Priority deadlines missed</th><th>Ticks lost to re-briefing</th><th>Steps changed</th><th>Changed where the exact planner did not</th><th>Rejected steps</th><th>Editor declined</th><th>Compute after the pause, median (99th pct)</th></tr></thead><tbody id="metrics"></tbody></table></div>
     <p class="mut" id="foot"></p>
   </div>
 </div>
@@ -105,7 +105,7 @@ function board() { const r = EX.runs[sys], rows = [];
     rows.push(`<tr><td>Job ${j + 1}</td><td>${prio}</td><td class="wrapok">${order}</td><td>${cells.join("")}</td><td>${outc}</td><td>${fc}</td></tr>`); }
   $("board").innerHTML = rows.join(""); }
 function metrics() { const pct = (a, b) => (100 * a / Math.max(1, b)).toFixed(1) + "%"; const rows = [];
-  for (const k in SYS) { const m = MET.systems[k]; rows.push(`<tr><td>${SYS[k]}</td><td>${m.jobs_all_commitments_met} / ${m.jobs} (${pct(m.jobs_all_commitments_met, m.jobs)})</td><td>${m.priority_deadlines_missed} / ${m.priority_jobs}</td><td>${m.reassigned_steps} / ${m.unfinished_job_steps}</td><td>${m.unnecessary_reassignments}</td><td>${m.invalid_actions}</td><td>${k === "learned_edit" ? m.editor_abstained : "–"}</td><td class="mono">${k === "symbolic" ? m.incremental_replan_median_us + " µs (" + m.incremental_replan_p99_us + ") incremental" : m.revision_compute_median_us + " µs (" + m.revision_compute_p99_us + ")"}</td></tr>`); }
+  for (const k in SYS) { const m = MET.systems[k]; rows.push(`<tr><td>${SYS[k]}</td><td>${m.jobs_all_commitments_met} / ${m.jobs} (${pct(m.jobs_all_commitments_met, m.jobs)})</td><td>${m.priority_deadlines_missed} / ${m.priority_jobs}</td><td>${m.extra_ticks}</td><td>${m.reassigned_steps} / ${m.unfinished_job_steps}</td><td>${m.unnecessary_reassignments}</td><td>${m.invalid_actions}</td><td>${k === "learned_edit" ? m.editor_abstained : "–"}</td><td class="mono">${k === "symbolic" ? m.incremental_replan_median_us + " µs (" + m.incremental_replan_p99_us + ") incremental" : m.revision_compute_median_us + " µs (" + m.revision_compute_p99_us + ")"}</td></tr>`); }
   $("metrics").innerHTML = rows.join(""); }
 function render() { $("corrPanel").hidden = view === 0; cards(); board(); $("sysnote").textContent = NOTE[sys];
   document.querySelectorAll("#views button").forEach((b, i) => b.classList.toggle("on", i === view)); document.querySelectorAll("#systems button").forEach(b => b.classList.toggle("on", b.dataset.k === sys)); }

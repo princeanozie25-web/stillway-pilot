@@ -1,0 +1,200 @@
+<title>Stillway Shift Replay</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: a dispatcher's shift board. One row per job in running order, one cell per step; corrections in amber; numbers for every system underneath. */
+:root {
+  --bg: #eef2f0; --panel: #ffffff; --ink: #16211e; --muted: #5a6a66; --line: #d3dcd9; --done: #e3e9e7;
+  --accent: #0f6e64; --human: #b26400; --human-bg: #fff3df; --ok: #1d7a3c; --bad: #b3261e;
+  --display: "Barlow Condensed", "Arial Narrow", sans-serif; --body: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e1413; --panel: #151d1b; --ink: #e4ece9; --muted: #93a39f; --line: #2a3633; --done: #1d2725;
+  --accent: #55c7b7; --human: #f0a63a; --human-bg: #2c2110; --ok: #62d088; --bad: #ff8076; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e1413; --panel: #151d1b; --ink: #e4ece9; --muted: #93a39f; --line: #2a3633; --done: #1d2725;
+  --accent: #55c7b7; --human: #f0a63a; --human-bg: #2c2110; --ok: #62d088; --bad: #ff8076; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font-family: var(--body); font-size: 15px; line-height: 1.45;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); padding-block: 20px 40px; }
+.wrap { max-width: 1120px; margin: 0 auto; display: flex; flex-direction: column; gap: 16px; }
+h1 { font-family: var(--display); font-weight: 600; font-size: 34px; line-height: 1.05; margin: 0; text-wrap: balance; }
+h2 { font-family: var(--display); font-weight: 600; font-size: 20px; margin: 0; letter-spacing: .04em; text-transform: uppercase; color: var(--muted); }
+p { margin: 0; } .lede { max-width: 70ch; color: var(--muted); }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 14px; display: flex; flex-direction: column; gap: 10px; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button { font: 500 14px var(--body); color: var(--ink); background: transparent; border: 1px solid var(--line); border-radius: 4px; padding: 7px 11px; cursor: pointer; }
+button:hover { border-color: var(--accent); } button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button.on { background: var(--accent); border-color: var(--accent); color: var(--panel); font-weight: 600; }
+.label { font: 500 11px var(--body); letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+.mono { font-family: var(--mono); font-variant-numeric: tabular-nums; }
+.scroll { overflow-x: auto; } table { border-collapse: collapse; font-size: 13px; width: 100%; }
+th, td { text-align: left; padding: 5px 8px; border-bottom: 1px solid var(--line); vertical-align: middle; white-space: nowrap; }
+th { font: 500 11px var(--body); letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+td.wrapok { white-space: normal; min-width: 180px; }
+.cell { display: inline-block; min-width: 30px; text-align: center; font: 500 12px var(--mono); padding: 3px 4px; margin-right: 3px; border-radius: 3px; border: 1px solid var(--line); }
+.cell.done { background: var(--done); color: var(--muted); border-color: transparent; }
+.cell.chg { border-color: var(--human); background: var(--human-bg); color: var(--human); }
+.cell.bad { border-color: var(--bad); color: var(--bad); }
+.pause { display: inline-block; width: 3px; height: 22px; background: var(--human); vertical-align: middle; margin-right: 4px; border-radius: 1px; }
+.pill { display: inline-block; font: 600 12px var(--body); padding: 1px 8px; border-radius: 999px; border: 1px solid currentColor; }
+.ok { color: var(--ok); } .bad { color: var(--bad); } .amber { color: var(--human); } .mut { color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 10px; }
+.card { border: 1px solid var(--human); background: var(--human-bg); border-radius: 4px; padding: 10px; } .card b { color: var(--human); display: block; }
+.card.fault { border-color: var(--bad); background: transparent; } .card.fault b { color: var(--bad); }
+.facts { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 10px; } .fact b { display: block; font: 600 22px var(--display); } .fact span { color: var(--muted); font-size: 13px; }
+</style>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <span class="label">Stillway Labs · v0.2 · recorded replay of one dispatch shift</span>
+    <h1>A shift is paused, corrected and resumed</h1>
+    <p class="lede">Eight jobs, one carrier. Two jobs are priority commitments. Partway through, the operator pauses the shift, closes a dock and revises one job's order. The board shows the plan before the pause, what changed, and what happened. Every number on this page comes from a recorded run of the frozen checkpoint; the page itself runs no model.</p>
+  </header>
+  <div class="panel"><div class="facts" id="facts"></div></div>
+  <div class="panel">
+    <h2>View</h2>
+    <div class="row" id="views"></div>
+    <span class="label">System</span>
+    <div class="row" id="systems"></div>
+    <p class="mut" id="sysnote"></p>
+  </div>
+  <div class="panel" id="corrPanel">
+    <h2>At the pause</h2>
+    <div class="cards" id="cards"></div>
+  </div>
+  <div class="panel">
+    <h2>Shift board</h2>
+    <p class="mut">Steps: L and R are routes, D0 to D2 are docks, a dot is a wait. Grey = done before the pause. Amber = the step changed against the original plan. Red = a step the exact planner rejects.</p>
+    <div class="scroll"><table><thead><tr><th>Job</th><th>Commitment</th><th>Order</th><th>Steps</th><th>Outcome</th><th>Forecast at the pause</th></tr></thead><tbody id="board"></tbody></table></div>
+  </div>
+  <div class="panel">
+    <h2>All recorded shifts</h2>
+    <div class="scroll"><table><thead><tr><th>System</th><th>Jobs with every commitment met</th><th>Priority deadlines missed</th><th>Ticks lost to re-briefing</th><th>Steps changed</th><th>Changed where the exact planner did not</th><th>Rejected steps</th><th>Editor declined</th><th>Compute after the pause, median (99th pct)</th></tr></thead><tbody id="metrics"></tbody></table></div>
+    <p class="mut" id="foot"></p>
+  </div>
+</div>
+<script>
+const EX = {"shift": {"seed": 50007, "order": [3, 7, 0, 1, 2, 4, 5, 6], "start": [11, 17, 21, 0, 27, 33, 36, 5], "length": [6, 4, 6, 5, 6, 3, 5, 6], "prio": [false, false, false, true, false, false, false, true], "deadline": [1000000, 1000000, 1000000, 7, 1000000, 1000000, 1000000, 13], "tau": 22, "pause": [13, 13, 2, 13, 1, 1, 2, 13], "dock": 1, "corr": {"job": 2, "field": 1, "old": 2, "value": 1}, "decline": {"job": 0, "field": 2, "value": 1}, "fault": {"job": 5, "slot": 2, "gate": 1}, "act": [[true, true, true, true, true, true, true, false, false, false, false, false, false], [true, true, true, true, false, true, false, false, false, false, false, false, false], [true, true, true, false, false, true, true, false, true, true, false, false, false], [true, false, true, true, true, true, false, false, true, false, false, false, false], [true, true, true, true, true, true, true, false, false, false, false, false, false], [true, true, true, false, false, true, false, false, false, false, false, false, false], [true, false, true, false, false, true, false, true, true, true, false, false, false], [true, true, true, true, true, true, true, false, false, false, false, false, false]]}, "runs": {"symbolic": {"A": [[-1, -1, 0, 3, -1, 0, 3, -1, -1, -1, -1, -1, -1], [-1, -1, 0, 4, -1, 0, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 0, -1, -1, 0, 4, -1, 1, 4, -1, -1, -1], [-1, -1, 0, 3, -1, 0, -1, -1, 0, -1, -1, -1, -1], [-1, -1, 0, 4, -1, 0, 4, -1, -1, -1, -1, -1, -1], [-1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 0, -1, -1, 0, -1, -1, 0, 2, -1, -1, -1], [-1, -1, 0, 4, -1, 0, 3, -1, -1, -1, -1, -1, -1]], "V": [[false, false, true, true, false, true, true, false, false, false, false, false, false], [false, false, true, true, false, true, false, false, false, false, false, false, false], [false, false, true, false, false, true, true, false, true, true, false, false, false], [false, false, true, true, false, true, false, false, true, false, false, false, false], [false, false, true, true, false, true, true, false, false, false, false, false, false], [false, false, true, false, false, true, false, false, false, false, false, false, false], [false, false, true, false, false, true, false, false, true, true, false, false, false], [false, false, true, true, false, true, true, false, false, false, false, false, false]], "met": [true, false, false, true, true, true, false, true], "gate_ok": [[true, true], [false, false], [false, true], [true, true], [true, true], [true, true], [false, true], [true, true]], "par_ok": [[true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true]], "finish": [17, 21, 27, 5, 33, 36, 41, 11], "missed_deadline": [false, false, false, false, false, false, false, false], "abstained": false, "fell_back": false, "solver_seconds": 0.0, "final_gates": [[0, 1], [1, 0], [0, 0], [1, 0], [0, 0], [1, 0], [1, 1], [1, 1]], "delivered": [[1, 1, -1, -1], [2, -1, -1, -1], [-1, 2, 2, -1], [1, -1, -1, -1], [2, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, 0, -1], [2, 1, -1, -1]], "restarted": 0, "predicted_gates": [[0, 1], [1, 0], [0, 0], [1, 0], [0, 0], [1, 0], [1, 1], [1, 1]], "predicted_delivered": [[1, 1, -1, -1], [2, -1, -1, -1], [-1, 2, 2, -1], [1, -1, -1, -1], [2, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, 0, -1], [2, 1, -1, -1]]}, "learned_edit": {"A": [[-1, -1, 0, 3, -1, 0, 3, -1, -1, -1, -1, -1, -1], [-1, -1, 1, 4, -1, 0, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 0, -1, -1, 0, 4, -1, 1, 4, -1, -1, -1], [-1, -1, 1, 3, -1, 0, -1, -1, 0, -1, -1, -1, -1], [-1, -1, 1, 4, -1, 0, 4, -1, -1, -1, -1, -1, -1], [-1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 0, -1, -1, 1, -1, -1, 0, 2, -1, -1, -1], [-1, -1, 1, 4, -1, 0, 3, -1, -1, -1, -1, -1, -1]], "V": [[false, false, true, true, false, true, true, false, false, false, false, false, false], [false, false, true, true, false, true, false, false, false, false, false, false, false], [false, false, true, false, false, true, true, false, true, true, false, false, false], [false, false, true, true, false, true, false, false, true, false, false, false, false], [false, false, true, true, false, true, true, false, false, false, false, false, false], [false, false, true, false, false, true, false, false, false, false, false, false, false], [false, false, true, false, false, true, false, false, true, true, false, false, false], [false, false, true, true, false, true, true, false, false, false, false, false, false]], "met": [true, false, false, true, true, true, false, true], "gate_ok": [[true, true], [false, false], [false, true], [true, true], [true, true], [true, true], [false, true], [true, true]], "par_ok": [[true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true]], "finish": [17, 21, 27, 5, 33, 36, 41, 11], "missed_deadline": [false, false, false, false, false, false, false, false], "abstained": false, "fell_back": false, "solver_seconds": 0.006968670058995485, "final_gates": [[0, 1], [1, 0], [0, 0], [1, 1], [0, 0], [1, 0], [1, 1], [1, 1]], "delivered": [[1, 1, -1, -1], [2, -1, -1, -1], [-1, 2, 2, -1], [1, -1, -1, -1], [2, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, 0, -1], [2, 1, -1, -1]], "restarted": 0, "predicted_gates": [[0, 1], [1, 0], [0, 0], [1, 1], [0, 0], [1, 0], [1, 1], [1, 1]], "predicted_delivered": [[1, 1, -1, -1], [2, -1, -1, -1], [-1, 2, 2, -1], [1, -1, -1, -1], [2, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, 0, -1], [2, 1, -1, -1]]}, "learned_message": {"A": [[-1, -1, 0, 3, -1, 0, 3, -1, -1, -1, -1, -1, -1], [-1, -1, 1, 4, -1, 0, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 1, -1, -1, 0, 4, -1, 1, 4, -1, -1, -1], [-1, -1, 1, 3, -1, 0, -1, -1, 0, -1, -1, -1, -1], [-1, -1, 1, 4, -1, 0, 4, -1, -1, -1, -1, -1, -1], [-1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 0, -1, -1, 1, -1, -1, 0, 2, -1, -1, -1], [-1, -1, 1, 4, -1, 0, 3, -1, -1, -1, -1, -1, -1]], "V": [[false, false, true, true, false, true, true, false, false, false, false, false, false], [false, false, true, true, false, true, false, false, false, false, false, false, false], [false, false, true, false, false, true, true, false, true, true, false, false, false], [false, false, true, true, false, true, false, false, true, false, false, false, false], [false, false, true, true, false, true, true, false, false, false, false, false, false], [false, false, true, false, false, true, false, false, false, false, false, false, false], [false, false, true, false, false, true, false, false, true, true, false, false, false], [false, false, true, true, false, true, true, false, false, false, false, false, false]], "met": [true, false, false, true, true, true, false, true], "gate_ok": [[true, true], [false, false], [false, true], [true, true], [true, true], [true, true], [false, true], [true, true]], "par_ok": [[true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true]], "finish": [17, 21, 27, 5, 33, 36, 41, 11], "missed_deadline": [false, false, false, false, false, false, false, false], "abstained": false, "fell_back": false, "solver_seconds": 0.008059125859290361, "final_gates": [[0, 1], [1, 0], [0, 0], [1, 1], [0, 0], [1, 0], [1, 1], [1, 1]], "delivered": [[1, 1, -1, -1], [2, -1, -1, -1], [-1, 2, 2, -1], [1, -1, -1, -1], [2, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, 0, -1], [2, 1, -1, -1]], "restarted": 0, "predicted_gates": [[0, 1], [1, 0], [0, 0], [1, 1], [0, 0], [1, 0], [1, 1], [1, 1]], "predicted_delivered": [[1, 1, -1, -1], [2, -1, -1, -1], [-1, 2, 2, -1], [1, -1, -1, -1], [2, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, 0, -1], [2, 1, -1, -1]]}, "learned_restart": {"A": [[-1, -1, 0, 3, -1, 0, 3, -1, -1, -1, -1, -1, -1], [-1, -1, 1, 4, -1, 0, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 0, -1, -1, 0, 4, -1, 1, 4, -1, -1, -1], [-1, -1, 1, 3, -1, 0, -1, -1, 0, -1, -1, -1, -1], [-1, -1, 1, 4, -1, 0, 4, -1, -1, -1, -1, -1, -1], [-1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 1, -1, -1, 1, -1, -1, 0, 2, -1, -1, -1], [-1, -1, 1, 4, -1, 0, 3, -1, -1, -1, -1, -1, -1]], "V": [[false, false, true, true, false, true, true, false, false, false, false, false, false], [false, false, true, true, false, true, false, false, false, false, false, false, false], [false, false, true, false, false, true, true, false, true, true, false, false, false], [false, false, true, true, false, true, false, false, true, false, false, false, false], [false, false, true, true, false, true, true, false, false, false, false, false, false], [false, false, true, false, false, true, false, false, false, false, false, false, false], [false, false, true, false, false, true, false, false, true, true, false, false, false], [false, false, true, true, false, true, true, false, false, false, false, false, false]], "met": [true, false, false, true, true, true, false, true], "gate_ok": [[true, true], [false, false], [false, true], [true, true], [true, true], [true, true], [false, true], [true, true]], "par_ok": [[true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true], [true, true, true, true]], "finish": [17, 21, 28, 5, 35, 39, 45, 11], "missed_deadline": [false, false, false, false, false, false, false, false], "abstained": false, "fell_back": false, "solver_seconds": 0.00610812334343791, "final_gates": [[0, 1], [1, 0], [0, 0], [1, 1], [0, 0], [1, 0], [1, 1], [1, 1]], "delivered": [[1, 1, -1, -1], [2, -1, -1, -1], [-1, 2, 2, -1], [1, -1, -1, -1], [2, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, 0, -1], [2, 1, -1, -1]], "restarted": 4, "predicted_gates": [[0, 1], [1, 0], [0, 0], [1, 1], [0, 0], [1, 0], [1, 1], [1, 1]], "predicted_delivered": [[1, 1, -1, -1], [2, -1, -1, -1], [-1, 2, 2, -1], [1, -1, -1, -1], [2, 2, -1, -1], [-1, -1, -1, -1], [-1, -1, 0, -1], [2, 1, -1, -1]]}}, "original": [[-1, -1, 0, 3, -1, 0, 3, -1, -1, -1, -1, -1, -1], [-1, -1, 1, 4, -1, 0, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 1, -1, -1, 0, 4, -1, 0, 3, -1, -1, -1], [-1, -1, 1, 3, -1, 0, -1, -1, 0, -1, -1, -1, -1], [-1, -1, 1, 3, -1, 0, 3, -1, -1, -1, -1, -1, -1], [-1, -1, 1, -1, -1, 1, -1, -1, -1, -1, -1, -1, -1], [-1, -1, 0, -1, -1, 1, -1, -1, 0, 2, -1, -1, -1], [-1, -1, 1, 4, -1, 0, 3, -1, -1, -1, -1, -1, -1]], "jobs": [{"legs": 2, "trips": [["K1", "C1"], ["C0", "O0"]], "parcel": [true, true, false, false], "gates_start": [0, 1], "gate_requirements": [1, 0], "docks": [0, 0, 2, 1]}, {"legs": 2, "trips": [["T0", "C0"], ["O0", "T0"]], "parcel": [true, false, false, false], "gates_start": [1, 0], "gate_requirements": [1, 2], "docks": [2, 0, 1, 1]}, {"legs": 3, "trips": [["C1", "T1"], ["T1", "O1"], ["O1", "T1"]], "parcel": [false, true, true, false], "gates_start": [0, 1], "gate_requirements": [2, 2], "docks": [0, 2, 1, 2]}, {"legs": 3, "trips": [["C1", "O1"], ["O0", "C0"], ["K0", "O0"]], "parcel": [true, false, false, false], "gates_start": [0, 0], "gate_requirements": [2, 0], "docks": [1, 0, 2, 1]}, {"legs": 2, "trips": [["C1", "O1"], ["C1", "K1"]], "parcel": [true, true, false, false], "gates_start": [0, 1], "gate_requirements": [1, 1], "docks": [1, 1, 0, 2]}, {"legs": 2, "trips": [["K0", "O0"], ["O1", "C1"]], "parcel": [false, false, false, false], "gates_start": [0, 0], "gate_requirements": [2, 1], "docks": [2, 0, 0, 0]}, {"legs": 3, "trips": [["K1", "K1"], ["K1", "K1"], ["O1", "K1"]], "parcel": [false, false, true, false], "gates_start": [1, 1], "gate_requirements": [1, 0], "docks": [0, 2, 0, 1]}, {"legs": 2, "trips": [["C0", "T0"], ["O0", "C0"]], "parcel": [true, true, false, false], "gates_start": [0, 1], "gate_requirements": [0, 0], "docks": [2, 1, 1, 2]}]};
+const MET = {
+ "run": "v2_iit_s1",
+ "editor": "predictor",
+ "shifts": 300,
+ "jobs_per_shift": 8,
+ "families": "final",
+ "systems": {
+  "symbolic": {
+   "jobs": 2400,
+   "extra_ticks": 0,
+   "jobs_all_commitments_met": 1552,
+   "priority_jobs": 600,
+   "priority_deadlines_missed": 0,
+   "unfinished_job_steps": 4636,
+   "reassigned_steps": 750,
+   "unnecessary_reassignments": 0,
+   "invalid_actions": 0,
+   "editor_abstained": 0,
+   "revision_compute_median_us": 0.0,
+   "revision_compute_p99_us": 0.0,
+   "incremental_replan_median_us": 28.9,
+   "incremental_replan_p99_us": 58.0,
+   "restart_replan_median_us": 44.4,
+   "restart_replan_p99_us": 139.8
+  },
+  "learned_edit": {
+   "jobs": 2400,
+   "extra_ticks": 0,
+   "jobs_all_commitments_met": 1551,
+   "priority_jobs": 600,
+   "priority_deadlines_missed": 0,
+   "unfinished_job_steps": 4636,
+   "reassigned_steps": 941,
+   "unnecessary_reassignments": 200,
+   "invalid_actions": 0,
+   "editor_abstained": 0,
+   "revision_compute_median_us": 6746.6,
+   "revision_compute_p99_us": 11642.2
+  },
+  "learned_message": {
+   "jobs": 2400,
+   "extra_ticks": 0,
+   "jobs_all_commitments_met": 1551,
+   "priority_jobs": 600,
+   "priority_deadlines_missed": 0,
+   "unfinished_job_steps": 4636,
+   "reassigned_steps": 945,
+   "unnecessary_reassignments": 205,
+   "invalid_actions": 0,
+   "editor_abstained": 0,
+   "revision_compute_median_us": 6458.9,
+   "revision_compute_p99_us": 11772.5
+  },
+  "learned_restart": {
+   "jobs": 2400,
+   "extra_ticks": 1279,
+   "jobs_all_commitments_met": 1551,
+   "priority_jobs": 600,
+   "priority_deadlines_missed": 0,
+   "unfinished_job_steps": 4636,
+   "reassigned_steps": 1130,
+   "unnecessary_reassignments": 390,
+   "invalid_actions": 0,
+   "editor_abstained": 0,
+   "revision_compute_median_us": 6357.1,
+   "revision_compute_p99_us": 12727.3
+  }
+ },
+ "declined_requests": {
+  "requests": 150,
+  "declined": 150
+ },
+ "forecast_at_pause_vs_realised": {
+  "jobs": 2400,
+  "prediction_right": 2360,
+  "shifts_with_fault": 76
+ },
+ "assumption": "re-briefing a restarted job costs one tick; sequencing is the same rule for every system",
+ "peak_rss_mb": 224
+};
+const FACTS = {"facts": [["99.9%", "of corrections applied by the frozen memory editor succeed on unseen layout families of trained size (5 cores)"],
+           ["33 to 54%", "on four-leg jobs, which training never had. The planner itself fails there, with or without an edit"],
+           ["0 against 1,279 ticks", "lost to re-briefing over 300 shifts: edit and resume against full restart"],
+           ["29 µs against about 6 ms", "to revise the rest of a shift: exact planner against learned planner"]],
+ "foot": "Checkpoint v2_iit_s1 with the frozen predictor editor, frozen at commit 1470048. Jobs come from final families the planner never trained on. The exact planner is the cheaper system here and never changes a step without need; the learned planner matches its outcomes on these families and changes about 200 extra steps where two routes tie. Compute is for all steps after the pause on one CPU thread."}
+;
+const ACT = ["L", "R", "D0", "D1", "D2"], FN = ["gate 0", "gate 1", "parcel 1", "parcel 2", "parcel 3", "parcel 4"], GV = ["no requirement", "closed", "open"];
+const SYS = { learned_edit: "Learned planner + memory edit", learned_message: "Learned planner + message", learned_restart: "Learned planner + full restart", symbolic: "Exact planner (symbolic)" };
+const NOTE = { learned_edit: "The frozen slot-write editor rewrites the corrected job's saved code numbers. The planner gets no message.", learned_message: "The correction reaches the planner as an ordinary operator message at the job's next step.",
+  learned_restart: "Every unfinished job is restarted: memory wiped and the whole current order re-issued. Re-briefing a job is counted as one tick.", symbolic: "The exact planner with the orders in a table. It is the reference: correct by construction and far cheaper to run." };
+let view = 2, sys = "learned_edit";
+const $ = (id) => document.getElementById(id), sh = EX.shift, J = EX.jobs.length;
+const val = (f, v) => f < 2 ? GV[v] : "dock " + v;
+function cards() { const c = []; c.push(`<div class="card"><b>Dock ${sh.dock} closed</b>From tick ${sh.tau}. A parcel for that dock goes to the next one.</div>`);
+  if (sh.corr) c.push(`<div class="card"><b>Order revised: job ${sh.corr.job + 1}</b>${FN[sh.corr.field]}: ${val(sh.corr.field, sh.corr.old)} → ${val(sh.corr.field, sh.corr.value)}</div>`);
+  if (sh.decline) c.push(`<div class="card"><b>Request declined: job ${sh.decline.job + 1}</b>${FN[sh.decline.field]} → dock ${sh.decline.value}. That parcel is already delivered, so nothing is edited.</div>`);
+  if (sh.fault) c.push(`<div class="card fault"><b>After the resume: gate fault on job ${sh.fault.job + 1}</b>Gate ${sh.fault.gate} flips. Nobody could forecast it; the forecast column shows the difference.</div>`);
+  $("cards").innerHTML = c.join(""); }
+function board() { const r = EX.runs[sys], rows = [];
+  for (const j of sh.order) { const job = EX.jobs[j], cells = []; let pausePut = false;
+    for (let t = 1; t < sh.act[j].length; t++) { if (!sh.act[j][t]) continue;
+      const done = t < sh.pause[j], o = EX.original[j][t], a = view === 0 || done ? o : (view === 1 ? o : r.A[j][t]);
+      if (!done && !pausePut && view > 0) { cells.push('<span class="pause" title="pause"></span>'); pausePut = true; }
+      const chg = view === 2 && !done && r.A[j][t] !== o, bad = view === 2 && !done && r.A[j][t] >= 0 && !r.V[j][t];
+      cells.push(`<span class="cell ${done && view > 0 ? "done" : ""} ${chg ? "chg" : ""} ${bad ? "bad" : ""}" title="${chg ? "was " + (o < 0 ? "·" : ACT[o]) : ""}">${a < 0 ? "·" : ACT[a]}</span>`); }
+    const q = view === 2 && sh.corr && sh.corr.job === j ? (() => { const x = job.gate_requirements.slice(), d = job.docks.slice(); if (sh.corr.field < 2) x[sh.corr.field] = sh.corr.value; else d[sh.corr.field - 2] = sh.corr.value; return [x, d]; })() : [job.gate_requirements, job.docks];
+    const order = `gates: ${q[0].map(v => GV[v]).join(", ")} · docks: ${job.parcel.map((p, i) => p && i < job.legs ? q[1][i] : null).filter(x => x !== null).join(", ") || "none"}`;
+    const prio = sh.prio[j] ? `<span class="pill amber">priority</span> by tick ${sh.deadline[j]}` : '<span class="mut">standard</span>';
+    let outc = '<span class="mut">–</span>', fc = '<span class="mut">–</span>';
+    if (view === 2) { outc = (r.met[j] ? '<span class="pill ok">all met</span>' : '<span class="pill bad">missed</span>') + (sh.prio[j] ? (r.missed_deadline[j] ? ' <span class="pill bad">late</span>' : ' <span class="pill ok">on time</span>') : "");
+      const same = r.predicted_gates[j].join() === r.final_gates[j].join() && r.predicted_delivered[j].join() === r.delivered[j].join();
+      fc = `gates ${r.predicted_gates[j].join("")} ` + (same ? '<span class="pill ok">as forecast</span>' : `<span class="pill bad">realised ${r.final_gates[j].join("")}</span>`); }
+    rows.push(`<tr><td>Job ${j + 1}</td><td>${prio}</td><td class="wrapok">${order}</td><td>${cells.join("")}</td><td>${outc}</td><td>${fc}</td></tr>`); }
+  $("board").innerHTML = rows.join(""); }
+function metrics() { const pct = (a, b) => (100 * a / Math.max(1, b)).toFixed(1) + "%"; const rows = [];
+  for (const k in SYS) { const m = MET.systems[k]; rows.push(`<tr><td>${SYS[k]}</td><td>${m.jobs_all_commitments_met} / ${m.jobs} (${pct(m.jobs_all_commitments_met, m.jobs)})</td><td>${m.priority_deadlines_missed} / ${m.priority_jobs}</td><td>${m.extra_ticks}</td><td>${m.reassigned_steps} / ${m.unfinished_job_steps}</td><td>${m.unnecessary_reassignments}</td><td>${m.invalid_actions}</td><td>${k === "learned_edit" ? m.editor_abstained : "–"}</td><td class="mono">${k === "symbolic" ? m.incremental_replan_median_us + " µs (" + m.incremental_replan_p99_us + ") incremental" : m.revision_compute_median_us + " µs (" + m.revision_compute_p99_us + ")"}</td></tr>`); }
+  $("metrics").innerHTML = rows.join(""); }
+function render() { $("corrPanel").hidden = view === 0; cards(); board(); $("sysnote").textContent = NOTE[sys];
+  document.querySelectorAll("#views button").forEach((b, i) => b.classList.toggle("on", i === view)); document.querySelectorAll("#systems button").forEach(b => b.classList.toggle("on", b.dataset.k === sys)); }
+["1 · Original plan", "2 · Pause and correction", "3 · Revised plan and outcome"].forEach((t, i) => { const b = document.createElement("button"); b.textContent = t; b.onclick = () => { view = i; render(); }; $("views").append(b); });
+for (const k in SYS) { const b = document.createElement("button"); b.textContent = SYS[k]; b.dataset.k = k; b.onclick = () => { sys = k; render(); }; $("systems").append(b); }
+$("facts").innerHTML = FACTS.facts.map(f => `<div class="fact"><b>${f[0]}</b><span>${f[1]}</span></div>`).join(""); $("foot").textContent = FACTS.foot;
+metrics(); render();
+</script>
