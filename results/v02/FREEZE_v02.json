@@ -1,0 +1,75 @@
+{
+ "frozen_at": "2026-11-21T09:18:29+0000",
+ "primary_editor": "predictor",
+ "runs": {
+  "v2_iit_s1": {
+   "checkpoint_sha256": "4755dd79dc0aca5d4415406c5a21f92c720f50e57ec7846eb97eefcfad6c0653",
+   "editors_sha256": "76fe7a9aa9740a514942a363427a34d78f56e904391efb1a98a0637e4e81a616",
+   "dev_results_sha256": "8c9637b6467b1442998157c5614a401153be14d75d9e385b0802a46207a2d23d"
+  },
+  "v2_iit_s2": {
+   "checkpoint_sha256": "7afb6d1dc2ccdba653a87d770e40094942e450b330c6c09f811fb957800771ba",
+   "editors_sha256": "d93b1314d19cecdde0469c272a38634b79b762e9e678cec672a9c35c3bf466b0",
+   "dev_results_sha256": "1861447d329c026ea245a798217b1a8cc6ecdd038a3d659428d4db07e81f9c44"
+  },
+  "v2_iit_s3": {
+   "checkpoint_sha256": "6a06e3687a127b0aa932ec7733b43305e410f12f231d10332e08a7a7ee6fe51a",
+   "editors_sha256": "1f8885d61c28b51ff1f038d2ef99d641eccbca90c304203511b5ebdb7ee3613a",
+   "dev_results_sha256": "5e55263639097f49537786744151b9ca10b32e28cc00023a9b07099d5401e9bf"
+  },
+  "v2_iit_s4": {
+   "checkpoint_sha256": "1c5bb7c10d1890f2352f5507032877e8907ebe49e88b0d2a3c1e78ba962d32b0",
+   "editors_sha256": "14566890dcc79cf573c6b84d1499cc268d84416dbf47ac3b8f7c043f794e369a",
+   "dev_results_sha256": "5e1f32ff61a6d08ea9fd68e36929aa3c0b8da79de758d0944ecfb438357b2387"
+  },
+  "v2_iit_s5": {
+   "checkpoint_sha256": "dbcf2673573a3fd865e39fe394651ff2854cd6b5c5be75a139aff7ef3e4c4fc1",
+   "editors_sha256": "8e0b02d982a4dc2801e4bec247106cbefb8e1f9ca8ac31811f2fd02f2dfe4842",
+   "dev_results_sha256": "4c3a11fc7d544f90dac3fa53a61373e7ed33f559f607e161d1527297e91359bd"
+  },
+  "v2_plain_s1": {
+   "checkpoint_sha256": "2e579efee93e4723a44e05d3bf92f58f84e031b12221058c2d4d86d39bdd7f89",
+   "editors_sha256": "3728baf67d2a1618cb3bfaef8858982d5b1fb1fe8f21f77211d2656f62463f6a",
+   "dev_results_sha256": "4f1369c203f7c85cef3db88b6a2c00d7bb333462f3c768dfb1a5de13c9758aec"
+  },
+  "v2_plain_s2": {
+   "checkpoint_sha256": "52a7aad9007ae42db2deda76c3b0a79e067a3154ee19931eaa61ab7f1ca98934",
+   "editors_sha256": "7a283a5cf1686a60cb4bb0785870e8959358abfb315701ec817555357e80964a",
+   "dev_results_sha256": "6be32b15d539803e3e2237de21854872b034334dc839b5901ada01c6c4edf276"
+  }
+ },
+ "selection_rule": "the editor with the higher joint edit success on development flip attempts, averaged over the interchange-trained core seeds; ties to slot write",
+ "advancement_rule": {
+  "joint_success_min": 0.9,
+  "unrelated_drop_max": 0.05,
+  "comparable_success_max_loss": 0.02,
+  "named_advantage": "median end-to-end revision latency lower than message-and-resume"
+ },
+ "sample_size": {
+  "flip_attempts_per_stratum_per_core": 4000,
+  "secondary_cells": 2000,
+  "dictionary_reference": 400
+ },
+ "final_seed_rule": "int(sha256('stillway-v0.2-final|' + <hash of the commit that adds this file>).hexdigest()[:8], 16)",
+ "files_sha256": {
+  "stillway2/world3.py": "0b4bdbec2bc10954cee437122273587d03099b1fe724f03ec19e8818dabc3d17",
+  "stillway2/model3.py": "60eec8305a7916261f6b9c4861ea36d40bdf52e83cf5f3835b7aa82ba40b298d",
+  "stillway2/edits.py": "0134b74628c9fdb2766b3b38b172c7dead1f4262b6561fdc4453f081a84fd435",
+  "stillway2/editors.py": "2785b334ee93f1a0a14aeec71ce710e33e644236753507f6844fc2d24ff795fc",
+  "stillway2/dictref.py": "89e05ccbf73f73009743b1af1d6306e28d936ef64a3f0529956d4a5c76446f3d",
+  "stillway2/train3.py": "b282cff9ca78b839e1211f965c23393a6747cd4654dabe68a4159a1b76c24949",
+  "v02/m3_eval.py": "14eebaa3064b8ca11778705a5f76fb926106924a4138e8a2cca4ba00e8a8dcf7",
+  "v02/final_seed.py": "a914d048e3f6343e9744bd69b53e8ec966ec932a9615830d2ff51749a4725dc4",
+  "docs/v02_transfer_spec.md": "1236830bb181ef1d80d3dc31f8798a1f609cf21c84878b67b79bb1f1100891f5"
+ },
+ "dev_selection_evidence": {
+  "slot_write_mean_joint_success_dev_iit_cores": 0.9976,
+  "predictor_mean_joint_success_dev_iit_cores": 0.999,
+  "note": "difference is within noise; the rule written before the dev run is followed"
+ },
+ "disclosures": [
+  "Before this freeze the final-mode code path was smoke-tested once with an UNTRAINED network and seed 12345 (not the final seed); only its aggregate output was printed.",
+  "The final strata are authored by the same assistant that built the model: internal holdout.",
+  "Training-recipe changes made on development evidence before the freeze: value head, sweep supervision, residual memory."
+ ]
+}
