@@ -89,7 +89,7 @@ class Gates:
 def write_tables(path: str, G: int, term, cell, route) -> int:
     n = cell.shape[0]; cb = 2 if n <= 65535 else 4; dt = np.uint16 if cb == 2 else np.uint32
     with open(path, "wb") as f:
-        f.write(struct.pack("<6i", MAGIC, G, n, cell.shape[1], route.shape[2], cb))
+        f.write(struct.pack("<6i", MAGIC, G, n, cell.shape[1], 2 ** G, cb))
         f.write(np.ascontiguousarray(term, dtype=dt).tobytes()); f.write(np.ascontiguousarray(cell, dtype=dt).tobytes()); f.write(np.ascontiguousarray(route, dtype=np.uint8).tobytes())
     return os.path.getsize(path)
 

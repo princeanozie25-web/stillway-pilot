@@ -20,6 +20,7 @@ World: the route core of Dispatch for G gates (G = 2, 3, 4; 5 attempted). Requir
 - Reported per G: reachable exact value vectors, growth by depth, reachable (code, vector) pairs, repair rounds, shortest witness, compile and training time, peak memory, bytes on disk, per-call latency by job length, calls to break even.
 - Mutation test: one reachable route entry with a single valid choice is flipped; the checker must return a failing job, confirmed by listing every route choice.
 - Runtime check: every reachable module input (every closure entry) is run through the released runtimes (C tables, network) and compared with the tables.
+- Learned readers, protocol 2 (fixed after the pilots, before the final runs): one code per exact value vector; training on sampled jobs, then on the exact machine itself (every vector, leg and gate state, uniformly), alternating with the certificate until it is clean or the hour ends. Protocol 1 (codes only for vectors seen in sampled jobs, then witness repair) left 181 of 500 three-gate vectors without a code and is kept as a recorded failure.
 - Reader sizes: width 128 (the 85,233-parameter v0.3 reader at G = 2), 256, 512. Active parameters per decision and resident parameters are reported separately. Ceiling: one million active parameters per decision.
 - Certificates name the artifact hash and the alphabet. A certificate is valid for that hash only.
 - Legal messages are enumerated from the order schema (`stillway4/schema.py`) and the register rule is tested on every one of them.
@@ -62,7 +63,7 @@ Output after every event: the status of all 5 slots. **Success of a job** = ever
 | Direct answer | none; re-reads the whole event history at every step | encoding of events | everything else |
 | Continuous carry | a free vector | encoding of events | everything else |
 | Flat discrete codes | 8 slots of 64 codes | encoding of events | everything else |
-| Text scratchpad | a token string in a fixed grammar, rewritten every step | the grammar; the scratchpad contents as teacher labels (charged, counted in tokens) | reading and rewriting |
+| Text scratchpad (`stillway4/scratchpad.py`) | a 39-token string in a fixed grammar, rewritten every step by a small transformer | the grammar; the scratchpad contents as teacher labels (charged, counted in tokens) | reading and rewriting |
 | **Procedural codebook** | typed registers; statuses written only by the executor | register schema; the executor (for each slot: recompute with a chosen policy, or leave untouched) | which procedure code an event selects; for each code, which slots it selects and which policy source it uses; the policy bank and the status function |
 | Hand-coded macro | as above | everything above plus the selection logic | the policy bank and the status function |
 | Rule engine, full replay | – | the rules, with every policy's content | nothing |
@@ -117,3 +118,23 @@ Reported whatever the outcome: p95 latency, peak RAM, training cost, sleep cost,
 ## 5. Regression ticket
 
 Seed-4 two-field sweep (v0.2 M1), 19 against 20 failures on two machines: `v04/seed4_ticket.py` keeps every failing episode ID on four numeric runtimes and records the first divergent step of every episode whose verdict differs. `v04/seed4_diff.py` diffs two ID files. Outcome-trained tables are exported on each runtime and each export is certified (`v04/export_runtimes.py`).
+
+## 6. What the pilots fixed, and the final run list
+
+Pilots (one seed, development data, salt 0; all recorded in `results/v04/MANIFEST_RUNS.json`):
+
+- M1: protocol 1 failed at three gates; protocol 2 certified three gates in minutes. Four gates did not finish in the hour at either size (training on the exact machine was at 79% to 88% wrong leg-step entries after 2,000 steps); it stays in the record as incomplete, with a projection.
+- M2, size s: procedural codebook 99.5% and 99.2% (ordinary, novel combinations); hand-coded macro 100% and 100%; continuous carry 6.4%; flat discrete codes 4.7%. Size m gave the same 99.5% and 99.2% for the procedural arm.
+- **Size chosen for the five-seed final runs: s** (the smallest; it met the 1-point rule in the pilot). Sizes m and l are reported from the one-seed pilots.
+- M3 was developed on seed 1 with development data. Two protocol changes were made there: discarded candidates are retried and contradicted rows re-consolidated at later sleeps; the expiry notice is given to every arm as records.
+
+Final runs (five seeds, data salt from the freeze commit, `v04/final_all.sh`):
+
+| Milestone | Runs |
+|---|---|
+| M1 | learned readers at 2 and 3 gates, widths 128, 256, 512, seeds 1 to 5; exact closure and tables at 2, 3, 4 gates; exact closure at 5 gates under the cap; benchmarks on an idle machine |
+| M2 | arms proc, macro, cont, vq, text at size s, seeds 1 to 5; interventions on every proc core |
+| M3 | six sessions on every proc core, all arms |
+| M4 | whole-system benchmark per seed on an idle machine; the demo trace on seed 1 |
+
+A continuous-carry arm trained on ten times the logs is run as a labelled exploratory extra if time allows.

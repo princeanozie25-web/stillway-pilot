@@ -80,6 +80,7 @@ def _sample(uni, B, gen, active, combos, tenant):
     jur = torch.full((B, S), -1); pj = torch.full((B, NJ), -1); lvl = torch.zeros(B, S, dtype=torch.long); age = torch.zeros(B, S, dtype=torch.long)
     tag = torch.zeros(B, S, dtype=torch.long); evid = torch.zeros(B, S, dtype=torch.long); pin = torch.full((B, S), -1); stat = torch.zeros(B, S, dtype=torch.long)
     last_slot = torch.full((B, S), -1); last_jur = torch.full((B, NJ), -1); resv = torch.zeros(B, T, dtype=torch.bool); rule_used = torch.full((B, T), -2)
+    pin_log = torch.full((B, T, S), -1); facts_log = torch.zeros(B, T, S, 4, dtype=torch.long); jur_log = torch.full((B, T, S), -1); pj_log = torch.full((B, T, NJ), -1)
     F = lambda pid, sl: status_fn(uni.pid_rule[pid.clamp(min=0)], lvl[ar, sl], age[ar, sl], tag[ar, sl], evid[ar, sl])
     for t in range(T):
         if t == N_SETUP: last_slot[:] = -1; last_jur[:] = -1                # setup events do not count as a "previous event"
@@ -118,14 +119,31 @@ def _sample(uni, B, gen, active, combos, tenant):
         mj = ((kind == AMEND_RETRO) | (kind == EXPIRE))[:, None] & (jur == j[:, None]) & (lvl > 0)          # (B,S) signed slots in the jurisdiction
         pin = torch.where(mj, pj[ar, j][:, None].expand(-1, S), pin)
         allnew = status_fn(uni.pid_rule[pin.clamp(min=0)], lvl, age, tag, evid); stat = torch.where(mj, allnew, stat); aff[:, t] |= mj
-        lab[:, t] = stat
+        lab[:, t] = stat; pin_log[:, t] = pin; facts_log[:, t] = torch.stack([lvl, age, tag, evid], -1); jur_log[:, t] = jur; pj_log[:, t] = pj
         m = is_slot; last_slot[ar[m], slot[m]] = kind[m]
         m = is_jur; last_jur[ar[m], j[m]] = kind[m]
         rule_used[:, t] = torch.where(is_slot & (kind != OVERRIDE), uni.pid_rule[pin[ar, slot.clamp(min=0)].clamp(min=0)], torch.where(is_jur, uni.pid_rule[pj[ar, j].clamp(min=0)], -2))
     fam = uni.pid_rule[ev["pid"][:, S].clamp(min=0)]                                    # family of a document = the rule of its first named policy
-    return {**{"ev_" + f: v for f, v in ev.items()}, "tenant": ten, "labels": lab, "affected": aff, "reserved_pairs": resv, "family": fam, "rule_used": rule_used}
+    return {**{"ev_" + f: v for f, v in ev.items()}, "tenant": ten, "labels": lab, "affected": aff, "reserved_pairs": resv, "family": fam, "rule_used": rule_used, "pin": pin_log, "facts": facts_log, "jur": jur_log, "pj": pj_log}
 
 
 def record(d: dict, i: int) -> dict:
     """One document as plain data, for the grader and for raw result files."""
     return {"tenant": int(d["tenant"][i]), "events": [{f: int(d["ev_" + f][i, t]) for f in FIELDS} for t in range(T)]}
+
+
+def fact_index(lvl, age, tag, evid):
+    """0..35 for a signed slot (level 1..3)."""
+    return (((lvl - 1) * 2 + age) * 3 + tag) * 2 + evid
+
+
+ALL_FACTS = torch.tensor([(l, a, t, e) for l in (1, 2, 3) for a in (0, 1) for t in (0, 1, 2) for e in (0, 1)])        # (36,4), row = fact_index
+
+
+def decision_records(d: dict) -> dict:
+    """Every audited policy decision in a batch of documents: (policy ID the slot is pinned to, facts, status).
+    Operator overrides are not policy decisions and are left out (provenance); they are returned separately."""
+    kind = d["ev_kind"][:, :, None].expand(-1, -1, S); m = d["affected"] & (d["facts"][..., 0] > 0)
+    pol = m & (kind != OVERRIDE); f = d["facts"]; fi = fact_index(f[..., 0], f[..., 1], f[..., 2], f[..., 3])
+    ov = m & (kind == OVERRIDE)
+    return {"pid": d["pin"][pol], "fact": fi[pol], "status": d["labels"][pol], "override_pid": d["pin"][ov], "override_fact": fi[ov], "override_status": d["labels"][ov]}

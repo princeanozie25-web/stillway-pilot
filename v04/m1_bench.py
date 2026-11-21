@@ -40,7 +40,8 @@ def main():
         run = sys.argv[1].rstrip("/"); name = os.path.basename(run); man = json.load(open(f"{run}/manifest.json")); G = man["G"]
     g = Gates(G); t0 = time.time(); clo = g.exact_closure(); ex = g.compile_exact(clo); exact_seconds = time.time() - t0
     ex_path = f"{OUT}/exact_g{G}.bin"; ex_bytes = write_tables(ex_path, G, ex["term"], ex["cell"], ex["route"])
-    res = {"name": name, "G": G, "exact": {"vectors": ex["n_codes"], "closure_depth": clo["depth"], "growth_by_depth": clo["growth_by_depth"], "closure_and_compile_seconds": round(exact_seconds, 3),
+    dp_path = f"{OUT}/dp_g{G}.bin"; write_tables(dp_path, G, ex["term"], ex["cell"][:0], ex["route"][:0])          # header only: the on-the-spot planner reads no table
+    res = {"name": name, "G": G, "exact": {"dp_program_file_bytes": os.path.getsize(dp_path), "vectors": ex["n_codes"], "closure_depth": clo["depth"], "growth_by_depth": clo["growth_by_depth"], "closure_and_compile_seconds": round(exact_seconds, 3),
                                            "table_bytes": ex_bytes, "peak_rss_bytes_python_compile": clo["peak_rss_bytes"]}, "by_length": {}}
     if not exact_only:
         lt = read_tables(f"{run}/tables.bin"); res["learned"] = {k: man[k] for k in ("tables_bytes", "tables_codes", "train_seconds", "wall_seconds", "clean", "status", "active_parameters_per_decision", "resident_parameters", "checkpoint_sha256", "tables_sha256")}
@@ -51,6 +52,8 @@ def main():
         row = {}
         for mode, mname in ((0, "one_decision"), (1, "whole_job")):
             e = run_runner(ex_path, jp, mode); row[mname] = {"exact_tables": {"warm": stats(e["ns_warm"]), "cold": stats(e["ns_cold"]), "load_ns": e["load_ns"], "peak_rss_bytes": e["peak_rss_bytes"]}}
+            dp = run_runner(dp_path, jp, mode + 2); row[mname]["exact_dp_no_tables"] = {"warm": stats(dp["ns_warm"]), "cold": stats(dp["ns_cold"]), "load_ns": dp["load_ns"], "peak_rss_bytes": dp["peak_rss_bytes"]}
+            assert (dp["first"] == e["first"]).all() or mode == 1, "the on-the-spot planner and the exact tables disagree"
             if not exact_only:
                 l = run_runner(f"{run}/tables.bin", jp, mode); row[mname]["learned_tables"] = {"warm": stats(l["ns_warm"]), "cold": stats(l["ns_cold"]), "load_ns": l["load_ns"], "peak_rss_bytes": l["peak_rss_bytes"]}
                 if mode == 0:                                   # validity of every learned decision against the exact valid set

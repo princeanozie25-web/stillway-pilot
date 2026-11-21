@@ -7,6 +7,7 @@
  * jobs.bin    int32 n_jobs, lmax; per job: int32 q, gates, L, legs[lmax]   (legs[0] is the current leg)
  * MODE 0      one decision per job: the route at legs[0]
  * MODE 1      the whole job: a route at every leg, the gates updated by the route taken (the sweep is redone at every leg)
+ * MODE 2, 3   as 0 and 1, by the exact dynamic program computed on the spot (no cell or route table is read)
  * Each job is timed as one call (batch one).  The call is repeated REPEAT times inside the timer and the mean is stored.
  * out.bin     int32 n_jobs, passes; uint8 first_route[n_jobs]; uint8 final_gates[n_jobs]; float32 ns[passes][n_jobs]
  * stdout      load time in ns, peak resident bytes, table bytes
@@ -34,6 +35,16 @@ static inline int apply_trip(int s, int trip) {
     if (e == 1) return s ^ bit; if (e == 2) return s | bit; if (e == 3) return s & ~bit; return s;
 }
 
+/* the exact planner with no tables: the reverse dynamic program done on the spot (MODE 2 and 3) */
+static inline int decide_dp(int q, int s, int L, const int32_t *legs) {
+    uint8_t T[64], U[64]; int req[8]; for (int g = G - 1; g >= 0; g--) { req[g] = q % 3; q /= 3; }
+    for (int st = 0; st < NS; st++) { int c = 0; for (int g = 0; g < G; g++) if (req[g] && ((st >> (G - 1 - g)) & 1) == req[g] - 1) c++; T[st] = (uint8_t)c; }
+    for (int j = L - 1; j >= 1; j--) { int a = legs[j] / NT, b = legs[j] % NT;
+        for (int st = 0; st < NS; st++) { uint8_t x = T[apply_trip(st, a)], y = T[apply_trip(st, b)]; U[st] = x > y ? x : y; }
+        memcpy(T, U, NS); }
+    return T[apply_trip(s, legs[0] % NT)] > T[apply_trip(s, legs[0] / NT)];
+}
+
 int main(int argc, char **argv) {
     if (argc < 7) { fprintf(stderr, "usage: runner tables jobs out MODE REPEAT PASSES\n"); return 2; }
     int mode = atoi(argv[4]), repeat = atoi(argv[5]), passes = atoi(argv[6]);
@@ -53,7 +64,8 @@ int main(int argc, char **argv) {
         for (int k = 0; k < repeat; k++) {
             s = J[1];
             if (mode == 0) { r0 = decide(q, s, L, legs); }
-            else for (int i2 = 0; i2 < L; i2++) { int r = decide(q, s, L - i2, legs + i2); if (i2 == 0) r0 = r; int leg = legs[i2]; s = apply_trip(s, r ? leg % NT : leg / NT); }
+            else if (mode == 2) { r0 = decide_dp(q, s, L, legs); }
+            else for (int i2 = 0; i2 < L; i2++) { int r = mode == 1 ? decide(q, s, L - i2, legs + i2) : decide_dp(q, s, L - i2, legs + i2); if (i2 == 0) r0 = r; int leg = legs[i2]; s = apply_trip(s, r ? leg % NT : leg / NT); }
             sink += r0;
         }
         uint64_t b = now_ns(); ns[(size_t)p * n + i] = (float)(b - a) / repeat; first[i] = (uint8_t)r0; fin[i] = (uint8_t)s;

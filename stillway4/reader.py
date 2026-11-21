@@ -7,7 +7,10 @@ the number of gates as a parameter.  Trained on sampled route situations (requir
 of 1 to --lmax legs, labelled by the exact planner (valid route set; value vector as training aid).
 The codebook gets one code per exact value vector seen when it is switched on.
 After training: tables are read off the network, the closure is run against the exact tables
-(stillway4/gates.py), wrong entries are trained on (repair) until the closure is clean or the budget ends.
+(stillway4/gates.py).  Protocol 2 (--alloc exact, the default): one code per exact value vector, then training on the
+exact machine itself (every vector x leg x gate state, uniformly) alternating with the certificate until it is clean
+or the budget ends.  Protocol 1 (--alloc sampled): codes for the vectors seen in sampled jobs, then witness repair;
+it left 181 of 500 three-gate vectors without a code and is kept only for the record.
 A run that hits its budget is recorded as incomplete, with everything measured so far.
 """
 from __future__ import annotations
@@ -128,6 +131,60 @@ def extract(model) -> dict:
             "route": route.numpy(), "code_ids": order}
 
 
+def machine_train(model, ex, gen, deadline, batch=1024, lr=1e-3, check_every=1000, scale=20.0, log=None, min_steps=0):
+    """Train the three functions on the exact machine itself, uniformly: every (value vector, leg) pair for the leg
+    step, every (value vector, leg, gate state) triple for the route, every requirement for the start.
+    The carry of vector v is its code.  Codes are trained too.  Stops when every entry is right or at the deadline."""
+    g = model.g; N = ex["n_codes"]; cellT = torch.tensor(ex["cell"], dtype=torch.long); validT = torch.tensor(ex["valid"]); termT = torch.tensor(ex["term"], dtype=torch.long)
+    cb = torch.nn.Parameter(model.codebook[:N].clone()); opt = torch.optim.AdamW(list(model.parameters()) + [cb], lr=lr, weight_decay=0.0); it = 0; t0 = time.time(); last = None
+    def logits(z): return -scale * torch.cdist(torch.tanh(z), cb).pow(2)
+    while time.time() < deadline:
+        it += 1; model.train(); v = torch.randint(0, N, (batch,), generator=gen); l = torch.randint(0, g.NL, (batch,), generator=gen); sg = torch.randint(0, g.NS, (batch,), generator=gen)
+        q = torch.randint(0, g.NQ, (min(batch, 4 * g.NQ),), generator=gen); c = cb[v]
+        loss = F.cross_entropy(logits(model.step_leg(c, l)), cellT[v, l]) + F.cross_entropy(logits(model.start(q)), termT[q])
+        vm = validT[v, l, sg]; ok = torch.stack([(vm & 1) > 0, (vm & 2) > 0], 1); lp = F.log_softmax(model.decide(c, l, sg), -1)
+        loss = loss - torch.logsumexp(lp.masked_fill(~ok, -1e9), -1).mean()
+        opt.zero_grad(); loss.backward(); torch.nn.utils.clip_grad_norm_(list(model.parameters()) + [cb], 1.0); opt.step()
+        if it % check_every == 0:
+            with torch.no_grad():                                   # entries wrong on a sample of the machine (the certificate is the full check)
+                model.eval(); v = torch.randint(0, N, (20000,), generator=gen); l = torch.randint(0, g.NL, (20000,), generator=gen); sg = torch.randint(0, g.NS, (20000,), generator=gen)
+                ce = float((logits(model.step_leg(cb[v], l)).argmax(1) != cellT[v, l]).float().mean()); vm = validT[v, l, sg]
+                re = float((((vm >> model.decide(cb[v], l, sg).argmax(1)) & 1) == 0).float().mean())
+            last = {"machine_step": it, "loss": round(loss.item(), 5), "cell_wrong_sampled": ce, "route_wrong_sampled": re, "sec": round(time.time() - t0, 1)}
+            if log is not None: log.append(last)
+            print(json.dumps(last), flush=True)
+            if ce == 0 and re == 0 and it >= min_steps: break
+            if it % (20 * check_every) == 0:
+                for gq in opt.param_groups: gq["lr"] *= 0.5
+    with torch.no_grad(): model.codebook[:N] = cb
+    return it
+
+
+@torch.no_grad()
+def allocate_all(model, ex):
+    """One code per exact value vector.  A shortest job reaching each vector is read off the exact tables, the
+    network's continuous carry for that job becomes the vector's code.  Needs n_codes >= number of vectors."""
+    N = ex["n_codes"]; assert N <= model.cfg.n_codes, f"{N} exact vectors, {model.cfg.n_codes} codes"; g = model.g
+    parent = np.full(N, -1, np.int64); pleg = np.full(N, -1, np.int64); root = np.full(N, -1, np.int64); depth = np.full(N, -1, np.int64)
+    for q in range(g.NQ - 1, -1, -1): root[ex["term"][q]] = q
+    front = np.unique(ex["term"]); depth[front] = 0
+    while len(front):
+        nxt = ex["cell"][front]; new = []
+        for i, u in enumerate(front):
+            for l in np.nonzero(depth[nxt[i]] < 0)[0]:
+                v = nxt[i, l]
+                if depth[v] < 0: depth[v] = depth[u] + 1; parent[v] = u; pleg[v] = l; root[v] = root[u]; new.append(v)
+        front = np.array(new, np.int64)
+    dmax = int(depth.max()); path = np.full((N, max(dmax, 1)), -1, np.int64)
+    for v in range(N):
+        u = v; d = depth[v]
+        while parent[u] >= 0: d -= 1; path[v, d] = pleg[u]; u = parent[u]
+    was = int(model.quant_on); model.quant_on.fill_(0); model.eval(); c, _ = model.snap(model.start(torch.tensor(root))); pt = torch.tensor(path)
+    for d in range(path.shape[1]):
+        m = pt[:, d] >= 0; c2, _ = model.snap(model.step_leg(c, pt[:, d].clamp(min=0))); c = torch.where(m[:, None], c2, c)
+    cb = torch.full_like(model.codebook, 5.0); cb[:N] = c; model.codebook.copy_(cb); model.ema_sum.copy_(cb); model.ema_n.fill_(1.0); model.quant_on.fill_(1); model.train()
+
+
 def save(model, path, extra=None):
     buf = io.BytesIO(); torch.save({"cfg": asdict(model.cfg), "state": model.state_dict(), "extra": extra or {}}, buf); data = buf.getvalue(); open(path, "wb").write(data)
     return hashlib.sha256(data).hexdigest()
@@ -143,9 +200,9 @@ def main():
     ap.add_argument("--seed", type=int, default=1); ap.add_argument("--lmax", type=int, default=4); ap.add_argument("--budget", type=float, default=3600.0)
     ap.add_argument("--batch", type=int, default=512); ap.add_argument("--lr", type=float, default=1e-3); ap.add_argument("--min-warmup", type=int, default=1500)
     ap.add_argument("--warmup", type=int, default=20000); ap.add_argument("--switch-loss", type=float, default=0.01); ap.add_argument("--post", type=int, default=3000)
-    ap.add_argument("--rounds", type=int, default=40); ap.add_argument("--repair-steps", type=int, default=300); ap.add_argument("--name", default="")
+    ap.add_argument("--alloc", default="exact"); ap.add_argument("--machine-share", type=float, default=0.8); ap.add_argument("--rounds", type=int, default=40); ap.add_argument("--repair-steps", type=int, default=300); ap.add_argument("--name", default="")
     a = ap.parse_args(); torch.set_num_threads(1); torch.manual_seed(a.seed); gen = torch.Generator().manual_seed(a.seed)
-    name = a.name or f"v4r_g{a.G}_w{a.width}_s{a.seed}"; out = f"runs/{name}"; os.makedirs(out, exist_ok=True); t0 = time.time()
+    name = a.name or f"v4r{'' if a.alloc == 'sampled' else '2'}_g{a.G}_w{a.width}_s{a.seed}"; out = f"runs/{name}"; os.makedirs(out, exist_ok=True); t0 = time.time()
     g = Gates(a.G); clo = g.exact_closure(); ex = g.compile_exact(clo); exact_seconds = time.time() - t0
     model = Reader(ReaderCfg(G=a.G, width=a.width, n_codes=a.n_codes)); smp = Sampler(a.G, a.lmax, gen)
     opt = torch.optim.AdamW(model.parameters(), lr=a.lr, weight_decay=0.0); it, switch, ema, recent, log = 0, None, 1.0, [], []
@@ -155,11 +212,17 @@ def main():
         ema = 0.98 * ema + 0.02 * loss.item(); recent = (recent + [(torch.cat(zs), torch.cat(labs))])[-16:]
         opt.zero_grad(); (loss + la + model.cfg.beta * cm).backward(); torch.nn.utils.clip_grad_norm_(model.parameters(), 1.0); opt.step()
         if switch is None and ((it >= a.min_warmup and ema < a.switch_loss) or it >= a.warmup):
-            z, lab = torch.cat([r[0] for r in recent]), torch.cat([r[1] for r in recent]); u = torch.unique(lab)
-            if len(u) > a.n_codes: log.append({"step": it, "note": f"{len(u)} value vectors seen, only {a.n_codes} codes"}); keep = torch.isin(lab, u[:a.n_codes]); z, lab = z[keep], lab[keep]
-            model.init_codebook(z, gen, labels=lab); switch = it
+            if a.alloc == "sampled":                                # first protocol: one code per value vector SEEN in the last 16 batches
+                z, lab = torch.cat([r[0] for r in recent]), torch.cat([r[1] for r in recent]); u = torch.unique(lab)
+                if len(u) > a.n_codes: keep = torch.isin(lab, u[:a.n_codes]); z, lab = z[keep], lab[keep]
+                model.init_codebook(z, gen, labels=lab)
+            else: allocate_all(model, ex)                           # one code per exact value vector, each placed at the carry the network gives it
+            switch = it; log.append({"step": it, "note": f"quantiser on, {int((model.codebook[:, 0] < 4).sum())} codes placed for {ex['n_codes']} exact vectors"})
         if it % 500 == 0: log.append({"step": it, "loss": round(loss.item(), 5), "ema": round(ema, 5), "acc": round(acc, 4), "sec": round(time.time() - t0, 1)}); print(json.dumps(log[-1]), flush=True)
         if switch is not None and it >= switch + a.post: break
+    machine_steps = 0
+    if switch is not None and a.alloc == "exact" and a.machine_share > 0:
+        machine_steps = machine_train(model, ex, gen, t0 + a.budget * a.machine_share, log=log)
     train_seconds = time.time() - t0 - exact_seconds; train_steps = it; rounds = []; clean = False; cert = None; pool = []
     if switch is not None:                                          # ---- certify and repair ----
         opt = torch.optim.AdamW(model.parameters(), lr=3e-4, weight_decay=0.0)
@@ -171,6 +234,8 @@ def main():
             print(json.dumps(rounds[-1]), flush=True)
             if cert["route_wrong"] == 0 and cert["complete"]: clean = True; break
             if rnd == a.rounds or over(): break
+            if a.alloc == "exact":                                 # protocol 2: a failed certificate sends the reader back to the exact machine, not to witness jobs
+                machine_steps += machine_train(model, ex, gen, t0 + a.budget, lr=3e-4, min_steps=3000, log=log); continue
             pool = (pool + cert["witnesses"])[-200000:]; lw = max(len(w["legs"]) for w in pool)
             for _ in range(a.repair_steps):
                 it += 1; model.train(); pick = [pool[i] for i in torch.randint(0, len(pool), (a.batch,), generator=gen).tolist()]
@@ -186,7 +251,7 @@ def main():
         res.update({"tables_bytes": nbytes, "tables_sha256": hashlib.sha256(open(f"{out}/tables.bin", "rb").read()).hexdigest(), "tables_codes": tab["n_codes"],
                     "witnesses_last_round": cert["witnesses"][:20]})
     res.update({"G": a.G, "exact_vectors": ex["n_codes"], "exact_closure_and_compile_seconds": round(exact_seconds, 2), "active_parameters_per_decision": model.active_params(),
-                "resident_parameters": model.resident_params(), "train_steps": train_steps, "train_seconds": round(train_seconds, 1), "quantiser_switched_on_at": switch,
+                "resident_parameters": model.resident_params(), "train_steps": train_steps, "machine_steps": machine_steps, "train_seconds": round(train_seconds, 1), "quantiser_switched_on_at": switch,
                 "repair_rounds": rounds, "repair_steps": it - train_steps, "clean": clean, "status": "complete" if clean else ("incomplete: budget or rounds exhausted" if switch is not None else "incomplete: never reached the quantiser switch"),
                 "wall_seconds": round(time.time() - t0, 1), "peak_rss_bytes": resource.getrusage(resource.RUSAGE_SELF).ru_maxrss, "log": log, "torch": torch.__version__})
     json.dump(res, open(f"{out}/manifest.json", "w"), indent=1); print("saved", out, res["status"], flush=True)
