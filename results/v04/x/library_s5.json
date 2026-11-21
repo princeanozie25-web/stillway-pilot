@@ -1,0 +1,952 @@
+{
+ "seed": 5,
+ "library": {
+  "skeletons": 14,
+  "base_policies_explained": 60,
+  "base_policies": 60,
+  "family_tables": 39,
+  "true_rules_covered": 33,
+  "reserved_rules_covered": 5,
+  "reserved_rules": 8,
+  "family_tables_outside_the_true_family": 6,
+  "build_seconds": 0.7,
+  "example_skeletons": [
+   "((((('conflict', False),), 3), ((('lvl>=', True),), 1)), 2)",
+   "((((('lvl>=', True), ('consistent', False)), 1),), 2)",
+   "((((('lvl<', True),), 2), ((('fresh', False), ('consistent', False)), 1)), 2)"
+  ]
+ },
+ "sessions": [
+  {
+   "session": 1,
+   "new_ids": [
+    61,
+    62,
+    63
+   ],
+   "family_violations": 2,
+   "library_family_tables": 39,
+   "undetermined_cells_per_new_policy": {
+    "library": 0.0,
+    "given_family": 0.0
+   },
+   "arms": {
+    "library": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     },
+     "new_policy_decisions": {
+      "right": 1658,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     }
+    },
+    "library_best_guess": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     },
+     "new_policy_decisions": {
+      "right": 1658,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     }
+    },
+    "given_family": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     },
+     "new_policy_decisions": {
+      "right": 1658,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     }
+    },
+    "generic_only": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     },
+     "new_policy_decisions": {
+      "right": 1658,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     }
+    },
+    "m3_dreaming": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     },
+     "new_policy_decisions": {
+      "right": 1658,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     }
+    },
+    "m3_consolidation": {
+     "learn": {
+      "documents": 300,
+      "success": 0.3333333333333333
+     },
+     "new_policy_decisions": {
+      "right": 1189,
+      "wrong": 0,
+      "abstained": 469
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     }
+    },
+    "m3_rehearsal": {
+     "learn": {
+      "documents": 300,
+      "success": 0.7066666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1658,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.7
+     }
+    },
+    "m3_retrieval": {
+     "learn": {
+      "documents": 300,
+      "success": 0.32666666666666666
+     },
+     "new_policy_decisions": {
+      "right": 1320,
+      "wrong": 0,
+      "abstained": 338
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     }
+    },
+    "m3_induction": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     },
+     "new_policy_decisions": {
+      "right": 1658,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9833333333333333
+     }
+    }
+   }
+  },
+  {
+   "session": 2,
+   "new_ids": [
+    64,
+    65,
+    66
+   ],
+   "family_violations": 2,
+   "library_family_tables": 39,
+   "undetermined_cells_per_new_policy": {
+    "library": 0.0,
+    "given_family": 0.0
+   },
+   "arms": {
+    "library": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1668,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "library_best_guess": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1668,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "given_family": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1668,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "generic_only": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1668,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "m3_dreaming": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1668,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "m3_consolidation": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1668,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "m3_rehearsal": {
+     "learn": {
+      "documents": 300,
+      "success": 0.71
+     },
+     "new_policy_decisions": {
+      "right": 1668,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.44
+     }
+    },
+    "m3_retrieval": {
+     "learn": {
+      "documents": 300,
+      "success": 0.21666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1184,
+      "wrong": 0,
+      "abstained": 484
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9266666666666666
+     }
+    },
+    "m3_induction": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1668,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    }
+   }
+  },
+  {
+   "session": 3,
+   "new_ids": [
+    67,
+    68,
+    69
+   ],
+   "family_violations": 4,
+   "library_family_tables": 39,
+   "undetermined_cells_per_new_policy": {
+    "library": 0.0,
+    "given_family": 0.0
+   },
+   "arms": {
+    "library": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9533333333333334
+     },
+     "new_policy_decisions": {
+      "right": 1694,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     }
+    },
+    "library_best_guess": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9533333333333334
+     },
+     "new_policy_decisions": {
+      "right": 1694,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     }
+    },
+    "given_family": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9533333333333334
+     },
+     "new_policy_decisions": {
+      "right": 1694,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     }
+    },
+    "generic_only": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9533333333333334
+     },
+     "new_policy_decisions": {
+      "right": 1694,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     }
+    },
+    "m3_dreaming": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9266666666666666
+     },
+     "new_policy_decisions": {
+      "right": 1684,
+      "wrong": 10,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     }
+    },
+    "m3_consolidation": {
+     "learn": {
+      "documents": 300,
+      "success": 0.7866666666666666
+     },
+     "new_policy_decisions": {
+      "right": 1627,
+      "wrong": 67,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     }
+    },
+    "m3_rehearsal": {
+     "learn": {
+      "documents": 300,
+      "success": 0.63
+     },
+     "new_policy_decisions": {
+      "right": 1647,
+      "wrong": 47,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.3433333333333333
+     }
+    },
+    "m3_retrieval": {
+     "learn": {
+      "documents": 300,
+      "success": 0.3233333333333333
+     },
+     "new_policy_decisions": {
+      "right": 1359,
+      "wrong": 0,
+      "abstained": 335
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.8266666666666667
+     }
+    },
+    "m3_induction": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9533333333333334
+     },
+     "new_policy_decisions": {
+      "right": 1694,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9766666666666667
+     }
+    }
+   }
+  },
+  {
+   "session": 4,
+   "new_ids": [
+    70,
+    71,
+    72
+   ],
+   "family_violations": 5,
+   "library_family_tables": 39,
+   "undetermined_cells_per_new_policy": {
+    "library": 3.3333333333333335,
+    "given_family": 3.3333333333333335
+   },
+   "arms": {
+    "library": {
+     "learn": {
+      "documents": 300,
+      "success": 0.6933333333333334
+     },
+     "new_policy_decisions": {
+      "right": 1553,
+      "wrong": 64,
+      "abstained": 47
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.98
+     }
+    },
+    "library_best_guess": {
+     "learn": {
+      "documents": 300,
+      "success": 0.8
+     },
+     "new_policy_decisions": {
+      "right": 1600,
+      "wrong": 64,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.98
+     }
+    },
+    "given_family": {
+     "learn": {
+      "documents": 300,
+      "success": 0.8366666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1617,
+      "wrong": 0,
+      "abstained": 47
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.98
+     }
+    },
+    "generic_only": {
+     "learn": {
+      "documents": 300,
+      "success": 0.66
+     },
+     "new_policy_decisions": {
+      "right": 1537,
+      "wrong": 127,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.98
+     }
+    },
+    "m3_dreaming": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1664,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.98
+     }
+    },
+    "m3_consolidation": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1664,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9733333333333334
+     }
+    },
+    "m3_rehearsal": {
+     "learn": {
+      "documents": 300,
+      "success": 0.71
+     },
+     "new_policy_decisions": {
+      "right": 1662,
+      "wrong": 2,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.4266666666666667
+     }
+    },
+    "m3_retrieval": {
+     "learn": {
+      "documents": 300,
+      "success": 0.31333333333333335
+     },
+     "new_policy_decisions": {
+      "right": 1281,
+      "wrong": 0,
+      "abstained": 383
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.8633333333333333
+     }
+    },
+    "m3_induction": {
+     "learn": {
+      "documents": 300,
+      "success": 0.8366666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1617,
+      "wrong": 0,
+      "abstained": 47
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.98
+     }
+    }
+   }
+  },
+  {
+   "session": 5,
+   "new_ids": [
+    73,
+    74,
+    75
+   ],
+   "family_violations": 4,
+   "library_family_tables": 40,
+   "undetermined_cells_per_new_policy": {
+    "library": 0.0,
+    "given_family": 0.0
+   },
+   "arms": {
+    "library": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9633333333333334
+     }
+    },
+    "library_best_guess": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9633333333333334
+     }
+    },
+    "given_family": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9733333333333334
+     }
+    },
+    "generic_only": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9633333333333334
+     }
+    },
+    "m3_dreaming": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9733333333333334
+     }
+    },
+    "m3_consolidation": {
+     "learn": {
+      "documents": 300,
+      "success": 0.2966666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1138,
+      "wrong": 0,
+      "abstained": 557
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9733333333333334
+     }
+    },
+    "m3_rehearsal": {
+     "learn": {
+      "documents": 300,
+      "success": 0.7366666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.3566666666666667
+     }
+    },
+    "m3_retrieval": {
+     "learn": {
+      "documents": 300,
+      "success": 0.15666666666666668
+     },
+     "new_policy_decisions": {
+      "right": 1149,
+      "wrong": 0,
+      "abstained": 546
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.85
+     }
+    },
+    "m3_induction": {
+     "learn": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9733333333333334
+     }
+    }
+   }
+  },
+  {
+   "session": 6,
+   "new_ids": [
+    76,
+    77,
+    78
+   ],
+   "family_violations": 1,
+   "library_family_tables": 40,
+   "undetermined_cells_per_new_policy": {
+    "library": 0.0,
+    "given_family": 0.0
+   },
+   "arms": {
+    "library": {
+     "learn": {
+      "documents": 300,
+      "success": 0.97
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "library_best_guess": {
+     "learn": {
+      "documents": 300,
+      "success": 0.97
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "given_family": {
+     "learn": {
+      "documents": 300,
+      "success": 0.97
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "generic_only": {
+     "learn": {
+      "documents": 300,
+      "success": 0.79
+     },
+     "new_policy_decisions": {
+      "right": 1626,
+      "wrong": 62,
+      "abstained": 7
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "m3_dreaming": {
+     "learn": {
+      "documents": 300,
+      "success": 0.7766666666666666
+     },
+     "new_policy_decisions": {
+      "right": 1625,
+      "wrong": 70,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    },
+    "m3_consolidation": {
+     "learn": {
+      "documents": 300,
+      "success": 0.7966666666666666
+     },
+     "new_policy_decisions": {
+      "right": 1635,
+      "wrong": 43,
+      "abstained": 17
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.8733333333333333
+     }
+    },
+    "m3_rehearsal": {
+     "learn": {
+      "documents": 300,
+      "success": 0.67
+     },
+     "new_policy_decisions": {
+      "right": 1657,
+      "wrong": 21,
+      "abstained": 17
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.39666666666666667
+     }
+    },
+    "m3_retrieval": {
+     "learn": {
+      "documents": 300,
+      "success": 0.13666666666666666
+     },
+     "new_policy_decisions": {
+      "right": 1137,
+      "wrong": 0,
+      "abstained": 558
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.78
+     }
+    },
+    "m3_induction": {
+     "learn": {
+      "documents": 300,
+      "success": 0.97
+     },
+     "new_policy_decisions": {
+      "right": 1695,
+      "wrong": 0,
+      "abstained": 0
+     },
+     "retain": {
+      "documents": 300,
+      "success": 0.9666666666666667
+     }
+    }
+   }
+  }
+ ],
+ "audits": {
+  "learned_library": {
+   "family_tables": 40,
+   "passive_mean": 21.605882352941176,
+   "chosen_mean": 4.705882352941177,
+   "chosen_max": 5
+  },
+  "given_family": {
+   "family_tables": 36,
+   "passive_mean": 22.386111111111113,
+   "chosen_mean": 4.666666666666667,
+   "chosen_max": 5
+  },
+  "no_family": {
+   "passive_mean": 845.41,
+   "chosen_mean": 36.0,
+   "chosen_max": 36
+  }
+ },
+ "library_grown_at": [
+  [
+   5,
+   61
+  ]
+ ]
+}

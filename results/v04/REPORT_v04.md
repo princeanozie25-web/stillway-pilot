@@ -191,3 +191,7 @@ Other banks on W3 through the same network: consolidation 81.7% (new 67.4%, olde
 | Certificate scope | `docs/v04_certificate_scope.md` |
 | Seed-4 ID sets | `results/v04/seed4/` |
 | Run commands | `README_v04.md` |
+
+## 10. Added after the brief
+
+`results/v04/BEYOND_THE_BRIEF.md`: three exploratory experiments on the same cores and documents, replacing gradient learning by search with verification. Procedure selection found by enumeration reaches 100.00% on novel combinations on every seed (gradient-learned: 98.25%). A rule library learned from the base policies' logs gives a bank that gets 91.7% of new-policy documents fully right (consolidation with dreaming: 81.2%) and cuts the audits needed for a new policy from 841 to 21, or 4.6 when the system chooses the case. The whole approvals planner induced from raw logs with no network gets 99.99% and 99.995%. Scripts `v04/x_synth_procedures.py`, `v04/x_library.py`, `v04/x_no_network.py`; tables `results/v04/x/tables.md`. None of this is a frozen result.

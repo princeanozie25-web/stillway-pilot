@@ -1,0 +1,117 @@
+{
+ "seed": 3,
+ "logged_documents_for_search": 1500,
+ "logged_documents_for_the_bank": 20000,
+ "candidates_per_event_kind": 48,
+ "candidate_evaluations": 1152,
+ "search_seconds": 83.5,
+ "logged_statuses_reproduced_by_sweep": [
+  0.7830807017543859,
+  0.9953543859649123,
+  1.0,
+  1.0
+ ],
+ "bank": {
+  "policies": 60,
+  "cells_equal_to_the_true_rule": 2160,
+  "cells": 2160
+ },
+ "procedures": [
+  {
+   "kind": "SIGN",
+   "recompute_when(00,01,10,11)=[named,in_jurisdiction]": [
+    0,
+    0,
+    1,
+    0
+   ],
+   "policy_source": "current"
+  },
+  {
+   "kind": "CORRECT",
+   "recompute_when(00,01,10,11)=[named,in_jurisdiction]": [
+    0,
+    0,
+    1,
+    0
+   ],
+   "policy_source": "pinned"
+  },
+  {
+   "kind": "MOVE",
+   "recompute_when(00,01,10,11)=[named,in_jurisdiction]": [
+    0,
+    0,
+    0,
+    1
+   ],
+   "policy_source": "current"
+  },
+  {
+   "kind": "AMEND_RETRO",
+   "recompute_when(00,01,10,11)=[named,in_jurisdiction]": [
+    0,
+    1,
+    0,
+    0
+   ],
+   "policy_source": "current"
+  },
+  {
+   "kind": "AMEND_PRO",
+   "recompute_when(00,01,10,11)=[named,in_jurisdiction]": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "policy_source": "current"
+  },
+  {
+   "kind": "EXPIRE",
+   "recompute_when(00,01,10,11)=[named,in_jurisdiction]": [
+    0,
+    1,
+    0,
+    0
+   ],
+   "policy_source": "current"
+  },
+  {
+   "kind": "OVERRIDE",
+   "recompute_when(00,01,10,11)=[named,in_jurisdiction]": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "policy_source": "current"
+  },
+  {
+   "kind": "WAIT",
+   "recompute_when(00,01,10,11)=[named,in_jurisdiction]": [
+    0,
+    0,
+    0,
+    0
+   ],
+   "policy_source": "current"
+  }
+ ],
+ "given": "register schema; the executor; an expired or unknown policy abstains",
+ "found_by_search": "all 8 procedures and all policy tables",
+ "gradient_steps": 0,
+ "network_parameters": 0,
+ "deployed_bytes": 2176,
+ "test_iid": {
+  "documents": 4000,
+  "success": 1.0,
+  "protected_changed": 0
+ },
+ "test_novel": {
+  "documents": 4000,
+  "success": 1.0,
+  "protected_changed": 0
+ },
+ "total_seconds": 91.3
+}

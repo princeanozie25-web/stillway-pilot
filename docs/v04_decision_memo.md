@@ -1,6 +1,6 @@
 # v0.4 memo: ship, change, stop
 
-For Prince Anozie, 21 November 2026. From Fable. One page. Rules were frozen in commit `d9a9047` before the final runs; data salt 2701878737; five seeds. Full report: `results/v04/REPORT_v04.md`.
+For Prince Anozie, 21 November 2026. From Fable. One page plus one added section. Rules were frozen in commit `d9a9047` before the final runs; data salt 2701878737; five seeds. Full report: `results/v04/REPORT_v04.md`.
 
 **Question:** does a small planner with typed registers and a versioned bank of procedures get cheaper with experience, at the quality of the strongest baseline?
 
@@ -13,6 +13,19 @@ For Prince Anozie, 21 November 2026. From Fable. One page. Rules were frozen in 
 | 25% less compute, 20% lower latency, fewer bytes than the best qualifying neural comparator | No other neural arm qualifies (continuous carry 7%, flat codes 5%, text scratchpad 26 to 29%). Against its own network, the compiled tables use 99.6% less time per job (15.8 µs against 3,811 µs) and 3 kB against 304 kB. That is a compile, not a win over a rival. | Formally yes, vacuously |
 | Dreaming must beat both consolidation alone and compute-matched rehearsal on transfer | Beats consolidation (+13.4 points, +6.4 to +21.0). Does not beat rehearsal (−5.1, −10.2 to +0.1). | **No** |
 | Against the fastest correct non-neural implementation | A dependency tracker with the rules given is right on every document, twice as fast (7.7 µs) and ten times smaller (312 bytes). | Loses |
+
+## Added after the brief: search beats descent here (exploratory, five seeds)
+
+You said to go past the brief. I did: `results/v04/BEYOND_THE_BRIEF.md`. The bank should hold programs found by search and checked against the logs, not weights.
+
+| Experiment | Result |
+|---|---|
+| Procedure selection found by enumerating 42 candidates per event against the logs | 100.00% on novel combinations on every seed, 0 protected changes, 50 s. Gradient-learned: 98.25%. Nothing hand-coded. |
+| A rule library learned from yesterday's policies (nobody gives the family) | New-policy documents fully right: 91.7%, against 81.2% for consolidation with dreaming and 86.5% for rehearsal; older policies 98.8%. In its cautious mode it makes a fifth of the wrong decisions of any neural arm and abstains instead. |
+| Audits needed to learn a new policy | 841 with no library, 21 with it, 4.6 when the system chooses the case. This is "cheaper with experience" in human decisions. |
+| The whole approvals planner induced from raw logs, no network | 99.99% and 99.995% of documents fully right, 0 protected changes, 90 s, 2 kB. |
+
+This changes two lines below: procedure selection should be searched for, not hand-coded and not trained; consolidation should be program search through a learned library. Caveats: after the freeze, on documents already scored, in languages I wrote, in a world with enumerable rules.
 
 ## Ship
 
@@ -43,7 +56,7 @@ The 19-against-20 discrepancy reproduces here across runtimes: CPU gives 20 fail
 
 ## What I need from you
 
-1. Whether to hand-code procedure selection and move on, or spend a round on making learned selection match it.
+1. Whether to make the program-search stack the main line (my recommendation) and keep the neural arms as baselines.
 2. A domain whose rules cannot be enumerated. Every result above is in a world where a short rule engine wins, as the brief anticipated.
 3. An external challenge from you or Codex: format in `docs/v04_external_challenge.md`. The holdout here is internal.
 
