@@ -1,0 +1,80 @@
+{
+ "run": "v3r24fix_s1",
+ "editor": "register_write",
+ "shifts": 300,
+ "jobs_per_shift": 8,
+ "families": "final",
+ "systems": {
+  "symbolic": {
+   "jobs": 2400,
+   "extra_ticks": 0,
+   "jobs_all_commitments_met": 1552,
+   "priority_jobs": 600,
+   "priority_deadlines_missed": 0,
+   "unfinished_job_steps": 4636,
+   "reassigned_steps": 750,
+   "unnecessary_reassignments": 0,
+   "invalid_actions": 0,
+   "editor_abstained": 0,
+   "revision_compute_median_us": 0.0,
+   "revision_compute_p99_us": 0.0,
+   "incremental_replan_median_us": 26.1,
+   "incremental_replan_p99_us": 39.6,
+   "restart_replan_median_us": 42.3,
+   "restart_replan_p99_us": 140.2
+  },
+  "learned_edit": {
+   "jobs": 2400,
+   "extra_ticks": 0,
+   "jobs_all_commitments_met": 1552,
+   "priority_jobs": 600,
+   "priority_deadlines_missed": 0,
+   "unfinished_job_steps": 4636,
+   "reassigned_steps": 883,
+   "unnecessary_reassignments": 140,
+   "invalid_actions": 0,
+   "editor_abstained": 0,
+   "revision_compute_median_us": 2045.2,
+   "revision_compute_p99_us": 4089.3
+  },
+  "learned_message": {
+   "jobs": 2400,
+   "extra_ticks": 0,
+   "jobs_all_commitments_met": 1552,
+   "priority_jobs": 600,
+   "priority_deadlines_missed": 0,
+   "unfinished_job_steps": 4636,
+   "reassigned_steps": 883,
+   "unnecessary_reassignments": 140,
+   "invalid_actions": 0,
+   "editor_abstained": 0,
+   "revision_compute_median_us": 1965.9,
+   "revision_compute_p99_us": 3631.8
+  },
+  "learned_restart": {
+   "jobs": 2400,
+   "extra_ticks": 1279,
+   "jobs_all_commitments_met": 1552,
+   "priority_jobs": 600,
+   "priority_deadlines_missed": 0,
+   "unfinished_job_steps": 4636,
+   "reassigned_steps": 883,
+   "unnecessary_reassignments": 140,
+   "invalid_actions": 0,
+   "editor_abstained": 0,
+   "revision_compute_median_us": 1968.8,
+   "revision_compute_p99_us": 3143.0
+  }
+ },
+ "declined_requests": {
+  "requests": 150,
+  "declined": 150
+ },
+ "forecast_at_pause_vs_realised": {
+  "jobs": 2400,
+  "prediction_right": 2361,
+  "shifts_with_fault": 76
+ },
+ "assumption": "re-briefing a restarted job costs one tick; sequencing is the same rule for every system",
+ "peak_rss_mb": 221
+}

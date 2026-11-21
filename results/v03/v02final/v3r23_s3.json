@@ -1,0 +1,1357 @@
+{
+ "run": "v3r23_s3",
+ "mode": "v02final",
+ "checkpoint_sha256": "9031562a72697c0ee7cbc9a66d49cc2673e0a286b332128dfb154ed6fb65c69a",
+ "trained_on": "Dispatch-3, training families, 2-3 legs, same-gate legs (the v0.2 training distribution)",
+ "carry": "vq",
+ "attempts_per_cell": 4000,
+ "seed0": 1670983329,
+ "strata": {
+  "A_unseen_families": {
+   "message": {
+    "attempts": 4000,
+    "eligible": 1849,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2435,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 190,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "restart": {
+    "attempts": 4000,
+    "eligible": 1849,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2435,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 190,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "editor": {
+    "attempts": 4000,
+    "eligible": 1849,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2435,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 190,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "ignore": {
+    "attempts": 4000,
+    "eligible": 1849,
+    "joint_success": 0.0,
+    "edited_ok": 0.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2435,
+    "joint_ci95": [
+     0.0,
+     0.0
+    ],
+    "families": 190,
+    "by_legs": {
+     "2": 0.0,
+     "3": 0.0
+    }
+   },
+   "original": {
+    "attempts": 4000,
+    "eligible": 1849,
+    "joint_success": 0.0,
+    "edited_ok": 0.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2435,
+    "joint_ci95": [
+     0.0,
+     0.0
+    ],
+    "families": 190,
+    "by_legs": {
+     "2": 0.0,
+     "3": 0.0
+    }
+   },
+   "overwrite": {
+    "attempts": 4000,
+    "eligible": 1849,
+    "joint_success": 0.49864792823791504,
+    "edited_ok": 1.0,
+    "unrelated_ok": 0.49864792823791504,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.501352071762085,
+    "eligible_before_nontrivial_filter": 2435,
+    "joint_ci95": [
+     0.47546968240190157,
+     0.52255745295442
+    ],
+    "families": 190,
+    "by_legs": {
+     "2": 0.5661764740943909,
+     "3": 0.4453049302101135
+    }
+   },
+   "actioncopy": {
+    "attempts": 4000,
+    "eligible": 1849,
+    "joint_success": 0.36019471287727356,
+    "edited_ok": 0.757706880569458,
+    "unrelated_ok": 0.4710654318332672,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.5289345681667328,
+    "eligible_before_nontrivial_filter": 2435,
+    "joint_ci95": [
+     0.33712452873740095,
+     0.3842882193739571
+    ],
+    "families": 190,
+    "by_legs": {
+     "2": 0.42401960492134094,
+     "3": 0.3097773492336273
+    }
+   },
+   "noop/message": {
+    "attempts": 2000,
+    "eligible": 1303,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 189,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "noop/editor": {
+    "attempts": 2000,
+    "eligible": 1303,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 189,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "impose/message": {
+    "attempts": 2000,
+    "eligible": 463,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 157,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "impose/editor": {
+    "attempts": 2000,
+    "eligible": 463,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 157,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "withdraw/message": {
+    "attempts": 2000,
+    "eligible": 1614,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 197,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "withdraw/editor": {
+    "attempts": 2000,
+    "eligible": 1614,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 197,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "two_edits_same/message": {
+    "attempts": 2000,
+    "eligible": 209,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 864,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 111,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "two_edits_same/restart": {
+    "attempts": 2000,
+    "eligible": 209,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 864,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 111,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "two_edits_same/editor": {
+    "attempts": 2000,
+    "eligible": 209,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 864,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 111,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "two_edits_other/message": {
+    "attempts": 2000,
+    "eligible": 674,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 711,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 170,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "two_edits_other/restart": {
+    "attempts": 2000,
+    "eligible": 674,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 711,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 170,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "two_edits_other/editor": {
+    "attempts": 2000,
+    "eligible": 674,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 711,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 170,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    }
+   },
+   "mirror_pairs/message": {
+    "attempts": 2000,
+    "eligible": 953,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 1247,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 148,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    },
+    "pairs_eligible": 476,
+    "pairs_both_right": 1.0
+   },
+   "mirror_pairs/editor": {
+    "attempts": 2000,
+    "eligible": 953,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 1247,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 148,
+    "by_legs": {
+     "2": 1.0,
+     "3": 1.0
+    },
+    "pairs_eligible": 476,
+    "pairs_both_right": 1.0
+   },
+   "mirror_pairs/actioncopy": {
+    "attempts": 2000,
+    "eligible": 953,
+    "joint_success": 0.3357817530632019,
+    "edited_ok": 0.7345225811004639,
+    "unrelated_ok": 0.44176286458969116,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.5582371354103088,
+    "eligible_before_nontrivial_filter": 1247,
+    "joint_ci95": [
+     0.3010954413782589,
+     0.3732019082168075
+    ],
+    "families": 148,
+    "by_legs": {
+     "2": 0.39767441153526306,
+     "3": 0.28489482402801514
+    },
+    "pairs_eligible": 476,
+    "pairs_both_right": 0.21008403599262238
+   },
+   "planner_alone": {
+    "no_events": {
+     "jobs_all_valid": 1.0,
+     "actions_valid": 1.0
+    },
+    "with_events": {
+     "jobs_all_valid": 1.0,
+     "actions_valid": 1.0
+    },
+    "stress_events": {
+     "jobs_all_valid": 1.0,
+     "actions_valid": 1.0
+    }
+   }
+  },
+  "B_four_legs": {
+   "message": {
+    "attempts": 4000,
+    "eligible": 2345,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2749,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "restart": {
+    "attempts": 4000,
+    "eligible": 2345,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2749,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "editor": {
+    "attempts": 4000,
+    "eligible": 2345,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2749,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "ignore": {
+    "attempts": 4000,
+    "eligible": 2345,
+    "joint_success": 0.0,
+    "edited_ok": 0.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2749,
+    "joint_ci95": [
+     0.0,
+     0.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 0.0
+    }
+   },
+   "original": {
+    "attempts": 4000,
+    "eligible": 2345,
+    "joint_success": 0.0,
+    "edited_ok": 0.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2749,
+    "joint_ci95": [
+     0.0,
+     0.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 0.0
+    }
+   },
+   "overwrite": {
+    "attempts": 4000,
+    "eligible": 2345,
+    "joint_success": 0.3027718663215637,
+    "edited_ok": 1.0,
+    "unrelated_ok": 0.3027718663215637,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.6972281336784363,
+    "eligible_before_nontrivial_filter": 2749,
+    "joint_ci95": [
+     0.2822678227986836,
+     0.32329373641433634
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 0.3027718663215637
+    }
+   },
+   "actioncopy": {
+    "attempts": 4000,
+    "eligible": 2345,
+    "joint_success": 0.2098080962896347,
+    "edited_ok": 0.7867803573608398,
+    "unrelated_ok": 0.27078890800476074,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.7292110919952393,
+    "eligible_before_nontrivial_filter": 2749,
+    "joint_ci95": [
+     0.19228874743097865,
+     0.22884766164778667
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 0.2098080962896347
+    }
+   },
+   "noop/message": {
+    "attempts": 2000,
+    "eligible": 1484,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "noop/editor": {
+    "attempts": 2000,
+    "eligible": 1484,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "impose/message": {
+    "attempts": 2000,
+    "eligible": 520,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 93,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "impose/editor": {
+    "attempts": 2000,
+    "eligible": 520,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 93,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "withdraw/message": {
+    "attempts": 2000,
+    "eligible": 1673,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "withdraw/editor": {
+    "attempts": 2000,
+    "eligible": 1673,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 100,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "two_edits_same/message": {
+    "attempts": 2000,
+    "eligible": 319,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 1144,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 90,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "two_edits_same/restart": {
+    "attempts": 2000,
+    "eligible": 319,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 1144,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 90,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "two_edits_same/editor": {
+    "attempts": 2000,
+    "eligible": 319,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 1144,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 90,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "two_edits_other/message": {
+    "attempts": 2000,
+    "eligible": 813,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 845,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 97,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "two_edits_other/restart": {
+    "attempts": 2000,
+    "eligible": 813,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 845,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 97,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "two_edits_other/editor": {
+    "attempts": 2000,
+    "eligible": 813,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 845,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 97,
+    "by_legs": {
+     "4": 1.0
+    }
+   },
+   "mirror_pairs/message": {
+    "attempts": 2000,
+    "eligible": 1129,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 1315,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 90,
+    "by_legs": {
+     "4": 1.0
+    },
+    "pairs_eligible": 563,
+    "pairs_both_right": 1.0
+   },
+   "mirror_pairs/editor": {
+    "attempts": 2000,
+    "eligible": 1129,
+    "joint_success": 1.0,
+    "edited_ok": 1.0,
+    "unrelated_ok": 1.0,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 1315,
+    "joint_ci95": [
+     1.0,
+     1.0
+    ],
+    "families": 90,
+    "by_legs": {
+     "4": 1.0
+    },
+    "pairs_eligible": 563,
+    "pairs_both_right": 1.0
+   },
+   "mirror_pairs/actioncopy": {
+    "attempts": 2000,
+    "eligible": 1129,
+    "joint_success": 0.1992914080619812,
+    "edited_ok": 0.7776793837547302,
+    "unrelated_ok": 0.2630646526813507,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 1.0,
+    "unrelated_drop": 0.7369353473186493,
+    "eligible_before_nontrivial_filter": 1315,
+    "joint_ci95": [
+     0.17250347768737948,
+     0.2270096846739706
+    ],
+    "families": 90,
+    "by_legs": {
+     "4": 0.1992914080619812
+    },
+    "pairs_eligible": 563,
+    "pairs_both_right": 0.09946714341640472
+   },
+   "planner_alone": {
+    "no_events": {
+     "jobs_all_valid": 1.0,
+     "actions_valid": 1.0
+    },
+    "with_events": {
+     "jobs_all_valid": 0.999875009059906,
+     "actions_valid": 0.999980452333014
+    },
+    "stress_events": {
+     "jobs_all_valid": 0.999875009059906,
+     "actions_valid": 0.9999805117611521
+    }
+   }
+  },
+  "C_cross_gate": {
+   "message": {
+    "attempts": 4000,
+    "eligible": 1927,
+    "joint_success": 0.8754540681838989,
+    "edited_ok": 0.9517384767532349,
+    "unrelated_ok": 0.9143746495246887,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8951738476753235,
+    "unrelated_drop": -0.019200801849365234,
+    "eligible_before_nontrivial_filter": 2536,
+    "joint_ci95": [
+     0.8556307880293431,
+     0.8937737041719342
+    ],
+    "families": 196,
+    "by_legs": {
+     "2": 0.8571428656578064,
+     "3": 0.8891916275024414
+    }
+   },
+   "restart": {
+    "attempts": 4000,
+    "eligible": 1927,
+    "joint_success": 0.8754540681838989,
+    "edited_ok": 0.9517384767532349,
+    "unrelated_ok": 0.9143746495246887,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8951738476753235,
+    "unrelated_drop": -0.019200801849365234,
+    "eligible_before_nontrivial_filter": 2536,
+    "joint_ci95": [
+     0.8556307880293431,
+     0.8937737041719342
+    ],
+    "families": 196,
+    "by_legs": {
+     "2": 0.8571428656578064,
+     "3": 0.8891916275024414
+    }
+   },
+   "editor": {
+    "attempts": 4000,
+    "eligible": 1927,
+    "joint_success": 0.8754540681838989,
+    "edited_ok": 0.9517384767532349,
+    "unrelated_ok": 0.9143746495246887,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8951738476753235,
+    "unrelated_drop": -0.019200801849365234,
+    "eligible_before_nontrivial_filter": 2536,
+    "joint_ci95": [
+     0.8556307880293431,
+     0.8937737041719342
+    ],
+    "families": 196,
+    "by_legs": {
+     "2": 0.8571428656578064,
+     "3": 0.8891916275024414
+    }
+   },
+   "ignore": {
+    "attempts": 4000,
+    "eligible": 1927,
+    "joint_success": 0.0,
+    "edited_ok": 0.019200829789042473,
+    "unrelated_ok": 0.8951738476753235,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8951738476753235,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2536,
+    "joint_ci95": [
+     0.0,
+     0.0
+    ],
+    "families": 196,
+    "by_legs": {
+     "2": 0.0,
+     "3": 0.0
+    }
+   },
+   "original": {
+    "attempts": 4000,
+    "eligible": 1927,
+    "joint_success": 0.0,
+    "edited_ok": 0.019200829789042473,
+    "unrelated_ok": 0.8951738476753235,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8951738476753235,
+    "unrelated_drop": 0.0,
+    "eligible_before_nontrivial_filter": 2536,
+    "joint_ci95": [
+     0.0,
+     0.0
+    ],
+    "families": 196,
+    "by_legs": {
+     "2": 0.0,
+     "3": 0.0
+    }
+   },
+   "overwrite": {
+    "attempts": 4000,
+    "eligible": 1927,
+    "joint_success": 0.43072134256362915,
+    "edited_ok": 0.9475868940353394,
+    "unrelated_ok": 0.44940322637557983,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8951738476753235,
+    "unrelated_drop": 0.44577062129974365,
+    "eligible_before_nontrivial_filter": 2536,
+    "joint_ci95": [
+     0.40711020431356254,
+     0.4549273017784659
+    ],
+    "families": 196,
+    "by_legs": {
+     "2": 0.5205811262130737,
+     "3": 0.36330607533454895
+    }
+   },
+   "actioncopy": {
+    "attempts": 4000,
+    "eligible": 1927,
+    "joint_success": 0.3139595091342926,
+    "edited_ok": 0.7581733465194702,
+    "unrelated_ok": 0.419823557138443,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8951738476753235,
+    "unrelated_drop": 0.4753502905368805,
+    "eligible_before_nontrivial_filter": 2536,
+    "joint_ci95": [
+     0.2939362367876325,
+     0.33564419001902784
+    ],
+    "families": 196,
+    "by_legs": {
+     "2": 0.3716706931591034,
+     "3": 0.2706630229949951
+    }
+   },
+   "noop/message": {
+    "attempts": 2000,
+    "eligible": 1350,
+    "joint_success": 0.8718518614768982,
+    "edited_ok": 0.9503703713417053,
+    "unrelated_ok": 0.902222216129303,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.902222216129303,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     0.8497362824458932,
+     0.8917502250816294
+    ],
+    "families": 194,
+    "by_legs": {
+     "2": 0.8453124761581421,
+     "3": 0.8957746624946594
+    }
+   },
+   "noop/editor": {
+    "attempts": 2000,
+    "eligible": 1350,
+    "joint_success": 0.8718518614768982,
+    "edited_ok": 0.9503703713417053,
+    "unrelated_ok": 0.902222216129303,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.902222216129303,
+    "unrelated_drop": 0.0,
+    "joint_ci95": [
+     0.8497362824458932,
+     0.8917502250816294
+    ],
+    "families": 194,
+    "by_legs": {
+     "2": 0.8453124761581421,
+     "3": 0.8957746624946594
+    }
+   },
+   "impose/message": {
+    "attempts": 2000,
+    "eligible": 478,
+    "joint_success": 0.8514644503593445,
+    "edited_ok": 0.8995816111564636,
+    "unrelated_ok": 0.9079498052597046,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.9225941300392151,
+    "unrelated_drop": 0.014644324779510498,
+    "joint_ci95": [
+     0.8165459375618771,
+     0.8853980150669786
+    ],
+    "families": 167,
+    "by_legs": {
+     "2": 0.8173912763595581,
+     "3": 0.8830645084381104
+    }
+   },
+   "impose/editor": {
+    "attempts": 2000,
+    "eligible": 478,
+    "joint_success": 0.8514644503593445,
+    "edited_ok": 0.8995816111564636,
+    "unrelated_ok": 0.9079498052597046,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.9225941300392151,
+    "unrelated_drop": 0.014644324779510498,
+    "joint_ci95": [
+     0.8165459375618771,
+     0.8853980150669786
+    ],
+    "families": 167,
+    "by_legs": {
+     "2": 0.8173912763595581,
+     "3": 0.8830645084381104
+    }
+   },
+   "withdraw/message": {
+    "attempts": 2000,
+    "eligible": 1631,
+    "joint_success": 0.9423666596412659,
+    "edited_ok": 1.0,
+    "unrelated_ok": 0.9423666596412659,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.9221336841583252,
+    "unrelated_drop": -0.020232975482940674,
+    "joint_ci95": [
+     0.9274033614097135,
+     0.9570108798263004
+    ],
+    "families": 197,
+    "by_legs": {
+     "2": 0.9436274766921997,
+     "3": 0.9411042928695679
+    }
+   },
+   "withdraw/editor": {
+    "attempts": 2000,
+    "eligible": 1631,
+    "joint_success": 0.9423666596412659,
+    "edited_ok": 1.0,
+    "unrelated_ok": 0.9423666596412659,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.9221336841583252,
+    "unrelated_drop": -0.020232975482940674,
+    "joint_ci95": [
+     0.9274033614097135,
+     0.9570108798263004
+    ],
+    "families": 197,
+    "by_legs": {
+     "2": 0.9436274766921997,
+     "3": 0.9411042928695679
+    }
+   },
+   "two_edits_same/message": {
+    "attempts": 2000,
+    "eligible": 296,
+    "joint_success": 0.7668918967247009,
+    "edited_ok": 0.875,
+    "unrelated_ok": 0.8513513803482056,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8243243098258972,
+    "unrelated_drop": -0.02702707052230835,
+    "eligible_before_nontrivial_filter": 903,
+    "joint_ci95": [
+     0.7171605129796256,
+     0.8175968570011002
+    ],
+    "families": 140,
+    "by_legs": {
+     "2": 0.675000011920929,
+     "3": 0.8295454382896423
+    }
+   },
+   "two_edits_same/restart": {
+    "attempts": 2000,
+    "eligible": 296,
+    "joint_success": 0.7668918967247009,
+    "edited_ok": 0.875,
+    "unrelated_ok": 0.8513513803482056,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8243243098258972,
+    "unrelated_drop": -0.02702707052230835,
+    "eligible_before_nontrivial_filter": 903,
+    "joint_ci95": [
+     0.7171605129796256,
+     0.8175968570011002
+    ],
+    "families": 140,
+    "by_legs": {
+     "2": 0.675000011920929,
+     "3": 0.8295454382896423
+    }
+   },
+   "two_edits_same/editor": {
+    "attempts": 2000,
+    "eligible": 296,
+    "joint_success": 0.7668918967247009,
+    "edited_ok": 0.875,
+    "unrelated_ok": 0.8513513803482056,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8243243098258972,
+    "unrelated_drop": -0.02702707052230835,
+    "eligible_before_nontrivial_filter": 903,
+    "joint_ci95": [
+     0.7171605129796256,
+     0.8175968570011002
+    ],
+    "families": 140,
+    "by_legs": {
+     "2": 0.675000011920929,
+     "3": 0.8295454382896423
+    }
+   },
+   "two_edits_other/message": {
+    "attempts": 2000,
+    "eligible": 701,
+    "joint_success": 0.9215406775474548,
+    "edited_ok": 0.9400855898857117,
+    "unrelated_ok": 0.980028510093689,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.9657632112503052,
+    "unrelated_drop": -0.014265298843383789,
+    "eligible_before_nontrivial_filter": 747,
+    "joint_ci95": [
+     0.9008866310743081,
+     0.940495670634258
+    ],
+    "families": 175,
+    "by_legs": {
+     "2": 0.9220339059829712,
+     "3": 0.9211822748184204
+    }
+   },
+   "two_edits_other/restart": {
+    "attempts": 2000,
+    "eligible": 701,
+    "joint_success": 0.9215406775474548,
+    "edited_ok": 0.9400855898857117,
+    "unrelated_ok": 0.980028510093689,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.9657632112503052,
+    "unrelated_drop": -0.014265298843383789,
+    "eligible_before_nontrivial_filter": 747,
+    "joint_ci95": [
+     0.9008866310743081,
+     0.940495670634258
+    ],
+    "families": 175,
+    "by_legs": {
+     "2": 0.9220339059829712,
+     "3": 0.9211822748184204
+    }
+   },
+   "two_edits_other/editor": {
+    "attempts": 2000,
+    "eligible": 701,
+    "joint_success": 0.9215406775474548,
+    "edited_ok": 0.9400855898857117,
+    "unrelated_ok": 0.980028510093689,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.9657632112503052,
+    "unrelated_drop": -0.014265298843383789,
+    "eligible_before_nontrivial_filter": 747,
+    "joint_ci95": [
+     0.9008866310743081,
+     0.940495670634258
+    ],
+    "families": 175,
+    "by_legs": {
+     "2": 0.9220339059829712,
+     "3": 0.9211822748184204
+    }
+   },
+   "mirror_pairs/message": {
+    "attempts": 2000,
+    "eligible": 944,
+    "joint_success": 0.8866525292396545,
+    "edited_ok": 0.9512711763381958,
+    "unrelated_ok": 0.9194915294647217,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8940678238868713,
+    "unrelated_drop": -0.025423705577850342,
+    "eligible_before_nontrivial_filter": 1238,
+    "joint_ci95": [
+     0.8606736968134096,
+     0.9116082305310476
+    ],
+    "families": 163,
+    "by_legs": {
+     "2": 0.8826184868812561,
+     "3": 0.8902195692062378
+    },
+    "pairs_eligible": 434,
+    "pairs_both_right": 0.8525345325469971
+   },
+   "mirror_pairs/editor": {
+    "attempts": 2000,
+    "eligible": 944,
+    "joint_success": 0.8866525292396545,
+    "edited_ok": 0.9512711763381958,
+    "unrelated_ok": 0.9194915294647217,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8940678238868713,
+    "unrelated_drop": -0.025423705577850342,
+    "eligible_before_nontrivial_filter": 1238,
+    "joint_ci95": [
+     0.8606736968134096,
+     0.9116082305310476
+    ],
+    "families": 163,
+    "by_legs": {
+     "2": 0.8826184868812561,
+     "3": 0.8902195692062378
+    },
+    "pairs_eligible": 434,
+    "pairs_both_right": 0.8525345325469971
+   },
+   "mirror_pairs/actioncopy": {
+    "attempts": 2000,
+    "eligible": 944,
+    "joint_success": 0.3411017060279846,
+    "edited_ok": 0.7055084705352783,
+    "unrelated_ok": 0.4692796468734741,
+    "abstained": 0.0,
+    "unrelated_ok_unedited": 0.8940678238868713,
+    "unrelated_drop": 0.4247881770133972,
+    "eligible_before_nontrivial_filter": 1238,
+    "joint_ci95": [
+     0.30684321158740524,
+     0.37755841467021584
+    ],
+    "families": 163,
+    "by_legs": {
+     "2": 0.4040631949901581,
+     "3": 0.2854291498661041
+    },
+    "pairs_eligible": 434,
+    "pairs_both_right": 0.1912442445755005
+   },
+   "planner_alone": {
+    "no_events": {
+     "jobs_all_valid": 0.8538749814033508,
+     "actions_valid": 0.9630186315954282
+    },
+    "with_events": {
+     "jobs_all_valid": 0.8558750152587891,
+     "actions_valid": 0.9633441114289267
+    },
+    "stress_events": {
+     "jobs_all_valid": 0.8652499914169312,
+     "actions_valid": 0.9649133779473388
+    }
+   }
+  }
+ }
+}
