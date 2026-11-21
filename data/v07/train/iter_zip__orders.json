@@ -1,0 +1,69 @@
+{
+ "id": "iter_zip__orders",
+ "template": "iter_zip",
+ "skin": "orders",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "orders.py": "\"\"\"Order records.\"\"\"\n\n\nclass Order:\n    def __init__(self, customer, amount):\n        self.customer = customer\n        self.amount = amount\n\n    def __repr__(self):\n        return \"Order(%r, %r)\" % (self.customer, self.amount)\n\n\nROWS = [('acme', 35), ('acme', 30), ('birch', 29), ('corvo', 22), ('acme', 36)]\n\n\ndef load_orders():\n    \"\"\"Yield the stored orders one at a time.\"\"\"\n    for customer, amount in ROWS:\n        yield Order(customer, amount)\n",
+  "captions.py": "\"\"\"Labels for orders.\"\"\"\n\n\ndef label_orders(names, orders):\n    \"\"\"Return (lookup, lines): a name -> amount dict and one 'name: amount' line per order.\"\"\"\n    pairs = zip(names, (x.amount for x in orders))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n\n\ndef largest_amount(orders):\n    \"\"\"Return the largest amount, or None when there are no orders.\"\"\"\n    values = [x.amount for x in orders]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from orders import load_orders, ROWS\nfrom captions import label_orders\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_orders(NAMES, load_orders())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_orders(NAMES, load_orders())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_orders gives me the lookup, but `lines` is always empty. I expected one line per order.\n"
+ },
+ "code_hash": "108fc6529ae0a9a0fe9a26f77f6032586def301f782b5e29ad611aefcfc22f91",
+ "logic_file": "captions.py",
+ "hidden": "from orders import load_orders, ROWS\nfrom captions import label_orders\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_orders(NAMES, load_orders())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_orders(NAMES, list(load_orders()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_orders(NAMES, load_orders())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_orders([], load_orders()) == ({}, [])\n",
+ "fix": {
+  "file": "captions.py",
+  "function": "label_orders",
+  "code": "def label_orders(names, orders):\n    \"\"\"Return (lookup, lines): a name -> amount dict and one 'name: amount' line per order.\"\"\"\n    pairs = list(zip(names, (x.amount for x in orders)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The lookup is built first and the lines second from the same `pairs`; the second use may find it used up.",
+    "test": "from orders import load_orders\nfrom captions import label_orders\nlookup, lines = label_orders([\"a\", \"b\"], load_orders())\nprint(len(lookup), len(lines))\n",
+    "predict": "2 0",
+    "observed": "2 0",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "A zip object is a one-shot iterator: after dict() has read it, nothing is left.",
+    "test": "pairs = zip(\"ab\", [1, 2])\nfirst = dict(pairs)\nprint(iter(pairs) is pairs, len(first), len(list(pairs)))\n",
+    "predict": "True 2 0",
+    "observed": "True 2 0",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "The zip object is a one-shot iterator used twice. Turn it into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.amount for x in orders))\n+    pairs = list(zip(names, (x.amount for x in orders)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

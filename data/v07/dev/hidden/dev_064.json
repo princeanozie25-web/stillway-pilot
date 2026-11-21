@@ -1,0 +1,44 @@
+{
+ "id": "dev_064",
+ "source": "mut_drain__harvests",
+ "template": "mut_drain",
+ "skin": "harvests",
+ "group": "G1",
+ "symptom": "S1",
+ "cause": "MUT",
+ "role": "alternate",
+ "hidden": "from harvests import load_harvests, ROWS\nfrom podium import podium, report\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_count():\n    assert report(list(load_harvests()))[\"count\"] == len(ROWS)\n\n\ndef test_all_values_kept():\n    assert report(list(load_harvests()))[\"all\"] == VALUES\n\n\ndef test_podium_values():\n    top = podium(list(load_harvests()))\n    assert [x.kilos for x in top] == sorted(VALUES, reverse=True)[:3]\n\n\ndef test_caller_list_unchanged():\n    data = list(load_harvests())\n    podium(data, 2)\n    assert [x.kilos for x in data] == VALUES\n\n\ndef test_one_place():\n    assert [x.kilos for x in podium(list(load_harvests()), 1)] == [max(VALUES)]\n",
+ "fix": {
+  "file": "podium.py",
+  "function": "podium",
+  "code": "def podium(harvests, places=3):\n    \"\"\"Return the top `places` harvests by kilos, largest first. The caller's list is left as it was.\"\"\"\n    harvests = list(harvests)\n    top = []\n    while harvests and len(top) < places:\n        top.append(_take_largest(harvests))\n    return top\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count": "FAIL AssertionError: ",
+    "test_podium_values": "PASS"
+   },
+   "hidden": {
+    "test_all_values_kept": "FAIL AssertionError: ",
+    "test_caller_list_unchanged": "FAIL AssertionError: ",
+    "test_count": "FAIL AssertionError: ",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    harvests = list(harvests)",
+   "hidden": {
+    "test_all_values_kept": "PASS",
+    "test_caller_list_unchanged": "PASS",
+    "test_count": "PASS",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

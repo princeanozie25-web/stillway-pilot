@@ -1,0 +1,44 @@
+{
+ "id": "dev_019",
+ "source": "iter_shares__donations",
+ "template": "iter_shares",
+ "skin": "donations",
+ "group": "G1",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "hidden": "from donations import load_donations, ROWS\nfrom shares import pounds_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = pounds_shares(load_donations())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = pounds_shares(list(load_donations()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_donations()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert pounds_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "shares.py",
+  "function": "pounds_shares",
+  "code": "def pounds_shares(donations):\n    \"\"\"Return each donation's share of the total pounds, in order.\"\"\"\n    donations = list(donations)\n    total = sum(x.pounds for x in donations)\n    return [x.pounds / total for x in donations]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    donations = list(donations)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

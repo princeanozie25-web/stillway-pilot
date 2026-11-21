@@ -1,0 +1,99 @@
+{
+ "id": "iter_window__trades",
+ "template": "iter_window",
+ "skin": "trades",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "trades.py": "\"\"\"Trade records.\"\"\"\n\n\nclass Trade:\n    def __init__(self, desk, volume):\n        self.desk = desk\n        self.volume = volume\n\n    def __repr__(self):\n        return \"Trade(%r, %r)\" % (self.desk, self.volume)\n\n\nROWS = [('fx', 15), ('metals', 21), ('fx', 44), ('bonds', 32), ('energy', 33)]\n\n\ndef load_trades():\n    \"\"\"Yield the stored trades one at a time.\"\"\"\n    for desk, volume in ROWS:\n        yield Trade(desk, volume)\n\n\ndef feed_trades():\n    \"\"\"Endless feed of trades: repeats the stored rows for ever.\"\"\"\n    while True:\n        for desk, volume in ROWS:\n            yield Trade(desk, volume)\n",
+  "frames.py": "\"\"\"Windows over the trades feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` trades from the feed and return (peak volume, list of volume).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.volume for x in window)\n    values = [x.volume for x in window]\n    return peak, values\n",
+  "tests/test_visible.py": "from trades import feed_trades, ROWS\nfrom frames import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_trades(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_trades()\n    summarize_window(feed, 2)\n    assert next(feed).volume == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_trades(), 3) returns the right peak but an empty list of values. I expected the three volume values.\n"
+ },
+ "code_hash": "4352d1c865c956b2b0f9394ad1c624a2daa55ef591fff94b52ed861ab7fed1c4",
+ "logic_file": "frames.py",
+ "hidden": "from trades import feed_trades, ROWS\nfrom frames import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_trades(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_peak():\n    peak, values = summarize_window(feed_trades(), 4)\n    assert peak == max(v for _, v in ROWS[:4])\n\n\ndef test_reads_only_the_window():\n    feed = feed_trades()\n    summarize_window(feed, 2)\n    assert next(feed).volume == ROWS[2][1]\n\n\ndef test_consecutive_windows():\n    feed = feed_trades()\n    summarize_window(feed, 2)\n    peak, values = summarize_window(feed, 2)\n    assert values == [v for _, v in ROWS[2:4]]\n",
+ "fix": {
+  "file": "frames.py",
+  "function": "summarize_window",
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` trades from the feed and return (peak volume, list of volume).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = list(itertools.islice(feed, size))\n    peak = max(x.volume for x in window)\n    values = [x.volume for x in window]\n    return peak, values\n"
+ },
+ "oldfix": {
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` trades from the feed and return (peak volume, list of volume).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    feed = list(feed)\n    window = itertools.islice(feed, size)\n    peak = max(x.volume for x in window)\n    values = [x.volume for x in window]\n    return peak, values\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window is read once for the peak and again for the values; the second read may find it used up.",
+    "test": "from trades import feed_trades\nfrom frames import summarize_window\nprint(summarize_window(feed_trades(), 3))\n",
+    "predict": "(44, [])",
+    "observed": "(44, [])",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to turn the input into a list, but that only works if the feed ends.",
+    "test": "import itertools\nfrom trades import feed_trades\nprint(len(list(itertools.islice(feed_trades(), 1000))))\n",
+    "predict": "1000",
+    "observed": "1000",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The islice window is a one-shot iterator walked twice. The feed never ends, so turn only the window into a list."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If the feed is finite, turning the whole input into a list once is enough.",
+  "test": "import itertools\nfrom trades import feed_trades\nprint(len(list(itertools.islice(feed_trades(), 1000))))\n",
+  "predict": "5",
+  "observed": "1000",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_consecutive_windows": "FAIL AssertionError: ",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    window = itertools.islice(feed, size)\n+    window = list(itertools.islice(feed, size))",
+   "hidden": {
+    "test_consecutive_windows": "PASS",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    feed = list(feed)",
+   "hidden": {
+    "test_values": "FAIL TIMEOUT after 5.0 s",
+    "test_peak": "FAIL TIMEOUT after 5.0 s",
+    "test_reads_only_the_window": "FAIL TIMEOUT after 5.0 s",
+    "test_consecutive_windows": "FAIL TIMEOUT after 5.0 s"
+   },
+   "visible": {
+    "test_reads_only_the_window": "FAIL TimeoutError: test took longer than 2 s",
+    "test_values": "FAIL TimeoutError: test took longer than 2 s"
+   },
+   "regressions": [
+    "test_peak",
+    "test_reads_only_the_window"
+   ],
+   "visible_regressions": [
+    "test_reads_only_the_window"
+   ]
+  }
+ }
+}

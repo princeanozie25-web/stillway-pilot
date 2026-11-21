@@ -1,0 +1,44 @@
+{
+ "id": "dev_030",
+ "source": "sort_text_numbers__harvests",
+ "template": "sort_text_numbers",
+ "skin": "harvests",
+ "group": "G4",
+ "symptom": "X4",
+ "cause": "TEXTSORT",
+ "role": null,
+ "hidden": "from harvests import Harvest, load_harvests, ROWS\nfrom ranking import ranked_codes\n\n\ndef test_nine_before_ten():\n    assert ranked_codes([Harvest(\"a\", 10), Harvest(\"b\", 9)]) == [\"9\", \"10\"]\n\n\ndef test_mixed_lengths():\n    assert ranked_codes([Harvest(\"a\", 100), Harvest(\"b\", 25), Harvest(\"c\", 9), Harvest(\"d\", 1000)]) == [\"9\", \"25\", \"100\", \"1000\"]\n\n\ndef test_stored():\n    assert ranked_codes(list(load_harvests())) == [str(v) for v in sorted(v for _, v in ROWS)]\n\n\ndef test_codes_are_text():\n    assert all(isinstance(c, str) for c in ranked_codes(list(load_harvests())))\n\n\ndef test_empty():\n    assert ranked_codes([]) == []\n",
+ "fix": {
+  "file": "ranking.py",
+  "function": "ranked_codes",
+  "code": "def ranked_codes(harvests):\n    \"\"\"Return the kilos of each harvest as a text code, from the lowest number to the highest.\"\"\"\n    return [str(v) for v in sorted(x.kilos for x in harvests)]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_nine_before_ten": "FAIL AssertionError: ",
+    "test_single_digits": "PASS"
+   },
+   "hidden": {
+    "test_codes_are_text": "PASS",
+    "test_empty": "PASS",
+    "test_mixed_lengths": "FAIL AssertionError: ",
+    "test_nine_before_ten": "FAIL AssertionError: ",
+    "test_stored": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return sorted(str(x.kilos) for x in harvests)\n+    return [str(v) for v in sorted(x.kilos for x in harvests)]",
+   "hidden": {
+    "test_codes_are_text": "PASS",
+    "test_empty": "PASS",
+    "test_mixed_lengths": "PASS",
+    "test_nine_before_ten": "PASS",
+    "test_stored": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

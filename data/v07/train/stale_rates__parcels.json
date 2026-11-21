@@ -1,0 +1,99 @@
+{
+ "id": "stale_rates__parcels",
+ "template": "stale_rates",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('hull', 3), ('leeds', 56), ('bath', 18), ('leeds', 43), ('bath', 5), ('york', 54)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n",
+  "rates.py": "\"\"\"Rate lookups. Every lookup is billed, so callers must not repeat them needlessly.\"\"\"\n\nLOOKUPS = 0\n_RATES = {'leeds': 4, 'york': 5, 'hull': 5, 'bath': 2}\n\n\ndef rate_for(depot):\n    \"\"\"Return the rate for a depot. Each call is billed and counted in LOOKUPS.\"\"\"\n    global LOOKUPS\n    LOOKUPS += 1\n    return _RATES[depot]\n",
+  "billing.py": "\"\"\"Billing for parcels. Rate lookups are billed, so the charge is remembered.\"\"\"\nimport rates\n\n\nclass ParcelBill:\n    def __init__(self):\n        self._parcels = []\n        self._charge = None\n\n    def add(self, parcel):\n        \"\"\"Add one parcel to the bill.\"\"\"\n        self._parcels.append(parcel)\n\n    def charge(self):\n        \"\"\"Return the total charge: grams times the rate for each parcel's depot.\n\n        The result is remembered: asking again without adding anything makes no new rate lookups.\n        \"\"\"\n        if self._charge is None:\n            self._charge = sum(x.grams * rates.rate_for(x.depot) for x in self._parcels)\n        return self._charge\n\n\ndef describe_parcel(parcel):\n    \"\"\"Return a one-line description of a parcel.\"\"\"\n    return \"%s: %s\" % (parcel.depot, parcel.grams)\n\n\ndef depot_names(parcels):\n    \"\"\"Return the distinct depot values, in first-seen order.\"\"\"\n    names = []\n    for x in parcels:\n        if x.depot not in names:\n            names.append(x.depot)\n    return names\n",
+  "tests/test_visible.py": "import rates\nfrom parcels import load_parcels, ROWS\nfrom billing import ParcelBill\n\n\ndef test_charge_after_add():\n    rows = list(load_parcels())\n    bill = ParcelBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = ParcelBill()\n    for x in load_parcels():\n        bill.add(x)\n    bill.charge()\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n",
+  "ISSUE.md": "After I add a parcel, charge() still returns the old charge.\n"
+ },
+ "code_hash": "0b6742238edb9707fd2a4cc786a0ba640f575699b530cb60c19ee04864f6ba56",
+ "logic_file": "billing.py",
+ "hidden": "import rates\nfrom parcels import load_parcels, ROWS\nfrom billing import ParcelBill\n\nFULL = sum(v * rates._RATES[k] for k, v in ROWS)\n\n\ndef test_charge_after_add():\n    rows = list(load_parcels())\n    bill = ParcelBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_every_add():\n    bill = ParcelBill()\n    running = 0\n    for x in load_parcels():\n        bill.add(x)\n        running += x.grams * rates._RATES[x.depot]\n        assert bill.charge() == running\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = ParcelBill()\n    for x in load_parcels():\n        bill.add(x)\n    assert bill.charge() == FULL\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n\n\ndef test_empty_bill():\n    assert ParcelBill().charge() == 0\n",
+ "fix": {
+  "file": "billing.py",
+  "function": "add",
+  "code": "def add(self, parcel):\n    \"\"\"Add one parcel to the bill.\"\"\"\n    self._parcels.append(parcel)\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return the total charge: grams times the rate for each parcel's depot.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.grams * rates.rate_for(x.depot) for x in self._parcels)\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "charge() may return a remembered value that add() does not refresh.",
+    "test": "import rates\nfrom parcels import load_parcels\nfrom billing import ParcelBill\nrows = list(load_parcels())\nbill = ParcelBill()\nbill.add(rows[0])\nbill.charge()\nbill.add(rows[1])\nprint(bill.charge(), sum(x.grams * rates._RATES[x.depot] for x in bill._parcels))\n",
+    "predict": "15 239",
+    "observed": "15 239",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to work the value out on every call, but here every lookup is billed and a repeat call must make none.",
+    "test": "import rates\nfrom parcels import load_parcels\nfrom billing import ParcelBill\nrows = list(load_parcels())\nbill = ParcelBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nprint(rates.LOOKUPS)\nbill.charge()\nprint(rates.LOOKUPS)\n",
+    "predict": "2\n2",
+    "observed": "2\n2",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered charge. Lookups are billed, so keep the remembered value and clear it in add()."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If working the charge out again costs nothing, doing it on every call is enough.",
+  "test": "import rates\nfrom parcels import load_parcels\nfrom billing import ParcelBill\nrows = list(load_parcels())\nbill = ParcelBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nbefore = rates.LOOKUPS\nbill._charge = None\nbill.charge()\nprint(rates.LOOKUPS - before)\n",
+  "predict": "0",
+  "observed": "2",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_charge_after_every_add": "FAIL AssertionError: ",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._charge = None",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.grams * rates.rate_for(x.depot) for x in self._parcels)\n-        return self._charge\n+        return sum(x.grams * rates.rate_for(x.depot) for x in self._parcels)",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_charge_after_add": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

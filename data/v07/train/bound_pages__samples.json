@@ -1,0 +1,103 @@
+{
+ "id": "bound_pages__samples",
+ "template": "bound_pages",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b1', 39), ('b4', 4), ('b2', 26), ('b4', 21), ('b2', 6), ('b2', 17), ('b2', 13)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n",
+  "sheets.py": "\"\"\"Pages of samples.\"\"\"\n\n\ndef page_count(n_items, page_size):\n    \"\"\"Return how many pages are needed to show n_items, page_size to a page.\"\"\"\n    return n_items // page_size\n\n\ndef page(samples, number, page_size):\n    \"\"\"Return page `number` of samples. Pages are numbered from 1.\"\"\"\n    start = (number - 1) * page_size\n    return samples[start:start + page_size]\n\n\ndef all_pages(samples, page_size):\n    \"\"\"Return every page of samples, in order.\"\"\"\n    return [page(samples, n, page_size) for n in range(1, page_count(len(samples), page_size) + 1)]\n\n\ndef largest_dose(samples):\n    \"\"\"Return the largest dose, or None when there are no samples.\"\"\"\n    values = [x.dose for x in samples]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from samples import load_samples, ROWS\nfrom sheets import all_pages, page_count\n\n\ndef test_last_items_present():\n    pages = all_pages(list(load_samples()), 2)\n    assert sum(len(p) for p in pages) == len(ROWS)\n\n\ndef test_exact_fit():\n    assert page_count(6, 3) == 2\n    assert len(all_pages(list(load_samples())[:4], 2)) == 2\n",
+  "ISSUE.md": "all_pages(data, 2) leaves out the last samples: with 7 samples and 2 to a page I get 3 pages, and the last 1 never appear.\n"
+ },
+ "code_hash": "d69dee3390b12d05a6aebc21f68993b11c0b53d4c65d04212a21e1bd318b2400",
+ "logic_file": "sheets.py",
+ "hidden": "from samples import load_samples, ROWS\nfrom sheets import all_pages, page_count\n\n\ndef test_last_items_present():\n    pages = all_pages(list(load_samples()), 2)\n    assert [x.dose for p in pages for x in p] == [v for _, v in ROWS]\n\n\ndef test_partial_page_counted():\n    assert page_count(7, 3) == 3 and page_count(1, 3) == 1\n\n\ndef test_exact_fit():\n    assert page_count(6, 3) == 2 and page_count(3, 3) == 1\n\n\ndef test_no_empty_page():\n    assert all(len(p) > 0 for p in all_pages(list(load_samples())[:4], 2))\n\n\ndef test_no_items():\n    assert page_count(0, 3) == 0\n",
+ "fix": {
+  "file": "sheets.py",
+  "function": "page_count",
+  "code": "def page_count(n_items, page_size):\n    \"\"\"Return how many pages are needed to show n_items, page_size to a page.\"\"\"\n    return (n_items + page_size - 1) // page_size\n"
+ },
+ "oldfix": {
+  "code": "def page_count(n_items, page_size):\n    \"\"\"Return how many pages are needed to show n_items, page_size to a page.\"\"\"\n    return n_items // page_size + 1\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The page count may round down, dropping a last page that is not full.",
+    "test": "from sheets import page_count\nprint(page_count(7, 3), page_count(6, 3))\n",
+    "predict": "2 2",
+    "observed": "2 2",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "The usual fix is to extend the bound by one, but that would also add a page when the items fit exactly.",
+    "test": "print(7 // 3 + 1, 6 // 3 + 1)\n",
+    "predict": "3 3",
+    "observed": "3 3",
+    "seconds": 0.031
+   }
+  ],
+  "cause": "The page count rounds down. Adding one would give an empty page on an exact fit, so round up instead."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If one more page is always right, adding one to the count is enough.",
+  "test": "print(7 // 3 + 1, 6 // 3 + 1)\n",
+  "predict": "3 2",
+  "observed": "3 3",
+  "seconds": 0.031
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_exact_fit": "PASS",
+    "test_last_items_present": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_exact_fit": "PASS",
+    "test_last_items_present": "FAIL AssertionError: ",
+    "test_no_empty_page": "PASS",
+    "test_no_items": "PASS",
+    "test_partial_page_counted": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return n_items // page_size\n+    return (n_items + page_size - 1) // page_size",
+   "hidden": {
+    "test_exact_fit": "PASS",
+    "test_last_items_present": "PASS",
+    "test_no_empty_page": "PASS",
+    "test_no_items": "PASS",
+    "test_partial_page_counted": "PASS"
+   }
+  },
+  "seconds": 0.08,
+  "oldfix": {
+   "diff": "-    return n_items // page_size\n+    return n_items // page_size + 1",
+   "hidden": {
+    "test_exact_fit": "FAIL AssertionError: ",
+    "test_last_items_present": "PASS",
+    "test_no_empty_page": "FAIL AssertionError: ",
+    "test_no_items": "FAIL AssertionError: ",
+    "test_partial_page_counted": "PASS"
+   },
+   "visible": {
+    "test_exact_fit": "FAIL AssertionError: ",
+    "test_last_items_present": "PASS"
+   },
+   "regressions": [
+    "test_exact_fit",
+    "test_no_empty_page",
+    "test_no_items"
+   ],
+   "visible_regressions": [
+    "test_exact_fit"
+   ]
+  }
+ }
+}

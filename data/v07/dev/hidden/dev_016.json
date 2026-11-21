@@ -1,0 +1,63 @@
+{
+ "id": "dev_016",
+ "source": "stale_rates__donations",
+ "template": "stale_rates",
+ "skin": "donations",
+ "group": "G1",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "exception",
+ "hidden": "import rates\nfrom donations import load_donations, ROWS\nfrom fees import DonationBill\n\nFULL = sum(v * rates._RATES[k] for k, v in ROWS)\n\n\ndef test_charge_after_add():\n    rows = list(load_donations())\n    bill = DonationBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_every_add():\n    bill = DonationBill()\n    running = 0\n    for x in load_donations():\n        bill.add(x)\n        running += x.pounds * rates._RATES[x.donor]\n        assert bill.charge() == running\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = DonationBill()\n    for x in load_donations():\n        bill.add(x)\n    assert bill.charge() == FULL\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n\n\ndef test_empty_bill():\n    assert DonationBill().charge() == 0\n",
+ "fix": {
+  "file": "fees.py",
+  "function": "add",
+  "code": "def add(self, donation):\n    \"\"\"Add one donation to the bill.\"\"\"\n    self._donations.append(donation)\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return the total charge: pounds times the rate for each donation's donor.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.pounds * rates.rate_for(x.donor) for x in self._donations)\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_charge_after_every_add": "FAIL AssertionError: ",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._charge = None",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.pounds * rates.rate_for(x.donor) for x in self._donations)\n-        return self._charge\n+        return sum(x.pounds * rates.rate_for(x.donor) for x in self._donations)",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_charge_after_add": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

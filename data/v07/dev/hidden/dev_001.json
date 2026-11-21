@@ -1,0 +1,59 @@
+{
+ "id": "dev_001",
+ "source": "look_default_seen__fixtures",
+ "template": "look_default_seen",
+ "skin": "fixtures",
+ "group": "G3",
+ "symptom": "S1",
+ "cause": "DEFAULTARG",
+ "role": null,
+ "hidden": "from fixtures import load_fixtures, ROWS\nfrom unique import new_clubs\n\nEXPECTED = list(dict.fromkeys(k for k, _ in ROWS))\n\n\ndef test_called_twice():\n    data = list(load_fixtures())\n    new_clubs(data)\n    assert new_clubs(data) == EXPECTED\n\n\ndef test_three_calls_with_generators():\n    new_clubs(load_fixtures())\n    new_clubs(load_fixtures())\n    assert new_clubs(load_fixtures()) == EXPECTED\n\n\ndef test_known_values_left_out():\n    data = list(load_fixtures())\n    assert new_clubs(data, {EXPECTED[0]}) == EXPECTED[1:]\n\n\ndef test_seen_is_updated():\n    seen = set()\n    new_clubs(list(load_fixtures()), seen)\n    assert seen == set(EXPECTED)\n",
+ "fix": {
+  "file": "unique.py",
+  "function": "new_clubs",
+  "code": "def new_clubs(fixtures, seen=None):\n    \"\"\"Return each club the first time it appears among the fixtures, in order. club values already in `seen` are left out.\"\"\"\n    if seen is None:\n        seen = set()\n    out = []\n    for x in fixtures:\n        if x.club not in seen:\n            seen.add(x.club)\n            out.append(x.club)\n    return out\n"
+ },
+ "oldfix": {
+  "code": "def new_clubs(fixtures, seen=set()):\n    \"\"\"Return each club the first time it appears among the fixtures, in order. club values already in `seen` are left out.\"\"\"\n    fixtures = list(fixtures)\n    out = []\n    for x in fixtures:\n        if x.club not in seen:\n            seen.add(x.club)\n            out.append(x.club)\n    return out\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS"
+   },
+   "hidden": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-def new_clubs(fixtures, seen=set()):\n+def new_clubs(fixtures, seen=None):\n+    if seen is None:\n+        seen = set()",
+   "hidden": {
+    "test_called_twice": "PASS",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    fixtures = list(fixtures)",
+   "hidden": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS"
+   },
+   "regressions": [],
+   "visible_regressions": []
+  }
+ }
+}

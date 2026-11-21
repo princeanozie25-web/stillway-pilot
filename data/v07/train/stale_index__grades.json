@@ -1,0 +1,69 @@
+{
+ "id": "stale_index__grades",
+ "template": "stale_index",
+ "skin": "grades",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "grades.py": "\"\"\"Grade records.\"\"\"\n\n\nclass Grade:\n    def __init__(self, student, score):\n        self.student = student\n        self.score = score\n\n    def __repr__(self):\n        return \"Grade(%r, %r)\" % (self.student, self.score)\n\n\nROWS = [('cho', 4), ('ben', 34), ('cho', 40), ('ben', 18), ('ana', 31)]\n\n\ndef load_grades():\n    \"\"\"Yield the stored grades one at a time.\"\"\"\n    for student, score in ROWS:\n        yield Grade(student, score)\n",
+  "registry.py": "\"\"\"Registry of grades by student.\"\"\"\n\n_ALL = []\n_BY_KEY = None\n\n\ndef reset():\n    \"\"\"Forget every registered grade.\"\"\"\n    global _BY_KEY\n    del _ALL[:]\n    _BY_KEY = None\n\n\ndef register(grade):\n    \"\"\"Add one grade to the registry.\"\"\"\n    _ALL.append(grade)\n\n\ndef find(student):\n    \"\"\"Return the grades registered under this student.\"\"\"\n    global _BY_KEY\n    if _BY_KEY is None:\n        _BY_KEY = {}\n        for x in _ALL:\n            _BY_KEY.setdefault(x.student, []).append(x)\n    return _BY_KEY.get(student, [])\n\n\ndef student_names(grades):\n    \"\"\"Return the distinct student values, in first-seen order.\"\"\"\n    names = []\n    for x in grades:\n        if x.student not in names:\n            names.append(x.student)\n    return names\n",
+  "tests/test_visible.py": "from grades import Grade\nimport registry as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Grade(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Grade(\"k1\", 7))\n    assert len(reg.find(\"k1\")) == 2\n\n\ndef test_register_then_find():\n    reg.reset()\n    reg.register(Grade(\"k1\", 5))\n    reg.register(Grade(\"k2\", 6))\n    assert [x.score for x in reg.find(\"k2\")] == [6]\n",
+  "ISSUE.md": "A grade registered after the first find() never shows up in find(). Registering everything before the first find() works.\n"
+ },
+ "code_hash": "135e4057589480a9639495c5273945ddf2354bb4198489a9d0652aa339863120",
+ "logic_file": "registry.py",
+ "hidden": "from grades import Grade\nimport registry as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Grade(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Grade(\"k1\", 7))\n    assert [x.score for x in reg.find(\"k1\")] == [5, 7]\n\n\ndef test_late_new_key():\n    reg.reset()\n    reg.register(Grade(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.register(Grade(\"k9\", 2))\n    assert [x.score for x in reg.find(\"k9\")] == [2]\n\n\ndef test_unknown_key():\n    reg.reset()\n    reg.register(Grade(\"k1\", 5))\n    assert reg.find(\"nope\") == []\n\n\ndef test_reset():\n    reg.reset()\n    reg.register(Grade(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.reset()\n    assert reg.find(\"k1\") == []\n",
+ "fix": {
+  "file": "registry.py",
+  "function": "find",
+  "code": "def find(student):\n    \"\"\"Return the grades registered under this student.\"\"\"\n    return [x for x in _ALL if x.student == student]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "find() may answer from an index built on the first call that register() does not refresh.",
+    "test": "from grades import Grade\nimport registry as reg\nreg.reset()\nreg.register(Grade(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Grade(\"k1\", 7))\nprint(len(reg.find(\"k1\")), sum(1 for x in reg._ALL if x.student == \"k1\"))\n",
+    "predict": "1 2",
+    "observed": "1 2",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "If the remembered index is cleared, find() should see both, so looking through the list on every call is enough.",
+    "test": "from grades import Grade\nimport registry as reg\nreg.reset()\nreg.register(Grade(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Grade(\"k1\", 7))\nreg._BY_KEY = None\nprint(len(reg.find(\"k1\")))\n",
+    "predict": "2",
+    "observed": "2",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered index. Look through the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_register_then_find": "PASS"
+   },
+   "hidden": {
+    "test_late_new_key": "FAIL AssertionError: ",
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 7,
+   "diff": "-    global _BY_KEY\n-    if _BY_KEY is None:\n-        _BY_KEY = {}\n-        for x in _ALL:\n-            _BY_KEY.setdefault(x.student, []).append(x)\n-    return _BY_KEY.get(student, [])\n+    return [x for x in _ALL if x.student == student]",
+   "hidden": {
+    "test_late_new_key": "PASS",
+    "test_late_registration": "PASS",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

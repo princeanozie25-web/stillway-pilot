@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__shipments",
+ "template": "bound_loop",
+ "skin": "shipments",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "shipments.py": "\"\"\"Shipment records.\"\"\"\n\n\nclass Shipment:\n    def __init__(self, route, weight):\n        self.route = route\n        self.weight = weight\n\n    def __repr__(self):\n        return \"Shipment(%r, %r)\" % (self.route, self.weight)\n\n\nROWS = [('r47', 56), ('r10', 42), ('r22', 51), ('r47', 20), ('r10', 59), ('r22', 38)]\n\n\ndef load_shipments():\n    \"\"\"Yield the stored shipments one at a time.\"\"\"\n    for route, weight in ROWS:\n        yield Shipment(route, weight)\n",
+  "cumulative.py": "\"\"\"Running totals over shipments.\"\"\"\n\n\ndef running_weight(shipments):\n    \"\"\"Return the running total of weight after each shipment, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(shipments) - 1):\n        total += shipments[i].weight\n        out.append(total)\n    return out\n\n\ndef final_weight(shipments):\n    \"\"\"Return the total weight of all shipments, or 0 when there are none.\"\"\"\n    totals = running_weight(shipments)\n    return totals[-1] if totals else 0\n\n\ndef route_names(shipments):\n    \"\"\"Return the distinct route values, in first-seen order.\"\"\"\n    names = []\n    for x in shipments:\n        if x.route not in names:\n            names.append(x.route)\n    return names\n",
+  "tests/test_visible.py": "from shipments import load_shipments, ROWS\nfrom cumulative import running_weight\n\n\ndef test_length():\n    assert len(running_weight(list(load_shipments()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_weight([]) == []\n",
+  "ISSUE.md": "final_weight(data) is too low: it leaves out the last shipment. running_weight(data) has 5 entries, not 6.\n"
+ },
+ "code_hash": "364d3028b14b36baf7f3cd4c413df2ae0b96597c6cd76948fd2cbda85d64b580",
+ "logic_file": "cumulative.py",
+ "hidden": "from shipments import load_shipments, ROWS\nfrom cumulative import running_weight, final_weight\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_weight(list(load_shipments()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_weight(list(load_shipments())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_weight(list(load_shipments()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_weight(list(load_shipments())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_weight([]) == [] and final_weight([]) == 0\n",
+ "fix": {
+  "file": "cumulative.py",
+  "function": "running_weight",
+  "code": "def running_weight(shipments):\n    \"\"\"Return the running total of weight after each shipment, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(shipments)):\n        total += shipments[i].weight\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one shipment early.",
+    "test": "from shipments import load_shipments\nfrom cumulative import running_weight\ndata = list(load_shipments())\nprint(len(running_weight(data)), len(data))\n",
+    "predict": "5 6",
+    "observed": "5 6",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "If the loop always stops one short, one shipment gives nothing and two give one entry.",
+    "test": "from shipments import load_shipments\nfrom cumulative import running_weight\ndata = list(load_shipments())\nprint(running_weight(data[:1]), running_weight(data[:2]))\n",
+    "predict": "[] [56]",
+    "observed": "[] [56]",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(shipments) - 1):\n+    for i in range(len(shipments)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

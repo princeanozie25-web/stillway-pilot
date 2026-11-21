@@ -1,0 +1,63 @@
+{
+ "id": "dev_002",
+ "source": "stale_peak__bookings",
+ "template": "stale_peak",
+ "skin": "bookings",
+ "group": "G2",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": null,
+ "hidden": "import rates\nfrom bookings import Booking, load_bookings, ROWS\nfrom monitor import BookingTracker\n\nKEY = sorted(rates._RATES)[0]\n\n\ndef test_peak_after_record():\n    t = BookingTracker()\n    t.record(Booking(KEY, 2))\n    assert t.peak() == 2 * rates._RATES[KEY]\n    t.record(Booking(KEY, 9))\n    assert t.peak() == 9 * rates._RATES[KEY]\n\n\ndef test_peak_of_stored():\n    t = BookingTracker()\n    best = 0\n    for x in load_bookings():\n        t.record(x)\n        best = max(best, x.nights * rates._RATES[x.hotel])\n        assert t.peak() == best\n\n\ndef test_no_new_lookups_when_unchanged():\n    t = BookingTracker()\n    for x in load_bookings():\n        t.record(x)\n    t.peak()\n    before = rates.LOOKUPS\n    t.peak()\n    t.peak()\n    assert rates.LOOKUPS == before\n\n\ndef test_nothing_recorded():\n    assert BookingTracker().peak() == 0\n",
+ "fix": {
+  "file": "monitor.py",
+  "function": "record",
+  "code": "def record(self, booking):\n    \"\"\"Record one booking.\"\"\"\n    self._bookings.append(booking)\n    self._peak = None\n"
+ },
+ "oldfix": {
+  "code": "def peak(self):\n    \"\"\"Return the highest nights times rate seen so far, or 0 when nothing is recorded.\n\n    The result is remembered: asking again without recording anything makes no new rate lookups.\n    \"\"\"\n    return max((x.nights * rates.rate_for(x.hotel) for x in self._bookings), default=0)\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_no_new_lookups_when_unchanged": "PASS",
+    "test_peak_after_record": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_no_new_lookups_when_unchanged": "PASS",
+    "test_nothing_recorded": "PASS",
+    "test_peak_after_record": "FAIL AssertionError: ",
+    "test_peak_of_stored": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._peak = None",
+   "hidden": {
+    "test_no_new_lookups_when_unchanged": "PASS",
+    "test_nothing_recorded": "PASS",
+    "test_peak_after_record": "PASS",
+    "test_peak_of_stored": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._peak is None:\n-            self._peak = max((x.nights * rates.rate_for(x.hotel) for x in self._bookings), default=0)\n-        return self._peak\n+        return max((x.nights * rates.rate_for(x.hotel) for x in self._bookings), default=0)",
+   "hidden": {
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: ",
+    "test_nothing_recorded": "PASS",
+    "test_peak_after_record": "PASS",
+    "test_peak_of_stored": "PASS"
+   },
+   "visible": {
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: ",
+    "test_peak_after_record": "PASS"
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

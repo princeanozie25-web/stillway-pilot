@@ -1,0 +1,79 @@
+{
+ "id": "mut_drain__visits",
+ "template": "mut_drain",
+ "skin": "visits",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "MUT",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "visits.py": "\"\"\"Visit records.\"\"\"\n\n\nclass Visit:\n    def __init__(self, page, minutes):\n        self.page = page\n        self.minutes = minutes\n\n    def __repr__(self):\n        return \"Visit(%r, %r)\" % (self.page, self.minutes)\n\n\nROWS = [('home', 58), ('docs', 29), ('docs', 23), ('home', 10), ('home', 41), ('docs', 32)]\n\n\ndef load_visits():\n    \"\"\"Yield the stored visits one at a time.\"\"\"\n    for page, minutes in ROWS:\n        yield Visit(page, minutes)\n",
+  "podium.py": "\"\"\"Top visits by minutes.\"\"\"\n\n\ndef _take_largest(visits):\n    \"\"\"Remove and return the visit with the largest minutes.\"\"\"\n    best = max(visits, key=lambda x: x.minutes)\n    visits.remove(best)\n    return best\n\n\ndef podium(visits, places=3):\n    \"\"\"Return the top `places` visits by minutes, largest first. The caller's list is left as it was.\"\"\"\n    top = []\n    while visits and len(top) < places:\n        top.append(_take_largest(visits))\n    return top\n\n\ndef report(visits):\n    \"\"\"Return the podium values, the number of visits and every minutes.\"\"\"\n    return {\"podium\": [x.minutes for x in podium(visits)], \"count\": len(visits), \"all\": [x.minutes for x in visits]}\n\n\ndef page_names(visits):\n    \"\"\"Return the distinct page values, in first-seen order.\"\"\"\n    names = []\n    for x in visits:\n        if x.page not in names:\n            names.append(x.page)\n    return names\n",
+  "tests/test_visible.py": "from visits import load_visits, ROWS\nfrom podium import podium, report\n\n\ndef test_count():\n    assert report(list(load_visits()))[\"count\"] == len(ROWS)\n\n\ndef test_podium_values():\n    top = podium(list(load_visits()))\n    assert [x.minutes for x in top] == sorted((v for _, v in ROWS), reverse=True)[:3]\n",
+  "ISSUE.md": "report(my_visits) gives the right podium, but count is 3 and `all` has lost the largest values. I expected count 6 and every minutes in `all`.\n"
+ },
+ "code_hash": "324568c0c7c1eee2d84957c3e2f0e78ecea51d8d4db8b23025aa60041b9025be",
+ "logic_file": "podium.py",
+ "hidden": "from visits import load_visits, ROWS\nfrom podium import podium, report\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_count():\n    assert report(list(load_visits()))[\"count\"] == len(ROWS)\n\n\ndef test_all_values_kept():\n    assert report(list(load_visits()))[\"all\"] == VALUES\n\n\ndef test_podium_values():\n    top = podium(list(load_visits()))\n    assert [x.minutes for x in top] == sorted(VALUES, reverse=True)[:3]\n\n\ndef test_caller_list_unchanged():\n    data = list(load_visits())\n    podium(data, 2)\n    assert [x.minutes for x in data] == VALUES\n\n\ndef test_one_place():\n    assert [x.minutes for x in podium(list(load_visits()), 1)] == [max(VALUES)]\n",
+ "fix": {
+  "file": "podium.py",
+  "function": "podium",
+  "code": "def podium(visits, places=3):\n    \"\"\"Return the top `places` visits by minutes, largest first. The caller's list is left as it was.\"\"\"\n    visits = list(visits)\n    top = []\n    while visits and len(top) < places:\n        top.append(_take_largest(visits))\n    return top\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either the data is a one-shot iterator used twice, or podium() takes items out of the caller's list.",
+    "test": "from visits import load_visits\nfrom podium import podium\ndata = list(load_visits())\nprint(iter(data) is data, len(data))\npodium(data)\nprint(len(data))\n",
+    "predict": "False 6\n3",
+    "observed": "False 6\n3",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "It is a list, and podium() shrinks it. If podium() is given a copy, the caller's list should stay whole.",
+    "test": "from visits import load_visits\nfrom podium import podium\ndata = list(load_visits())\npodium(list(data))\nprint(len(data))\n",
+    "predict": "6",
+    "observed": "6",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Not a one-shot iterator: podium() removes items from the caller's list. Work on a copy inside podium()."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "The data may be a one-shot iterator that is used twice.",
+  "test": "from visits import load_visits\ndata = list(load_visits())\nprint(iter(data) is data)\n",
+  "predict": "True",
+  "observed": "False",
+  "seconds": 0.032
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count": "FAIL AssertionError: ",
+    "test_podium_values": "PASS"
+   },
+   "hidden": {
+    "test_all_values_kept": "FAIL AssertionError: ",
+    "test_caller_list_unchanged": "FAIL AssertionError: ",
+    "test_count": "FAIL AssertionError: ",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    visits = list(visits)",
+   "hidden": {
+    "test_all_values_kept": "PASS",
+    "test_caller_list_unchanged": "PASS",
+    "test_count": "PASS",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

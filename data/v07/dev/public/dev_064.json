@@ -1,0 +1,10 @@
+{
+ "id": "dev_064",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('lower', 20), ('lower', 29), ('upper', 21), ('upper', 33), ('river', 15), ('river', 30), ('lower', 10)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "podium.py": "\"\"\"Top harvests by kilos.\"\"\"\n\n\ndef _take_largest(harvests):\n    \"\"\"Remove and return the harvest with the largest kilos.\"\"\"\n    best = max(harvests, key=lambda x: x.kilos)\n    harvests.remove(best)\n    return best\n\n\ndef podium(harvests, places=3):\n    \"\"\"Return the top `places` harvests by kilos, largest first. The caller's list is left as it was.\"\"\"\n    top = []\n    while harvests and len(top) < places:\n        top.append(_take_largest(harvests))\n    return top\n\n\ndef report(harvests):\n    \"\"\"Return the podium values, the number of harvests and every kilos.\"\"\"\n    return {\"podium\": [x.kilos for x in podium(harvests)], \"count\": len(harvests), \"all\": [x.kilos for x in harvests]}\n\n\ndef describe_harvest(harvest):\n    \"\"\"Return a one-line description of a harvest.\"\"\"\n    return \"%s: %s\" % (harvest.field, harvest.kilos)\n",
+  "tests/test_visible.py": "from harvests import load_harvests, ROWS\nfrom podium import podium, report\n\n\ndef test_count():\n    assert report(list(load_harvests()))[\"count\"] == len(ROWS)\n\n\ndef test_podium_values():\n    top = podium(list(load_harvests()))\n    assert [x.kilos for x in top] == sorted((v for _, v in ROWS), reverse=True)[:3]\n",
+  "ISSUE.md": "report(my_harvests) gives the right podium, but count is 4 and `all` has lost the largest values. I expected count 7 and every kilos in `all`.\n"
+ },
+ "code_hash": "94210567a609c61f58d5a3a8e50ca5cd99d6a43663ef17469bf468dea067e39e"
+}

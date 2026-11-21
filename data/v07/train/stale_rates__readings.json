@@ -1,0 +1,99 @@
+{
+ "id": "stale_rates__readings",
+ "template": "stale_rates",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('east', 22), ('south', 9), ('north', 14), ('south', 48), ('south', 51), ('east', 39)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "rates.py": "\"\"\"Rate lookups. Every lookup is billed, so callers must not repeat them needlessly.\"\"\"\n\nLOOKUPS = 0\n_RATES = {'north': 4, 'south': 5, 'east': 4, 'west': 5}\n\n\ndef rate_for(sensor):\n    \"\"\"Return the rate for a sensor. Each call is billed and counted in LOOKUPS.\"\"\"\n    global LOOKUPS\n    LOOKUPS += 1\n    return _RATES[sensor]\n",
+  "fees.py": "\"\"\"Billing for readings. Rate lookups are billed, so the charge is remembered.\"\"\"\nimport rates\n\n\nclass ReadingBill:\n    def __init__(self):\n        self._readings = []\n        self._charge = None\n\n    def add(self, reading):\n        \"\"\"Add one reading to the bill.\"\"\"\n        self._readings.append(reading)\n\n    def charge(self):\n        \"\"\"Return the total charge: level times the rate for each reading's sensor.\n\n        The result is remembered: asking again without adding anything makes no new rate lookups.\n        \"\"\"\n        if self._charge is None:\n            self._charge = sum(x.level * rates.rate_for(x.sensor) for x in self._readings)\n        return self._charge\n",
+  "tests/test_visible.py": "import rates\nfrom readings import load_readings, ROWS\nfrom fees import ReadingBill\n\n\ndef test_charge_after_add():\n    rows = list(load_readings())\n    bill = ReadingBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = ReadingBill()\n    for x in load_readings():\n        bill.add(x)\n    bill.charge()\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n",
+  "ISSUE.md": "After I add a reading, charge() still returns the old charge.\n"
+ },
+ "code_hash": "7c713e2644034707da177d45f2201f94e2ac4fd3ffe16b2192015296dce93105",
+ "logic_file": "fees.py",
+ "hidden": "import rates\nfrom readings import load_readings, ROWS\nfrom fees import ReadingBill\n\nFULL = sum(v * rates._RATES[k] for k, v in ROWS)\n\n\ndef test_charge_after_add():\n    rows = list(load_readings())\n    bill = ReadingBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_every_add():\n    bill = ReadingBill()\n    running = 0\n    for x in load_readings():\n        bill.add(x)\n        running += x.level * rates._RATES[x.sensor]\n        assert bill.charge() == running\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = ReadingBill()\n    for x in load_readings():\n        bill.add(x)\n    assert bill.charge() == FULL\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n\n\ndef test_empty_bill():\n    assert ReadingBill().charge() == 0\n",
+ "fix": {
+  "file": "fees.py",
+  "function": "add",
+  "code": "def add(self, reading):\n    \"\"\"Add one reading to the bill.\"\"\"\n    self._readings.append(reading)\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return the total charge: level times the rate for each reading's sensor.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.level * rates.rate_for(x.sensor) for x in self._readings)\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "charge() may return a remembered value that add() does not refresh.",
+    "test": "import rates\nfrom readings import load_readings\nfrom fees import ReadingBill\nrows = list(load_readings())\nbill = ReadingBill()\nbill.add(rows[0])\nbill.charge()\nbill.add(rows[1])\nprint(bill.charge(), sum(x.level * rates._RATES[x.sensor] for x in bill._readings))\n",
+    "predict": "88 133",
+    "observed": "88 133",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to work the value out on every call, but here every lookup is billed and a repeat call must make none.",
+    "test": "import rates\nfrom readings import load_readings\nfrom fees import ReadingBill\nrows = list(load_readings())\nbill = ReadingBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nprint(rates.LOOKUPS)\nbill.charge()\nprint(rates.LOOKUPS)\n",
+    "predict": "2\n2",
+    "observed": "2\n2",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered charge. Lookups are billed, so keep the remembered value and clear it in add()."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If working the charge out again costs nothing, doing it on every call is enough.",
+  "test": "import rates\nfrom readings import load_readings\nfrom fees import ReadingBill\nrows = list(load_readings())\nbill = ReadingBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nbefore = rates.LOOKUPS\nbill._charge = None\nbill.charge()\nprint(rates.LOOKUPS - before)\n",
+  "predict": "0",
+  "observed": "2",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_charge_after_every_add": "FAIL AssertionError: ",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._charge = None",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.level * rates.rate_for(x.sensor) for x in self._readings)\n-        return self._charge\n+        return sum(x.level * rates.rate_for(x.sensor) for x in self._readings)",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_charge_after_add": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

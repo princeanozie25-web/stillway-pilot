@@ -1,0 +1,71 @@
+{
+ "id": "iter_shares__invoices",
+ "template": "iter_shares",
+ "skin": "invoices",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "invoices.py": "\"\"\"Invoice records.\"\"\"\n\n\nclass Invoice:\n    def __init__(self, client, due):\n        self.client = client\n        self.due = due\n\n    def __repr__(self):\n        return \"Invoice(%r, %r)\" % (self.client, self.due)\n\n\nROWS = [('ivory', 45), ('hale', 52), ('ivory', 33), ('ivory', 9), ('juno', 5), ('juno', 54), ('juno', 10)]\n\n\ndef load_invoices():\n    \"\"\"Yield the stored invoices one at a time.\"\"\"\n    for client, due in ROWS:\n        yield Invoice(client, due)\n",
+  "portions.py": "\"\"\"Share of the total due per invoice.\"\"\"\nfrom invoices import load_invoices\n\n\ndef due_shares(invoices):\n    \"\"\"Return each invoice's share of the total due, in order.\"\"\"\n    total = sum(x.due for x in invoices)\n    return [x.due / total for x in invoices]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored invoices.\"\"\"\n    return due_shares(load_invoices())\n\n\ndef top_share(invoices):\n    \"\"\"Return the largest share, or 0.0 when there are no invoices.\"\"\"\n    shares = due_shares(invoices)\n    return max(shares) if shares else 0.0\n\n\ndef describe_invoice(invoice):\n    \"\"\"Return a one-line description of a invoice.\"\"\"\n    return \"%s: %s\" % (invoice.client, invoice.due)\n\n\ndef client_names(invoices):\n    \"\"\"Return the distinct client values, in first-seen order.\"\"\"\n    names = []\n    for x in invoices:\n        if x.client not in names:\n            names.append(x.client)\n    return names\n",
+  "tests/test_visible.py": "from invoices import load_invoices, ROWS\nfrom portions import due_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = due_shares(list(load_invoices()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 7 stored invoices, so I expected 7 shares that add up to 1.\n"
+ },
+ "code_hash": "64471065e2ac98c5d2d88e82ffbe59c02c7e665b6456b3d2421a17ebac2ee0bd",
+ "logic_file": "portions.py",
+ "hidden": "from invoices import load_invoices, ROWS\nfrom portions import due_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = due_shares(load_invoices())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = due_shares(list(load_invoices()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_invoices()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert due_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "portions.py",
+  "function": "due_shares",
+  "code": "def due_shares(invoices):\n    \"\"\"Return each invoice's share of the total due, in order.\"\"\"\n    invoices = list(invoices)\n    total = sum(x.due for x in invoices)\n    return [x.due / total for x in invoices]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "load_invoices() may return a one-shot iterator that due_shares walks twice.",
+    "test": "from invoices import load_invoices\ndata = load_invoices()\nprint(iter(data) is data)\n",
+    "predict": "True",
+    "observed": "True",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "If the input is a list the second pass should work, so turning the input into a list once is enough.",
+    "test": "from invoices import load_invoices\nfrom portions import due_shares\nprint(len(due_shares(list(load_invoices()))))\n",
+    "predict": "7",
+    "observed": "7",
+    "seconds": 0.035
+   }
+  ],
+  "cause": "One-shot iterator walked twice. Turn the input into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    invoices = list(invoices)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

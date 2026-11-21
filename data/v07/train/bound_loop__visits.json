@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__visits",
+ "template": "bound_loop",
+ "skin": "visits",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "visits.py": "\"\"\"Visit records.\"\"\"\n\n\nclass Visit:\n    def __init__(self, page, minutes):\n        self.page = page\n        self.minutes = minutes\n\n    def __repr__(self):\n        return \"Visit(%r, %r)\" % (self.page, self.minutes)\n\n\nROWS = [('home', 56), ('blog', 49), ('docs', 35), ('docs', 9), ('shop', 52)]\n\n\ndef load_visits():\n    \"\"\"Yield the stored visits one at a time.\"\"\"\n    for page, minutes in ROWS:\n        yield Visit(page, minutes)\n",
+  "cumulative.py": "\"\"\"Running totals over visits.\"\"\"\n\n\ndef running_minutes(visits):\n    \"\"\"Return the running total of minutes after each visit, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(visits) - 1):\n        total += visits[i].minutes\n        out.append(total)\n    return out\n\n\ndef final_minutes(visits):\n    \"\"\"Return the total minutes of all visits, or 0 when there are none.\"\"\"\n    totals = running_minutes(visits)\n    return totals[-1] if totals else 0\n",
+  "tests/test_visible.py": "from visits import load_visits, ROWS\nfrom cumulative import running_minutes\n\n\ndef test_length():\n    assert len(running_minutes(list(load_visits()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_minutes([]) == []\n",
+  "ISSUE.md": "final_minutes(data) is too low: it leaves out the last visit. running_minutes(data) has 4 entries, not 5.\n"
+ },
+ "code_hash": "853d432b8f5f6054a6d5ab56e1b12b24f80d2d7cabd7080d9a1aee1ea7a32a5b",
+ "logic_file": "cumulative.py",
+ "hidden": "from visits import load_visits, ROWS\nfrom cumulative import running_minutes, final_minutes\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_minutes(list(load_visits()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_minutes(list(load_visits())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_minutes(list(load_visits()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_minutes(list(load_visits())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_minutes([]) == [] and final_minutes([]) == 0\n",
+ "fix": {
+  "file": "cumulative.py",
+  "function": "running_minutes",
+  "code": "def running_minutes(visits):\n    \"\"\"Return the running total of minutes after each visit, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(visits)):\n        total += visits[i].minutes\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one visit early.",
+    "test": "from visits import load_visits\nfrom cumulative import running_minutes\ndata = list(load_visits())\nprint(len(running_minutes(data)), len(data))\n",
+    "predict": "4 5",
+    "observed": "4 5",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "If the loop always stops one short, one visit gives nothing and two give one entry.",
+    "test": "from visits import load_visits\nfrom cumulative import running_minutes\ndata = list(load_visits())\nprint(running_minutes(data[:1]), running_minutes(data[:2]))\n",
+    "predict": "[] [56]",
+    "observed": "[] [56]",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(visits) - 1):\n+    for i in range(len(visits)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,99 @@
+{
+ "id": "stale_rates__invoices",
+ "template": "stale_rates",
+ "skin": "invoices",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "invoices.py": "\"\"\"Invoice records.\"\"\"\n\n\nclass Invoice:\n    def __init__(self, client, due):\n        self.client = client\n        self.due = due\n\n    def __repr__(self):\n        return \"Invoice(%r, %r)\" % (self.client, self.due)\n\n\nROWS = [('hale', 53), ('juno', 49), ('hale', 14), ('juno', 56), ('kite', 13), ('ivory', 3)]\n\n\ndef load_invoices():\n    \"\"\"Yield the stored invoices one at a time.\"\"\"\n    for client, due in ROWS:\n        yield Invoice(client, due)\n",
+  "rates.py": "\"\"\"Rate lookups. Every lookup is billed, so callers must not repeat them needlessly.\"\"\"\n\nLOOKUPS = 0\n_RATES = {'hale': 5, 'ivory': 2, 'juno': 2, 'kite': 3}\n\n\ndef rate_for(client):\n    \"\"\"Return the rate for a client. Each call is billed and counted in LOOKUPS.\"\"\"\n    global LOOKUPS\n    LOOKUPS += 1\n    return _RATES[client]\n",
+  "billing.py": "\"\"\"Billing for invoices. Rate lookups are billed, so the charge is remembered.\"\"\"\nimport rates\n\n\nclass InvoiceBill:\n    def __init__(self):\n        self._invoices = []\n        self._charge = None\n\n    def add(self, invoice):\n        \"\"\"Add one invoice to the bill.\"\"\"\n        self._invoices.append(invoice)\n\n    def charge(self):\n        \"\"\"Return the total charge: due times the rate for each invoice's client.\n\n        The result is remembered: asking again without adding anything makes no new rate lookups.\n        \"\"\"\n        if self._charge is None:\n            self._charge = sum(x.due * rates.rate_for(x.client) for x in self._invoices)\n        return self._charge\n\n\ndef group_by_client(invoices):\n    \"\"\"Return a dict from client to the list of invoices with that client.\"\"\"\n    groups = {}\n    for x in invoices:\n        groups.setdefault(x.client, []).append(x)\n    return groups\n\n\ndef client_names(invoices):\n    \"\"\"Return the distinct client values, in first-seen order.\"\"\"\n    names = []\n    for x in invoices:\n        if x.client not in names:\n            names.append(x.client)\n    return names\n",
+  "tests/test_visible.py": "import rates\nfrom invoices import load_invoices, ROWS\nfrom billing import InvoiceBill\n\n\ndef test_charge_after_add():\n    rows = list(load_invoices())\n    bill = InvoiceBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = InvoiceBill()\n    for x in load_invoices():\n        bill.add(x)\n    bill.charge()\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n",
+  "ISSUE.md": "After I add a invoice, charge() still returns the old charge.\n"
+ },
+ "code_hash": "f83980faac427bb272e65a25b873e3b7ed88b11ff4497dc9ced9e4d6cd4880f2",
+ "logic_file": "billing.py",
+ "hidden": "import rates\nfrom invoices import load_invoices, ROWS\nfrom billing import InvoiceBill\n\nFULL = sum(v * rates._RATES[k] for k, v in ROWS)\n\n\ndef test_charge_after_add():\n    rows = list(load_invoices())\n    bill = InvoiceBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_every_add():\n    bill = InvoiceBill()\n    running = 0\n    for x in load_invoices():\n        bill.add(x)\n        running += x.due * rates._RATES[x.client]\n        assert bill.charge() == running\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = InvoiceBill()\n    for x in load_invoices():\n        bill.add(x)\n    assert bill.charge() == FULL\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n\n\ndef test_empty_bill():\n    assert InvoiceBill().charge() == 0\n",
+ "fix": {
+  "file": "billing.py",
+  "function": "add",
+  "code": "def add(self, invoice):\n    \"\"\"Add one invoice to the bill.\"\"\"\n    self._invoices.append(invoice)\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return the total charge: due times the rate for each invoice's client.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.due * rates.rate_for(x.client) for x in self._invoices)\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "charge() may return a remembered value that add() does not refresh.",
+    "test": "import rates\nfrom invoices import load_invoices\nfrom billing import InvoiceBill\nrows = list(load_invoices())\nbill = InvoiceBill()\nbill.add(rows[0])\nbill.charge()\nbill.add(rows[1])\nprint(bill.charge(), sum(x.due * rates._RATES[x.client] for x in bill._invoices))\n",
+    "predict": "265 363",
+    "observed": "265 363",
+    "seconds": 0.037
+   },
+   {
+    "suspect": "The usual fix is to work the value out on every call, but here every lookup is billed and a repeat call must make none.",
+    "test": "import rates\nfrom invoices import load_invoices\nfrom billing import InvoiceBill\nrows = list(load_invoices())\nbill = InvoiceBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nprint(rates.LOOKUPS)\nbill.charge()\nprint(rates.LOOKUPS)\n",
+    "predict": "2\n2",
+    "observed": "2\n2",
+    "seconds": 0.037
+   }
+  ],
+  "cause": "Stale remembered charge. Lookups are billed, so keep the remembered value and clear it in add()."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If working the charge out again costs nothing, doing it on every call is enough.",
+  "test": "import rates\nfrom invoices import load_invoices\nfrom billing import InvoiceBill\nrows = list(load_invoices())\nbill = InvoiceBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nbefore = rates.LOOKUPS\nbill._charge = None\nbill.charge()\nprint(rates.LOOKUPS - before)\n",
+  "predict": "0",
+  "observed": "2",
+  "seconds": 0.037
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_charge_after_every_add": "FAIL AssertionError: ",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._charge = None",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.due * rates.rate_for(x.client) for x in self._invoices)\n-        return self._charge\n+        return sum(x.due * rates.rate_for(x.client) for x in self._invoices)",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_charge_after_add": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

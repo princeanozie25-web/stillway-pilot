@@ -1,0 +1,44 @@
+{
+ "id": "dev_046",
+ "source": "bound_lower__donations",
+ "template": "bound_lower",
+ "skin": "donations",
+ "group": "G2",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": null,
+ "hidden": "from donations import load_donations, ROWS\nfrom changes import pounds_changes, biggest_rise\n\nVALUES = [v for _, v in ROWS]\nEXPECTED = [VALUES[i] - VALUES[i - 1] for i in range(1, len(VALUES))]\n\n\ndef test_number_of_changes():\n    assert len(pounds_changes(list(load_donations()))) == len(ROWS) - 1\n\n\ndef test_values():\n    assert pounds_changes(list(load_donations())) == EXPECTED\n\n\ndef test_two_items():\n    assert pounds_changes(list(load_donations())[:2]) == EXPECTED[:1]\n\n\ndef test_biggest_rise():\n    assert biggest_rise(list(load_donations())) == max([c for c in EXPECTED if c > 0] or [0])\n\n\ndef test_single_item():\n    assert pounds_changes(list(load_donations())[:1]) == [] and pounds_changes([]) == []\n",
+ "fix": {
+  "file": "changes.py",
+  "function": "pounds_changes",
+  "code": "def pounds_changes(donations):\n    \"\"\"Return the change in pounds from each donation to the next: one entry for every neighbouring pair.\"\"\"\n    out = []\n    for i in range(1, len(donations)):\n        out.append(donations[i].pounds - donations[i - 1].pounds)\n    return out\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_number_of_changes": "FAIL AssertionError: ",
+    "test_single_item": "PASS"
+   },
+   "hidden": {
+    "test_biggest_rise": "PASS",
+    "test_number_of_changes": "FAIL AssertionError: ",
+    "test_single_item": "PASS",
+    "test_two_items": "FAIL AssertionError: ",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(2, len(donations)):\n+    for i in range(1, len(donations)):",
+   "hidden": {
+    "test_biggest_rise": "PASS",
+    "test_number_of_changes": "PASS",
+    "test_single_item": "PASS",
+    "test_two_items": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

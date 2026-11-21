@@ -1,0 +1,99 @@
+{
+ "id": "stale_rates__tickets",
+ "template": "stale_rates",
+ "skin": "tickets",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "tickets.py": "\"\"\"Ticket records.\"\"\"\n\n\nclass Ticket:\n    def __init__(self, team, hours):\n        self.team = team\n        self.hours = hours\n\n    def __repr__(self):\n        return \"Ticket(%r, %r)\" % (self.team, self.hours)\n\n\nROWS = [('web', 9), ('data', 49), ('web', 34), ('web', 26), ('data', 8), ('ops', 59)]\n\n\ndef load_tickets():\n    \"\"\"Yield the stored tickets one at a time.\"\"\"\n    for team, hours in ROWS:\n        yield Ticket(team, hours)\n",
+  "rates.py": "\"\"\"Rate lookups. Every lookup is billed, so callers must not repeat them needlessly.\"\"\"\n\nLOOKUPS = 0\n_RATES = {'ops': 5, 'web': 2, 'data': 5, 'core': 2}\n\n\ndef rate_for(team):\n    \"\"\"Return the rate for a team. Each call is billed and counted in LOOKUPS.\"\"\"\n    global LOOKUPS\n    LOOKUPS += 1\n    return _RATES[team]\n",
+  "charges.py": "\"\"\"Billing for tickets. Rate lookups are billed, so the charge is remembered.\"\"\"\nimport rates\n\n\nclass TicketBill:\n    def __init__(self):\n        self._tickets = []\n        self._charge = None\n\n    def add(self, ticket):\n        \"\"\"Add one ticket to the bill.\"\"\"\n        self._tickets.append(ticket)\n\n    def charge(self):\n        \"\"\"Return the total charge: hours times the rate for each ticket's team.\n\n        The result is remembered: asking again without adding anything makes no new rate lookups.\n        \"\"\"\n        if self._charge is None:\n            self._charge = sum(x.hours * rates.rate_for(x.team) for x in self._tickets)\n        return self._charge\n",
+  "tests/test_visible.py": "import rates\nfrom tickets import load_tickets, ROWS\nfrom charges import TicketBill\n\n\ndef test_charge_after_add():\n    rows = list(load_tickets())\n    bill = TicketBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = TicketBill()\n    for x in load_tickets():\n        bill.add(x)\n    bill.charge()\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n",
+  "ISSUE.md": "After I add a ticket, charge() still returns the old charge.\n"
+ },
+ "code_hash": "44b4afbc3c7ba36af6f6feeb7b3dc182a6400e6349d6225a6f5bcba635844fbd",
+ "logic_file": "charges.py",
+ "hidden": "import rates\nfrom tickets import load_tickets, ROWS\nfrom charges import TicketBill\n\nFULL = sum(v * rates._RATES[k] for k, v in ROWS)\n\n\ndef test_charge_after_add():\n    rows = list(load_tickets())\n    bill = TicketBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_every_add():\n    bill = TicketBill()\n    running = 0\n    for x in load_tickets():\n        bill.add(x)\n        running += x.hours * rates._RATES[x.team]\n        assert bill.charge() == running\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = TicketBill()\n    for x in load_tickets():\n        bill.add(x)\n    assert bill.charge() == FULL\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n\n\ndef test_empty_bill():\n    assert TicketBill().charge() == 0\n",
+ "fix": {
+  "file": "charges.py",
+  "function": "add",
+  "code": "def add(self, ticket):\n    \"\"\"Add one ticket to the bill.\"\"\"\n    self._tickets.append(ticket)\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return the total charge: hours times the rate for each ticket's team.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.hours * rates.rate_for(x.team) for x in self._tickets)\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "charge() may return a remembered value that add() does not refresh.",
+    "test": "import rates\nfrom tickets import load_tickets\nfrom charges import TicketBill\nrows = list(load_tickets())\nbill = TicketBill()\nbill.add(rows[0])\nbill.charge()\nbill.add(rows[1])\nprint(bill.charge(), sum(x.hours * rates._RATES[x.team] for x in bill._tickets))\n",
+    "predict": "18 263",
+    "observed": "18 263",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to work the value out on every call, but here every lookup is billed and a repeat call must make none.",
+    "test": "import rates\nfrom tickets import load_tickets\nfrom charges import TicketBill\nrows = list(load_tickets())\nbill = TicketBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nprint(rates.LOOKUPS)\nbill.charge()\nprint(rates.LOOKUPS)\n",
+    "predict": "2\n2",
+    "observed": "2\n2",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Stale remembered charge. Lookups are billed, so keep the remembered value and clear it in add()."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If working the charge out again costs nothing, doing it on every call is enough.",
+  "test": "import rates\nfrom tickets import load_tickets\nfrom charges import TicketBill\nrows = list(load_tickets())\nbill = TicketBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nbefore = rates.LOOKUPS\nbill._charge = None\nbill.charge()\nprint(rates.LOOKUPS - before)\n",
+  "predict": "0",
+  "observed": "2",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_charge_after_every_add": "FAIL AssertionError: ",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._charge = None",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.hours * rates.rate_for(x.team) for x in self._tickets)\n-        return self._charge\n+        return sum(x.hours * rates.rate_for(x.team) for x in self._tickets)",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_charge_after_add": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

@@ -1,0 +1,99 @@
+{
+ "id": "iter_window__samples",
+ "template": "iter_window",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b2', 43), ('b1', 30), ('b2', 29), ('b3', 19), ('b2', 12), ('b2', 44)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n\n\ndef feed_samples():\n    \"\"\"Endless feed of samples: repeats the stored rows for ever.\"\"\"\n    while True:\n        for batch, dose in ROWS:\n            yield Sample(batch, dose)\n",
+  "windows.py": "\"\"\"Windows over the samples feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` samples from the feed and return (peak dose, list of dose).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.dose for x in window)\n    values = [x.dose for x in window]\n    return peak, values\n\n\ndef describe_sample(sample):\n    \"\"\"Return a one-line description of a sample.\"\"\"\n    return \"%s: %s\" % (sample.batch, sample.dose)\n",
+  "tests/test_visible.py": "from samples import feed_samples, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_samples(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_samples()\n    summarize_window(feed, 2)\n    assert next(feed).dose == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_samples(), 3) returns the right peak but an empty list of values. I expected the three dose values.\n"
+ },
+ "code_hash": "d04f5dd39e4114381970b0635b7c2f2c0625a9f4942221c512b8cd9af391a7fd",
+ "logic_file": "windows.py",
+ "hidden": "from samples import feed_samples, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_samples(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_peak():\n    peak, values = summarize_window(feed_samples(), 4)\n    assert peak == max(v for _, v in ROWS[:4])\n\n\ndef test_reads_only_the_window():\n    feed = feed_samples()\n    summarize_window(feed, 2)\n    assert next(feed).dose == ROWS[2][1]\n\n\ndef test_consecutive_windows():\n    feed = feed_samples()\n    summarize_window(feed, 2)\n    peak, values = summarize_window(feed, 2)\n    assert values == [v for _, v in ROWS[2:4]]\n",
+ "fix": {
+  "file": "windows.py",
+  "function": "summarize_window",
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` samples from the feed and return (peak dose, list of dose).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = list(itertools.islice(feed, size))\n    peak = max(x.dose for x in window)\n    values = [x.dose for x in window]\n    return peak, values\n"
+ },
+ "oldfix": {
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` samples from the feed and return (peak dose, list of dose).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    feed = list(feed)\n    window = itertools.islice(feed, size)\n    peak = max(x.dose for x in window)\n    values = [x.dose for x in window]\n    return peak, values\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window is read once for the peak and again for the values; the second read may find it used up.",
+    "test": "from samples import feed_samples\nfrom windows import summarize_window\nprint(summarize_window(feed_samples(), 3))\n",
+    "predict": "(43, [])",
+    "observed": "(43, [])",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to turn the input into a list, but that only works if the feed ends.",
+    "test": "import itertools\nfrom samples import feed_samples\nprint(len(list(itertools.islice(feed_samples(), 1000))))\n",
+    "predict": "1000",
+    "observed": "1000",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The islice window is a one-shot iterator walked twice. The feed never ends, so turn only the window into a list."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If the feed is finite, turning the whole input into a list once is enough.",
+  "test": "import itertools\nfrom samples import feed_samples\nprint(len(list(itertools.islice(feed_samples(), 1000))))\n",
+  "predict": "6",
+  "observed": "1000",
+  "seconds": 0.034
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_consecutive_windows": "FAIL AssertionError: ",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    window = itertools.islice(feed, size)\n+    window = list(itertools.islice(feed, size))",
+   "hidden": {
+    "test_consecutive_windows": "PASS",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    feed = list(feed)",
+   "hidden": {
+    "test_values": "FAIL TIMEOUT after 5.0 s",
+    "test_peak": "FAIL TIMEOUT after 5.0 s",
+    "test_reads_only_the_window": "FAIL TIMEOUT after 5.0 s",
+    "test_consecutive_windows": "FAIL TIMEOUT after 5.0 s"
+   },
+   "visible": {
+    "test_reads_only_the_window": "FAIL TimeoutError: test took longer than 2 s",
+    "test_values": "FAIL TimeoutError: test took longer than 2 s"
+   },
+   "regressions": [
+    "test_peak",
+    "test_reads_only_the_window"
+   ],
+   "visible_regressions": [
+    "test_reads_only_the_window"
+   ]
+  }
+ }
+}

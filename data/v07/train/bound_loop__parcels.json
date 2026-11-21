@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__parcels",
+ "template": "bound_loop",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('york', 41), ('york', 27), ('york', 56), ('leeds', 11), ('york', 32), ('hull', 34)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n",
+  "cumulative.py": "\"\"\"Running totals over parcels.\"\"\"\n\n\ndef running_grams(parcels):\n    \"\"\"Return the running total of grams after each parcel, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(parcels) - 1):\n        total += parcels[i].grams\n        out.append(total)\n    return out\n\n\ndef final_grams(parcels):\n    \"\"\"Return the total grams of all parcels, or 0 when there are none.\"\"\"\n    totals = running_grams(parcels)\n    return totals[-1] if totals else 0\n",
+  "tests/test_visible.py": "from parcels import load_parcels, ROWS\nfrom cumulative import running_grams\n\n\ndef test_length():\n    assert len(running_grams(list(load_parcels()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_grams([]) == []\n",
+  "ISSUE.md": "final_grams(data) is too low: it leaves out the last parcel. running_grams(data) has 5 entries, not 6.\n"
+ },
+ "code_hash": "03f4a8d4998ad05037015cddd5364ff3a2394678369c38422dc27e60ef1b18cc",
+ "logic_file": "cumulative.py",
+ "hidden": "from parcels import load_parcels, ROWS\nfrom cumulative import running_grams, final_grams\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_grams(list(load_parcels()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_grams(list(load_parcels())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_grams(list(load_parcels()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_grams(list(load_parcels())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_grams([]) == [] and final_grams([]) == 0\n",
+ "fix": {
+  "file": "cumulative.py",
+  "function": "running_grams",
+  "code": "def running_grams(parcels):\n    \"\"\"Return the running total of grams after each parcel, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(parcels)):\n        total += parcels[i].grams\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one parcel early.",
+    "test": "from parcels import load_parcels\nfrom cumulative import running_grams\ndata = list(load_parcels())\nprint(len(running_grams(data)), len(data))\n",
+    "predict": "5 6",
+    "observed": "5 6",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "If the loop always stops one short, one parcel gives nothing and two give one entry.",
+    "test": "from parcels import load_parcels\nfrom cumulative import running_grams\ndata = list(load_parcels())\nprint(running_grams(data[:1]), running_grams(data[:2]))\n",
+    "predict": "[] [41]",
+    "observed": "[] [41]",
+    "seconds": 0.035
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(parcels) - 1):\n+    for i in range(len(parcels)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

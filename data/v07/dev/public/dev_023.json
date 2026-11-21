@@ -1,0 +1,10 @@
+{
+ "id": "dev_023",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('omar', 53), ('mia', 45), ('pia', 10), ('pia', 46), ('noor', 8)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "positions.py": "\"\"\"Position windows over donations.\"\"\"\n\n\ndef pounds_between(donations, low, high):\n    \"\"\"Return the pounds of the donations at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.pounds for x in donations[low - 1:high - 1]]\n\n\ndef first_poundss(donations, n):\n    \"\"\"Return the pounds of the first n donations.\"\"\"\n    return pounds_between(donations, 1, n)\n\n\ndef describe_donation(donation):\n    \"\"\"Return a one-line description of a donation.\"\"\"\n    return \"%s: %s\" % (donation.donor, donation.pounds)\n\n\ndef group_by_donor(donations):\n    \"\"\"Return a dict from donor to the list of donations with that donor.\"\"\"\n    groups = {}\n    for x in donations:\n        groups.setdefault(x.donor, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom positions import pounds_between\n\n\ndef test_three_positions():\n    data = list(load_donations())\n    assert pounds_between(data, 2, 4) == [v for _, v in ROWS[1:4]]\n\n\ndef test_low_above_high():\n    data = list(load_donations())\n    assert pounds_between(data, 3, 2) == []\n",
+  "ISSUE.md": "pounds_between(data, 2, 4) returns two values. I expected three, for positions 2, 3 and 4: the last one is missing.\n"
+ },
+ "code_hash": "5d9b1da46d5d33b9dfd15402b04231f354ca19d9decc3b6fd4724bd6590f3066"
+}

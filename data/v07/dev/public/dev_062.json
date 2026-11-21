@@ -1,0 +1,10 @@
+{
+ "id": "dev_062",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('city', 28), ('rovers', 38), ('rovers', 13), ('united', 42), ('united', 16), ('city', 36)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "captions.py": "\"\"\"Labels for fixtures.\"\"\"\n\n\ndef label_fixtures(names, fixtures):\n    \"\"\"Return (lookup, lines): a name -> goals dict and one 'name: goals' line per fixture.\"\"\"\n    pairs = zip(names, (x.goals for x in fixtures))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n\n\ndef largest_goals(fixtures):\n    \"\"\"Return the largest goals, or None when there are no fixtures.\"\"\"\n    values = [x.goals for x in fixtures]\n    return max(values) if values else None\n\n\ndef describe_fixture(fixture):\n    \"\"\"Return a one-line description of a fixture.\"\"\"\n    return \"%s: %s\" % (fixture.club, fixture.goals)\n",
+  "tests/test_visible.py": "from fixtures import load_fixtures, ROWS\nfrom captions import label_fixtures\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_fixtures(NAMES, load_fixtures())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_fixtures(NAMES, load_fixtures())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_fixtures gives me the lookup, but `lines` is always empty. I expected one line per fixture.\n"
+ },
+ "code_hash": "7d30119667e749b098ad78d5609a0b7804a8eb82e8a5fba594f564d1cb54b298"
+}

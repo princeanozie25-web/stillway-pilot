@@ -1,0 +1,69 @@
+{
+ "id": "stale_total__tickets",
+ "template": "stale_total",
+ "skin": "tickets",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "tickets.py": "\"\"\"Ticket records.\"\"\"\n\n\nclass Ticket:\n    def __init__(self, team, hours):\n        self.team = team\n        self.hours = hours\n\n    def __repr__(self):\n        return \"Ticket(%r, %r)\" % (self.team, self.hours)\n\n\nROWS = [('ops', 58), ('ops', 44), ('web', 29), ('core', 12), ('core', 38), ('core', 40), ('web', 15)]\n\n\ndef load_tickets():\n    \"\"\"Yield the stored tickets one at a time.\"\"\"\n    for team, hours in ROWS:\n        yield Ticket(team, hours)\n",
+  "journal.py": "\"\"\"A book of tickets with a cached total.\"\"\"\n\n\nclass TicketBook:\n    def __init__(self):\n        self._tickets = []\n        self._total = None\n\n    def add(self, ticket):\n        \"\"\"Add one ticket to the book.\"\"\"\n        self._tickets.append(ticket)\n\n    def total(self):\n        \"\"\"Return the total hours of the tickets in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.hours for x in self._tickets)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many tickets the book holds.\"\"\"\n        return len(self._tickets)\n\n\ndef describe_ticket(ticket):\n    \"\"\"Return a one-line description of a ticket.\"\"\"\n    return \"%s: %s\" % (ticket.team, ticket.hours)\n",
+  "tests/test_visible.py": "from tickets import load_tickets, ROWS\nfrom journal import TicketBook\n\n\ndef test_total_after_add():\n    rows = list(load_tickets())\n    book = TicketBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = TicketBook()\n    for x in load_tickets():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a ticket, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "4ba2513cf342dc1962d65de55f293c31a59a7a3a153978ea8f9590775ec20129",
+ "logic_file": "journal.py",
+ "hidden": "from tickets import load_tickets, ROWS\nfrom journal import TicketBook\n\n\ndef test_total_after_add():\n    rows = list(load_tickets())\n    book = TicketBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = TicketBook()\n    running = 0\n    for x in load_tickets():\n        book.add(x)\n        running += x.hours\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert TicketBook().total() == 0\n\n\ndef test_count():\n    book = TicketBook()\n    for x in load_tickets():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "journal.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total hours of the tickets in the book.\"\"\"\n    return sum(x.hours for x in self._tickets)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "total() may return a remembered value that add() does not refresh.",
+    "test": "from tickets import load_tickets\nfrom journal import TicketBook\nrows = list(load_tickets())\nbook = TicketBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nprint(book.total(), sum(x.hours for x in book._tickets))\n",
+    "predict": "58 102",
+    "observed": "58 102",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "If the remembered value is cleared, total() should give the right answer, so working it out on every call is enough.",
+    "test": "from tickets import load_tickets\nfrom journal import TicketBook\nrows = list(load_tickets())\nbook = TicketBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nbook._total = None\nprint(book.total())\n",
+    "predict": "102",
+    "observed": "102",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered total. Work the total out from the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.hours for x in self._tickets)\n-        return self._total\n+        return sum(x.hours for x in self._tickets)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

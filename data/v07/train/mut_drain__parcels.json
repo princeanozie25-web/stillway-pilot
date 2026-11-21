@@ -1,0 +1,79 @@
+{
+ "id": "mut_drain__parcels",
+ "template": "mut_drain",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "MUT",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('york', 26), ('leeds', 24), ('bath', 45), ('hull', 3), ('york', 44)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n",
+  "podium.py": "\"\"\"Top parcels by grams.\"\"\"\n\n\ndef _take_largest(parcels):\n    \"\"\"Remove and return the parcel with the largest grams.\"\"\"\n    best = max(parcels, key=lambda x: x.grams)\n    parcels.remove(best)\n    return best\n\n\ndef podium(parcels, places=3):\n    \"\"\"Return the top `places` parcels by grams, largest first. The caller's list is left as it was.\"\"\"\n    top = []\n    while parcels and len(top) < places:\n        top.append(_take_largest(parcels))\n    return top\n\n\ndef report(parcels):\n    \"\"\"Return the podium values, the number of parcels and every grams.\"\"\"\n    return {\"podium\": [x.grams for x in podium(parcels)], \"count\": len(parcels), \"all\": [x.grams for x in parcels]}\n\n\ndef group_by_depot(parcels):\n    \"\"\"Return a dict from depot to the list of parcels with that depot.\"\"\"\n    groups = {}\n    for x in parcels:\n        groups.setdefault(x.depot, []).append(x)\n    return groups\n\n\ndef largest_grams(parcels):\n    \"\"\"Return the largest grams, or None when there are no parcels.\"\"\"\n    values = [x.grams for x in parcels]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from parcels import load_parcels, ROWS\nfrom podium import podium, report\n\n\ndef test_count():\n    assert report(list(load_parcels()))[\"count\"] == len(ROWS)\n\n\ndef test_podium_values():\n    top = podium(list(load_parcels()))\n    assert [x.grams for x in top] == sorted((v for _, v in ROWS), reverse=True)[:3]\n",
+  "ISSUE.md": "report(my_parcels) gives the right podium, but count is 2 and `all` has lost the largest values. I expected count 5 and every grams in `all`.\n"
+ },
+ "code_hash": "1c80cf6f20c89900f15d371271b7922c53f99f88c3b34350e6a1f4b4c9c048bf",
+ "logic_file": "podium.py",
+ "hidden": "from parcels import load_parcels, ROWS\nfrom podium import podium, report\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_count():\n    assert report(list(load_parcels()))[\"count\"] == len(ROWS)\n\n\ndef test_all_values_kept():\n    assert report(list(load_parcels()))[\"all\"] == VALUES\n\n\ndef test_podium_values():\n    top = podium(list(load_parcels()))\n    assert [x.grams for x in top] == sorted(VALUES, reverse=True)[:3]\n\n\ndef test_caller_list_unchanged():\n    data = list(load_parcels())\n    podium(data, 2)\n    assert [x.grams for x in data] == VALUES\n\n\ndef test_one_place():\n    assert [x.grams for x in podium(list(load_parcels()), 1)] == [max(VALUES)]\n",
+ "fix": {
+  "file": "podium.py",
+  "function": "podium",
+  "code": "def podium(parcels, places=3):\n    \"\"\"Return the top `places` parcels by grams, largest first. The caller's list is left as it was.\"\"\"\n    parcels = list(parcels)\n    top = []\n    while parcels and len(top) < places:\n        top.append(_take_largest(parcels))\n    return top\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either the data is a one-shot iterator used twice, or podium() takes items out of the caller's list.",
+    "test": "from parcels import load_parcels\nfrom podium import podium\ndata = list(load_parcels())\nprint(iter(data) is data, len(data))\npodium(data)\nprint(len(data))\n",
+    "predict": "False 5\n2",
+    "observed": "False 5\n2",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "It is a list, and podium() shrinks it. If podium() is given a copy, the caller's list should stay whole.",
+    "test": "from parcels import load_parcels\nfrom podium import podium\ndata = list(load_parcels())\npodium(list(data))\nprint(len(data))\n",
+    "predict": "5",
+    "observed": "5",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Not a one-shot iterator: podium() removes items from the caller's list. Work on a copy inside podium()."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "The data may be a one-shot iterator that is used twice.",
+  "test": "from parcels import load_parcels\ndata = list(load_parcels())\nprint(iter(data) is data)\n",
+  "predict": "True",
+  "observed": "False",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count": "FAIL AssertionError: ",
+    "test_podium_values": "PASS"
+   },
+   "hidden": {
+    "test_all_values_kept": "FAIL AssertionError: ",
+    "test_caller_list_unchanged": "FAIL AssertionError: ",
+    "test_count": "FAIL AssertionError: ",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    parcels = list(parcels)",
+   "hidden": {
+    "test_all_values_kept": "PASS",
+    "test_caller_list_unchanged": "PASS",
+    "test_count": "PASS",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

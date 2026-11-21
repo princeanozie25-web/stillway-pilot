@@ -1,0 +1,10 @@
+{
+ "id": "dev_006",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('grand', 15), ('grand', 57), ('plaza', 17), ('plaza', 49), ('lodge', 43), ('grand', 53)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "portions.py": "\"\"\"Share of the total nights per booking.\"\"\"\nfrom bookings import load_bookings\n\n\ndef nights_shares(bookings):\n    \"\"\"Return each booking's share of the total nights, in order.\"\"\"\n    total = sum(x.nights for x in bookings)\n    return [x.nights / total for x in bookings]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored bookings.\"\"\"\n    return nights_shares(load_bookings())\n\n\ndef top_share(bookings):\n    \"\"\"Return the largest share, or 0.0 when there are no bookings.\"\"\"\n    shares = nights_shares(bookings)\n    return max(shares) if shares else 0.0\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom portions import nights_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = nights_shares(list(load_bookings()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 6 stored bookings, so I expected 6 shares that add up to 1.\n"
+ },
+ "code_hash": "1b9ff6585e21ba89eac0226b3c61cd5a91692960268b2cdf60dfef58b40f59a2"
+}

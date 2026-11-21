@@ -1,0 +1,10 @@
+{
+ "id": "dev_000",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('town', 21), ('united', 8), ('town', 30), ('united', 58), ('rovers', 4)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n\n\ndef feed_fixtures():\n    \"\"\"Endless feed of fixtures: repeats the stored rows for ever.\"\"\"\n    while True:\n        for club, goals in ROWS:\n            yield Fixture(club, goals)\n",
+  "splits.py": "\"\"\"Halves of a window over the fixtures feed.\"\"\"\nimport itertools\n\n\ndef split_window(feed, size):\n    \"\"\"Read the next `size` fixtures from the feed and return their goals as (first half, second half).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = [x.goals for x in itertools.islice(feed, size)]\n    half = size // 2\n    return window[:half], window[size:]\n\n\ndef describe_fixture(fixture):\n    \"\"\"Return a one-line description of a fixture.\"\"\"\n    return \"%s: %s\" % (fixture.club, fixture.goals)\n",
+  "tests/test_visible.py": "from fixtures import feed_fixtures, ROWS\nfrom splits import split_window\n\n\ndef test_second_half():\n    first, second = split_window(feed_fixtures(), 4)\n    assert second == [v for _, v in ROWS[2:4]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_fixtures()\n    split_window(feed, 2)\n    assert next(feed).goals == ROWS[2][1]\n",
+  "ISSUE.md": "split_window(feed_fixtures(), 4) returns the first half, but the second half is always empty. I expected two values in each.\n"
+ },
+ "code_hash": "7f40676a414c9ac43b9405901fa846e072d5c40f4f22fd1d7b804f4b2915317c"
+}

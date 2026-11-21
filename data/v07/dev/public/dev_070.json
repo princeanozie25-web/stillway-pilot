@@ -1,0 +1,10 @@
+{
+ "id": "dev_070",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('upper', 27), ('lower', 53), ('lower', 47), ('lower', 55), ('hill', 11)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "progress.py": "\"\"\"Running totals over harvests.\"\"\"\n\n\ndef running_kilos(harvests):\n    \"\"\"Return the running total of kilos after each harvest, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(harvests) - 1):\n        total += harvests[i].kilos\n        out.append(total)\n    return out\n\n\ndef final_kilos(harvests):\n    \"\"\"Return the total kilos of all harvests, or 0 when there are none.\"\"\"\n    totals = running_kilos(harvests)\n    return totals[-1] if totals else 0\n\n\ndef field_names(harvests):\n    \"\"\"Return the distinct field values, in first-seen order.\"\"\"\n    names = []\n    for x in harvests:\n        if x.field not in names:\n            names.append(x.field)\n    return names\n",
+  "tests/test_visible.py": "from harvests import load_harvests, ROWS\nfrom progress import running_kilos\n\n\ndef test_length():\n    assert len(running_kilos(list(load_harvests()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_kilos([]) == []\n",
+  "ISSUE.md": "final_kilos(data) is too low: it leaves out the last harvest. running_kilos(data) has 4 entries, not 5.\n"
+ },
+ "code_hash": "05fd24727dcc269935fae3179562b4d14bdb32b96a4081c48f3c811742f16d71"
+}

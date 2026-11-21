@@ -1,0 +1,44 @@
+{
+ "id": "dev_051",
+ "source": "bound_lower__bookings",
+ "template": "bound_lower",
+ "skin": "bookings",
+ "group": "G2",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": null,
+ "hidden": "from bookings import load_bookings, ROWS\nfrom deltas import nights_changes, biggest_rise\n\nVALUES = [v for _, v in ROWS]\nEXPECTED = [VALUES[i] - VALUES[i - 1] for i in range(1, len(VALUES))]\n\n\ndef test_number_of_changes():\n    assert len(nights_changes(list(load_bookings()))) == len(ROWS) - 1\n\n\ndef test_values():\n    assert nights_changes(list(load_bookings())) == EXPECTED\n\n\ndef test_two_items():\n    assert nights_changes(list(load_bookings())[:2]) == EXPECTED[:1]\n\n\ndef test_biggest_rise():\n    assert biggest_rise(list(load_bookings())) == max([c for c in EXPECTED if c > 0] or [0])\n\n\ndef test_single_item():\n    assert nights_changes(list(load_bookings())[:1]) == [] and nights_changes([]) == []\n",
+ "fix": {
+  "file": "deltas.py",
+  "function": "nights_changes",
+  "code": "def nights_changes(bookings):\n    \"\"\"Return the change in nights from each booking to the next: one entry for every neighbouring pair.\"\"\"\n    out = []\n    for i in range(1, len(bookings)):\n        out.append(bookings[i].nights - bookings[i - 1].nights)\n    return out\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_number_of_changes": "FAIL AssertionError: ",
+    "test_single_item": "PASS"
+   },
+   "hidden": {
+    "test_biggest_rise": "PASS",
+    "test_number_of_changes": "FAIL AssertionError: ",
+    "test_single_item": "PASS",
+    "test_two_items": "FAIL AssertionError: ",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(2, len(bookings)):\n+    for i in range(1, len(bookings)):",
+   "hidden": {
+    "test_biggest_rise": "PASS",
+    "test_number_of_changes": "PASS",
+    "test_single_item": "PASS",
+    "test_two_items": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

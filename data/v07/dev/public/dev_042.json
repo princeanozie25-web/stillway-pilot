@@ -1,0 +1,10 @@
+{
+ "id": "dev_042",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('noor', 6), ('noor', 36), ('mia', 23), ('pia', 14), ('noor', 40), ('mia', 9)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "summary.py": "\"\"\"Summary of donations.\"\"\"\n\n\nclass DonationSummary:\n    def __init__(self, donations):\n        self._donations = donations\n\n    def count(self):\n        \"\"\"Return how many donations there are.\"\"\"\n        return sum(1 for _ in self._donations)\n\n    def mean_pounds(self):\n        \"\"\"Return the mean pounds, or 0.0 when there are no donations.\"\"\"\n        total = sum(x.pounds for x in self._donations)\n        n = self.count()\n        return total / n if n else 0.0\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom summary import DonationSummary\n\nMEAN = sum(v for _, v in ROWS) / len(ROWS)\n\n\ndef test_mean_of_stored():\n    assert abs(DonationSummary(load_donations()).mean_pounds() - MEAN) < 1e-9\n\n\ndef test_count_of_list():\n    assert DonationSummary(list(load_donations())).count() == len(ROWS)\n",
+  "ISSUE.md": "DonationSummary(load_donations()).mean_pounds() returns 0.0, although the stored donations have a mean pounds of 21.3333.\n"
+ },
+ "code_hash": "00fc1cf5fed7dd8b16ce72f7182d64e08aaee0db634638e26d16053660691032"
+}

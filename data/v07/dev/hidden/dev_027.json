@@ -1,0 +1,68 @@
+{
+ "id": "dev_027",
+ "source": "bound_pages__bookings",
+ "template": "bound_pages",
+ "skin": "bookings",
+ "group": "G1",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "exception",
+ "hidden": "from bookings import load_bookings, ROWS\nfrom pages import all_pages, page_count\n\n\ndef test_last_items_present():\n    pages = all_pages(list(load_bookings()), 2)\n    assert [x.nights for p in pages for x in p] == [v for _, v in ROWS]\n\n\ndef test_partial_page_counted():\n    assert page_count(7, 3) == 3 and page_count(1, 3) == 1\n\n\ndef test_exact_fit():\n    assert page_count(6, 3) == 2 and page_count(3, 3) == 1\n\n\ndef test_no_empty_page():\n    assert all(len(p) > 0 for p in all_pages(list(load_bookings())[:4], 2))\n\n\ndef test_no_items():\n    assert page_count(0, 3) == 0\n",
+ "fix": {
+  "file": "pages.py",
+  "function": "page_count",
+  "code": "def page_count(n_items, page_size):\n    \"\"\"Return how many pages are needed to show n_items, page_size to a page.\"\"\"\n    return (n_items + page_size - 1) // page_size\n"
+ },
+ "oldfix": {
+  "code": "def page_count(n_items, page_size):\n    \"\"\"Return how many pages are needed to show n_items, page_size to a page.\"\"\"\n    return n_items // page_size + 1\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_exact_fit": "PASS",
+    "test_last_items_present": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_exact_fit": "PASS",
+    "test_last_items_present": "FAIL AssertionError: ",
+    "test_no_empty_page": "PASS",
+    "test_no_items": "PASS",
+    "test_partial_page_counted": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return n_items // page_size\n+    return (n_items + page_size - 1) // page_size",
+   "hidden": {
+    "test_exact_fit": "PASS",
+    "test_last_items_present": "PASS",
+    "test_no_empty_page": "PASS",
+    "test_no_items": "PASS",
+    "test_partial_page_counted": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-    return n_items // page_size\n+    return n_items // page_size + 1",
+   "hidden": {
+    "test_exact_fit": "FAIL AssertionError: ",
+    "test_last_items_present": "PASS",
+    "test_no_empty_page": "FAIL AssertionError: ",
+    "test_no_items": "FAIL AssertionError: ",
+    "test_partial_page_counted": "PASS"
+   },
+   "visible": {
+    "test_exact_fit": "FAIL AssertionError: ",
+    "test_last_items_present": "PASS"
+   },
+   "regressions": [
+    "test_exact_fit",
+    "test_no_empty_page",
+    "test_no_items"
+   ],
+   "visible_regressions": [
+    "test_exact_fit"
+   ]
+  }
+ }
+}

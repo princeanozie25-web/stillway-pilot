@@ -1,0 +1,42 @@
+{
+ "id": "dev_053",
+ "source": "iter_zip__harvests",
+ "template": "iter_zip",
+ "skin": "harvests",
+ "group": "G1",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "hidden": "from harvests import load_harvests, ROWS\nfrom naming import label_harvests\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_harvests(NAMES, load_harvests())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_harvests(NAMES, list(load_harvests()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_harvests(NAMES, load_harvests())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_harvests([], load_harvests()) == ({}, [])\n",
+ "fix": {
+  "file": "naming.py",
+  "function": "label_harvests",
+  "code": "def label_harvests(names, harvests):\n    \"\"\"Return (lookup, lines): a name -> kilos dict and one 'name: kilos' line per harvest.\"\"\"\n    pairs = list(zip(names, (x.kilos for x in harvests)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.kilos for x in harvests))\n+    pairs = list(zip(names, (x.kilos for x in harvests)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_026",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('grand', 13), ('harbour', 22), ('grand', 49), ('plaza', 16), ('plaza', 14)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "ordering.py": "\"\"\"Codes of bookings in order.\"\"\"\n\n\ndef ranked_codes(bookings):\n    \"\"\"Return the nights of each booking as a text code, from the lowest number to the highest.\"\"\"\n    return sorted(str(x.nights) for x in bookings)\n\n\ndef code_of(booking):\n    \"\"\"Return the text code of one booking.\"\"\"\n    return str(booking.nights)\n\n\ndef hotel_names(bookings):\n    \"\"\"Return the distinct hotel values, in first-seen order.\"\"\"\n    names = []\n    for x in bookings:\n        if x.hotel not in names:\n            names.append(x.hotel)\n    return names\n\n\ndef describe_booking(booking):\n    \"\"\"Return a one-line description of a booking.\"\"\"\n    return \"%s: %s\" % (booking.hotel, booking.nights)\n",
+  "tests/test_visible.py": "from bookings import Booking\nfrom ordering import ranked_codes\n\n\ndef test_nine_before_ten():\n    assert ranked_codes([Booking(\"a\", 10), Booking(\"b\", 9)]) == [\"9\", \"10\"]\n\n\ndef test_single_digits():\n    assert ranked_codes([Booking(\"a\", 3), Booking(\"b\", 1), Booking(\"c\", 2)]) == [\"1\", \"2\", \"3\"]\n",
+  "ISSUE.md": "ranked_codes() puts '10' before '9'. I expected the codes in number order.\n"
+ },
+ "code_hash": "50a780267edee71f734b442067cd763a18a0abaa996de8e856f8291080557692"
+}

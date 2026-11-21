@@ -1,0 +1,69 @@
+{
+ "id": "iter_zip__samples",
+ "template": "iter_zip",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b4', 46), ('b1', 45), ('b2', 40), ('b2', 33), ('b4', 24), ('b3', 25)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n",
+  "captions.py": "\"\"\"Labels for samples.\"\"\"\n\n\ndef label_samples(names, samples):\n    \"\"\"Return (lookup, lines): a name -> dose dict and one 'name: dose' line per sample.\"\"\"\n    pairs = zip(names, (x.dose for x in samples))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n\n\ndef largest_dose(samples):\n    \"\"\"Return the largest dose, or None when there are no samples.\"\"\"\n    values = [x.dose for x in samples]\n    return max(values) if values else None\n\n\ndef group_by_batch(samples):\n    \"\"\"Return a dict from batch to the list of samples with that batch.\"\"\"\n    groups = {}\n    for x in samples:\n        groups.setdefault(x.batch, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from samples import load_samples, ROWS\nfrom captions import label_samples\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_samples(NAMES, load_samples())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_samples(NAMES, load_samples())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_samples gives me the lookup, but `lines` is always empty. I expected one line per sample.\n"
+ },
+ "code_hash": "f291e46e3664fce20857f61a30b6699bc87de52646ec00ab1baf034f59d26198",
+ "logic_file": "captions.py",
+ "hidden": "from samples import load_samples, ROWS\nfrom captions import label_samples\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_samples(NAMES, load_samples())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_samples(NAMES, list(load_samples()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_samples(NAMES, load_samples())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_samples([], load_samples()) == ({}, [])\n",
+ "fix": {
+  "file": "captions.py",
+  "function": "label_samples",
+  "code": "def label_samples(names, samples):\n    \"\"\"Return (lookup, lines): a name -> dose dict and one 'name: dose' line per sample.\"\"\"\n    pairs = list(zip(names, (x.dose for x in samples)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The lookup is built first and the lines second from the same `pairs`; the second use may find it used up.",
+    "test": "from samples import load_samples\nfrom captions import label_samples\nlookup, lines = label_samples([\"a\", \"b\"], load_samples())\nprint(len(lookup), len(lines))\n",
+    "predict": "2 0",
+    "observed": "2 0",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "A zip object is a one-shot iterator: after dict() has read it, nothing is left.",
+    "test": "pairs = zip(\"ab\", [1, 2])\nfirst = dict(pairs)\nprint(iter(pairs) is pairs, len(first), len(list(pairs)))\n",
+    "predict": "True 2 0",
+    "observed": "True 2 0",
+    "seconds": 0.031
+   }
+  ],
+  "cause": "The zip object is a one-shot iterator used twice. Turn it into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.dose for x in samples))\n+    pairs = list(zip(names, (x.dose for x in samples)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

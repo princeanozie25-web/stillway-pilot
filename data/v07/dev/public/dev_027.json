@@ -1,0 +1,10 @@
+{
+ "id": "dev_027",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('plaza', 34), ('harbour', 10), ('lodge', 25), ('harbour', 58), ('grand', 38)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "pages.py": "\"\"\"Pages of bookings.\"\"\"\n\n\ndef page_count(n_items, page_size):\n    \"\"\"Return how many pages are needed to show n_items, page_size to a page.\"\"\"\n    return n_items // page_size\n\n\ndef page(bookings, number, page_size):\n    \"\"\"Return page `number` of bookings. Pages are numbered from 1.\"\"\"\n    start = (number - 1) * page_size\n    return bookings[start:start + page_size]\n\n\ndef all_pages(bookings, page_size):\n    \"\"\"Return every page of bookings, in order.\"\"\"\n    return [page(bookings, n, page_size) for n in range(1, page_count(len(bookings), page_size) + 1)]\n\n\ndef describe_booking(booking):\n    \"\"\"Return a one-line description of a booking.\"\"\"\n    return \"%s: %s\" % (booking.hotel, booking.nights)\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom pages import all_pages, page_count\n\n\ndef test_last_items_present():\n    pages = all_pages(list(load_bookings()), 2)\n    assert sum(len(p) for p in pages) == len(ROWS)\n\n\ndef test_exact_fit():\n    assert page_count(6, 3) == 2\n    assert len(all_pages(list(load_bookings())[:4], 2)) == 2\n",
+  "ISSUE.md": "all_pages(data, 2) leaves out the last bookings: with 5 bookings and 2 to a page I get 2 pages, and the last 1 never appear.\n"
+ },
+ "code_hash": "6ea76fb6ea33f8f70c4930df2fff64e93ee03089586b230bb8f396861c4423f4"
+}

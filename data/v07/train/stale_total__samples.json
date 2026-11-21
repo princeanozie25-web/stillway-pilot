@@ -1,0 +1,69 @@
+{
+ "id": "stale_total__samples",
+ "template": "stale_total",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b3', 29), ('b1', 8), ('b4', 36), ('b3', 10), ('b2', 57)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n",
+  "journal.py": "\"\"\"A book of samples with a cached total.\"\"\"\n\n\nclass SampleBook:\n    def __init__(self):\n        self._samples = []\n        self._total = None\n\n    def add(self, sample):\n        \"\"\"Add one sample to the book.\"\"\"\n        self._samples.append(sample)\n\n    def total(self):\n        \"\"\"Return the total dose of the samples in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.dose for x in self._samples)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many samples the book holds.\"\"\"\n        return len(self._samples)\n\n\ndef describe_sample(sample):\n    \"\"\"Return a one-line description of a sample.\"\"\"\n    return \"%s: %s\" % (sample.batch, sample.dose)\n",
+  "tests/test_visible.py": "from samples import load_samples, ROWS\nfrom journal import SampleBook\n\n\ndef test_total_after_add():\n    rows = list(load_samples())\n    book = SampleBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = SampleBook()\n    for x in load_samples():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a sample, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "0b2215eed9fbf9f2fbcc0f9dffd2885b8e4ed611f6848a4f0dd0fc9e76ae6a4d",
+ "logic_file": "journal.py",
+ "hidden": "from samples import load_samples, ROWS\nfrom journal import SampleBook\n\n\ndef test_total_after_add():\n    rows = list(load_samples())\n    book = SampleBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = SampleBook()\n    running = 0\n    for x in load_samples():\n        book.add(x)\n        running += x.dose\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert SampleBook().total() == 0\n\n\ndef test_count():\n    book = SampleBook()\n    for x in load_samples():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "journal.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total dose of the samples in the book.\"\"\"\n    return sum(x.dose for x in self._samples)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "total() may return a remembered value that add() does not refresh.",
+    "test": "from samples import load_samples\nfrom journal import SampleBook\nrows = list(load_samples())\nbook = SampleBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nprint(book.total(), sum(x.dose for x in book._samples))\n",
+    "predict": "29 37",
+    "observed": "29 37",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the remembered value is cleared, total() should give the right answer, so working it out on every call is enough.",
+    "test": "from samples import load_samples\nfrom journal import SampleBook\nrows = list(load_samples())\nbook = SampleBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nbook._total = None\nprint(book.total())\n",
+    "predict": "37",
+    "observed": "37",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Stale remembered total. Work the total out from the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.dose for x in self._samples)\n-        return self._total\n+        return sum(x.dose for x in self._samples)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

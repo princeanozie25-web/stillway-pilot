@@ -1,0 +1,10 @@
+{
+ "id": "dev_051",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('plaza', 18), ('grand', 34), ('lodge', 6), ('lodge', 57), ('plaza', 43), ('plaza', 30), ('grand', 32)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "deltas.py": "\"\"\"Changes in nights from one booking to the next.\"\"\"\n\n\ndef nights_changes(bookings):\n    \"\"\"Return the change in nights from each booking to the next: one entry for every neighbouring pair.\"\"\"\n    out = []\n    for i in range(2, len(bookings)):\n        out.append(bookings[i].nights - bookings[i - 1].nights)\n    return out\n\n\ndef biggest_rise(bookings):\n    \"\"\"Return the largest increase between neighbours, or 0 when there is none.\"\"\"\n    rises = [c for c in nights_changes(bookings) if c > 0]\n    return max(rises) if rises else 0\n\n\ndef describe_booking(booking):\n    \"\"\"Return a one-line description of a booking.\"\"\"\n    return \"%s: %s\" % (booking.hotel, booking.nights)\n\n\ndef group_by_hotel(bookings):\n    \"\"\"Return a dict from hotel to the list of bookings with that hotel.\"\"\"\n    groups = {}\n    for x in bookings:\n        groups.setdefault(x.hotel, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom deltas import nights_changes\n\n\ndef test_number_of_changes():\n    assert len(nights_changes(list(load_bookings()))) == len(ROWS) - 1\n\n\ndef test_single_item():\n    assert nights_changes(list(load_bookings())[:1]) == []\n",
+  "ISSUE.md": "nights_changes(data) has 5 entries for 7 bookings. I expected 6: the change from the first booking to the second is missing.\n"
+ },
+ "code_hash": "b45fa3a2cac65293cf79fdb23a3c5e6cd4e6e568f156bd87f2aad87aea9b4183"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_040",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('pia', 19), ('omar', 16), ('mia', 51), ('mia', 33), ('noor', 17)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "tagged.py": "\"\"\"Labels for the pounds of donations.\"\"\"\n\n\ndef labelled_poundss(donations, labels):\n    \"\"\"Pair each donation's pounds with its label, in order. donations beyond the end of `labels` get the label 'unlabelled'.\"\"\"\n    return [(labels[i], donations[i].pounds) for i in range(len(labels))]\n\n\ndef label_width(labels):\n    \"\"\"Return the length of the longest label, or 0 when there are none.\"\"\"\n    return max((len(text) for text in labels), default=0)\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom tagged import labelled_poundss\n\n\ndef test_fewer_labels():\n    data = list(load_donations())\n    pairs = labelled_poundss(data, [\"a\", \"b\"])\n    assert len(pairs) == len(ROWS) and pairs[-1] == (\"unlabelled\", ROWS[-1][1])\n\n\ndef test_equal_lengths():\n    data = list(load_donations())\n    labels = [\"l%d\" % i for i in range(len(data))]\n    assert labelled_poundss(data, labels)[-1] == (labels[-1], ROWS[-1][1])\n",
+  "ISSUE.md": "labelled_poundss(data, labels) leaves out the last donations when I pass fewer labels than donations. I expected them at the end with the label 'unlabelled'.\n"
+ },
+ "code_hash": "ecf1a969f436d5fce1e607d51970102d6b99cf3fef2dcb40933e22ad43edeada"
+}

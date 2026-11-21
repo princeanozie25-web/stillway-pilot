@@ -1,0 +1,69 @@
+{
+ "id": "stale_total__shipments",
+ "template": "stale_total",
+ "skin": "shipments",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "shipments.py": "\"\"\"Shipment records.\"\"\"\n\n\nclass Shipment:\n    def __init__(self, route, weight):\n        self.route = route\n        self.weight = weight\n\n    def __repr__(self):\n        return \"Shipment(%r, %r)\" % (self.route, self.weight)\n\n\nROWS = [('r22', 38), ('r10', 23), ('r22', 10), ('r22', 14), ('r22', 15)]\n\n\ndef load_shipments():\n    \"\"\"Yield the stored shipments one at a time.\"\"\"\n    for route, weight in ROWS:\n        yield Shipment(route, weight)\n",
+  "register.py": "\"\"\"A book of shipments with a cached total.\"\"\"\n\n\nclass ShipmentBook:\n    def __init__(self):\n        self._shipments = []\n        self._total = None\n\n    def add(self, shipment):\n        \"\"\"Add one shipment to the book.\"\"\"\n        self._shipments.append(shipment)\n\n    def total(self):\n        \"\"\"Return the total weight of the shipments in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.weight for x in self._shipments)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many shipments the book holds.\"\"\"\n        return len(self._shipments)\n\n\ndef describe_shipment(shipment):\n    \"\"\"Return a one-line description of a shipment.\"\"\"\n    return \"%s: %s\" % (shipment.route, shipment.weight)\n",
+  "tests/test_visible.py": "from shipments import load_shipments, ROWS\nfrom register import ShipmentBook\n\n\ndef test_total_after_add():\n    rows = list(load_shipments())\n    book = ShipmentBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = ShipmentBook()\n    for x in load_shipments():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a shipment, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "4d22faa99a6039fb9c60b241150169cf6ef4a5780de4ca94b359b4ee227f2af2",
+ "logic_file": "register.py",
+ "hidden": "from shipments import load_shipments, ROWS\nfrom register import ShipmentBook\n\n\ndef test_total_after_add():\n    rows = list(load_shipments())\n    book = ShipmentBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = ShipmentBook()\n    running = 0\n    for x in load_shipments():\n        book.add(x)\n        running += x.weight\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert ShipmentBook().total() == 0\n\n\ndef test_count():\n    book = ShipmentBook()\n    for x in load_shipments():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "register.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total weight of the shipments in the book.\"\"\"\n    return sum(x.weight for x in self._shipments)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "total() may return a remembered value that add() does not refresh.",
+    "test": "from shipments import load_shipments\nfrom register import ShipmentBook\nrows = list(load_shipments())\nbook = ShipmentBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nprint(book.total(), sum(x.weight for x in book._shipments))\n",
+    "predict": "38 61",
+    "observed": "38 61",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the remembered value is cleared, total() should give the right answer, so working it out on every call is enough.",
+    "test": "from shipments import load_shipments\nfrom register import ShipmentBook\nrows = list(load_shipments())\nbook = ShipmentBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nbook._total = None\nprint(book.total())\n",
+    "predict": "61",
+    "observed": "61",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Stale remembered total. Work the total out from the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.weight for x in self._shipments)\n-        return self._total\n+        return sum(x.weight for x in self._shipments)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

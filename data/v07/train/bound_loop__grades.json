@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__grades",
+ "template": "bound_loop",
+ "skin": "grades",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "grades.py": "\"\"\"Grade records.\"\"\"\n\n\nclass Grade:\n    def __init__(self, student, score):\n        self.student = student\n        self.score = score\n\n    def __repr__(self):\n        return \"Grade(%r, %r)\" % (self.student, self.score)\n\n\nROWS = [('cho', 55), ('dev', 33), ('ben', 16), ('ana', 5), ('ana', 9)]\n\n\ndef load_grades():\n    \"\"\"Yield the stored grades one at a time.\"\"\"\n    for student, score in ROWS:\n        yield Grade(student, score)\n",
+  "running.py": "\"\"\"Running totals over grades.\"\"\"\n\n\ndef running_score(grades):\n    \"\"\"Return the running total of score after each grade, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(grades) - 1):\n        total += grades[i].score\n        out.append(total)\n    return out\n\n\ndef final_score(grades):\n    \"\"\"Return the total score of all grades, or 0 when there are none.\"\"\"\n    totals = running_score(grades)\n    return totals[-1] if totals else 0\n",
+  "tests/test_visible.py": "from grades import load_grades, ROWS\nfrom running import running_score\n\n\ndef test_length():\n    assert len(running_score(list(load_grades()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_score([]) == []\n",
+  "ISSUE.md": "final_score(data) is too low: it leaves out the last grade. running_score(data) has 4 entries, not 5.\n"
+ },
+ "code_hash": "62e74e0fc00aea9fbda86ebf92a0c07e9ddbc23c21e06fbc565d34b5b3c5c703",
+ "logic_file": "running.py",
+ "hidden": "from grades import load_grades, ROWS\nfrom running import running_score, final_score\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_score(list(load_grades()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_score(list(load_grades())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_score(list(load_grades()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_score(list(load_grades())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_score([]) == [] and final_score([]) == 0\n",
+ "fix": {
+  "file": "running.py",
+  "function": "running_score",
+  "code": "def running_score(grades):\n    \"\"\"Return the running total of score after each grade, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(grades)):\n        total += grades[i].score\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one grade early.",
+    "test": "from grades import load_grades\nfrom running import running_score\ndata = list(load_grades())\nprint(len(running_score(data)), len(data))\n",
+    "predict": "4 5",
+    "observed": "4 5",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the loop always stops one short, one grade gives nothing and two give one entry.",
+    "test": "from grades import load_grades\nfrom running import running_score\ndata = list(load_grades())\nprint(running_score(data[:1]), running_score(data[:2]))\n",
+    "predict": "[] [55]",
+    "observed": "[] [55]",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(grades) - 1):\n+    for i in range(len(grades)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

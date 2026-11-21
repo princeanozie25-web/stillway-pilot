@@ -1,0 +1,44 @@
+{
+ "id": "dev_006",
+ "source": "iter_shares__bookings",
+ "template": "iter_shares",
+ "skin": "bookings",
+ "group": "G1",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "hidden": "from bookings import load_bookings, ROWS\nfrom portions import nights_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = nights_shares(load_bookings())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = nights_shares(list(load_bookings()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_bookings()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert nights_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "portions.py",
+  "function": "nights_shares",
+  "code": "def nights_shares(bookings):\n    \"\"\"Return each booking's share of the total nights, in order.\"\"\"\n    bookings = list(bookings)\n    total = sum(x.nights for x in bookings)\n    return [x.nights / total for x in bookings]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    bookings = list(bookings)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

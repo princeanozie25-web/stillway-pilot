@@ -1,0 +1,99 @@
+{
+ "id": "iter_window__shipments",
+ "template": "iter_window",
+ "skin": "shipments",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "shipments.py": "\"\"\"Shipment records.\"\"\"\n\n\nclass Shipment:\n    def __init__(self, route, weight):\n        self.route = route\n        self.weight = weight\n\n    def __repr__(self):\n        return \"Shipment(%r, %r)\" % (self.route, self.weight)\n\n\nROWS = [('r22', 29), ('r47', 20), ('r47', 16), ('r22', 10), ('r22', 7), ('r10', 6), ('r22', 34)]\n\n\ndef load_shipments():\n    \"\"\"Yield the stored shipments one at a time.\"\"\"\n    for route, weight in ROWS:\n        yield Shipment(route, weight)\n\n\ndef feed_shipments():\n    \"\"\"Endless feed of shipments: repeats the stored rows for ever.\"\"\"\n    while True:\n        for route, weight in ROWS:\n            yield Shipment(route, weight)\n",
+  "windows.py": "\"\"\"Windows over the shipments feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` shipments from the feed and return (peak weight, list of weight).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.weight for x in window)\n    values = [x.weight for x in window]\n    return peak, values\n\n\ndef group_by_route(shipments):\n    \"\"\"Return a dict from route to the list of shipments with that route.\"\"\"\n    groups = {}\n    for x in shipments:\n        groups.setdefault(x.route, []).append(x)\n    return groups\n\n\ndef describe_shipment(shipment):\n    \"\"\"Return a one-line description of a shipment.\"\"\"\n    return \"%s: %s\" % (shipment.route, shipment.weight)\n",
+  "tests/test_visible.py": "from shipments import feed_shipments, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_shipments(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_shipments()\n    summarize_window(feed, 2)\n    assert next(feed).weight == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_shipments(), 3) returns the right peak but an empty list of values. I expected the three weight values.\n"
+ },
+ "code_hash": "b3022fcde241d6dbb6c6957dbd34ee6922eaa6f67fa625c3cebbfc289f45176f",
+ "logic_file": "windows.py",
+ "hidden": "from shipments import feed_shipments, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_shipments(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_peak():\n    peak, values = summarize_window(feed_shipments(), 4)\n    assert peak == max(v for _, v in ROWS[:4])\n\n\ndef test_reads_only_the_window():\n    feed = feed_shipments()\n    summarize_window(feed, 2)\n    assert next(feed).weight == ROWS[2][1]\n\n\ndef test_consecutive_windows():\n    feed = feed_shipments()\n    summarize_window(feed, 2)\n    peak, values = summarize_window(feed, 2)\n    assert values == [v for _, v in ROWS[2:4]]\n",
+ "fix": {
+  "file": "windows.py",
+  "function": "summarize_window",
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` shipments from the feed and return (peak weight, list of weight).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = list(itertools.islice(feed, size))\n    peak = max(x.weight for x in window)\n    values = [x.weight for x in window]\n    return peak, values\n"
+ },
+ "oldfix": {
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` shipments from the feed and return (peak weight, list of weight).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    feed = list(feed)\n    window = itertools.islice(feed, size)\n    peak = max(x.weight for x in window)\n    values = [x.weight for x in window]\n    return peak, values\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window is read once for the peak and again for the values; the second read may find it used up.",
+    "test": "from shipments import feed_shipments\nfrom windows import summarize_window\nprint(summarize_window(feed_shipments(), 3))\n",
+    "predict": "(29, [])",
+    "observed": "(29, [])",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to turn the input into a list, but that only works if the feed ends.",
+    "test": "import itertools\nfrom shipments import feed_shipments\nprint(len(list(itertools.islice(feed_shipments(), 1000))))\n",
+    "predict": "1000",
+    "observed": "1000",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "The islice window is a one-shot iterator walked twice. The feed never ends, so turn only the window into a list."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If the feed is finite, turning the whole input into a list once is enough.",
+  "test": "import itertools\nfrom shipments import feed_shipments\nprint(len(list(itertools.islice(feed_shipments(), 1000))))\n",
+  "predict": "7",
+  "observed": "1000",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_consecutive_windows": "FAIL AssertionError: ",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    window = itertools.islice(feed, size)\n+    window = list(itertools.islice(feed, size))",
+   "hidden": {
+    "test_consecutive_windows": "PASS",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    feed = list(feed)",
+   "hidden": {
+    "test_values": "FAIL TIMEOUT after 5.0 s",
+    "test_peak": "FAIL TIMEOUT after 5.0 s",
+    "test_reads_only_the_window": "FAIL TIMEOUT after 5.0 s",
+    "test_consecutive_windows": "FAIL TIMEOUT after 5.0 s"
+   },
+   "visible": {
+    "test_reads_only_the_window": "FAIL TimeoutError: test took longer than 2 s",
+    "test_values": "FAIL TimeoutError: test took longer than 2 s"
+   },
+   "regressions": [
+    "test_peak",
+    "test_reads_only_the_window"
+   ],
+   "visible_regressions": [
+    "test_reads_only_the_window"
+   ]
+  }
+ }
+}

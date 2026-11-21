@@ -1,0 +1,64 @@
+{
+ "id": "dev_047",
+ "source": "look_labels__bookings",
+ "template": "look_labels",
+ "skin": "bookings",
+ "group": "G3",
+ "symptom": "S3",
+ "cause": "SHORTZIP",
+ "role": null,
+ "hidden": "from bookings import load_bookings, ROWS\nfrom marked import labelled_nightss\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_fewer_labels():\n    pairs = labelled_nightss(list(load_bookings()), [\"a\", \"b\"])\n    assert pairs == [(\"a\", VALUES[0]), (\"b\", VALUES[1])] + [(\"unlabelled\", v) for v in VALUES[2:]]\n\n\ndef test_equal_lengths():\n    data = list(load_bookings())\n    labels = [\"l%d\" % i for i in range(len(data))]\n    assert labelled_nightss(data, labels) == list(zip(labels, VALUES))\n\n\ndef test_no_labels():\n    assert labelled_nightss(list(load_bookings()), []) == [(\"unlabelled\", v) for v in VALUES]\n\n\ndef test_no_items():\n    assert labelled_nightss([], []) == []\n",
+ "fix": {
+  "file": "marked.py",
+  "function": "labelled_nightss",
+  "code": "def labelled_nightss(bookings, labels):\n    \"\"\"Pair each booking's nights with its label, in order. bookings beyond the end of `labels` get the label 'unlabelled'.\"\"\"\n    return [(labels[i] if i < len(labels) else \"unlabelled\", bookings[i].nights) for i in range(len(bookings))]\n"
+ },
+ "oldfix": {
+  "code": "def labelled_nightss(bookings, labels):\n    \"\"\"Pair each booking's nights with its label, in order. bookings beyond the end of `labels` get the label 'unlabelled'.\"\"\"\n    return [(labels[i], bookings[i].nights) for i in range(len(labels) + 1)]\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_equal_lengths": "PASS",
+    "test_fewer_labels": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_equal_lengths": "PASS",
+    "test_fewer_labels": "FAIL AssertionError: ",
+    "test_no_items": "PASS",
+    "test_no_labels": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return [(labels[i], bookings[i].nights) for i in range(len(labels))]\n+    return [(labels[i] if i < len(labels) else \"unlabelled\", bookings[i].nights) for i in range(len(bookings))]",
+   "hidden": {
+    "test_equal_lengths": "PASS",
+    "test_fewer_labels": "PASS",
+    "test_no_items": "PASS",
+    "test_no_labels": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-    return [(labels[i], bookings[i].nights) for i in range(len(labels))]\n+    return [(labels[i], bookings[i].nights) for i in range(len(labels) + 1)]",
+   "hidden": {
+    "test_equal_lengths": "FAIL IndexError: list index out of range",
+    "test_fewer_labels": "FAIL IndexError: list index out of range",
+    "test_no_items": "FAIL IndexError: list index out of range",
+    "test_no_labels": "FAIL IndexError: list index out of range"
+   },
+   "visible": {
+    "test_equal_lengths": "FAIL IndexError: list index out of range",
+    "test_fewer_labels": "FAIL IndexError: list index out of range"
+   },
+   "regressions": [
+    "test_equal_lengths",
+    "test_no_items"
+   ],
+   "visible_regressions": [
+    "test_equal_lengths"
+   ]
+  }
+ }
+}

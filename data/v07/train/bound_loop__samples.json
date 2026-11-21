@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__samples",
+ "template": "bound_loop",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b3', 22), ('b2', 13), ('b2', 24), ('b2', 35), ('b1', 31), ('b1', 39), ('b1', 9)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n",
+  "progress.py": "\"\"\"Running totals over samples.\"\"\"\n\n\ndef running_dose(samples):\n    \"\"\"Return the running total of dose after each sample, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(samples) - 1):\n        total += samples[i].dose\n        out.append(total)\n    return out\n\n\ndef final_dose(samples):\n    \"\"\"Return the total dose of all samples, or 0 when there are none.\"\"\"\n    totals = running_dose(samples)\n    return totals[-1] if totals else 0\n\n\ndef describe_sample(sample):\n    \"\"\"Return a one-line description of a sample.\"\"\"\n    return \"%s: %s\" % (sample.batch, sample.dose)\n\n\ndef batch_names(samples):\n    \"\"\"Return the distinct batch values, in first-seen order.\"\"\"\n    names = []\n    for x in samples:\n        if x.batch not in names:\n            names.append(x.batch)\n    return names\n",
+  "tests/test_visible.py": "from samples import load_samples, ROWS\nfrom progress import running_dose\n\n\ndef test_length():\n    assert len(running_dose(list(load_samples()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_dose([]) == []\n",
+  "ISSUE.md": "final_dose(data) is too low: it leaves out the last sample. running_dose(data) has 6 entries, not 7.\n"
+ },
+ "code_hash": "07ec9371055150e54421ede8717d15371c5e8b17720208ac7422e56362828aff",
+ "logic_file": "progress.py",
+ "hidden": "from samples import load_samples, ROWS\nfrom progress import running_dose, final_dose\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_dose(list(load_samples()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_dose(list(load_samples())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_dose(list(load_samples()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_dose(list(load_samples())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_dose([]) == [] and final_dose([]) == 0\n",
+ "fix": {
+  "file": "progress.py",
+  "function": "running_dose",
+  "code": "def running_dose(samples):\n    \"\"\"Return the running total of dose after each sample, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(samples)):\n        total += samples[i].dose\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one sample early.",
+    "test": "from samples import load_samples\nfrom progress import running_dose\ndata = list(load_samples())\nprint(len(running_dose(data)), len(data))\n",
+    "predict": "6 7",
+    "observed": "6 7",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the loop always stops one short, one sample gives nothing and two give one entry.",
+    "test": "from samples import load_samples\nfrom progress import running_dose\ndata = list(load_samples())\nprint(running_dose(data[:1]), running_dose(data[:2]))\n",
+    "predict": "[] [22]",
+    "observed": "[] [22]",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(samples) - 1):\n+    for i in range(len(samples)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

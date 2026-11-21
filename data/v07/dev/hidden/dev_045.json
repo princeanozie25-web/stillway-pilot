@@ -1,0 +1,64 @@
+{
+ "id": "dev_045",
+ "source": "look_split_window__donations",
+ "template": "look_split_window",
+ "skin": "donations",
+ "group": "G3",
+ "symptom": "S1",
+ "cause": "SLICEINDEX",
+ "role": null,
+ "hidden": "from donations import feed_donations, ROWS\nfrom splits import split_window\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_second_half():\n    first, second = split_window(feed_donations(), 4)\n    assert second == VALUES[2:4]\n\n\ndef test_first_half():\n    first, second = split_window(feed_donations(), 4)\n    assert first == VALUES[:2]\n\n\ndef test_odd_size():\n    first, second = split_window(feed_donations(), 3)\n    assert first == VALUES[:1] and second == VALUES[1:3]\n\n\ndef test_reads_only_the_window():\n    feed = feed_donations()\n    split_window(feed, 2)\n    assert next(feed).pounds == ROWS[2][1]\n",
+ "fix": {
+  "file": "splits.py",
+  "function": "split_window",
+  "code": "def split_window(feed, size):\n    \"\"\"Read the next `size` donations from the feed and return their pounds as (first half, second half).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = [x.pounds for x in itertools.islice(feed, size)]\n    half = size // 2\n    return window[:half], window[half:]\n"
+ },
+ "oldfix": {
+  "code": "def split_window(feed, size):\n    \"\"\"Read the next `size` donations from the feed and return their pounds as (first half, second half).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    feed = list(feed)\n    window = [x.pounds for x in itertools.islice(feed, size)]\n    half = size // 2\n    return window[:half], window[size:]\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_reads_only_the_window": "PASS",
+    "test_second_half": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_first_half": "PASS",
+    "test_odd_size": "FAIL AssertionError: ",
+    "test_reads_only_the_window": "PASS",
+    "test_second_half": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return window[:half], window[size:]\n+    return window[:half], window[half:]",
+   "hidden": {
+    "test_first_half": "PASS",
+    "test_odd_size": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_second_half": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    feed = list(feed)",
+   "hidden": {
+    "test_second_half": "FAIL TIMEOUT after 5.0 s",
+    "test_first_half": "FAIL TIMEOUT after 5.0 s",
+    "test_odd_size": "FAIL TIMEOUT after 5.0 s",
+    "test_reads_only_the_window": "FAIL TIMEOUT after 5.0 s"
+   },
+   "visible": {
+    "test_reads_only_the_window": "FAIL TimeoutError: test took longer than 2 s",
+    "test_second_half": "FAIL TimeoutError: test took longer than 2 s"
+   },
+   "regressions": [
+    "test_first_half",
+    "test_reads_only_the_window"
+   ],
+   "visible_regressions": [
+    "test_reads_only_the_window"
+   ]
+  }
+ }
+}

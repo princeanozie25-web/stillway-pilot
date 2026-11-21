@@ -1,0 +1,42 @@
+{
+ "id": "dev_049",
+ "source": "lost_write__fixtures",
+ "template": "lost_write",
+ "skin": "fixtures",
+ "group": "G1",
+ "symptom": "S2",
+ "cause": "LOSTWRITE",
+ "role": "alternate",
+ "hidden": "from fixtures import load_fixtures, ROWS\nfrom holdings import FixtureLedger\n\n\ndef test_total_after_add():\n    rows = list(load_fixtures())\n    ledger = FixtureLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_add_to_empty():\n    rows = list(load_fixtures())\n    ledger = FixtureLedger()\n    for x in rows:\n        ledger.add(x)\n    assert ledger.total() == sum(v for _, v in ROWS) and len(ledger.fixtures()) == len(ROWS)\n\n\ndef test_copy_is_safe():\n    rows = list(load_fixtures())\n    ledger = FixtureLedger(rows[:2])\n    ledger.fixtures().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_initial_total():\n    assert FixtureLedger(load_fixtures()).total() == sum(v for _, v in ROWS)\n",
+ "fix": {
+  "file": "holdings.py",
+  "function": "add",
+  "code": "def add(self, fixture):\n    \"\"\"Add one fixture to the ledger.\"\"\"\n    self._fixtures.append(fixture)\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_copy_is_safe": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_add_to_empty": "FAIL AssertionError: ",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self.fixtures().append(fixture)\n+        self._fixtures.append(fixture)",
+   "hidden": {
+    "test_add_to_empty": "PASS",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

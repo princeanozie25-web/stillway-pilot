@@ -1,0 +1,42 @@
+{
+ "id": "dev_060",
+ "source": "case_key__harvests",
+ "template": "case_key",
+ "skin": "harvests",
+ "group": "G4",
+ "symptom": "X2",
+ "cause": "NORMALISE",
+ "role": null,
+ "hidden": "from harvests import Harvest, load_harvests, ROWS\nfrom search import harvests_for, has_field\n\nKEY = ROWS[0][0]\nCOUNT = sum(1 for k, _ in ROWS if k == KEY)\n\n\ndef test_upper_case_with_spaces():\n    assert len(harvests_for(list(load_harvests()), \" \" + KEY.upper() + \" \")) == COUNT\n\n\ndef test_stored_value_not_tidy():\n    data = [Harvest(\"  Alpha\", 1), Harvest(\"beta\", 2), Harvest(\"ALPHA \", 3)]\n    assert [x.kilos for x in harvests_for(data, \"alpha\")] == [1, 3]\n\n\ndef test_exact():\n    assert len(harvests_for(list(load_harvests()), KEY)) == COUNT\n\n\ndef test_no_match():\n    assert harvests_for(list(load_harvests()), \"zzz\") == [] and not has_field(list(load_harvests()), \"zzz\")\n",
+ "fix": {
+  "file": "search.py",
+  "function": "harvests_for",
+  "code": "def harvests_for(harvests, field):\n    \"\"\"Return the harvests whose field matches, ignoring upper and lower case and spaces at either end.\"\"\"\n    wanted = field.strip().lower()\n    return [x for x in harvests if x.field.strip().lower() == wanted]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_exact": "PASS",
+    "test_upper_case_with_spaces": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_exact": "PASS",
+    "test_no_match": "PASS",
+    "test_stored_value_not_tidy": "FAIL AssertionError: ",
+    "test_upper_case_with_spaces": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 3,
+   "diff": "-    return [x for x in harvests if x.field == field]\n+    wanted = field.strip().lower()\n+    return [x for x in harvests if x.field.strip().lower() == wanted]",
+   "hidden": {
+    "test_exact": "PASS",
+    "test_no_match": "PASS",
+    "test_stored_value_not_tidy": "PASS",
+    "test_upper_case_with_spaces": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

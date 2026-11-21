@@ -1,0 +1,71 @@
+{
+ "id": "bound_range__readings",
+ "template": "bound_range",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('east', 53), ('south', 49), ('east', 32), ('north', 39), ('south', 10)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "positions.py": "\"\"\"Position windows over readings.\"\"\"\n\n\ndef level_between(readings, low, high):\n    \"\"\"Return the level of the readings at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.level for x in readings[low - 1:high - 1]]\n\n\ndef first_levels(readings, n):\n    \"\"\"Return the level of the first n readings.\"\"\"\n    return level_between(readings, 1, n)\n\n\ndef largest_level(readings):\n    \"\"\"Return the largest level, or None when there are no readings.\"\"\"\n    values = [x.level for x in readings]\n    return max(values) if values else None\n\n\ndef describe_reading(reading):\n    \"\"\"Return a one-line description of a reading.\"\"\"\n    return \"%s: %s\" % (reading.sensor, reading.level)\n",
+  "tests/test_visible.py": "from readings import load_readings, ROWS\nfrom positions import level_between\n\n\ndef test_three_positions():\n    data = list(load_readings())\n    assert level_between(data, 2, 4) == [v for _, v in ROWS[1:4]]\n\n\ndef test_low_above_high():\n    data = list(load_readings())\n    assert level_between(data, 3, 2) == []\n",
+  "ISSUE.md": "level_between(data, 2, 4) returns two values. I expected three, for positions 2, 3 and 4: the last one is missing.\n"
+ },
+ "code_hash": "22905814e78e43db7c56577d8fa43772645dbea85033c1a740d8fe8f3395b916",
+ "logic_file": "positions.py",
+ "hidden": "from readings import load_readings, ROWS\nfrom positions import level_between, first_levels\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_three_positions():\n    assert level_between(list(load_readings()), 2, 4) == VALUES[1:4]\n\n\ndef test_whole_range():\n    assert level_between(list(load_readings()), 1, len(ROWS)) == VALUES\n\n\ndef test_single_position():\n    assert level_between(list(load_readings()), 3, 3) == [VALUES[2]]\n\n\ndef test_first_n():\n    assert first_levels(list(load_readings()), 2) == VALUES[:2]\n\n\ndef test_low_above_high():\n    assert level_between(list(load_readings()), 3, 2) == []\n",
+ "fix": {
+  "file": "positions.py",
+  "function": "level_between",
+  "code": "def level_between(readings, low, high):\n    \"\"\"Return the level of the readings at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.level for x in readings[low - 1:high]]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window may stop one position early.",
+    "test": "from readings import load_readings\nfrom positions import level_between\ndata = list(load_readings())\nprint(level_between(data, 2, 4))\n",
+    "predict": "[49, 32]",
+    "observed": "[49, 32]",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "If the upper position is always left out, a one-position window is empty and the full window is one short.",
+    "test": "from readings import load_readings\nfrom positions import level_between\ndata = list(load_readings())\nprint(len(level_between(data, 1, 1)), len(level_between(data, 1, len(data))))\n",
+    "predict": "0 4",
+    "observed": "0 4",
+    "seconds": 0.034
+   }
+  ],
+  "cause": "The upper bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_low_above_high": "PASS",
+    "test_three_positions": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_first_n": "FAIL AssertionError: ",
+    "test_low_above_high": "PASS",
+    "test_single_position": "FAIL AssertionError: ",
+    "test_three_positions": "FAIL AssertionError: ",
+    "test_whole_range": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return [x.level for x in readings[low - 1:high - 1]]\n+    return [x.level for x in readings[low - 1:high]]",
+   "hidden": {
+    "test_first_n": "PASS",
+    "test_low_above_high": "PASS",
+    "test_single_position": "PASS",
+    "test_three_positions": "PASS",
+    "test_whole_range": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

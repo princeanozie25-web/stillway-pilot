@@ -1,0 +1,99 @@
+{
+ "id": "iter_window__grades",
+ "template": "iter_window",
+ "skin": "grades",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "grades.py": "\"\"\"Grade records.\"\"\"\n\n\nclass Grade:\n    def __init__(self, student, score):\n        self.student = student\n        self.score = score\n\n    def __repr__(self):\n        return \"Grade(%r, %r)\" % (self.student, self.score)\n\n\nROWS = [('ana', 46), ('ben', 22), ('dev', 38), ('ana', 58), ('ben', 48)]\n\n\ndef load_grades():\n    \"\"\"Yield the stored grades one at a time.\"\"\"\n    for student, score in ROWS:\n        yield Grade(student, score)\n\n\ndef feed_grades():\n    \"\"\"Endless feed of grades: repeats the stored rows for ever.\"\"\"\n    while True:\n        for student, score in ROWS:\n            yield Grade(student, score)\n",
+  "windows.py": "\"\"\"Windows over the grades feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` grades from the feed and return (peak score, list of score).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.score for x in window)\n    values = [x.score for x in window]\n    return peak, values\n",
+  "tests/test_visible.py": "from grades import feed_grades, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_grades(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_grades()\n    summarize_window(feed, 2)\n    assert next(feed).score == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_grades(), 3) returns the right peak but an empty list of values. I expected the three score values.\n"
+ },
+ "code_hash": "abf431b20ef7d90434b952152a696f03756e3143e6136869983310587e0a47ff",
+ "logic_file": "windows.py",
+ "hidden": "from grades import feed_grades, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_grades(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_peak():\n    peak, values = summarize_window(feed_grades(), 4)\n    assert peak == max(v for _, v in ROWS[:4])\n\n\ndef test_reads_only_the_window():\n    feed = feed_grades()\n    summarize_window(feed, 2)\n    assert next(feed).score == ROWS[2][1]\n\n\ndef test_consecutive_windows():\n    feed = feed_grades()\n    summarize_window(feed, 2)\n    peak, values = summarize_window(feed, 2)\n    assert values == [v for _, v in ROWS[2:4]]\n",
+ "fix": {
+  "file": "windows.py",
+  "function": "summarize_window",
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` grades from the feed and return (peak score, list of score).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = list(itertools.islice(feed, size))\n    peak = max(x.score for x in window)\n    values = [x.score for x in window]\n    return peak, values\n"
+ },
+ "oldfix": {
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` grades from the feed and return (peak score, list of score).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    feed = list(feed)\n    window = itertools.islice(feed, size)\n    peak = max(x.score for x in window)\n    values = [x.score for x in window]\n    return peak, values\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window is read once for the peak and again for the values; the second read may find it used up.",
+    "test": "from grades import feed_grades\nfrom windows import summarize_window\nprint(summarize_window(feed_grades(), 3))\n",
+    "predict": "(46, [])",
+    "observed": "(46, [])",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to turn the input into a list, but that only works if the feed ends.",
+    "test": "import itertools\nfrom grades import feed_grades\nprint(len(list(itertools.islice(feed_grades(), 1000))))\n",
+    "predict": "1000",
+    "observed": "1000",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The islice window is a one-shot iterator walked twice. The feed never ends, so turn only the window into a list."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If the feed is finite, turning the whole input into a list once is enough.",
+  "test": "import itertools\nfrom grades import feed_grades\nprint(len(list(itertools.islice(feed_grades(), 1000))))\n",
+  "predict": "5",
+  "observed": "1000",
+  "seconds": 0.034
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_consecutive_windows": "FAIL AssertionError: ",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    window = itertools.islice(feed, size)\n+    window = list(itertools.islice(feed, size))",
+   "hidden": {
+    "test_consecutive_windows": "PASS",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    feed = list(feed)",
+   "hidden": {
+    "test_values": "FAIL TIMEOUT after 5.0 s",
+    "test_peak": "FAIL TIMEOUT after 5.0 s",
+    "test_reads_only_the_window": "FAIL TIMEOUT after 5.0 s",
+    "test_consecutive_windows": "FAIL TIMEOUT after 5.0 s"
+   },
+   "visible": {
+    "test_reads_only_the_window": "FAIL TimeoutError: test took longer than 2 s",
+    "test_values": "FAIL TimeoutError: test took longer than 2 s"
+   },
+   "regressions": [
+    "test_peak",
+    "test_reads_only_the_window"
+   ],
+   "visible_regressions": [
+    "test_reads_only_the_window"
+   ]
+  }
+ }
+}

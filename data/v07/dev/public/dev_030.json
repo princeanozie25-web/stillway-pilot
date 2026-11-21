@@ -1,0 +1,10 @@
+{
+ "id": "dev_030",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('hill', 24), ('upper', 56), ('upper', 6), ('upper', 4), ('river', 22), ('lower', 31), ('river', 35)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "ranking.py": "\"\"\"Codes of harvests in order.\"\"\"\n\n\ndef ranked_codes(harvests):\n    \"\"\"Return the kilos of each harvest as a text code, from the lowest number to the highest.\"\"\"\n    return sorted(str(x.kilos) for x in harvests)\n\n\ndef code_of(harvest):\n    \"\"\"Return the text code of one harvest.\"\"\"\n    return str(harvest.kilos)\n\n\ndef field_names(harvests):\n    \"\"\"Return the distinct field values, in first-seen order.\"\"\"\n    names = []\n    for x in harvests:\n        if x.field not in names:\n            names.append(x.field)\n    return names\n",
+  "tests/test_visible.py": "from harvests import Harvest\nfrom ranking import ranked_codes\n\n\ndef test_nine_before_ten():\n    assert ranked_codes([Harvest(\"a\", 10), Harvest(\"b\", 9)]) == [\"9\", \"10\"]\n\n\ndef test_single_digits():\n    assert ranked_codes([Harvest(\"a\", 3), Harvest(\"b\", 1), Harvest(\"c\", 2)]) == [\"1\", \"2\", \"3\"]\n",
+  "ISSUE.md": "ranked_codes() puts '10' before '9'. I expected the codes in number order.\n"
+ },
+ "code_hash": "6d22a62ea4ab4f37a3a3d11e672c8f05f7c7409567d87010bb54d35cc5ced422"
+}

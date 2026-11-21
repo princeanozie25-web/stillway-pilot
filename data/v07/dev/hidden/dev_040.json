@@ -1,0 +1,64 @@
+{
+ "id": "dev_040",
+ "source": "look_labels__donations",
+ "template": "look_labels",
+ "skin": "donations",
+ "group": "G3",
+ "symptom": "S3",
+ "cause": "SHORTZIP",
+ "role": null,
+ "hidden": "from donations import load_donations, ROWS\nfrom tagged import labelled_poundss\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_fewer_labels():\n    pairs = labelled_poundss(list(load_donations()), [\"a\", \"b\"])\n    assert pairs == [(\"a\", VALUES[0]), (\"b\", VALUES[1])] + [(\"unlabelled\", v) for v in VALUES[2:]]\n\n\ndef test_equal_lengths():\n    data = list(load_donations())\n    labels = [\"l%d\" % i for i in range(len(data))]\n    assert labelled_poundss(data, labels) == list(zip(labels, VALUES))\n\n\ndef test_no_labels():\n    assert labelled_poundss(list(load_donations()), []) == [(\"unlabelled\", v) for v in VALUES]\n\n\ndef test_no_items():\n    assert labelled_poundss([], []) == []\n",
+ "fix": {
+  "file": "tagged.py",
+  "function": "labelled_poundss",
+  "code": "def labelled_poundss(donations, labels):\n    \"\"\"Pair each donation's pounds with its label, in order. donations beyond the end of `labels` get the label 'unlabelled'.\"\"\"\n    return [(labels[i] if i < len(labels) else \"unlabelled\", donations[i].pounds) for i in range(len(donations))]\n"
+ },
+ "oldfix": {
+  "code": "def labelled_poundss(donations, labels):\n    \"\"\"Pair each donation's pounds with its label, in order. donations beyond the end of `labels` get the label 'unlabelled'.\"\"\"\n    return [(labels[i], donations[i].pounds) for i in range(len(labels) + 1)]\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_equal_lengths": "PASS",
+    "test_fewer_labels": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_equal_lengths": "PASS",
+    "test_fewer_labels": "FAIL AssertionError: ",
+    "test_no_items": "PASS",
+    "test_no_labels": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return [(labels[i], donations[i].pounds) for i in range(len(labels))]\n+    return [(labels[i] if i < len(labels) else \"unlabelled\", donations[i].pounds) for i in range(len(donations))]",
+   "hidden": {
+    "test_equal_lengths": "PASS",
+    "test_fewer_labels": "PASS",
+    "test_no_items": "PASS",
+    "test_no_labels": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-    return [(labels[i], donations[i].pounds) for i in range(len(labels))]\n+    return [(labels[i], donations[i].pounds) for i in range(len(labels) + 1)]",
+   "hidden": {
+    "test_equal_lengths": "FAIL IndexError: list index out of range",
+    "test_fewer_labels": "FAIL IndexError: list index out of range",
+    "test_no_items": "FAIL IndexError: list index out of range",
+    "test_no_labels": "FAIL IndexError: list index out of range"
+   },
+   "visible": {
+    "test_equal_lengths": "FAIL IndexError: list index out of range",
+    "test_fewer_labels": "FAIL IndexError: list index out of range"
+   },
+   "regressions": [
+    "test_equal_lengths",
+    "test_no_items"
+   ],
+   "visible_regressions": [
+    "test_equal_lengths"
+   ]
+  }
+ }
+}

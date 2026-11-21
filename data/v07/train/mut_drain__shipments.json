@@ -1,0 +1,79 @@
+{
+ "id": "mut_drain__shipments",
+ "template": "mut_drain",
+ "skin": "shipments",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "MUT",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "shipments.py": "\"\"\"Shipment records.\"\"\"\n\n\nclass Shipment:\n    def __init__(self, route, weight):\n        self.route = route\n        self.weight = weight\n\n    def __repr__(self):\n        return \"Shipment(%r, %r)\" % (self.route, self.weight)\n\n\nROWS = [('r10', 49), ('r10', 45), ('r22', 39), ('r22', 3), ('r31', 27)]\n\n\ndef load_shipments():\n    \"\"\"Yield the stored shipments one at a time.\"\"\"\n    for route, weight in ROWS:\n        yield Shipment(route, weight)\n",
+  "podium.py": "\"\"\"Top shipments by weight.\"\"\"\n\n\ndef _take_largest(shipments):\n    \"\"\"Remove and return the shipment with the largest weight.\"\"\"\n    best = max(shipments, key=lambda x: x.weight)\n    shipments.remove(best)\n    return best\n\n\ndef podium(shipments, places=3):\n    \"\"\"Return the top `places` shipments by weight, largest first. The caller's list is left as it was.\"\"\"\n    top = []\n    while shipments and len(top) < places:\n        top.append(_take_largest(shipments))\n    return top\n\n\ndef report(shipments):\n    \"\"\"Return the podium values, the number of shipments and every weight.\"\"\"\n    return {\"podium\": [x.weight for x in podium(shipments)], \"count\": len(shipments), \"all\": [x.weight for x in shipments]}\n\n\ndef group_by_route(shipments):\n    \"\"\"Return a dict from route to the list of shipments with that route.\"\"\"\n    groups = {}\n    for x in shipments:\n        groups.setdefault(x.route, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from shipments import load_shipments, ROWS\nfrom podium import podium, report\n\n\ndef test_count():\n    assert report(list(load_shipments()))[\"count\"] == len(ROWS)\n\n\ndef test_podium_values():\n    top = podium(list(load_shipments()))\n    assert [x.weight for x in top] == sorted((v for _, v in ROWS), reverse=True)[:3]\n",
+  "ISSUE.md": "report(my_shipments) gives the right podium, but count is 2 and `all` has lost the largest values. I expected count 5 and every weight in `all`.\n"
+ },
+ "code_hash": "73a164881f0fafb3c1031d4a92afd32656790b0cb9cbfc38e2970200dc5207de",
+ "logic_file": "podium.py",
+ "hidden": "from shipments import load_shipments, ROWS\nfrom podium import podium, report\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_count():\n    assert report(list(load_shipments()))[\"count\"] == len(ROWS)\n\n\ndef test_all_values_kept():\n    assert report(list(load_shipments()))[\"all\"] == VALUES\n\n\ndef test_podium_values():\n    top = podium(list(load_shipments()))\n    assert [x.weight for x in top] == sorted(VALUES, reverse=True)[:3]\n\n\ndef test_caller_list_unchanged():\n    data = list(load_shipments())\n    podium(data, 2)\n    assert [x.weight for x in data] == VALUES\n\n\ndef test_one_place():\n    assert [x.weight for x in podium(list(load_shipments()), 1)] == [max(VALUES)]\n",
+ "fix": {
+  "file": "podium.py",
+  "function": "podium",
+  "code": "def podium(shipments, places=3):\n    \"\"\"Return the top `places` shipments by weight, largest first. The caller's list is left as it was.\"\"\"\n    shipments = list(shipments)\n    top = []\n    while shipments and len(top) < places:\n        top.append(_take_largest(shipments))\n    return top\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either the data is a one-shot iterator used twice, or podium() takes items out of the caller's list.",
+    "test": "from shipments import load_shipments\nfrom podium import podium\ndata = list(load_shipments())\nprint(iter(data) is data, len(data))\npodium(data)\nprint(len(data))\n",
+    "predict": "False 5\n2",
+    "observed": "False 5\n2",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "It is a list, and podium() shrinks it. If podium() is given a copy, the caller's list should stay whole.",
+    "test": "from shipments import load_shipments\nfrom podium import podium\ndata = list(load_shipments())\npodium(list(data))\nprint(len(data))\n",
+    "predict": "5",
+    "observed": "5",
+    "seconds": 0.034
+   }
+  ],
+  "cause": "Not a one-shot iterator: podium() removes items from the caller's list. Work on a copy inside podium()."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "The data may be a one-shot iterator that is used twice.",
+  "test": "from shipments import load_shipments\ndata = list(load_shipments())\nprint(iter(data) is data)\n",
+  "predict": "True",
+  "observed": "False",
+  "seconds": 0.032
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count": "FAIL AssertionError: ",
+    "test_podium_values": "PASS"
+   },
+   "hidden": {
+    "test_all_values_kept": "FAIL AssertionError: ",
+    "test_caller_list_unchanged": "FAIL AssertionError: ",
+    "test_count": "FAIL AssertionError: ",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    shipments = list(shipments)",
+   "hidden": {
+    "test_all_values_kept": "PASS",
+    "test_caller_list_unchanged": "PASS",
+    "test_count": "PASS",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

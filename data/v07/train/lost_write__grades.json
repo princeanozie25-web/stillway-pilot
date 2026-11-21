@@ -1,0 +1,77 @@
+{
+ "id": "lost_write__grades",
+ "template": "lost_write",
+ "skin": "grades",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "LOSTWRITE",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "grades.py": "\"\"\"Grade records.\"\"\"\n\n\nclass Grade:\n    def __init__(self, student, score):\n        self.student = student\n        self.score = score\n\n    def __repr__(self):\n        return \"Grade(%r, %r)\" % (self.student, self.score)\n\n\nROWS = [('cho', 24), ('cho', 20), ('ben', 41), ('ben', 58), ('ana', 50)]\n\n\ndef load_grades():\n    \"\"\"Yield the stored grades one at a time.\"\"\"\n    for student, score in ROWS:\n        yield Grade(student, score)\n",
+  "ledger.py": "\"\"\"A ledger of grades.\"\"\"\n\n\nclass GradeLedger:\n    def __init__(self, grades=()):\n        self._grades = list(grades)\n\n    def grades(self):\n        \"\"\"Return the grades held (a copy, so callers cannot change the ledger).\"\"\"\n        return list(self._grades)\n\n    def add(self, grade):\n        \"\"\"Add one grade to the ledger.\"\"\"\n        self.grades().append(grade)\n\n    def total(self):\n        \"\"\"Return the total score of the grades held.\"\"\"\n        return sum(x.score for x in self._grades)\n",
+  "tests/test_visible.py": "from grades import load_grades, ROWS\nfrom ledger import GradeLedger\n\n\ndef test_total_after_add():\n    rows = list(load_grades())\n    ledger = GradeLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_copy_is_safe():\n    rows = list(load_grades())\n    ledger = GradeLedger(rows[:2])\n    ledger.grades().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n",
+  "ISSUE.md": "After I add a grade, total() still returns the old total.\n"
+ },
+ "code_hash": "e8fbbe426456665e742abeb49bc6700470e2513cd38df545c1cb9519cb6f92f1",
+ "logic_file": "ledger.py",
+ "hidden": "from grades import load_grades, ROWS\nfrom ledger import GradeLedger\n\n\ndef test_total_after_add():\n    rows = list(load_grades())\n    ledger = GradeLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_add_to_empty():\n    rows = list(load_grades())\n    ledger = GradeLedger()\n    for x in rows:\n        ledger.add(x)\n    assert ledger.total() == sum(v for _, v in ROWS) and len(ledger.grades()) == len(ROWS)\n\n\ndef test_copy_is_safe():\n    rows = list(load_grades())\n    ledger = GradeLedger(rows[:2])\n    ledger.grades().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_initial_total():\n    assert GradeLedger(load_grades()).total() == sum(v for _, v in ROWS)\n",
+ "fix": {
+  "file": "ledger.py",
+  "function": "add",
+  "code": "def add(self, grade):\n    \"\"\"Add one grade to the ledger.\"\"\"\n    self._grades.append(grade)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either total() returns a remembered value that add() does not refresh, or add() never stores the grade.",
+    "test": "from grades import load_grades\nfrom ledger import GradeLedger\nrows = list(load_grades())\nledger = GradeLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.score for x in ledger._grades), len(ledger._grades))\n",
+    "predict": "24 24 1",
+    "observed": "24 24 1",
+    "seconds": 0.037
+   },
+   {
+    "suspect": "total() agrees with the list, and the list did not grow: add() loses the grade. Appending to the real list should give the right total.",
+    "test": "from grades import load_grades\nfrom ledger import GradeLedger\nrows = list(load_grades())\nledger = GradeLedger(rows[:1])\nledger._grades.append(rows[1])\nprint(ledger.total())\n",
+    "predict": "44",
+    "observed": "44",
+    "seconds": 0.034
+   }
+  ],
+  "cause": "Not a stale value: add() appends to a copy, so the grade is lost. Append to the real list."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "total() may return a remembered value that add() does not refresh.",
+  "test": "from grades import load_grades\nfrom ledger import GradeLedger\nrows = list(load_grades())\nledger = GradeLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.score for x in ledger._grades))\n",
+  "predict": "24 44",
+  "observed": "24 24",
+  "seconds": 0.035
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_copy_is_safe": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_add_to_empty": "FAIL AssertionError: ",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self.grades().append(grade)\n+        self._grades.append(grade)",
+   "hidden": {
+    "test_add_to_empty": "PASS",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

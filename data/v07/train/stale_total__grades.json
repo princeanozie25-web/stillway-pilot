@@ -1,0 +1,69 @@
+{
+ "id": "stale_total__grades",
+ "template": "stale_total",
+ "skin": "grades",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "grades.py": "\"\"\"Grade records.\"\"\"\n\n\nclass Grade:\n    def __init__(self, student, score):\n        self.student = student\n        self.score = score\n\n    def __repr__(self):\n        return \"Grade(%r, %r)\" % (self.student, self.score)\n\n\nROWS = [('ben', 35), ('dev', 21), ('ana', 29), ('ben', 42), ('ben', 27), ('ben', 56)]\n\n\ndef load_grades():\n    \"\"\"Yield the stored grades one at a time.\"\"\"\n    for student, score in ROWS:\n        yield Grade(student, score)\n",
+  "register.py": "\"\"\"A book of grades with a cached total.\"\"\"\n\n\nclass GradeBook:\n    def __init__(self):\n        self._grades = []\n        self._total = None\n\n    def add(self, grade):\n        \"\"\"Add one grade to the book.\"\"\"\n        self._grades.append(grade)\n\n    def total(self):\n        \"\"\"Return the total score of the grades in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.score for x in self._grades)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many grades the book holds.\"\"\"\n        return len(self._grades)\n",
+  "tests/test_visible.py": "from grades import load_grades, ROWS\nfrom register import GradeBook\n\n\ndef test_total_after_add():\n    rows = list(load_grades())\n    book = GradeBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = GradeBook()\n    for x in load_grades():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a grade, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "62a914ee8ecd7bcd346836949a59690e1bbc5d2f88930a7efe1a985ecb85ecd1",
+ "logic_file": "register.py",
+ "hidden": "from grades import load_grades, ROWS\nfrom register import GradeBook\n\n\ndef test_total_after_add():\n    rows = list(load_grades())\n    book = GradeBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = GradeBook()\n    running = 0\n    for x in load_grades():\n        book.add(x)\n        running += x.score\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert GradeBook().total() == 0\n\n\ndef test_count():\n    book = GradeBook()\n    for x in load_grades():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "register.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total score of the grades in the book.\"\"\"\n    return sum(x.score for x in self._grades)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "total() may return a remembered value that add() does not refresh.",
+    "test": "from grades import load_grades\nfrom register import GradeBook\nrows = list(load_grades())\nbook = GradeBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nprint(book.total(), sum(x.score for x in book._grades))\n",
+    "predict": "35 56",
+    "observed": "35 56",
+    "seconds": 0.035
+   },
+   {
+    "suspect": "If the remembered value is cleared, total() should give the right answer, so working it out on every call is enough.",
+    "test": "from grades import load_grades\nfrom register import GradeBook\nrows = list(load_grades())\nbook = GradeBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nbook._total = None\nprint(book.total())\n",
+    "predict": "56",
+    "observed": "56",
+    "seconds": 0.036
+   }
+  ],
+  "cause": "Stale remembered total. Work the total out from the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.score for x in self._grades)\n-        return self._total\n+        return sum(x.score for x in self._grades)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

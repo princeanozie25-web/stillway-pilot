@@ -1,0 +1,69 @@
+{
+ "id": "stale_total__parcels",
+ "template": "stale_total",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('leeds', 51), ('bath', 18), ('york', 54), ('york', 32), ('leeds', 5)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n",
+  "book.py": "\"\"\"A book of parcels with a cached total.\"\"\"\n\n\nclass ParcelBook:\n    def __init__(self):\n        self._parcels = []\n        self._total = None\n\n    def add(self, parcel):\n        \"\"\"Add one parcel to the book.\"\"\"\n        self._parcels.append(parcel)\n\n    def total(self):\n        \"\"\"Return the total grams of the parcels in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.grams for x in self._parcels)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many parcels the book holds.\"\"\"\n        return len(self._parcels)\n\n\ndef group_by_depot(parcels):\n    \"\"\"Return a dict from depot to the list of parcels with that depot.\"\"\"\n    groups = {}\n    for x in parcels:\n        groups.setdefault(x.depot, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from parcels import load_parcels, ROWS\nfrom book import ParcelBook\n\n\ndef test_total_after_add():\n    rows = list(load_parcels())\n    book = ParcelBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = ParcelBook()\n    for x in load_parcels():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a parcel, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "ea3186258ad9fb198d9dc17082ee16782c42c26c24f65190d62b03acc6a0fc93",
+ "logic_file": "book.py",
+ "hidden": "from parcels import load_parcels, ROWS\nfrom book import ParcelBook\n\n\ndef test_total_after_add():\n    rows = list(load_parcels())\n    book = ParcelBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = ParcelBook()\n    running = 0\n    for x in load_parcels():\n        book.add(x)\n        running += x.grams\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert ParcelBook().total() == 0\n\n\ndef test_count():\n    book = ParcelBook()\n    for x in load_parcels():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "book.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total grams of the parcels in the book.\"\"\"\n    return sum(x.grams for x in self._parcels)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "total() may return a remembered value that add() does not refresh.",
+    "test": "from parcels import load_parcels\nfrom book import ParcelBook\nrows = list(load_parcels())\nbook = ParcelBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nprint(book.total(), sum(x.grams for x in book._parcels))\n",
+    "predict": "51 69",
+    "observed": "51 69",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "If the remembered value is cleared, total() should give the right answer, so working it out on every call is enough.",
+    "test": "from parcels import load_parcels\nfrom book import ParcelBook\nrows = list(load_parcels())\nbook = ParcelBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nbook._total = None\nprint(book.total())\n",
+    "predict": "69",
+    "observed": "69",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Stale remembered total. Work the total out from the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.grams for x in self._parcels)\n-        return self._total\n+        return sum(x.grams for x in self._parcels)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

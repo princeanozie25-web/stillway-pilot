@@ -1,0 +1,44 @@
+{
+ "id": "dev_036",
+ "source": "bound_loop__fixtures",
+ "template": "bound_loop",
+ "skin": "fixtures",
+ "group": "G1",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "hidden": "from fixtures import load_fixtures, ROWS\nfrom running import running_goals, final_goals\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_goals(list(load_fixtures()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_goals(list(load_fixtures())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_goals(list(load_fixtures()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_goals(list(load_fixtures())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_goals([]) == [] and final_goals([]) == 0\n",
+ "fix": {
+  "file": "running.py",
+  "function": "running_goals",
+  "code": "def running_goals(fixtures):\n    \"\"\"Return the running total of goals after each fixture, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(fixtures)):\n        total += fixtures[i].goals\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(fixtures) - 1):\n+    for i in range(len(fixtures)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

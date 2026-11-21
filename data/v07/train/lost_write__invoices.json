@@ -1,0 +1,77 @@
+{
+ "id": "lost_write__invoices",
+ "template": "lost_write",
+ "skin": "invoices",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "LOSTWRITE",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "invoices.py": "\"\"\"Invoice records.\"\"\"\n\n\nclass Invoice:\n    def __init__(self, client, due):\n        self.client = client\n        self.due = due\n\n    def __repr__(self):\n        return \"Invoice(%r, %r)\" % (self.client, self.due)\n\n\nROWS = [('kite', 50), ('juno', 30), ('juno', 41), ('hale', 55), ('ivory', 33)]\n\n\ndef load_invoices():\n    \"\"\"Yield the stored invoices one at a time.\"\"\"\n    for client, due in ROWS:\n        yield Invoice(client, due)\n",
+  "holdings.py": "\"\"\"A ledger of invoices.\"\"\"\n\n\nclass InvoiceLedger:\n    def __init__(self, invoices=()):\n        self._invoices = list(invoices)\n\n    def invoices(self):\n        \"\"\"Return the invoices held (a copy, so callers cannot change the ledger).\"\"\"\n        return list(self._invoices)\n\n    def add(self, invoice):\n        \"\"\"Add one invoice to the ledger.\"\"\"\n        self.invoices().append(invoice)\n\n    def total(self):\n        \"\"\"Return the total due of the invoices held.\"\"\"\n        return sum(x.due for x in self._invoices)\n\n\ndef describe_invoice(invoice):\n    \"\"\"Return a one-line description of a invoice.\"\"\"\n    return \"%s: %s\" % (invoice.client, invoice.due)\n",
+  "tests/test_visible.py": "from invoices import load_invoices, ROWS\nfrom holdings import InvoiceLedger\n\n\ndef test_total_after_add():\n    rows = list(load_invoices())\n    ledger = InvoiceLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_copy_is_safe():\n    rows = list(load_invoices())\n    ledger = InvoiceLedger(rows[:2])\n    ledger.invoices().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n",
+  "ISSUE.md": "After I add a invoice, total() still returns the old total.\n"
+ },
+ "code_hash": "e8028cdb71432064059a6c11bfc6e40e1655dc09eb2185d82ca6a75da632bd50",
+ "logic_file": "holdings.py",
+ "hidden": "from invoices import load_invoices, ROWS\nfrom holdings import InvoiceLedger\n\n\ndef test_total_after_add():\n    rows = list(load_invoices())\n    ledger = InvoiceLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_add_to_empty():\n    rows = list(load_invoices())\n    ledger = InvoiceLedger()\n    for x in rows:\n        ledger.add(x)\n    assert ledger.total() == sum(v for _, v in ROWS) and len(ledger.invoices()) == len(ROWS)\n\n\ndef test_copy_is_safe():\n    rows = list(load_invoices())\n    ledger = InvoiceLedger(rows[:2])\n    ledger.invoices().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_initial_total():\n    assert InvoiceLedger(load_invoices()).total() == sum(v for _, v in ROWS)\n",
+ "fix": {
+  "file": "holdings.py",
+  "function": "add",
+  "code": "def add(self, invoice):\n    \"\"\"Add one invoice to the ledger.\"\"\"\n    self._invoices.append(invoice)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either total() returns a remembered value that add() does not refresh, or add() never stores the invoice.",
+    "test": "from invoices import load_invoices\nfrom holdings import InvoiceLedger\nrows = list(load_invoices())\nledger = InvoiceLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.due for x in ledger._invoices), len(ledger._invoices))\n",
+    "predict": "50 50 1",
+    "observed": "50 50 1",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "total() agrees with the list, and the list did not grow: add() loses the invoice. Appending to the real list should give the right total.",
+    "test": "from invoices import load_invoices\nfrom holdings import InvoiceLedger\nrows = list(load_invoices())\nledger = InvoiceLedger(rows[:1])\nledger._invoices.append(rows[1])\nprint(ledger.total())\n",
+    "predict": "80",
+    "observed": "80",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Not a stale value: add() appends to a copy, so the invoice is lost. Append to the real list."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "total() may return a remembered value that add() does not refresh.",
+  "test": "from invoices import load_invoices\nfrom holdings import InvoiceLedger\nrows = list(load_invoices())\nledger = InvoiceLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.due for x in ledger._invoices))\n",
+  "predict": "50 80",
+  "observed": "50 50",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_copy_is_safe": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_add_to_empty": "FAIL AssertionError: ",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self.invoices().append(invoice)\n+        self._invoices.append(invoice)",
+   "hidden": {
+    "test_add_to_empty": "PASS",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "id": "stale_index__parcels",
+ "template": "stale_index",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('hull', 20), ('leeds', 58), ('hull', 53), ('york', 21), ('bath', 8)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n",
+  "registry.py": "\"\"\"Registry of parcels by depot.\"\"\"\n\n_ALL = []\n_BY_KEY = None\n\n\ndef reset():\n    \"\"\"Forget every registered parcel.\"\"\"\n    global _BY_KEY\n    del _ALL[:]\n    _BY_KEY = None\n\n\ndef register(parcel):\n    \"\"\"Add one parcel to the registry.\"\"\"\n    _ALL.append(parcel)\n\n\ndef find(depot):\n    \"\"\"Return the parcels registered under this depot.\"\"\"\n    global _BY_KEY\n    if _BY_KEY is None:\n        _BY_KEY = {}\n        for x in _ALL:\n            _BY_KEY.setdefault(x.depot, []).append(x)\n    return _BY_KEY.get(depot, [])\n\n\ndef describe_parcel(parcel):\n    \"\"\"Return a one-line description of a parcel.\"\"\"\n    return \"%s: %s\" % (parcel.depot, parcel.grams)\n\n\ndef group_by_depot(parcels):\n    \"\"\"Return a dict from depot to the list of parcels with that depot.\"\"\"\n    groups = {}\n    for x in parcels:\n        groups.setdefault(x.depot, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from parcels import Parcel\nimport registry as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Parcel(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Parcel(\"k1\", 7))\n    assert len(reg.find(\"k1\")) == 2\n\n\ndef test_register_then_find():\n    reg.reset()\n    reg.register(Parcel(\"k1\", 5))\n    reg.register(Parcel(\"k2\", 6))\n    assert [x.grams for x in reg.find(\"k2\")] == [6]\n",
+  "ISSUE.md": "A parcel registered after the first find() never shows up in find(). Registering everything before the first find() works.\n"
+ },
+ "code_hash": "2aa9749f2b3d6bdd22a329791673093fd7da4aa5c80b41b7f058727f9311905d",
+ "logic_file": "registry.py",
+ "hidden": "from parcels import Parcel\nimport registry as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Parcel(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Parcel(\"k1\", 7))\n    assert [x.grams for x in reg.find(\"k1\")] == [5, 7]\n\n\ndef test_late_new_key():\n    reg.reset()\n    reg.register(Parcel(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.register(Parcel(\"k9\", 2))\n    assert [x.grams for x in reg.find(\"k9\")] == [2]\n\n\ndef test_unknown_key():\n    reg.reset()\n    reg.register(Parcel(\"k1\", 5))\n    assert reg.find(\"nope\") == []\n\n\ndef test_reset():\n    reg.reset()\n    reg.register(Parcel(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.reset()\n    assert reg.find(\"k1\") == []\n",
+ "fix": {
+  "file": "registry.py",
+  "function": "find",
+  "code": "def find(depot):\n    \"\"\"Return the parcels registered under this depot.\"\"\"\n    return [x for x in _ALL if x.depot == depot]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "find() may answer from an index built on the first call that register() does not refresh.",
+    "test": "from parcels import Parcel\nimport registry as reg\nreg.reset()\nreg.register(Parcel(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Parcel(\"k1\", 7))\nprint(len(reg.find(\"k1\")), sum(1 for x in reg._ALL if x.depot == \"k1\"))\n",
+    "predict": "1 2",
+    "observed": "1 2",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "If the remembered index is cleared, find() should see both, so looking through the list on every call is enough.",
+    "test": "from parcels import Parcel\nimport registry as reg\nreg.reset()\nreg.register(Parcel(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Parcel(\"k1\", 7))\nreg._BY_KEY = None\nprint(len(reg.find(\"k1\")))\n",
+    "predict": "2",
+    "observed": "2",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered index. Look through the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_register_then_find": "PASS"
+   },
+   "hidden": {
+    "test_late_new_key": "FAIL AssertionError: ",
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 7,
+   "diff": "-    global _BY_KEY\n-    if _BY_KEY is None:\n-        _BY_KEY = {}\n-        for x in _ALL:\n-            _BY_KEY.setdefault(x.depot, []).append(x)\n-    return _BY_KEY.get(depot, [])\n+    return [x for x in _ALL if x.depot == depot]",
+   "hidden": {
+    "test_late_new_key": "PASS",
+    "test_late_registration": "PASS",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,69 @@
+{
+ "id": "stale_index__shipments",
+ "template": "stale_index",
+ "skin": "shipments",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "shipments.py": "\"\"\"Shipment records.\"\"\"\n\n\nclass Shipment:\n    def __init__(self, route, weight):\n        self.route = route\n        self.weight = weight\n\n    def __repr__(self):\n        return \"Shipment(%r, %r)\" % (self.route, self.weight)\n\n\nROWS = [('r22', 49), ('r31', 43), ('r10', 24), ('r10', 21), ('r22', 5), ('r47', 57)]\n\n\ndef load_shipments():\n    \"\"\"Yield the stored shipments one at a time.\"\"\"\n    for route, weight in ROWS:\n        yield Shipment(route, weight)\n",
+  "catalog.py": "\"\"\"Registry of shipments by route.\"\"\"\n\n_ALL = []\n_BY_KEY = None\n\n\ndef reset():\n    \"\"\"Forget every registered shipment.\"\"\"\n    global _BY_KEY\n    del _ALL[:]\n    _BY_KEY = None\n\n\ndef register(shipment):\n    \"\"\"Add one shipment to the registry.\"\"\"\n    _ALL.append(shipment)\n\n\ndef find(route):\n    \"\"\"Return the shipments registered under this route.\"\"\"\n    global _BY_KEY\n    if _BY_KEY is None:\n        _BY_KEY = {}\n        for x in _ALL:\n            _BY_KEY.setdefault(x.route, []).append(x)\n    return _BY_KEY.get(route, [])\n\n\ndef route_names(shipments):\n    \"\"\"Return the distinct route values, in first-seen order.\"\"\"\n    names = []\n    for x in shipments:\n        if x.route not in names:\n            names.append(x.route)\n    return names\n",
+  "tests/test_visible.py": "from shipments import Shipment\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Shipment(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Shipment(\"k1\", 7))\n    assert len(reg.find(\"k1\")) == 2\n\n\ndef test_register_then_find():\n    reg.reset()\n    reg.register(Shipment(\"k1\", 5))\n    reg.register(Shipment(\"k2\", 6))\n    assert [x.weight for x in reg.find(\"k2\")] == [6]\n",
+  "ISSUE.md": "A shipment registered after the first find() never shows up in find(). Registering everything before the first find() works.\n"
+ },
+ "code_hash": "47a60f525d711f1f555dc3df6e80b1daf1cd32003fe7ed97c03eedaedb9e14e9",
+ "logic_file": "catalog.py",
+ "hidden": "from shipments import Shipment\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Shipment(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Shipment(\"k1\", 7))\n    assert [x.weight for x in reg.find(\"k1\")] == [5, 7]\n\n\ndef test_late_new_key():\n    reg.reset()\n    reg.register(Shipment(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.register(Shipment(\"k9\", 2))\n    assert [x.weight for x in reg.find(\"k9\")] == [2]\n\n\ndef test_unknown_key():\n    reg.reset()\n    reg.register(Shipment(\"k1\", 5))\n    assert reg.find(\"nope\") == []\n\n\ndef test_reset():\n    reg.reset()\n    reg.register(Shipment(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.reset()\n    assert reg.find(\"k1\") == []\n",
+ "fix": {
+  "file": "catalog.py",
+  "function": "find",
+  "code": "def find(route):\n    \"\"\"Return the shipments registered under this route.\"\"\"\n    return [x for x in _ALL if x.route == route]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "find() may answer from an index built on the first call that register() does not refresh.",
+    "test": "from shipments import Shipment\nimport catalog as reg\nreg.reset()\nreg.register(Shipment(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Shipment(\"k1\", 7))\nprint(len(reg.find(\"k1\")), sum(1 for x in reg._ALL if x.route == \"k1\"))\n",
+    "predict": "1 2",
+    "observed": "1 2",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "If the remembered index is cleared, find() should see both, so looking through the list on every call is enough.",
+    "test": "from shipments import Shipment\nimport catalog as reg\nreg.reset()\nreg.register(Shipment(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Shipment(\"k1\", 7))\nreg._BY_KEY = None\nprint(len(reg.find(\"k1\")))\n",
+    "predict": "2",
+    "observed": "2",
+    "seconds": 0.036
+   }
+  ],
+  "cause": "Stale remembered index. Look through the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_register_then_find": "PASS"
+   },
+   "hidden": {
+    "test_late_new_key": "FAIL AssertionError: ",
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 7,
+   "diff": "-    global _BY_KEY\n-    if _BY_KEY is None:\n-        _BY_KEY = {}\n-        for x in _ALL:\n-            _BY_KEY.setdefault(x.route, []).append(x)\n-    return _BY_KEY.get(route, [])\n+    return [x for x in _ALL if x.route == route]",
+   "hidden": {
+    "test_late_new_key": "PASS",
+    "test_late_registration": "PASS",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

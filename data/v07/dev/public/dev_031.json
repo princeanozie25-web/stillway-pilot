@@ -1,0 +1,10 @@
+{
+ "id": "dev_031",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('upper', 47), ('upper', 16), ('hill', 19), ('lower', 40), ('lower', 18), ('lower', 51)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "catalog.py": "\"\"\"Registry of harvests by field.\"\"\"\n\n_ALL = []\n_BY_KEY = None\n\n\ndef reset():\n    \"\"\"Forget every registered harvest.\"\"\"\n    global _BY_KEY\n    del _ALL[:]\n    _BY_KEY = None\n\n\ndef register(harvest):\n    \"\"\"Add one harvest to the registry.\"\"\"\n    _ALL.append(harvest)\n\n\ndef find(field):\n    \"\"\"Return the harvests registered under this field.\"\"\"\n    global _BY_KEY\n    if _BY_KEY is None:\n        _BY_KEY = {}\n        for x in _ALL:\n            _BY_KEY.setdefault(x.field, []).append(x)\n    return _BY_KEY.get(field, [])\n",
+  "tests/test_visible.py": "from harvests import Harvest\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Harvest(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Harvest(\"k1\", 7))\n    assert len(reg.find(\"k1\")) == 2\n\n\ndef test_register_then_find():\n    reg.reset()\n    reg.register(Harvest(\"k1\", 5))\n    reg.register(Harvest(\"k2\", 6))\n    assert [x.kilos for x in reg.find(\"k2\")] == [6]\n",
+  "ISSUE.md": "A harvest registered after the first find() never shows up in find(). Registering everything before the first find() works.\n"
+ },
+ "code_hash": "c2a2543db868f5108bb28ff93e936b1706fc3473f98ac6af5cac2cf2bc8e4c95"
+}

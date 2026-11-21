@@ -1,0 +1,69 @@
+{
+ "id": "iter_zip__grades",
+ "template": "iter_zip",
+ "skin": "grades",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "grades.py": "\"\"\"Grade records.\"\"\"\n\n\nclass Grade:\n    def __init__(self, student, score):\n        self.student = student\n        self.score = score\n\n    def __repr__(self):\n        return \"Grade(%r, %r)\" % (self.student, self.score)\n\n\nROWS = [('ana', 10), ('ben', 5), ('cho', 16), ('ben', 11), ('dev', 30), ('ana', 47), ('dev', 14)]\n\n\ndef load_grades():\n    \"\"\"Yield the stored grades one at a time.\"\"\"\n    for student, score in ROWS:\n        yield Grade(student, score)\n",
+  "naming.py": "\"\"\"Labels for grades.\"\"\"\n\n\ndef label_grades(names, grades):\n    \"\"\"Return (lookup, lines): a name -> score dict and one 'name: score' line per grade.\"\"\"\n    pairs = zip(names, (x.score for x in grades))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n",
+  "tests/test_visible.py": "from grades import load_grades, ROWS\nfrom naming import label_grades\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_grades(NAMES, load_grades())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_grades(NAMES, load_grades())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_grades gives me the lookup, but `lines` is always empty. I expected one line per grade.\n"
+ },
+ "code_hash": "880561f82aff8f4db9f82cc2523d66be20f0e0fff8e0d14a0b3f7ec370f5841d",
+ "logic_file": "naming.py",
+ "hidden": "from grades import load_grades, ROWS\nfrom naming import label_grades\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_grades(NAMES, load_grades())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_grades(NAMES, list(load_grades()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_grades(NAMES, load_grades())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_grades([], load_grades()) == ({}, [])\n",
+ "fix": {
+  "file": "naming.py",
+  "function": "label_grades",
+  "code": "def label_grades(names, grades):\n    \"\"\"Return (lookup, lines): a name -> score dict and one 'name: score' line per grade.\"\"\"\n    pairs = list(zip(names, (x.score for x in grades)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The lookup is built first and the lines second from the same `pairs`; the second use may find it used up.",
+    "test": "from grades import load_grades\nfrom naming import label_grades\nlookup, lines = label_grades([\"a\", \"b\"], load_grades())\nprint(len(lookup), len(lines))\n",
+    "predict": "2 0",
+    "observed": "2 0",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "A zip object is a one-shot iterator: after dict() has read it, nothing is left.",
+    "test": "pairs = zip(\"ab\", [1, 2])\nfirst = dict(pairs)\nprint(iter(pairs) is pairs, len(first), len(list(pairs)))\n",
+    "predict": "True 2 0",
+    "observed": "True 2 0",
+    "seconds": 0.031
+   }
+  ],
+  "cause": "The zip object is a one-shot iterator used twice. Turn it into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.score for x in grades))\n+    pairs = list(zip(names, (x.score for x in grades)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_068",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('town', 6), ('city', 45), ('united', 57), ('rovers', 16), ('rovers', 20), ('united', 36), ('town', 43)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "ranking.py": "\"\"\"Top fixtures by goals.\"\"\"\n\n\ndef _take_largest(fixtures):\n    \"\"\"Remove and return the fixture with the largest goals.\"\"\"\n    best = max(fixtures, key=lambda x: x.goals)\n    fixtures.remove(best)\n    return best\n\n\ndef podium(fixtures, places=3):\n    \"\"\"Return the top `places` fixtures by goals, largest first. The caller's list is left as it was.\"\"\"\n    top = []\n    while fixtures and len(top) < places:\n        top.append(_take_largest(fixtures))\n    return top\n\n\ndef report(fixtures):\n    \"\"\"Return the podium values, the number of fixtures and every goals.\"\"\"\n    return {\"podium\": [x.goals for x in podium(fixtures)], \"count\": len(fixtures), \"all\": [x.goals for x in fixtures]}\n",
+  "tests/test_visible.py": "from fixtures import load_fixtures, ROWS\nfrom ranking import podium, report\n\n\ndef test_count():\n    assert report(list(load_fixtures()))[\"count\"] == len(ROWS)\n\n\ndef test_podium_values():\n    top = podium(list(load_fixtures()))\n    assert [x.goals for x in top] == sorted((v for _, v in ROWS), reverse=True)[:3]\n",
+  "ISSUE.md": "report(my_fixtures) gives the right podium, but count is 4 and `all` has lost the largest values. I expected count 7 and every goals in `all`.\n"
+ },
+ "code_hash": "fc010de07fd9ccb0f54ec4c55014a8cd5ff9b95dd709d24ffb154a6ce3ce8ce0"
+}

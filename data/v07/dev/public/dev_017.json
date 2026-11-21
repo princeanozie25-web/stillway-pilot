@@ -1,0 +1,10 @@
+{
+ "id": "dev_017",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('mia', 7), ('noor', 38), ('mia', 51), ('pia', 12), ('mia', 48)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "settle.py": "\"\"\"Checking that donations add up.\"\"\"\n\n\ndef is_settled(donations, expected_total):\n    \"\"\"Return True when the pounds of the donations add up to expected_total. pounds may be fractional.\"\"\"\n    return sum(x.pounds for x in donations) == expected_total\n\n\ndef shortfall(donations, expected_total):\n    \"\"\"Return how much pounds is still missing, never less than 0.\"\"\"\n    return max(0, expected_total - sum(x.pounds for x in donations))\n\n\ndef group_by_donor(donations):\n    \"\"\"Return a dict from donor to the list of donations with that donor.\"\"\"\n    groups = {}\n    for x in donations:\n        groups.setdefault(x.donor, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from donations import Donation\nfrom settle import is_settled\n\n\ndef test_tenths():\n    assert is_settled([Donation(\"a\", 0.1), Donation(\"b\", 0.2)], 0.3)\n\n\ndef test_whole_numbers():\n    assert is_settled([Donation(\"a\", 2), Donation(\"b\", 3)], 5)\n",
+  "ISSUE.md": "is_settled() says False for two donations with pounds 0.1 and 0.2 against an expected total of 0.3.\n"
+ },
+ "code_hash": "a91b1cc5925282616159d14cef5af5a7494f610838d8bf4364bb3f665f8ca5a1"
+}

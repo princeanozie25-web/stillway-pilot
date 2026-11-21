@@ -1,0 +1,10 @@
+{
+ "id": "dev_007",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('plaza', 3), ('lodge', 35), ('lodge', 47), ('lodge', 20), ('grand', 29), ('plaza', 28), ('plaza', 38)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "positions.py": "\"\"\"Position windows over bookings.\"\"\"\n\n\ndef nights_between(bookings, low, high):\n    \"\"\"Return the nights of the bookings at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.nights for x in bookings[low - 1:high - 1]]\n\n\ndef first_nightss(bookings, n):\n    \"\"\"Return the nights of the first n bookings.\"\"\"\n    return nights_between(bookings, 1, n)\n\n\ndef hotel_names(bookings):\n    \"\"\"Return the distinct hotel values, in first-seen order.\"\"\"\n    names = []\n    for x in bookings:\n        if x.hotel not in names:\n            names.append(x.hotel)\n    return names\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom positions import nights_between\n\n\ndef test_three_positions():\n    data = list(load_bookings())\n    assert nights_between(data, 2, 4) == [v for _, v in ROWS[1:4]]\n\n\ndef test_low_above_high():\n    data = list(load_bookings())\n    assert nights_between(data, 3, 2) == []\n",
+  "ISSUE.md": "nights_between(data, 2, 4) returns two values. I expected three, for positions 2, 3 and 4: the last one is missing.\n"
+ },
+ "code_hash": "58a3f78aa5a71d8b99e74c45a4ace6b902c19caca1daddab173cbd6fa8bf44d5"
+}

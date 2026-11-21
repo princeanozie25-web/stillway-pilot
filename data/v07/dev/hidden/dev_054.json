@@ -1,0 +1,42 @@
+{
+ "id": "dev_054",
+ "source": "case_key__bookings",
+ "template": "case_key",
+ "skin": "bookings",
+ "group": "G4",
+ "symptom": "X2",
+ "cause": "NORMALISE",
+ "role": null,
+ "hidden": "from bookings import Booking, load_bookings, ROWS\nfrom lookup import bookings_for, has_hotel\n\nKEY = ROWS[0][0]\nCOUNT = sum(1 for k, _ in ROWS if k == KEY)\n\n\ndef test_upper_case_with_spaces():\n    assert len(bookings_for(list(load_bookings()), \" \" + KEY.upper() + \" \")) == COUNT\n\n\ndef test_stored_value_not_tidy():\n    data = [Booking(\"  Alpha\", 1), Booking(\"beta\", 2), Booking(\"ALPHA \", 3)]\n    assert [x.nights for x in bookings_for(data, \"alpha\")] == [1, 3]\n\n\ndef test_exact():\n    assert len(bookings_for(list(load_bookings()), KEY)) == COUNT\n\n\ndef test_no_match():\n    assert bookings_for(list(load_bookings()), \"zzz\") == [] and not has_hotel(list(load_bookings()), \"zzz\")\n",
+ "fix": {
+  "file": "lookup.py",
+  "function": "bookings_for",
+  "code": "def bookings_for(bookings, hotel):\n    \"\"\"Return the bookings whose hotel matches, ignoring upper and lower case and spaces at either end.\"\"\"\n    wanted = hotel.strip().lower()\n    return [x for x in bookings if x.hotel.strip().lower() == wanted]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_exact": "PASS",
+    "test_upper_case_with_spaces": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_exact": "PASS",
+    "test_no_match": "PASS",
+    "test_stored_value_not_tidy": "FAIL AssertionError: ",
+    "test_upper_case_with_spaces": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 3,
+   "diff": "-    return [x for x in bookings if x.hotel == hotel]\n+    wanted = hotel.strip().lower()\n+    return [x for x in bookings if x.hotel.strip().lower() == wanted]",
+   "hidden": {
+    "test_exact": "PASS",
+    "test_no_match": "PASS",
+    "test_stored_value_not_tidy": "PASS",
+    "test_upper_case_with_spaces": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

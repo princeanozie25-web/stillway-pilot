@@ -1,0 +1,69 @@
+{
+ "id": "stale_total__orders",
+ "template": "stale_total",
+ "skin": "orders",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "orders.py": "\"\"\"Order records.\"\"\"\n\n\nclass Order:\n    def __init__(self, customer, amount):\n        self.customer = customer\n        self.amount = amount\n\n    def __repr__(self):\n        return \"Order(%r, %r)\" % (self.customer, self.amount)\n\n\nROWS = [('corvo', 52), ('acme', 45), ('acme', 9), ('acme', 30), ('birch', 27), ('delta', 44)]\n\n\ndef load_orders():\n    \"\"\"Yield the stored orders one at a time.\"\"\"\n    for customer, amount in ROWS:\n        yield Order(customer, amount)\n",
+  "register.py": "\"\"\"A book of orders with a cached total.\"\"\"\n\n\nclass OrderBook:\n    def __init__(self):\n        self._orders = []\n        self._total = None\n\n    def add(self, order):\n        \"\"\"Add one order to the book.\"\"\"\n        self._orders.append(order)\n\n    def total(self):\n        \"\"\"Return the total amount of the orders in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.amount for x in self._orders)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many orders the book holds.\"\"\"\n        return len(self._orders)\n\n\ndef group_by_customer(orders):\n    \"\"\"Return a dict from customer to the list of orders with that customer.\"\"\"\n    groups = {}\n    for x in orders:\n        groups.setdefault(x.customer, []).append(x)\n    return groups\n\n\ndef customer_names(orders):\n    \"\"\"Return the distinct customer values, in first-seen order.\"\"\"\n    names = []\n    for x in orders:\n        if x.customer not in names:\n            names.append(x.customer)\n    return names\n",
+  "tests/test_visible.py": "from orders import load_orders, ROWS\nfrom register import OrderBook\n\n\ndef test_total_after_add():\n    rows = list(load_orders())\n    book = OrderBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = OrderBook()\n    for x in load_orders():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a order, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "70891fc5807200b571361cd2811eb459dbd4d647c84710da797243e5da06ce4f",
+ "logic_file": "register.py",
+ "hidden": "from orders import load_orders, ROWS\nfrom register import OrderBook\n\n\ndef test_total_after_add():\n    rows = list(load_orders())\n    book = OrderBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = OrderBook()\n    running = 0\n    for x in load_orders():\n        book.add(x)\n        running += x.amount\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert OrderBook().total() == 0\n\n\ndef test_count():\n    book = OrderBook()\n    for x in load_orders():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "register.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total amount of the orders in the book.\"\"\"\n    return sum(x.amount for x in self._orders)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "total() may return a remembered value that add() does not refresh.",
+    "test": "from orders import load_orders\nfrom register import OrderBook\nrows = list(load_orders())\nbook = OrderBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nprint(book.total(), sum(x.amount for x in book._orders))\n",
+    "predict": "52 97",
+    "observed": "52 97",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "If the remembered value is cleared, total() should give the right answer, so working it out on every call is enough.",
+    "test": "from orders import load_orders\nfrom register import OrderBook\nrows = list(load_orders())\nbook = OrderBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nbook._total = None\nprint(book.total())\n",
+    "predict": "97",
+    "observed": "97",
+    "seconds": 0.034
+   }
+  ],
+  "cause": "Stale remembered total. Work the total out from the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.amount for x in self._orders)\n-        return self._total\n+        return sum(x.amount for x in self._orders)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

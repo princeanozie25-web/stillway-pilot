@@ -1,0 +1,10 @@
+{
+ "id": "dev_050",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('harbour', 24), ('plaza', 14), ('grand', 4), ('harbour', 18), ('lodge', 23), ('lodge', 12), ('grand', 50)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "portion.py": "\"\"\"Percentages of the total nights.\"\"\"\n\n\ndef percent_of_total(bookings, hotel):\n    \"\"\"Return the percentage, from 0 to 100, of the total nights that belongs to this hotel.\"\"\"\n    total = sum(x.nights for x in bookings)\n    part = sum(x.nights for x in bookings if x.hotel == hotel)\n    return part // total * 100\n\n\ndef total_nights(bookings):\n    \"\"\"Return the total nights.\"\"\"\n    return sum(x.nights for x in bookings)\n\n\ndef describe_booking(booking):\n    \"\"\"Return a one-line description of a booking.\"\"\"\n    return \"%s: %s\" % (booking.hotel, booking.nights)\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom portion import percent_of_total\n\nKEY = ROWS[0][0]\nTOTAL = sum(v for _, v in ROWS)\nPART = sum(v for k, v in ROWS if k == KEY)\n\n\ndef test_percent():\n    assert abs(percent_of_total(list(load_bookings()), KEY) - 100.0 * PART / TOTAL) < 1e-6\n\n\ndef test_unknown_key():\n    assert percent_of_total(list(load_bookings()), \"zzz\") == 0\n",
+  "ISSUE.md": "percent_of_total(data, 'harbour') returns 0, although 'harbour' has 42 of the total 145.\n"
+ },
+ "code_hash": "c095e156ba08d4267151a280e1f3ba591cf6471748af2028efe693bae373d28d"
+}

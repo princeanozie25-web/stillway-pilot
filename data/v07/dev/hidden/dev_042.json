@@ -1,0 +1,44 @@
+{
+ "id": "dev_042",
+ "source": "iter_attr__donations",
+ "template": "iter_attr",
+ "skin": "donations",
+ "group": "G2",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": null,
+ "hidden": "from donations import load_donations, ROWS\nfrom summary import DonationSummary\n\nMEAN = sum(v for _, v in ROWS) / len(ROWS)\n\n\ndef test_mean_of_stored():\n    assert abs(DonationSummary(load_donations()).mean_pounds() - MEAN) < 1e-9\n\n\ndef test_count_then_mean():\n    s = DonationSummary(load_donations())\n    assert s.count() == len(ROWS) and abs(s.mean_pounds() - MEAN) < 1e-9\n\n\ndef test_mean_twice():\n    s = DonationSummary(load_donations())\n    s.mean_pounds()\n    assert abs(s.mean_pounds() - MEAN) < 1e-9\n\n\ndef test_list_input():\n    assert abs(DonationSummary(list(load_donations())).mean_pounds() - MEAN) < 1e-9\n\n\ndef test_empty():\n    assert DonationSummary(iter([])).mean_pounds() == 0.0\n",
+ "fix": {
+  "file": "summary.py",
+  "function": "__init__",
+  "code": "def __init__(self, donations):\n    self._donations = list(donations)\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count_of_list": "PASS",
+    "test_mean_of_stored": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_count_then_mean": "FAIL AssertionError: ",
+    "test_empty": "PASS",
+    "test_list_input": "PASS",
+    "test_mean_of_stored": "FAIL AssertionError: ",
+    "test_mean_twice": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self._donations = donations\n+        self._donations = list(donations)",
+   "hidden": {
+    "test_count_then_mean": "PASS",
+    "test_empty": "PASS",
+    "test_list_input": "PASS",
+    "test_mean_of_stored": "PASS",
+    "test_mean_twice": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

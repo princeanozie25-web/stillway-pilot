@@ -1,0 +1,42 @@
+{
+ "id": "dev_050",
+ "source": "int_division__bookings",
+ "template": "int_division",
+ "skin": "bookings",
+ "group": "G4",
+ "symptom": "X3",
+ "cause": "INTDIV",
+ "role": null,
+ "hidden": "from bookings import Booking, load_bookings, ROWS\nfrom portion import percent_of_total\n\nKEYS = sorted(set(k for k, _ in ROWS))\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_percent():\n    key = ROWS[0][0]\n    part = sum(v for k, v in ROWS if k == key)\n    assert abs(percent_of_total(list(load_bookings()), key) - 100.0 * part / TOTAL) < 1e-6\n\n\ndef test_percentages_add_up():\n    data = list(load_bookings())\n    assert abs(sum(percent_of_total(data, k) for k in KEYS) - 100.0) < 1e-6\n\n\ndef test_everything():\n    assert abs(percent_of_total([Booking(\"a\", 4), Booking(\"a\", 6)], \"a\") - 100.0) < 1e-6\n\n\ndef test_unknown_key():\n    assert percent_of_total(list(load_bookings()), \"zzz\") == 0\n",
+ "fix": {
+  "file": "portion.py",
+  "function": "percent_of_total",
+  "code": "def percent_of_total(bookings, hotel):\n    \"\"\"Return the percentage, from 0 to 100, of the total nights that belongs to this hotel.\"\"\"\n    total = sum(x.nights for x in bookings)\n    part = sum(x.nights for x in bookings if x.hotel == hotel)\n    return part / total * 100\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_percent": "FAIL AssertionError: ",
+    "test_unknown_key": "PASS"
+   },
+   "hidden": {
+    "test_everything": "PASS",
+    "test_percent": "FAIL AssertionError: ",
+    "test_percentages_add_up": "FAIL AssertionError: ",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return part // total * 100\n+    return part / total * 100",
+   "hidden": {
+    "test_everything": "PASS",
+    "test_percent": "PASS",
+    "test_percentages_add_up": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

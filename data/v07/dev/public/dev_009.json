@@ -1,0 +1,10 @@
+{
+ "id": "dev_009",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('plaza', 50), ('plaza', 56), ('lodge', 34), ('grand', 44), ('plaza', 54)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "summary.py": "\"\"\"Summary of bookings.\"\"\"\n\n\nclass BookingSummary:\n    def __init__(self, bookings):\n        self._bookings = bookings\n\n    def count(self):\n        \"\"\"Return how many bookings there are.\"\"\"\n        return sum(1 for _ in self._bookings)\n\n    def mean_nights(self):\n        \"\"\"Return the mean nights, or 0.0 when there are no bookings.\"\"\"\n        total = sum(x.nights for x in self._bookings)\n        n = self.count()\n        return total / n if n else 0.0\n\n\ndef hotel_names(bookings):\n    \"\"\"Return the distinct hotel values, in first-seen order.\"\"\"\n    names = []\n    for x in bookings:\n        if x.hotel not in names:\n            names.append(x.hotel)\n    return names\n\n\ndef largest_nights(bookings):\n    \"\"\"Return the largest nights, or None when there are no bookings.\"\"\"\n    values = [x.nights for x in bookings]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom summary import BookingSummary\n\nMEAN = sum(v for _, v in ROWS) / len(ROWS)\n\n\ndef test_mean_of_stored():\n    assert abs(BookingSummary(load_bookings()).mean_nights() - MEAN) < 1e-9\n\n\ndef test_count_of_list():\n    assert BookingSummary(list(load_bookings())).count() == len(ROWS)\n",
+  "ISSUE.md": "BookingSummary(load_bookings()).mean_nights() returns 0.0, although the stored bookings have a mean nights of 47.6.\n"
+ },
+ "code_hash": "e34c0c444f2908328d750485860965281c94581daa40a0ac13d377b698122710"
+}

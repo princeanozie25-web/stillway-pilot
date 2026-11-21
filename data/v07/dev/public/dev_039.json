@@ -1,0 +1,10 @@
+{
+ "id": "dev_039",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('united', 13), ('united', 25), ('rovers', 18), ('united', 38), ('united', 55), ('united', 32)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "search.py": "\"\"\"Finding fixtures by club.\"\"\"\n\n\ndef fixtures_for(fixtures, club):\n    \"\"\"Return the fixtures whose club matches, ignoring upper and lower case and spaces at either end.\"\"\"\n    return [x for x in fixtures if x.club == club]\n\n\ndef has_club(fixtures, club):\n    \"\"\"Return True when at least one fixture matches the club.\"\"\"\n    return len(fixtures_for(fixtures, club)) > 0\n\n\ndef largest_goals(fixtures):\n    \"\"\"Return the largest goals, or None when there are no fixtures.\"\"\"\n    values = [x.goals for x in fixtures]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from fixtures import load_fixtures, ROWS\nfrom search import fixtures_for\n\nKEY = ROWS[0][0]\nCOUNT = sum(1 for k, _ in ROWS if k == KEY)\n\n\ndef test_upper_case_with_spaces():\n    assert len(fixtures_for(list(load_fixtures()), \" \" + KEY.upper() + \" \")) == COUNT\n\n\ndef test_exact():\n    assert len(fixtures_for(list(load_fixtures()), KEY)) == COUNT\n",
+  "ISSUE.md": "fixtures_for(data, ' UNITED ') returns nothing, although there are fixtures for 'united'.\n"
+ },
+ "code_hash": "adee39f52b29dba7f0f807ff75188c433e2a828e4f3c5b68f458d3d221bb101e"
+}

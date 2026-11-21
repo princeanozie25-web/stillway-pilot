@@ -1,0 +1,42 @@
+{
+ "id": "dev_037",
+ "source": "stale_total__bookings",
+ "template": "stale_total",
+ "skin": "bookings",
+ "group": "G1",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "hidden": "from bookings import load_bookings, ROWS\nfrom journal import BookingBook\n\n\ndef test_total_after_add():\n    rows = list(load_bookings())\n    book = BookingBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = BookingBook()\n    running = 0\n    for x in load_bookings():\n        book.add(x)\n        running += x.nights\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert BookingBook().total() == 0\n\n\ndef test_count():\n    book = BookingBook()\n    for x in load_bookings():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "journal.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total nights of the bookings in the book.\"\"\"\n    return sum(x.nights for x in self._bookings)\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.nights for x in self._bookings)\n-        return self._total\n+        return sum(x.nights for x in self._bookings)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

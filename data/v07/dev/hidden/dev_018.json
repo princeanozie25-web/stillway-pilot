@@ -1,0 +1,44 @@
+{
+ "id": "dev_018",
+ "source": "bound_lower__fixtures",
+ "template": "bound_lower",
+ "skin": "fixtures",
+ "group": "G2",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": null,
+ "hidden": "from fixtures import load_fixtures, ROWS\nfrom steps import goals_changes, biggest_rise\n\nVALUES = [v for _, v in ROWS]\nEXPECTED = [VALUES[i] - VALUES[i - 1] for i in range(1, len(VALUES))]\n\n\ndef test_number_of_changes():\n    assert len(goals_changes(list(load_fixtures()))) == len(ROWS) - 1\n\n\ndef test_values():\n    assert goals_changes(list(load_fixtures())) == EXPECTED\n\n\ndef test_two_items():\n    assert goals_changes(list(load_fixtures())[:2]) == EXPECTED[:1]\n\n\ndef test_biggest_rise():\n    assert biggest_rise(list(load_fixtures())) == max([c for c in EXPECTED if c > 0] or [0])\n\n\ndef test_single_item():\n    assert goals_changes(list(load_fixtures())[:1]) == [] and goals_changes([]) == []\n",
+ "fix": {
+  "file": "steps.py",
+  "function": "goals_changes",
+  "code": "def goals_changes(fixtures):\n    \"\"\"Return the change in goals from each fixture to the next: one entry for every neighbouring pair.\"\"\"\n    out = []\n    for i in range(1, len(fixtures)):\n        out.append(fixtures[i].goals - fixtures[i - 1].goals)\n    return out\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_number_of_changes": "FAIL AssertionError: ",
+    "test_single_item": "PASS"
+   },
+   "hidden": {
+    "test_biggest_rise": "PASS",
+    "test_number_of_changes": "FAIL AssertionError: ",
+    "test_single_item": "PASS",
+    "test_two_items": "FAIL AssertionError: ",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(2, len(fixtures)):\n+    for i in range(1, len(fixtures)):",
+   "hidden": {
+    "test_biggest_rise": "PASS",
+    "test_number_of_changes": "PASS",
+    "test_single_item": "PASS",
+    "test_two_items": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

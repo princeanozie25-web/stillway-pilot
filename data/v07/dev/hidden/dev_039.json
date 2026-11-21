@@ -1,0 +1,42 @@
+{
+ "id": "dev_039",
+ "source": "case_key__fixtures",
+ "template": "case_key",
+ "skin": "fixtures",
+ "group": "G4",
+ "symptom": "X2",
+ "cause": "NORMALISE",
+ "role": null,
+ "hidden": "from fixtures import Fixture, load_fixtures, ROWS\nfrom search import fixtures_for, has_club\n\nKEY = ROWS[0][0]\nCOUNT = sum(1 for k, _ in ROWS if k == KEY)\n\n\ndef test_upper_case_with_spaces():\n    assert len(fixtures_for(list(load_fixtures()), \" \" + KEY.upper() + \" \")) == COUNT\n\n\ndef test_stored_value_not_tidy():\n    data = [Fixture(\"  Alpha\", 1), Fixture(\"beta\", 2), Fixture(\"ALPHA \", 3)]\n    assert [x.goals for x in fixtures_for(data, \"alpha\")] == [1, 3]\n\n\ndef test_exact():\n    assert len(fixtures_for(list(load_fixtures()), KEY)) == COUNT\n\n\ndef test_no_match():\n    assert fixtures_for(list(load_fixtures()), \"zzz\") == [] and not has_club(list(load_fixtures()), \"zzz\")\n",
+ "fix": {
+  "file": "search.py",
+  "function": "fixtures_for",
+  "code": "def fixtures_for(fixtures, club):\n    \"\"\"Return the fixtures whose club matches, ignoring upper and lower case and spaces at either end.\"\"\"\n    wanted = club.strip().lower()\n    return [x for x in fixtures if x.club.strip().lower() == wanted]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_exact": "PASS",
+    "test_upper_case_with_spaces": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_exact": "PASS",
+    "test_no_match": "PASS",
+    "test_stored_value_not_tidy": "FAIL AssertionError: ",
+    "test_upper_case_with_spaces": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 3,
+   "diff": "-    return [x for x in fixtures if x.club == club]\n+    wanted = club.strip().lower()\n+    return [x for x in fixtures if x.club.strip().lower() == wanted]",
+   "hidden": {
+    "test_exact": "PASS",
+    "test_no_match": "PASS",
+    "test_stored_value_not_tidy": "PASS",
+    "test_upper_case_with_spaces": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

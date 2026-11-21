@@ -1,0 +1,44 @@
+{
+ "id": "dev_011",
+ "source": "float_equal__bookings",
+ "template": "float_equal",
+ "skin": "bookings",
+ "group": "G4",
+ "symptom": "X1",
+ "cause": "FLOATEQ",
+ "role": null,
+ "hidden": "from bookings import Booking\nfrom settle import is_settled\n\n\ndef test_tenths():\n    assert is_settled([Booking(\"a\", 0.1), Booking(\"b\", 0.2)], 0.3)\n\n\ndef test_three_tenths():\n    assert is_settled([Booking(\"a\", 0.1), Booking(\"b\", 0.1), Booking(\"c\", 0.1)], 0.3)\n\n\ndef test_not_settled():\n    assert not is_settled([Booking(\"a\", 0.1), Booking(\"b\", 0.2)], 0.31)\n\n\ndef test_whole_numbers():\n    assert is_settled([Booking(\"a\", 2), Booking(\"b\", 3)], 5) and not is_settled([Booking(\"a\", 2), Booking(\"b\", 3)], 6)\n\n\ndef test_nothing_owed():\n    assert is_settled([], 0)\n",
+ "fix": {
+  "file": "settle.py",
+  "function": "is_settled",
+  "code": "def is_settled(bookings, expected_total):\n    \"\"\"Return True when the nights of the bookings add up to expected_total. nights may be fractional.\"\"\"\n    return abs(sum(x.nights for x in bookings) - expected_total) < 1e-9\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_tenths": "FAIL AssertionError: ",
+    "test_whole_numbers": "PASS"
+   },
+   "hidden": {
+    "test_not_settled": "PASS",
+    "test_nothing_owed": "PASS",
+    "test_tenths": "FAIL AssertionError: ",
+    "test_three_tenths": "FAIL AssertionError: ",
+    "test_whole_numbers": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return sum(x.nights for x in bookings) == expected_total\n+    return abs(sum(x.nights for x in bookings) - expected_total) < 1e-9",
+   "hidden": {
+    "test_not_settled": "PASS",
+    "test_nothing_owed": "PASS",
+    "test_tenths": "PASS",
+    "test_three_tenths": "PASS",
+    "test_whole_numbers": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

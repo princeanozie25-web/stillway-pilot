@@ -1,0 +1,99 @@
+{
+ "id": "iter_window__parcels",
+ "template": "iter_window",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('bath', 34), ('york', 46), ('hull', 42), ('york', 23), ('york', 59), ('leeds', 6), ('leeds', 32)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n\n\ndef feed_parcels():\n    \"\"\"Endless feed of parcels: repeats the stored rows for ever.\"\"\"\n    while True:\n        for depot, grams in ROWS:\n            yield Parcel(depot, grams)\n",
+  "windows.py": "\"\"\"Windows over the parcels feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` parcels from the feed and return (peak grams, list of grams).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.grams for x in window)\n    values = [x.grams for x in window]\n    return peak, values\n",
+  "tests/test_visible.py": "from parcels import feed_parcels, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_parcels(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_parcels()\n    summarize_window(feed, 2)\n    assert next(feed).grams == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_parcels(), 3) returns the right peak but an empty list of values. I expected the three grams values.\n"
+ },
+ "code_hash": "e3c97677e3be37ecc9f5a2a2f3b83c4d3214533a286b006a0f5f09daa67f2fd3",
+ "logic_file": "windows.py",
+ "hidden": "from parcels import feed_parcels, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_parcels(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_peak():\n    peak, values = summarize_window(feed_parcels(), 4)\n    assert peak == max(v for _, v in ROWS[:4])\n\n\ndef test_reads_only_the_window():\n    feed = feed_parcels()\n    summarize_window(feed, 2)\n    assert next(feed).grams == ROWS[2][1]\n\n\ndef test_consecutive_windows():\n    feed = feed_parcels()\n    summarize_window(feed, 2)\n    peak, values = summarize_window(feed, 2)\n    assert values == [v for _, v in ROWS[2:4]]\n",
+ "fix": {
+  "file": "windows.py",
+  "function": "summarize_window",
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` parcels from the feed and return (peak grams, list of grams).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = list(itertools.islice(feed, size))\n    peak = max(x.grams for x in window)\n    values = [x.grams for x in window]\n    return peak, values\n"
+ },
+ "oldfix": {
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` parcels from the feed and return (peak grams, list of grams).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    feed = list(feed)\n    window = itertools.islice(feed, size)\n    peak = max(x.grams for x in window)\n    values = [x.grams for x in window]\n    return peak, values\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window is read once for the peak and again for the values; the second read may find it used up.",
+    "test": "from parcels import feed_parcels\nfrom windows import summarize_window\nprint(summarize_window(feed_parcels(), 3))\n",
+    "predict": "(46, [])",
+    "observed": "(46, [])",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to turn the input into a list, but that only works if the feed ends.",
+    "test": "import itertools\nfrom parcels import feed_parcels\nprint(len(list(itertools.islice(feed_parcels(), 1000))))\n",
+    "predict": "1000",
+    "observed": "1000",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The islice window is a one-shot iterator walked twice. The feed never ends, so turn only the window into a list."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If the feed is finite, turning the whole input into a list once is enough.",
+  "test": "import itertools\nfrom parcels import feed_parcels\nprint(len(list(itertools.islice(feed_parcels(), 1000))))\n",
+  "predict": "7",
+  "observed": "1000",
+  "seconds": 0.034
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_consecutive_windows": "FAIL AssertionError: ",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    window = itertools.islice(feed, size)\n+    window = list(itertools.islice(feed, size))",
+   "hidden": {
+    "test_consecutive_windows": "PASS",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    feed = list(feed)",
+   "hidden": {
+    "test_values": "FAIL TIMEOUT after 5.0 s",
+    "test_peak": "FAIL TIMEOUT after 5.0 s",
+    "test_reads_only_the_window": "FAIL TIMEOUT after 5.0 s",
+    "test_consecutive_windows": "FAIL TIMEOUT after 5.0 s"
+   },
+   "visible": {
+    "test_reads_only_the_window": "FAIL TimeoutError: test took longer than 2 s",
+    "test_values": "FAIL TimeoutError: test took longer than 2 s"
+   },
+   "regressions": [
+    "test_peak",
+    "test_reads_only_the_window"
+   ],
+   "visible_regressions": [
+    "test_reads_only_the_window"
+   ]
+  }
+ }
+}

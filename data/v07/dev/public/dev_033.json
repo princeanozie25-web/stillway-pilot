@@ -1,0 +1,10 @@
+{
+ "id": "dev_033",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('pia', 39), ('noor', 37), ('mia', 28), ('pia', 25), ('mia', 47)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "sequence.py": "\"\"\"Codes of donations in order.\"\"\"\n\n\ndef ranked_codes(donations):\n    \"\"\"Return the pounds of each donation as a text code, from the lowest number to the highest.\"\"\"\n    return sorted(str(x.pounds) for x in donations)\n\n\ndef code_of(donation):\n    \"\"\"Return the text code of one donation.\"\"\"\n    return str(donation.pounds)\n\n\ndef largest_pounds(donations):\n    \"\"\"Return the largest pounds, or None when there are no donations.\"\"\"\n    values = [x.pounds for x in donations]\n    return max(values) if values else None\n\n\ndef donor_names(donations):\n    \"\"\"Return the distinct donor values, in first-seen order.\"\"\"\n    names = []\n    for x in donations:\n        if x.donor not in names:\n            names.append(x.donor)\n    return names\n",
+  "tests/test_visible.py": "from donations import Donation\nfrom sequence import ranked_codes\n\n\ndef test_nine_before_ten():\n    assert ranked_codes([Donation(\"a\", 10), Donation(\"b\", 9)]) == [\"9\", \"10\"]\n\n\ndef test_single_digits():\n    assert ranked_codes([Donation(\"a\", 3), Donation(\"b\", 1), Donation(\"c\", 2)]) == [\"1\", \"2\", \"3\"]\n",
+  "ISSUE.md": "ranked_codes() puts '10' before '9'. I expected the codes in number order.\n"
+ },
+ "code_hash": "1caf8849fd296989aeb273639c6015d1ec99f8d3cf05d41d64187bee59b5821a"
+}

@@ -1,0 +1,79 @@
+{
+ "id": "mut_drain__samples",
+ "template": "mut_drain",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "MUT",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b2', 13), ('b2', 29), ('b3', 39), ('b1', 16), ('b1', 15), ('b1', 47)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n",
+  "leaders.py": "\"\"\"Top samples by dose.\"\"\"\n\n\ndef _take_largest(samples):\n    \"\"\"Remove and return the sample with the largest dose.\"\"\"\n    best = max(samples, key=lambda x: x.dose)\n    samples.remove(best)\n    return best\n\n\ndef podium(samples, places=3):\n    \"\"\"Return the top `places` samples by dose, largest first. The caller's list is left as it was.\"\"\"\n    top = []\n    while samples and len(top) < places:\n        top.append(_take_largest(samples))\n    return top\n\n\ndef report(samples):\n    \"\"\"Return the podium values, the number of samples and every dose.\"\"\"\n    return {\"podium\": [x.dose for x in podium(samples)], \"count\": len(samples), \"all\": [x.dose for x in samples]}\n\n\ndef batch_names(samples):\n    \"\"\"Return the distinct batch values, in first-seen order.\"\"\"\n    names = []\n    for x in samples:\n        if x.batch not in names:\n            names.append(x.batch)\n    return names\n\n\ndef group_by_batch(samples):\n    \"\"\"Return a dict from batch to the list of samples with that batch.\"\"\"\n    groups = {}\n    for x in samples:\n        groups.setdefault(x.batch, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from samples import load_samples, ROWS\nfrom leaders import podium, report\n\n\ndef test_count():\n    assert report(list(load_samples()))[\"count\"] == len(ROWS)\n\n\ndef test_podium_values():\n    top = podium(list(load_samples()))\n    assert [x.dose for x in top] == sorted((v for _, v in ROWS), reverse=True)[:3]\n",
+  "ISSUE.md": "report(my_samples) gives the right podium, but count is 3 and `all` has lost the largest values. I expected count 6 and every dose in `all`.\n"
+ },
+ "code_hash": "cb313800cac33d2709c0fbc9ce08c3c5106ffae2afb19f81d3cfea7b120ac6ec",
+ "logic_file": "leaders.py",
+ "hidden": "from samples import load_samples, ROWS\nfrom leaders import podium, report\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_count():\n    assert report(list(load_samples()))[\"count\"] == len(ROWS)\n\n\ndef test_all_values_kept():\n    assert report(list(load_samples()))[\"all\"] == VALUES\n\n\ndef test_podium_values():\n    top = podium(list(load_samples()))\n    assert [x.dose for x in top] == sorted(VALUES, reverse=True)[:3]\n\n\ndef test_caller_list_unchanged():\n    data = list(load_samples())\n    podium(data, 2)\n    assert [x.dose for x in data] == VALUES\n\n\ndef test_one_place():\n    assert [x.dose for x in podium(list(load_samples()), 1)] == [max(VALUES)]\n",
+ "fix": {
+  "file": "leaders.py",
+  "function": "podium",
+  "code": "def podium(samples, places=3):\n    \"\"\"Return the top `places` samples by dose, largest first. The caller's list is left as it was.\"\"\"\n    samples = list(samples)\n    top = []\n    while samples and len(top) < places:\n        top.append(_take_largest(samples))\n    return top\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either the data is a one-shot iterator used twice, or podium() takes items out of the caller's list.",
+    "test": "from samples import load_samples\nfrom leaders import podium\ndata = list(load_samples())\nprint(iter(data) is data, len(data))\npodium(data)\nprint(len(data))\n",
+    "predict": "False 6\n3",
+    "observed": "False 6\n3",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "It is a list, and podium() shrinks it. If podium() is given a copy, the caller's list should stay whole.",
+    "test": "from samples import load_samples\nfrom leaders import podium\ndata = list(load_samples())\npodium(list(data))\nprint(len(data))\n",
+    "predict": "6",
+    "observed": "6",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Not a one-shot iterator: podium() removes items from the caller's list. Work on a copy inside podium()."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "The data may be a one-shot iterator that is used twice.",
+  "test": "from samples import load_samples\ndata = list(load_samples())\nprint(iter(data) is data)\n",
+  "predict": "True",
+  "observed": "False",
+  "seconds": 0.032
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count": "FAIL AssertionError: ",
+    "test_podium_values": "PASS"
+   },
+   "hidden": {
+    "test_all_values_kept": "FAIL AssertionError: ",
+    "test_caller_list_unchanged": "FAIL AssertionError: ",
+    "test_count": "FAIL AssertionError: ",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    samples = list(samples)",
+   "hidden": {
+    "test_all_values_kept": "PASS",
+    "test_caller_list_unchanged": "PASS",
+    "test_count": "PASS",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_021",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('upper', 34), ('hill', 36), ('upper', 17), ('lower', 46), ('hill', 42), ('hill', 54)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "changes.py": "\"\"\"Changes in kilos from one harvest to the next.\"\"\"\n\n\ndef kilos_changes(harvests):\n    \"\"\"Return the change in kilos from each harvest to the next: one entry for every neighbouring pair.\"\"\"\n    out = []\n    for i in range(2, len(harvests)):\n        out.append(harvests[i].kilos - harvests[i - 1].kilos)\n    return out\n\n\ndef biggest_rise(harvests):\n    \"\"\"Return the largest increase between neighbours, or 0 when there is none.\"\"\"\n    rises = [c for c in kilos_changes(harvests) if c > 0]\n    return max(rises) if rises else 0\n\n\ndef largest_kilos(harvests):\n    \"\"\"Return the largest kilos, or None when there are no harvests.\"\"\"\n    values = [x.kilos for x in harvests]\n    return max(values) if values else None\n\n\ndef describe_harvest(harvest):\n    \"\"\"Return a one-line description of a harvest.\"\"\"\n    return \"%s: %s\" % (harvest.field, harvest.kilos)\n",
+  "tests/test_visible.py": "from harvests import load_harvests, ROWS\nfrom changes import kilos_changes\n\n\ndef test_number_of_changes():\n    assert len(kilos_changes(list(load_harvests()))) == len(ROWS) - 1\n\n\ndef test_single_item():\n    assert kilos_changes(list(load_harvests())[:1]) == []\n",
+  "ISSUE.md": "kilos_changes(data) has 4 entries for 6 harvests. I expected 5: the change from the first harvest to the second is missing.\n"
+ },
+ "code_hash": "f37551e5c2786a919715e1971d82e30e609f8eadfedd4eda95c1a0a6d0b4db25"
+}

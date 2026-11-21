@@ -1,0 +1,71 @@
+{
+ "id": "iter_shares__tickets",
+ "template": "iter_shares",
+ "skin": "tickets",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "tickets.py": "\"\"\"Ticket records.\"\"\"\n\n\nclass Ticket:\n    def __init__(self, team, hours):\n        self.team = team\n        self.hours = hours\n\n    def __repr__(self):\n        return \"Ticket(%r, %r)\" % (self.team, self.hours)\n\n\nROWS = [('data', 22), ('data', 31), ('web', 49), ('ops', 28), ('web', 27), ('data', 4)]\n\n\ndef load_tickets():\n    \"\"\"Yield the stored tickets one at a time.\"\"\"\n    for team, hours in ROWS:\n        yield Ticket(team, hours)\n",
+  "portions.py": "\"\"\"Share of the total hours per ticket.\"\"\"\nfrom tickets import load_tickets\n\n\ndef hours_shares(tickets):\n    \"\"\"Return each ticket's share of the total hours, in order.\"\"\"\n    total = sum(x.hours for x in tickets)\n    return [x.hours / total for x in tickets]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored tickets.\"\"\"\n    return hours_shares(load_tickets())\n\n\ndef top_share(tickets):\n    \"\"\"Return the largest share, or 0.0 when there are no tickets.\"\"\"\n    shares = hours_shares(tickets)\n    return max(shares) if shares else 0.0\n\n\ndef describe_ticket(ticket):\n    \"\"\"Return a one-line description of a ticket.\"\"\"\n    return \"%s: %s\" % (ticket.team, ticket.hours)\n",
+  "tests/test_visible.py": "from tickets import load_tickets, ROWS\nfrom portions import hours_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = hours_shares(list(load_tickets()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 6 stored tickets, so I expected 6 shares that add up to 1.\n"
+ },
+ "code_hash": "a923d287c7e874459c2eee412639e566de48153008a0b52df384e304bdb27f49",
+ "logic_file": "portions.py",
+ "hidden": "from tickets import load_tickets, ROWS\nfrom portions import hours_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = hours_shares(load_tickets())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = hours_shares(list(load_tickets()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_tickets()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert hours_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "portions.py",
+  "function": "hours_shares",
+  "code": "def hours_shares(tickets):\n    \"\"\"Return each ticket's share of the total hours, in order.\"\"\"\n    tickets = list(tickets)\n    total = sum(x.hours for x in tickets)\n    return [x.hours / total for x in tickets]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "load_tickets() may return a one-shot iterator that hours_shares walks twice.",
+    "test": "from tickets import load_tickets\ndata = load_tickets()\nprint(iter(data) is data)\n",
+    "predict": "True",
+    "observed": "True",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "If the input is a list the second pass should work, so turning the input into a list once is enough.",
+    "test": "from tickets import load_tickets\nfrom portions import hours_shares\nprint(len(hours_shares(list(load_tickets()))))\n",
+    "predict": "6",
+    "observed": "6",
+    "seconds": 0.036
+   }
+  ],
+  "cause": "One-shot iterator walked twice. Turn the input into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    tickets = list(tickets)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

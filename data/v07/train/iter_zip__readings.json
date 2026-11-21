@@ -1,0 +1,69 @@
+{
+ "id": "iter_zip__readings",
+ "template": "iter_zip",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('east', 30), ('east', 13), ('east', 10), ('north', 47), ('south', 37)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "labels.py": "\"\"\"Labels for readings.\"\"\"\n\n\ndef label_readings(names, readings):\n    \"\"\"Return (lookup, lines): a name -> level dict and one 'name: level' line per reading.\"\"\"\n    pairs = zip(names, (x.level for x in readings))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n",
+  "tests/test_visible.py": "from readings import load_readings, ROWS\nfrom labels import label_readings\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_readings(NAMES, load_readings())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_readings(NAMES, load_readings())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_readings gives me the lookup, but `lines` is always empty. I expected one line per reading.\n"
+ },
+ "code_hash": "283db3ac5437187ff8ff9b3dd280ea7c8de15896d96feccc654a8054f15763a1",
+ "logic_file": "labels.py",
+ "hidden": "from readings import load_readings, ROWS\nfrom labels import label_readings\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_readings(NAMES, load_readings())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_readings(NAMES, list(load_readings()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_readings(NAMES, load_readings())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_readings([], load_readings()) == ({}, [])\n",
+ "fix": {
+  "file": "labels.py",
+  "function": "label_readings",
+  "code": "def label_readings(names, readings):\n    \"\"\"Return (lookup, lines): a name -> level dict and one 'name: level' line per reading.\"\"\"\n    pairs = list(zip(names, (x.level for x in readings)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The lookup is built first and the lines second from the same `pairs`; the second use may find it used up.",
+    "test": "from readings import load_readings\nfrom labels import label_readings\nlookup, lines = label_readings([\"a\", \"b\"], load_readings())\nprint(len(lookup), len(lines))\n",
+    "predict": "2 0",
+    "observed": "2 0",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "A zip object is a one-shot iterator: after dict() has read it, nothing is left.",
+    "test": "pairs = zip(\"ab\", [1, 2])\nfirst = dict(pairs)\nprint(iter(pairs) is pairs, len(first), len(list(pairs)))\n",
+    "predict": "True 2 0",
+    "observed": "True 2 0",
+    "seconds": 0.031
+   }
+  ],
+  "cause": "The zip object is a one-shot iterator used twice. Turn it into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.level for x in readings))\n+    pairs = list(zip(names, (x.level for x in readings)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

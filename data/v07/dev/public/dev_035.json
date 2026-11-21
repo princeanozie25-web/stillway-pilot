@@ -1,0 +1,10 @@
+{
+ "id": "dev_035",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('hill', 46), ('lower', 58), ('upper', 23), ('upper', 22), ('hill', 26)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "settle.py": "\"\"\"Checking that harvests add up.\"\"\"\n\n\ndef is_settled(harvests, expected_total):\n    \"\"\"Return True when the kilos of the harvests add up to expected_total. kilos may be fractional.\"\"\"\n    return sum(x.kilos for x in harvests) == expected_total\n\n\ndef shortfall(harvests, expected_total):\n    \"\"\"Return how much kilos is still missing, never less than 0.\"\"\"\n    return max(0, expected_total - sum(x.kilos for x in harvests))\n",
+  "tests/test_visible.py": "from harvests import Harvest\nfrom settle import is_settled\n\n\ndef test_tenths():\n    assert is_settled([Harvest(\"a\", 0.1), Harvest(\"b\", 0.2)], 0.3)\n\n\ndef test_whole_numbers():\n    assert is_settled([Harvest(\"a\", 2), Harvest(\"b\", 3)], 5)\n",
+  "ISSUE.md": "is_settled() says False for two harvests with kilos 0.1 and 0.2 against an expected total of 0.3.\n"
+ },
+ "code_hash": "68415df3973314ecc9d9b2eb106c714ccdeda29027b03b791d3fbec730cb18a6"
+}

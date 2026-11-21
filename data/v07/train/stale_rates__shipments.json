@@ -1,0 +1,99 @@
+{
+ "id": "stale_rates__shipments",
+ "template": "stale_rates",
+ "skin": "shipments",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "shipments.py": "\"\"\"Shipment records.\"\"\"\n\n\nclass Shipment:\n    def __init__(self, route, weight):\n        self.route = route\n        self.weight = weight\n\n    def __repr__(self):\n        return \"Shipment(%r, %r)\" % (self.route, self.weight)\n\n\nROWS = [('r31', 29), ('r47', 55), ('r22', 24), ('r10', 34), ('r47', 20), ('r22', 25)]\n\n\ndef load_shipments():\n    \"\"\"Yield the stored shipments one at a time.\"\"\"\n    for route, weight in ROWS:\n        yield Shipment(route, weight)\n",
+  "rates.py": "\"\"\"Rate lookups. Every lookup is billed, so callers must not repeat them needlessly.\"\"\"\n\nLOOKUPS = 0\n_RATES = {'r10': 2, 'r22': 3, 'r31': 3, 'r47': 4}\n\n\ndef rate_for(route):\n    \"\"\"Return the rate for a route. Each call is billed and counted in LOOKUPS.\"\"\"\n    global LOOKUPS\n    LOOKUPS += 1\n    return _RATES[route]\n",
+  "charges.py": "\"\"\"Billing for shipments. Rate lookups are billed, so the charge is remembered.\"\"\"\nimport rates\n\n\nclass ShipmentBill:\n    def __init__(self):\n        self._shipments = []\n        self._charge = None\n\n    def add(self, shipment):\n        \"\"\"Add one shipment to the bill.\"\"\"\n        self._shipments.append(shipment)\n\n    def charge(self):\n        \"\"\"Return the total charge: weight times the rate for each shipment's route.\n\n        The result is remembered: asking again without adding anything makes no new rate lookups.\n        \"\"\"\n        if self._charge is None:\n            self._charge = sum(x.weight * rates.rate_for(x.route) for x in self._shipments)\n        return self._charge\n\n\ndef describe_shipment(shipment):\n    \"\"\"Return a one-line description of a shipment.\"\"\"\n    return \"%s: %s\" % (shipment.route, shipment.weight)\n\n\ndef group_by_route(shipments):\n    \"\"\"Return a dict from route to the list of shipments with that route.\"\"\"\n    groups = {}\n    for x in shipments:\n        groups.setdefault(x.route, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "import rates\nfrom shipments import load_shipments, ROWS\nfrom charges import ShipmentBill\n\n\ndef test_charge_after_add():\n    rows = list(load_shipments())\n    bill = ShipmentBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = ShipmentBill()\n    for x in load_shipments():\n        bill.add(x)\n    bill.charge()\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n",
+  "ISSUE.md": "After I add a shipment, charge() still returns the old charge.\n"
+ },
+ "code_hash": "fd84f45226a03e28e2ff6d18a8e03a5c9f5f57de28f74ac8ed3c74ad41c65fc5",
+ "logic_file": "charges.py",
+ "hidden": "import rates\nfrom shipments import load_shipments, ROWS\nfrom charges import ShipmentBill\n\nFULL = sum(v * rates._RATES[k] for k, v in ROWS)\n\n\ndef test_charge_after_add():\n    rows = list(load_shipments())\n    bill = ShipmentBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_every_add():\n    bill = ShipmentBill()\n    running = 0\n    for x in load_shipments():\n        bill.add(x)\n        running += x.weight * rates._RATES[x.route]\n        assert bill.charge() == running\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = ShipmentBill()\n    for x in load_shipments():\n        bill.add(x)\n    assert bill.charge() == FULL\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n\n\ndef test_empty_bill():\n    assert ShipmentBill().charge() == 0\n",
+ "fix": {
+  "file": "charges.py",
+  "function": "add",
+  "code": "def add(self, shipment):\n    \"\"\"Add one shipment to the bill.\"\"\"\n    self._shipments.append(shipment)\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return the total charge: weight times the rate for each shipment's route.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.weight * rates.rate_for(x.route) for x in self._shipments)\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "charge() may return a remembered value that add() does not refresh.",
+    "test": "import rates\nfrom shipments import load_shipments\nfrom charges import ShipmentBill\nrows = list(load_shipments())\nbill = ShipmentBill()\nbill.add(rows[0])\nbill.charge()\nbill.add(rows[1])\nprint(bill.charge(), sum(x.weight * rates._RATES[x.route] for x in bill._shipments))\n",
+    "predict": "87 307",
+    "observed": "87 307",
+    "seconds": 0.036
+   },
+   {
+    "suspect": "The usual fix is to work the value out on every call, but here every lookup is billed and a repeat call must make none.",
+    "test": "import rates\nfrom shipments import load_shipments\nfrom charges import ShipmentBill\nrows = list(load_shipments())\nbill = ShipmentBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nprint(rates.LOOKUPS)\nbill.charge()\nprint(rates.LOOKUPS)\n",
+    "predict": "2\n2",
+    "observed": "2\n2",
+    "seconds": 0.034
+   }
+  ],
+  "cause": "Stale remembered charge. Lookups are billed, so keep the remembered value and clear it in add()."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If working the charge out again costs nothing, doing it on every call is enough.",
+  "test": "import rates\nfrom shipments import load_shipments\nfrom charges import ShipmentBill\nrows = list(load_shipments())\nbill = ShipmentBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nbefore = rates.LOOKUPS\nbill._charge = None\nbill.charge()\nprint(rates.LOOKUPS - before)\n",
+  "predict": "0",
+  "observed": "2",
+  "seconds": 0.036
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_charge_after_every_add": "FAIL AssertionError: ",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._charge = None",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.weight * rates.rate_for(x.route) for x in self._shipments)\n-        return self._charge\n+        return sum(x.weight * rates.rate_for(x.route) for x in self._shipments)",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_charge_after_add": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

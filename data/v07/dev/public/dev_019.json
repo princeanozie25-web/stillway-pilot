@@ -1,0 +1,10 @@
+{
+ "id": "dev_019",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('noor', 28), ('mia', 36), ('mia', 43), ('noor', 37), ('mia', 46), ('noor', 52), ('noor', 12)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "shares.py": "\"\"\"Share of the total pounds per donation.\"\"\"\nfrom donations import load_donations\n\n\ndef pounds_shares(donations):\n    \"\"\"Return each donation's share of the total pounds, in order.\"\"\"\n    total = sum(x.pounds for x in donations)\n    return [x.pounds / total for x in donations]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored donations.\"\"\"\n    return pounds_shares(load_donations())\n\n\ndef top_share(donations):\n    \"\"\"Return the largest share, or 0.0 when there are no donations.\"\"\"\n    shares = pounds_shares(donations)\n    return max(shares) if shares else 0.0\n\n\ndef describe_donation(donation):\n    \"\"\"Return a one-line description of a donation.\"\"\"\n    return \"%s: %s\" % (donation.donor, donation.pounds)\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom shares import pounds_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = pounds_shares(list(load_donations()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 7 stored donations, so I expected 7 shares that add up to 1.\n"
+ },
+ "code_hash": "e0632bedd3503d316422b22db486f4701c1744bad5bf4c1a43f13e7b9bd7b8e9"
+}

@@ -1,0 +1,69 @@
+{
+ "id": "iter_zip__shipments",
+ "template": "iter_zip",
+ "skin": "shipments",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "shipments.py": "\"\"\"Shipment records.\"\"\"\n\n\nclass Shipment:\n    def __init__(self, route, weight):\n        self.route = route\n        self.weight = weight\n\n    def __repr__(self):\n        return \"Shipment(%r, %r)\" % (self.route, self.weight)\n\n\nROWS = [('r47', 26), ('r10', 21), ('r22', 16), ('r10', 29), ('r47', 50), ('r10', 47)]\n\n\ndef load_shipments():\n    \"\"\"Yield the stored shipments one at a time.\"\"\"\n    for route, weight in ROWS:\n        yield Shipment(route, weight)\n",
+  "naming.py": "\"\"\"Labels for shipments.\"\"\"\n\n\ndef label_shipments(names, shipments):\n    \"\"\"Return (lookup, lines): a name -> weight dict and one 'name: weight' line per shipment.\"\"\"\n    pairs = zip(names, (x.weight for x in shipments))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n\n\ndef group_by_route(shipments):\n    \"\"\"Return a dict from route to the list of shipments with that route.\"\"\"\n    groups = {}\n    for x in shipments:\n        groups.setdefault(x.route, []).append(x)\n    return groups\n\n\ndef describe_shipment(shipment):\n    \"\"\"Return a one-line description of a shipment.\"\"\"\n    return \"%s: %s\" % (shipment.route, shipment.weight)\n",
+  "tests/test_visible.py": "from shipments import load_shipments, ROWS\nfrom naming import label_shipments\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_shipments(NAMES, load_shipments())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_shipments(NAMES, load_shipments())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_shipments gives me the lookup, but `lines` is always empty. I expected one line per shipment.\n"
+ },
+ "code_hash": "fc6c3c839b468d5ed46c04ecbbda1967995e0e2a11900055986542ec04630678",
+ "logic_file": "naming.py",
+ "hidden": "from shipments import load_shipments, ROWS\nfrom naming import label_shipments\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_shipments(NAMES, load_shipments())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_shipments(NAMES, list(load_shipments()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_shipments(NAMES, load_shipments())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_shipments([], load_shipments()) == ({}, [])\n",
+ "fix": {
+  "file": "naming.py",
+  "function": "label_shipments",
+  "code": "def label_shipments(names, shipments):\n    \"\"\"Return (lookup, lines): a name -> weight dict and one 'name: weight' line per shipment.\"\"\"\n    pairs = list(zip(names, (x.weight for x in shipments)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The lookup is built first and the lines second from the same `pairs`; the second use may find it used up.",
+    "test": "from shipments import load_shipments\nfrom naming import label_shipments\nlookup, lines = label_shipments([\"a\", \"b\"], load_shipments())\nprint(len(lookup), len(lines))\n",
+    "predict": "2 0",
+    "observed": "2 0",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "A zip object is a one-shot iterator: after dict() has read it, nothing is left.",
+    "test": "pairs = zip(\"ab\", [1, 2])\nfirst = dict(pairs)\nprint(iter(pairs) is pairs, len(first), len(list(pairs)))\n",
+    "predict": "True 2 0",
+    "observed": "True 2 0",
+    "seconds": 0.031
+   }
+  ],
+  "cause": "The zip object is a one-shot iterator used twice. Turn it into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.weight for x in shipments))\n+    pairs = list(zip(names, (x.weight for x in shipments)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

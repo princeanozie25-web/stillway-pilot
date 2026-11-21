@@ -1,0 +1,87 @@
+{
+ "hardware": {
+  "machine": "arm64",
+  "processor": "Apple M1 Max",
+  "memory_bytes": 34359738368,
+  "os": "macOS-27.0-arm64-arm-64bit"
+ },
+ "software": {
+  "python": "3.12.14",
+  "torch": "2.14.1",
+  "transformers": "5.20.2",
+  "safetensors": "0.8.0"
+ },
+ "device": "mps",
+ "dtype": "torch.float32",
+ "quantisation": "none (32-bit floats)",
+ "load_seconds": 4.6,
+ "parameters": 1543714304,
+ "inference": {
+  "single": {
+   "seconds": 3.08,
+   "new_tokens": 96,
+   "tokens_per_second": 31.1
+  },
+  "batch_of_4": {
+   "seconds": 5.27,
+   "new_tokens": 216,
+   "tokens_per_second": 41.0
+  },
+  "sample": "The bug in the given code is that it is dividing by the length of the list minus one, which is incorrect. The correct way to calculate the mean of a list is to divide by the length of the list. Here's the corrected code:\n\n```python\ndef mean(xs):\n    return sum(xs) / len(xs)\n```\n\nThis will correctly "
+ },
+ "adapter": {
+  "layers": 196,
+  "trainable_parameters": 18464768,
+  "r": 16,
+  "alpha": 32,
+  "targets": [
+   "q_proj",
+   "k_proj",
+   "v_proj",
+   "o_proj",
+   "gate_proj",
+   "up_proj",
+   "down_proj"
+  ],
+  "seed": 1
+ },
+ "adapter_update": {
+  "losses_over_4_updates": [
+   1.4622,
+   0.3155,
+   0.0631,
+   0.0073
+  ],
+  "seconds_per_update": 0.55,
+  "tokens_per_update": 56
+ },
+ "reload": {
+  "adapter_sha256": "cb0232d17afd730dacf0be29c1a20cbb40a2866beff20fdd2d3dfaa1c7861ab0",
+  "same_output_after_reload": true,
+  "base_output_restored_when_adapter_off": true,
+  "adapter_changes_output": true,
+  "meta": {
+   "r": 16,
+   "alpha": 32,
+   "targets": [
+    "q_proj",
+    "k_proj",
+    "v_proj",
+    "o_proj",
+    "gate_proj",
+    "up_proj",
+    "down_proj"
+   ],
+   "seed": 1,
+   "base_repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+   "base_revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
+   "base_sha256": "c1b9b30e907950516ba3c646bdf570d8084c25a6410a0cdca80cf04b11bc13a8",
+   "note": "smoke test"
+  }
+ },
+ "pin": {
+  "repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
+  "model_sha256": "c1b9b30e907950516ba3c646bdf570d8084c25a6410a0cdca80cf04b11bc13a8"
+ }
+}

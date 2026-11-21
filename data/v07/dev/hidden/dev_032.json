@@ -1,0 +1,44 @@
+{
+ "id": "dev_032",
+ "source": "sort_text_numbers__fixtures",
+ "template": "sort_text_numbers",
+ "skin": "fixtures",
+ "group": "G4",
+ "symptom": "X4",
+ "cause": "TEXTSORT",
+ "role": null,
+ "hidden": "from fixtures import Fixture, load_fixtures, ROWS\nfrom ordering import ranked_codes\n\n\ndef test_nine_before_ten():\n    assert ranked_codes([Fixture(\"a\", 10), Fixture(\"b\", 9)]) == [\"9\", \"10\"]\n\n\ndef test_mixed_lengths():\n    assert ranked_codes([Fixture(\"a\", 100), Fixture(\"b\", 25), Fixture(\"c\", 9), Fixture(\"d\", 1000)]) == [\"9\", \"25\", \"100\", \"1000\"]\n\n\ndef test_stored():\n    assert ranked_codes(list(load_fixtures())) == [str(v) for v in sorted(v for _, v in ROWS)]\n\n\ndef test_codes_are_text():\n    assert all(isinstance(c, str) for c in ranked_codes(list(load_fixtures())))\n\n\ndef test_empty():\n    assert ranked_codes([]) == []\n",
+ "fix": {
+  "file": "ordering.py",
+  "function": "ranked_codes",
+  "code": "def ranked_codes(fixtures):\n    \"\"\"Return the goals of each fixture as a text code, from the lowest number to the highest.\"\"\"\n    return [str(v) for v in sorted(x.goals for x in fixtures)]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_nine_before_ten": "FAIL AssertionError: ",
+    "test_single_digits": "PASS"
+   },
+   "hidden": {
+    "test_codes_are_text": "PASS",
+    "test_empty": "PASS",
+    "test_mixed_lengths": "FAIL AssertionError: ",
+    "test_nine_before_ten": "FAIL AssertionError: ",
+    "test_stored": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return sorted(str(x.goals) for x in fixtures)\n+    return [str(v) for v in sorted(x.goals for x in fixtures)]",
+   "hidden": {
+    "test_codes_are_text": "PASS",
+    "test_empty": "PASS",
+    "test_mixed_lengths": "PASS",
+    "test_nine_before_ten": "PASS",
+    "test_stored": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

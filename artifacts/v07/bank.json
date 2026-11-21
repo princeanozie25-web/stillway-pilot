@@ -1,0 +1,416 @@
+{
+ "built_at": "2026-11-21T19:46:03",
+ "source": "data/v07/train only",
+ "diagnostics": {
+  "S1": {
+   "current": 2,
+   "versions": [
+    {
+     "version": 1,
+     "status": "promoted",
+     "clauses": {
+      "symptom": "A result is empty or short the second time the same data is used.",
+      "test": "Check whether the data is a one-shot iterator: print(iter(data) is data), or show that a second use finds nothing left.",
+      "confirmed": "It is a one-shot iterator walked twice. Turn it into a list once, where the function first receives it.",
+      "scope": "The whole input is finite."
+     },
+     "evidence": {
+      "prior": {
+       "tasks": [
+        "iter_shares__grades",
+        "iter_shares__invoices",
+        "iter_shares__orders",
+        "iter_shares__parcels",
+        "iter_shares__readings",
+        "iter_shares__samples",
+        "iter_shares__shipments",
+        "iter_shares__tickets",
+        "iter_shares__trades",
+        "iter_shares__visits",
+        "iter_zip__grades",
+        "iter_zip__invoices",
+        "iter_zip__orders",
+        "iter_zip__parcels",
+        "iter_zip__readings",
+        "iter_zip__samples",
+        "iter_zip__shipments",
+        "iter_zip__tickets",
+        "iter_zip__trades",
+        "iter_zip__visits"
+       ],
+       "first_test_as_predicted": 20,
+       "fix_verified": 20
+      }
+     }
+    },
+    {
+     "version": 2,
+     "status": "promoted",
+     "clauses": {
+      "symptom": "A result is empty or short the second time the same data is used.",
+      "test": "Check whether the data is a one-shot iterator: print(iter(data) is data), or show that a second use finds nothing left.",
+      "confirmed": "It is a one-shot iterator walked twice. Turn it into a list once, where the function first receives it.",
+      "scope": "The whole input is finite.",
+      "exception": "If the input never ends (check how many items a bounded read can pull), turn only the bounded part that is read into a list, never the whole input.",
+      "contradiction": "If the data is already a list, this diagnostic does not apply and list() will not help. Check whether a called function removes items from the caller's list; if it does, make it work on a copy."
+     },
+     "evidence": {
+      "prior": {
+       "tasks": [
+        "iter_shares__grades",
+        "iter_shares__invoices",
+        "iter_shares__orders",
+        "iter_shares__parcels",
+        "iter_shares__readings",
+        "iter_shares__samples",
+        "iter_shares__shipments",
+        "iter_shares__tickets",
+        "iter_shares__trades",
+        "iter_shares__visits",
+        "iter_zip__grades",
+        "iter_zip__invoices",
+        "iter_zip__orders",
+        "iter_zip__parcels",
+        "iter_zip__readings",
+        "iter_zip__samples",
+        "iter_zip__shipments",
+        "iter_zip__tickets",
+        "iter_zip__trades",
+        "iter_zip__visits"
+       ],
+       "first_test_as_predicted": 20,
+       "fix_verified": 20
+      },
+      "exception": {
+       "tasks": [
+        "iter_window__grades",
+        "iter_window__invoices",
+        "iter_window__orders",
+        "iter_window__parcels",
+        "iter_window__readings",
+        "iter_window__samples",
+        "iter_window__shipments",
+        "iter_window__tickets",
+        "iter_window__trades",
+        "iter_window__visits"
+       ],
+       "prior_fix_failed_when_executed": 10,
+       "prior_fix_regressions": 10,
+       "exception_fix_verified": 10
+      },
+      "contradiction": {
+       "tasks": [
+        "mut_drain__grades",
+        "mut_drain__invoices",
+        "mut_drain__orders",
+        "mut_drain__parcels",
+        "mut_drain__readings",
+        "mut_drain__samples",
+        "mut_drain__shipments",
+        "mut_drain__tickets",
+        "mut_drain__trades",
+        "mut_drain__visits"
+       ],
+       "prior_cause_test_contradicted": 10,
+       "alternate_fix_verified": 10
+      }
+     },
+     "admitted": [
+      "exception",
+      "contradiction"
+     ]
+    }
+   ],
+   "wording": "teacher-authored (stillway7/procedures.py)"
+  },
+  "S2": {
+   "current": 2,
+   "versions": [
+    {
+     "version": 1,
+     "status": "promoted",
+     "clauses": {
+      "symptom": "A derived value (a total, a count, a lookup) is wrong after an update.",
+      "test": "After an update, print the value the function returns next to the same value worked out from the stored data.",
+      "confirmed": "They differ: a remembered value is stale. Work the value out from the stored data on every call.",
+      "scope": "Working the value out again costs nothing."
+     },
+     "evidence": {
+      "prior": {
+       "tasks": [
+        "stale_index__grades",
+        "stale_index__invoices",
+        "stale_index__orders",
+        "stale_index__parcels",
+        "stale_index__readings",
+        "stale_index__samples",
+        "stale_index__shipments",
+        "stale_index__tickets",
+        "stale_index__trades",
+        "stale_index__visits",
+        "stale_total__grades",
+        "stale_total__invoices",
+        "stale_total__orders",
+        "stale_total__parcels",
+        "stale_total__readings",
+        "stale_total__samples",
+        "stale_total__shipments",
+        "stale_total__tickets",
+        "stale_total__trades",
+        "stale_total__visits"
+       ],
+       "first_test_as_predicted": 20,
+       "fix_verified": 20
+      }
+     }
+    },
+    {
+     "version": 2,
+     "status": "promoted",
+     "clauses": {
+      "symptom": "A derived value (a total, a count, a lookup) is wrong after an update.",
+      "test": "After an update, print the value the function returns next to the same value worked out from the stored data.",
+      "confirmed": "They differ: a remembered value is stale. Work the value out from the stored data on every call.",
+      "scope": "Working the value out again costs nothing.",
+      "exception": "If working it out again is billed or counted (a repeat call must make no new lookups), keep the remembered value and clear it in the function that changes the data.",
+      "contradiction": "If the two agree, nothing is stale and recomputing will not help. Check whether the update reached the stored data at all (print its length); if it did not, fix the function that writes."
+     },
+     "evidence": {
+      "prior": {
+       "tasks": [
+        "stale_index__grades",
+        "stale_index__invoices",
+        "stale_index__orders",
+        "stale_index__parcels",
+        "stale_index__readings",
+        "stale_index__samples",
+        "stale_index__shipments",
+        "stale_index__tickets",
+        "stale_index__trades",
+        "stale_index__visits",
+        "stale_total__grades",
+        "stale_total__invoices",
+        "stale_total__orders",
+        "stale_total__parcels",
+        "stale_total__readings",
+        "stale_total__samples",
+        "stale_total__shipments",
+        "stale_total__tickets",
+        "stale_total__trades",
+        "stale_total__visits"
+       ],
+       "first_test_as_predicted": 20,
+       "fix_verified": 20
+      },
+      "exception": {
+       "tasks": [
+        "stale_rates__grades",
+        "stale_rates__invoices",
+        "stale_rates__orders",
+        "stale_rates__parcels",
+        "stale_rates__readings",
+        "stale_rates__samples",
+        "stale_rates__shipments",
+        "stale_rates__tickets",
+        "stale_rates__trades",
+        "stale_rates__visits"
+       ],
+       "prior_fix_failed_when_executed": 10,
+       "prior_fix_regressions": 10,
+       "exception_fix_verified": 10
+      },
+      "contradiction": {
+       "tasks": [
+        "lost_write__grades",
+        "lost_write__invoices",
+        "lost_write__orders",
+        "lost_write__parcels",
+        "lost_write__readings",
+        "lost_write__samples",
+        "lost_write__shipments",
+        "lost_write__tickets",
+        "lost_write__trades",
+        "lost_write__visits"
+       ],
+       "prior_cause_test_contradicted": 10,
+       "alternate_fix_verified": 10
+      }
+     },
+     "admitted": [
+      "exception",
+      "contradiction"
+     ]
+    }
+   ],
+   "wording": "teacher-authored (stillway7/procedures.py)"
+  },
+  "S3": {
+   "current": 2,
+   "versions": [
+    {
+     "version": 1,
+     "status": "promoted",
+     "clauses": {
+      "symptom": "An element at the edge, usually the last one, is missing.",
+      "test": "Count what comes out against what went in, for a normal input and for the smallest inputs.",
+      "confirmed": "A range or slice bound stops one short. Extend the bound by one.",
+      "scope": "Extending by one is right for every input size."
+     },
+     "evidence": {
+      "prior": {
+       "tasks": [
+        "bound_loop__grades",
+        "bound_loop__invoices",
+        "bound_loop__orders",
+        "bound_loop__parcels",
+        "bound_loop__readings",
+        "bound_loop__samples",
+        "bound_loop__shipments",
+        "bound_loop__tickets",
+        "bound_loop__trades",
+        "bound_loop__visits",
+        "bound_range__grades",
+        "bound_range__invoices",
+        "bound_range__orders",
+        "bound_range__parcels",
+        "bound_range__readings",
+        "bound_range__samples",
+        "bound_range__shipments",
+        "bound_range__tickets",
+        "bound_range__trades",
+        "bound_range__visits"
+       ],
+       "first_test_as_predicted": 20,
+       "fix_verified": 20
+      }
+     }
+    },
+    {
+     "version": 2,
+     "status": "promoted",
+     "clauses": {
+      "symptom": "An element at the edge, usually the last one, is missing.",
+      "test": "Count what comes out against what went in, for a normal input and for the smallest inputs.",
+      "confirmed": "A range or slice bound stops one short. Extend the bound by one.",
+      "scope": "Extending by one is right for every input size.",
+      "exception": "If the bound comes from a division (pages, batches), adding one breaks exact fits (check 6 // 3 + 1). Round up instead: (n + size - 1) // size.",
+      "contradiction": "If nothing is lost when the input ends cleanly, no bound is short and this diagnostic does not apply. Check whether the last piece is only stored when a terminator follows it; if so, store what is left after the loop."
+     },
+     "evidence": {
+      "prior": {
+       "tasks": [
+        "bound_loop__grades",
+        "bound_loop__invoices",
+        "bound_loop__orders",
+        "bound_loop__parcels",
+        "bound_loop__readings",
+        "bound_loop__samples",
+        "bound_loop__shipments",
+        "bound_loop__tickets",
+        "bound_loop__trades",
+        "bound_loop__visits",
+        "bound_range__grades",
+        "bound_range__invoices",
+        "bound_range__orders",
+        "bound_range__parcels",
+        "bound_range__readings",
+        "bound_range__samples",
+        "bound_range__shipments",
+        "bound_range__tickets",
+        "bound_range__trades",
+        "bound_range__visits"
+       ],
+       "first_test_as_predicted": 20,
+       "fix_verified": 20
+      },
+      "exception": {
+       "tasks": [
+        "bound_pages__grades",
+        "bound_pages__invoices",
+        "bound_pages__orders",
+        "bound_pages__parcels",
+        "bound_pages__readings",
+        "bound_pages__samples",
+        "bound_pages__shipments",
+        "bound_pages__tickets",
+        "bound_pages__trades",
+        "bound_pages__visits"
+       ],
+       "prior_fix_failed_when_executed": 10,
+       "prior_fix_regressions": 10,
+       "exception_fix_verified": 10
+      },
+      "contradiction": {
+       "tasks": [
+        "flush_last__grades",
+        "flush_last__invoices",
+        "flush_last__orders",
+        "flush_last__parcels",
+        "flush_last__readings",
+        "flush_last__samples",
+        "flush_last__shipments",
+        "flush_last__tickets",
+        "flush_last__trades",
+        "flush_last__visits"
+       ],
+       "prior_cause_test_contradicted": 10,
+       "alternate_fix_verified": 10
+      }
+     },
+     "admitted": [
+      "exception",
+      "contradiction"
+     ]
+    }
+   ],
+   "wording": "teacher-authored (stillway7/procedures.py)"
+  }
+ },
+ "history": [
+  {
+   "diagnostic": "S1",
+   "event": "version 1 promoted",
+   "records": 20
+  },
+  {
+   "diagnostic": "S1",
+   "event": "prior fix contradicted by execution; local exception proposed",
+   "records": 10
+  },
+  {
+   "diagnostic": "S1",
+   "event": "version 2 promoted: exception, contradiction",
+   "records": 20
+  },
+  {
+   "diagnostic": "S2",
+   "event": "version 1 promoted",
+   "records": 20
+  },
+  {
+   "diagnostic": "S2",
+   "event": "prior fix contradicted by execution; local exception proposed",
+   "records": 10
+  },
+  {
+   "diagnostic": "S2",
+   "event": "version 2 promoted: exception, contradiction",
+   "records": 20
+  },
+  {
+   "diagnostic": "S3",
+   "event": "version 1 promoted",
+   "records": 20
+  },
+  {
+   "diagnostic": "S3",
+   "event": "prior fix contradicted by execution; local exception proposed",
+   "records": 10
+  },
+  {
+   "diagnostic": "S3",
+   "event": "version 2 promoted: exception, contradiction",
+   "records": 20
+  }
+ ]
+}

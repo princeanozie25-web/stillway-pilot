@@ -1,0 +1,69 @@
+{
+ "id": "stale_total__readings",
+ "template": "stale_total",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('south', 17), ('north', 26), ('north', 29), ('west', 40), ('east', 53), ('west', 58), ('north', 18)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "journal.py": "\"\"\"A book of readings with a cached total.\"\"\"\n\n\nclass ReadingBook:\n    def __init__(self):\n        self._readings = []\n        self._total = None\n\n    def add(self, reading):\n        \"\"\"Add one reading to the book.\"\"\"\n        self._readings.append(reading)\n\n    def total(self):\n        \"\"\"Return the total level of the readings in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.level for x in self._readings)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many readings the book holds.\"\"\"\n        return len(self._readings)\n\n\ndef describe_reading(reading):\n    \"\"\"Return a one-line description of a reading.\"\"\"\n    return \"%s: %s\" % (reading.sensor, reading.level)\n",
+  "tests/test_visible.py": "from readings import load_readings, ROWS\nfrom journal import ReadingBook\n\n\ndef test_total_after_add():\n    rows = list(load_readings())\n    book = ReadingBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = ReadingBook()\n    for x in load_readings():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a reading, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "a68e20c6af1b3c7b6c3b764a759eaff399fc8a516f0df13170a49e248117edcc",
+ "logic_file": "journal.py",
+ "hidden": "from readings import load_readings, ROWS\nfrom journal import ReadingBook\n\n\ndef test_total_after_add():\n    rows = list(load_readings())\n    book = ReadingBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = ReadingBook()\n    running = 0\n    for x in load_readings():\n        book.add(x)\n        running += x.level\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert ReadingBook().total() == 0\n\n\ndef test_count():\n    book = ReadingBook()\n    for x in load_readings():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "journal.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total level of the readings in the book.\"\"\"\n    return sum(x.level for x in self._readings)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "total() may return a remembered value that add() does not refresh.",
+    "test": "from readings import load_readings\nfrom journal import ReadingBook\nrows = list(load_readings())\nbook = ReadingBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nprint(book.total(), sum(x.level for x in book._readings))\n",
+    "predict": "17 43",
+    "observed": "17 43",
+    "seconds": 0.035
+   },
+   {
+    "suspect": "If the remembered value is cleared, total() should give the right answer, so working it out on every call is enough.",
+    "test": "from readings import load_readings\nfrom journal import ReadingBook\nrows = list(load_readings())\nbook = ReadingBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nbook._total = None\nprint(book.total())\n",
+    "predict": "43",
+    "observed": "43",
+    "seconds": 0.037
+   }
+  ],
+  "cause": "Stale remembered total. Work the total out from the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.level for x in self._readings)\n-        return self._total\n+        return sum(x.level for x in self._readings)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

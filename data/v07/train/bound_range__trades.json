@@ -1,0 +1,71 @@
+{
+ "id": "bound_range__trades",
+ "template": "bound_range",
+ "skin": "trades",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "trades.py": "\"\"\"Trade records.\"\"\"\n\n\nclass Trade:\n    def __init__(self, desk, volume):\n        self.desk = desk\n        self.volume = volume\n\n    def __repr__(self):\n        return \"Trade(%r, %r)\" % (self.desk, self.volume)\n\n\nROWS = [('fx', 5), ('metals', 13), ('metals', 43), ('energy', 21), ('fx', 6), ('bonds', 58), ('bonds', 42)]\n\n\ndef load_trades():\n    \"\"\"Yield the stored trades one at a time.\"\"\"\n    for desk, volume in ROWS:\n        yield Trade(desk, volume)\n",
+  "spans.py": "\"\"\"Position windows over trades.\"\"\"\n\n\ndef volume_between(trades, low, high):\n    \"\"\"Return the volume of the trades at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.volume for x in trades[low - 1:high - 1]]\n\n\ndef first_volumes(trades, n):\n    \"\"\"Return the volume of the first n trades.\"\"\"\n    return volume_between(trades, 1, n)\n",
+  "tests/test_visible.py": "from trades import load_trades, ROWS\nfrom spans import volume_between\n\n\ndef test_three_positions():\n    data = list(load_trades())\n    assert volume_between(data, 2, 4) == [v for _, v in ROWS[1:4]]\n\n\ndef test_low_above_high():\n    data = list(load_trades())\n    assert volume_between(data, 3, 2) == []\n",
+  "ISSUE.md": "volume_between(data, 2, 4) returns two values. I expected three, for positions 2, 3 and 4: the last one is missing.\n"
+ },
+ "code_hash": "f7e42b015e5d48f897ef21bd7a78cd6f9e31c820cbab70a7608e57a230110808",
+ "logic_file": "spans.py",
+ "hidden": "from trades import load_trades, ROWS\nfrom spans import volume_between, first_volumes\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_three_positions():\n    assert volume_between(list(load_trades()), 2, 4) == VALUES[1:4]\n\n\ndef test_whole_range():\n    assert volume_between(list(load_trades()), 1, len(ROWS)) == VALUES\n\n\ndef test_single_position():\n    assert volume_between(list(load_trades()), 3, 3) == [VALUES[2]]\n\n\ndef test_first_n():\n    assert first_volumes(list(load_trades()), 2) == VALUES[:2]\n\n\ndef test_low_above_high():\n    assert volume_between(list(load_trades()), 3, 2) == []\n",
+ "fix": {
+  "file": "spans.py",
+  "function": "volume_between",
+  "code": "def volume_between(trades, low, high):\n    \"\"\"Return the volume of the trades at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.volume for x in trades[low - 1:high]]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window may stop one position early.",
+    "test": "from trades import load_trades\nfrom spans import volume_between\ndata = list(load_trades())\nprint(volume_between(data, 2, 4))\n",
+    "predict": "[13, 43]",
+    "observed": "[13, 43]",
+    "seconds": 0.036
+   },
+   {
+    "suspect": "If the upper position is always left out, a one-position window is empty and the full window is one short.",
+    "test": "from trades import load_trades\nfrom spans import volume_between\ndata = list(load_trades())\nprint(len(volume_between(data, 1, 1)), len(volume_between(data, 1, len(data))))\n",
+    "predict": "0 6",
+    "observed": "0 6",
+    "seconds": 0.034
+   }
+  ],
+  "cause": "The upper bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_low_above_high": "PASS",
+    "test_three_positions": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_first_n": "FAIL AssertionError: ",
+    "test_low_above_high": "PASS",
+    "test_single_position": "FAIL AssertionError: ",
+    "test_three_positions": "FAIL AssertionError: ",
+    "test_whole_range": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return [x.volume for x in trades[low - 1:high - 1]]\n+    return [x.volume for x in trades[low - 1:high]]",
+   "hidden": {
+    "test_first_n": "PASS",
+    "test_low_above_high": "PASS",
+    "test_single_position": "PASS",
+    "test_three_positions": "PASS",
+    "test_whole_range": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

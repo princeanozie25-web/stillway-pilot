@@ -1,0 +1,69 @@
+{
+ "id": "stale_total__visits",
+ "template": "stale_total",
+ "skin": "visits",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "visits.py": "\"\"\"Visit records.\"\"\"\n\n\nclass Visit:\n    def __init__(self, page, minutes):\n        self.page = page\n        self.minutes = minutes\n\n    def __repr__(self):\n        return \"Visit(%r, %r)\" % (self.page, self.minutes)\n\n\nROWS = [('docs', 33), ('blog', 56), ('home', 21), ('home', 18), ('docs', 19)]\n\n\ndef load_visits():\n    \"\"\"Yield the stored visits one at a time.\"\"\"\n    for page, minutes in ROWS:\n        yield Visit(page, minutes)\n",
+  "book.py": "\"\"\"A book of visits with a cached total.\"\"\"\n\n\nclass VisitBook:\n    def __init__(self):\n        self._visits = []\n        self._total = None\n\n    def add(self, visit):\n        \"\"\"Add one visit to the book.\"\"\"\n        self._visits.append(visit)\n\n    def total(self):\n        \"\"\"Return the total minutes of the visits in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.minutes for x in self._visits)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many visits the book holds.\"\"\"\n        return len(self._visits)\n",
+  "tests/test_visible.py": "from visits import load_visits, ROWS\nfrom book import VisitBook\n\n\ndef test_total_after_add():\n    rows = list(load_visits())\n    book = VisitBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = VisitBook()\n    for x in load_visits():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a visit, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "bc2bf3da8a777fa3e2d5a592b24f767ac57bf31d2efad2e9351f310e95b085bb",
+ "logic_file": "book.py",
+ "hidden": "from visits import load_visits, ROWS\nfrom book import VisitBook\n\n\ndef test_total_after_add():\n    rows = list(load_visits())\n    book = VisitBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_after_every_add():\n    book = VisitBook()\n    running = 0\n    for x in load_visits():\n        book.add(x)\n        running += x.minutes\n        assert book.total() == running\n\n\ndef test_empty_book():\n    assert VisitBook().total() == 0\n\n\ndef test_count():\n    book = VisitBook()\n    for x in load_visits():\n        book.add(x)\n    assert book.count() == len(ROWS)\n",
+ "fix": {
+  "file": "book.py",
+  "function": "total",
+  "code": "def total(self):\n    \"\"\"Return the total minutes of the visits in the book.\"\"\"\n    return sum(x.minutes for x in self._visits)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "total() may return a remembered value that add() does not refresh.",
+    "test": "from visits import load_visits\nfrom book import VisitBook\nrows = list(load_visits())\nbook = VisitBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nprint(book.total(), sum(x.minutes for x in book._visits))\n",
+    "predict": "33 89",
+    "observed": "33 89",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the remembered value is cleared, total() should give the right answer, so working it out on every call is enough.",
+    "test": "from visits import load_visits\nfrom book import VisitBook\nrows = list(load_visits())\nbook = VisitBook()\nbook.add(rows[0])\nbook.total()\nbook.add(rows[1])\nbook._total = None\nprint(book.total())\n",
+    "predict": "89",
+    "observed": "89",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Stale remembered total. Work the total out from the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_once": "PASS"
+   },
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "FAIL AssertionError: ",
+    "test_total_after_every_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-        if self._total is None:\n-            self._total = sum(x.minutes for x in self._visits)\n-        return self._total\n+        return sum(x.minutes for x in self._visits)",
+   "hidden": {
+    "test_count": "PASS",
+    "test_empty_book": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_every_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_054",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('lodge', 14), ('plaza', 35), ('grand', 8), ('lodge', 19), ('grand', 57), ('plaza', 24)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "lookup.py": "\"\"\"Finding bookings by hotel.\"\"\"\n\n\ndef bookings_for(bookings, hotel):\n    \"\"\"Return the bookings whose hotel matches, ignoring upper and lower case and spaces at either end.\"\"\"\n    return [x for x in bookings if x.hotel == hotel]\n\n\ndef has_hotel(bookings, hotel):\n    \"\"\"Return True when at least one booking matches the hotel.\"\"\"\n    return len(bookings_for(bookings, hotel)) > 0\n\n\ndef group_by_hotel(bookings):\n    \"\"\"Return a dict from hotel to the list of bookings with that hotel.\"\"\"\n    groups = {}\n    for x in bookings:\n        groups.setdefault(x.hotel, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom lookup import bookings_for\n\nKEY = ROWS[0][0]\nCOUNT = sum(1 for k, _ in ROWS if k == KEY)\n\n\ndef test_upper_case_with_spaces():\n    assert len(bookings_for(list(load_bookings()), \" \" + KEY.upper() + \" \")) == COUNT\n\n\ndef test_exact():\n    assert len(bookings_for(list(load_bookings()), KEY)) == COUNT\n",
+  "ISSUE.md": "bookings_for(data, ' LODGE ') returns nothing, although there are bookings for 'lodge'.\n"
+ },
+ "code_hash": "9adca6d02754b03c927ac78e401d0794946774cb540850b4d411c2269acc77a0"
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_060",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('river', 49), ('hill', 22), ('upper', 42), ('river', 43), ('upper', 12), ('lower', 39)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "search.py": "\"\"\"Finding harvests by field.\"\"\"\n\n\ndef harvests_for(harvests, field):\n    \"\"\"Return the harvests whose field matches, ignoring upper and lower case and spaces at either end.\"\"\"\n    return [x for x in harvests if x.field == field]\n\n\ndef has_field(harvests, field):\n    \"\"\"Return True when at least one harvest matches the field.\"\"\"\n    return len(harvests_for(harvests, field)) > 0\n\n\ndef field_names(harvests):\n    \"\"\"Return the distinct field values, in first-seen order.\"\"\"\n    names = []\n    for x in harvests:\n        if x.field not in names:\n            names.append(x.field)\n    return names\n\n\ndef group_by_field(harvests):\n    \"\"\"Return a dict from field to the list of harvests with that field.\"\"\"\n    groups = {}\n    for x in harvests:\n        groups.setdefault(x.field, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from harvests import load_harvests, ROWS\nfrom search import harvests_for\n\nKEY = ROWS[0][0]\nCOUNT = sum(1 for k, _ in ROWS if k == KEY)\n\n\ndef test_upper_case_with_spaces():\n    assert len(harvests_for(list(load_harvests()), \" \" + KEY.upper() + \" \")) == COUNT\n\n\ndef test_exact():\n    assert len(harvests_for(list(load_harvests()), KEY)) == COUNT\n",
+  "ISSUE.md": "harvests_for(data, ' RIVER ') returns nothing, although there are harvests for 'river'.\n"
+ },
+ "code_hash": "a2ace2b407fea3f7bb707dcaf7a08ef859e61f77fc611904e5267bef2ddd6c32"
+}

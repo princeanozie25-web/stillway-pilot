@@ -1,0 +1,71 @@
+{
+ "id": "iter_shares__parcels",
+ "template": "iter_shares",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('york', 47), ('leeds', 23), ('york', 30), ('hull', 31), ('leeds', 10), ('bath', 59)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n",
+  "shares.py": "\"\"\"Share of the total grams per parcel.\"\"\"\nfrom parcels import load_parcels\n\n\ndef grams_shares(parcels):\n    \"\"\"Return each parcel's share of the total grams, in order.\"\"\"\n    total = sum(x.grams for x in parcels)\n    return [x.grams / total for x in parcels]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored parcels.\"\"\"\n    return grams_shares(load_parcels())\n\n\ndef top_share(parcels):\n    \"\"\"Return the largest share, or 0.0 when there are no parcels.\"\"\"\n    shares = grams_shares(parcels)\n    return max(shares) if shares else 0.0\n\n\ndef largest_grams(parcels):\n    \"\"\"Return the largest grams, or None when there are no parcels.\"\"\"\n    values = [x.grams for x in parcels]\n    return max(values) if values else None\n\n\ndef describe_parcel(parcel):\n    \"\"\"Return a one-line description of a parcel.\"\"\"\n    return \"%s: %s\" % (parcel.depot, parcel.grams)\n",
+  "tests/test_visible.py": "from parcels import load_parcels, ROWS\nfrom shares import grams_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = grams_shares(list(load_parcels()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 6 stored parcels, so I expected 6 shares that add up to 1.\n"
+ },
+ "code_hash": "2af7859efd59fb88aa5db47c0206e886f6de7a556a78d5e0ae74fbf89e9c05b8",
+ "logic_file": "shares.py",
+ "hidden": "from parcels import load_parcels, ROWS\nfrom shares import grams_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = grams_shares(load_parcels())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = grams_shares(list(load_parcels()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_parcels()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert grams_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "shares.py",
+  "function": "grams_shares",
+  "code": "def grams_shares(parcels):\n    \"\"\"Return each parcel's share of the total grams, in order.\"\"\"\n    parcels = list(parcels)\n    total = sum(x.grams for x in parcels)\n    return [x.grams / total for x in parcels]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "load_parcels() may return a one-shot iterator that grams_shares walks twice.",
+    "test": "from parcels import load_parcels\ndata = load_parcels()\nprint(iter(data) is data)\n",
+    "predict": "True",
+    "observed": "True",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the input is a list the second pass should work, so turning the input into a list once is enough.",
+    "test": "from parcels import load_parcels\nfrom shares import grams_shares\nprint(len(grams_shares(list(load_parcels()))))\n",
+    "predict": "6",
+    "observed": "6",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "One-shot iterator walked twice. Turn the input into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    parcels = list(parcels)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

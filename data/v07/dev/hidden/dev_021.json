@@ -1,0 +1,44 @@
+{
+ "id": "dev_021",
+ "source": "bound_lower__harvests",
+ "template": "bound_lower",
+ "skin": "harvests",
+ "group": "G2",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": null,
+ "hidden": "from harvests import load_harvests, ROWS\nfrom changes import kilos_changes, biggest_rise\n\nVALUES = [v for _, v in ROWS]\nEXPECTED = [VALUES[i] - VALUES[i - 1] for i in range(1, len(VALUES))]\n\n\ndef test_number_of_changes():\n    assert len(kilos_changes(list(load_harvests()))) == len(ROWS) - 1\n\n\ndef test_values():\n    assert kilos_changes(list(load_harvests())) == EXPECTED\n\n\ndef test_two_items():\n    assert kilos_changes(list(load_harvests())[:2]) == EXPECTED[:1]\n\n\ndef test_biggest_rise():\n    assert biggest_rise(list(load_harvests())) == max([c for c in EXPECTED if c > 0] or [0])\n\n\ndef test_single_item():\n    assert kilos_changes(list(load_harvests())[:1]) == [] and kilos_changes([]) == []\n",
+ "fix": {
+  "file": "changes.py",
+  "function": "kilos_changes",
+  "code": "def kilos_changes(harvests):\n    \"\"\"Return the change in kilos from each harvest to the next: one entry for every neighbouring pair.\"\"\"\n    out = []\n    for i in range(1, len(harvests)):\n        out.append(harvests[i].kilos - harvests[i - 1].kilos)\n    return out\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_number_of_changes": "FAIL AssertionError: ",
+    "test_single_item": "PASS"
+   },
+   "hidden": {
+    "test_biggest_rise": "PASS",
+    "test_number_of_changes": "FAIL AssertionError: ",
+    "test_single_item": "PASS",
+    "test_two_items": "FAIL AssertionError: ",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(2, len(harvests)):\n+    for i in range(1, len(harvests)):",
+   "hidden": {
+    "test_biggest_rise": "PASS",
+    "test_number_of_changes": "PASS",
+    "test_single_item": "PASS",
+    "test_two_items": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

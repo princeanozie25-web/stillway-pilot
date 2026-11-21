@@ -1,0 +1,42 @@
+{
+ "id": "dev_056",
+ "source": "case_key__donations",
+ "template": "case_key",
+ "skin": "donations",
+ "group": "G4",
+ "symptom": "X2",
+ "cause": "NORMALISE",
+ "role": null,
+ "hidden": "from donations import Donation, load_donations, ROWS\nfrom finder import donations_for, has_donor\n\nKEY = ROWS[0][0]\nCOUNT = sum(1 for k, _ in ROWS if k == KEY)\n\n\ndef test_upper_case_with_spaces():\n    assert len(donations_for(list(load_donations()), \" \" + KEY.upper() + \" \")) == COUNT\n\n\ndef test_stored_value_not_tidy():\n    data = [Donation(\"  Alpha\", 1), Donation(\"beta\", 2), Donation(\"ALPHA \", 3)]\n    assert [x.pounds for x in donations_for(data, \"alpha\")] == [1, 3]\n\n\ndef test_exact():\n    assert len(donations_for(list(load_donations()), KEY)) == COUNT\n\n\ndef test_no_match():\n    assert donations_for(list(load_donations()), \"zzz\") == [] and not has_donor(list(load_donations()), \"zzz\")\n",
+ "fix": {
+  "file": "finder.py",
+  "function": "donations_for",
+  "code": "def donations_for(donations, donor):\n    \"\"\"Return the donations whose donor matches, ignoring upper and lower case and spaces at either end.\"\"\"\n    wanted = donor.strip().lower()\n    return [x for x in donations if x.donor.strip().lower() == wanted]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_exact": "PASS",
+    "test_upper_case_with_spaces": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_exact": "PASS",
+    "test_no_match": "PASS",
+    "test_stored_value_not_tidy": "FAIL AssertionError: ",
+    "test_upper_case_with_spaces": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 3,
+   "diff": "-    return [x for x in donations if x.donor == donor]\n+    wanted = donor.strip().lower()\n+    return [x for x in donations if x.donor.strip().lower() == wanted]",
+   "hidden": {
+    "test_exact": "PASS",
+    "test_no_match": "PASS",
+    "test_stored_value_not_tidy": "PASS",
+    "test_upper_case_with_spaces": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

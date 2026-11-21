@@ -1,0 +1,99 @@
+{
+ "id": "stale_rates__orders",
+ "template": "stale_rates",
+ "skin": "orders",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "orders.py": "\"\"\"Order records.\"\"\"\n\n\nclass Order:\n    def __init__(self, customer, amount):\n        self.customer = customer\n        self.amount = amount\n\n    def __repr__(self):\n        return \"Order(%r, %r)\" % (self.customer, self.amount)\n\n\nROWS = [('delta', 56), ('birch', 14), ('acme', 18), ('acme', 22), ('acme', 26), ('birch', 52)]\n\n\ndef load_orders():\n    \"\"\"Yield the stored orders one at a time.\"\"\"\n    for customer, amount in ROWS:\n        yield Order(customer, amount)\n",
+  "rates.py": "\"\"\"Rate lookups. Every lookup is billed, so callers must not repeat them needlessly.\"\"\"\n\nLOOKUPS = 0\n_RATES = {'acme': 3, 'birch': 3, 'corvo': 3, 'delta': 2}\n\n\ndef rate_for(customer):\n    \"\"\"Return the rate for a customer. Each call is billed and counted in LOOKUPS.\"\"\"\n    global LOOKUPS\n    LOOKUPS += 1\n    return _RATES[customer]\n",
+  "billing.py": "\"\"\"Billing for orders. Rate lookups are billed, so the charge is remembered.\"\"\"\nimport rates\n\n\nclass OrderBill:\n    def __init__(self):\n        self._orders = []\n        self._charge = None\n\n    def add(self, order):\n        \"\"\"Add one order to the bill.\"\"\"\n        self._orders.append(order)\n\n    def charge(self):\n        \"\"\"Return the total charge: amount times the rate for each order's customer.\n\n        The result is remembered: asking again without adding anything makes no new rate lookups.\n        \"\"\"\n        if self._charge is None:\n            self._charge = sum(x.amount * rates.rate_for(x.customer) for x in self._orders)\n        return self._charge\n",
+  "tests/test_visible.py": "import rates\nfrom orders import load_orders, ROWS\nfrom billing import OrderBill\n\n\ndef test_charge_after_add():\n    rows = list(load_orders())\n    bill = OrderBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = OrderBill()\n    for x in load_orders():\n        bill.add(x)\n    bill.charge()\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n",
+  "ISSUE.md": "After I add a order, charge() still returns the old charge.\n"
+ },
+ "code_hash": "dba344fc29bc34403a9eb98ad7485c0be470b84ca63d6e87a11b200489bd871d",
+ "logic_file": "billing.py",
+ "hidden": "import rates\nfrom orders import load_orders, ROWS\nfrom billing import OrderBill\n\nFULL = sum(v * rates._RATES[k] for k, v in ROWS)\n\n\ndef test_charge_after_add():\n    rows = list(load_orders())\n    bill = OrderBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_every_add():\n    bill = OrderBill()\n    running = 0\n    for x in load_orders():\n        bill.add(x)\n        running += x.amount * rates._RATES[x.customer]\n        assert bill.charge() == running\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = OrderBill()\n    for x in load_orders():\n        bill.add(x)\n    assert bill.charge() == FULL\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n\n\ndef test_empty_bill():\n    assert OrderBill().charge() == 0\n",
+ "fix": {
+  "file": "billing.py",
+  "function": "add",
+  "code": "def add(self, order):\n    \"\"\"Add one order to the bill.\"\"\"\n    self._orders.append(order)\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return the total charge: amount times the rate for each order's customer.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.amount * rates.rate_for(x.customer) for x in self._orders)\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "charge() may return a remembered value that add() does not refresh.",
+    "test": "import rates\nfrom orders import load_orders\nfrom billing import OrderBill\nrows = list(load_orders())\nbill = OrderBill()\nbill.add(rows[0])\nbill.charge()\nbill.add(rows[1])\nprint(bill.charge(), sum(x.amount * rates._RATES[x.customer] for x in bill._orders))\n",
+    "predict": "112 154",
+    "observed": "112 154",
+    "seconds": 0.035
+   },
+   {
+    "suspect": "The usual fix is to work the value out on every call, but here every lookup is billed and a repeat call must make none.",
+    "test": "import rates\nfrom orders import load_orders\nfrom billing import OrderBill\nrows = list(load_orders())\nbill = OrderBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nprint(rates.LOOKUPS)\nbill.charge()\nprint(rates.LOOKUPS)\n",
+    "predict": "2\n2",
+    "observed": "2\n2",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered charge. Lookups are billed, so keep the remembered value and clear it in add()."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If working the charge out again costs nothing, doing it on every call is enough.",
+  "test": "import rates\nfrom orders import load_orders\nfrom billing import OrderBill\nrows = list(load_orders())\nbill = OrderBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nbefore = rates.LOOKUPS\nbill._charge = None\nbill.charge()\nprint(rates.LOOKUPS - before)\n",
+  "predict": "0",
+  "observed": "2",
+  "seconds": 0.034
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_charge_after_every_add": "FAIL AssertionError: ",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._charge = None",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.amount * rates.rate_for(x.customer) for x in self._orders)\n-        return self._charge\n+        return sum(x.amount * rates.rate_for(x.customer) for x in self._orders)",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_charge_after_add": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

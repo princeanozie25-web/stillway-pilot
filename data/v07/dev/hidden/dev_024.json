@@ -1,0 +1,42 @@
+{
+ "id": "dev_024",
+ "source": "stale_remove__fixtures",
+ "template": "stale_remove",
+ "skin": "fixtures",
+ "group": "G2",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": null,
+ "hidden": "from fixtures import load_fixtures, ROWS\nfrom reserve import FixturePool\n\n\ndef filled():\n    rows = list(load_fixtures())\n    pool = FixturePool()\n    for x in rows:\n        pool.add(x)\n    return pool, rows\n\n\ndef test_total_after_remove():\n    pool, rows = filled()\n    full = pool.total()\n    pool.remove(rows[0])\n    assert pool.total() == full - ROWS[0][1]\n\n\ndef test_remove_two():\n    pool, rows = filled()\n    full = pool.total()\n    pool.remove(rows[1])\n    assert pool.total() == full - ROWS[1][1]\n    pool.remove(rows[2])\n    assert pool.total() == full - ROWS[1][1] - ROWS[2][1]\n\n\ndef test_total_after_add():\n    rows = list(load_fixtures())\n    pool = FixturePool()\n    pool.add(rows[0])\n    pool.total()\n    pool.add(rows[1])\n    assert pool.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_remove_all():\n    pool, rows = filled()\n    pool.total()\n    for x in rows:\n        pool.remove(x)\n    assert pool.total() == 0\n",
+ "fix": {
+  "file": "reserve.py",
+  "function": "remove",
+  "code": "def remove(self, fixture):\n    \"\"\"Take one fixture out of the pool.\"\"\"\n    self._fixtures.remove(fixture)\n    self._total = None\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_total_after_add": "PASS",
+    "test_total_after_remove": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_remove_all": "FAIL AssertionError: ",
+    "test_remove_two": "FAIL AssertionError: ",
+    "test_total_after_add": "PASS",
+    "test_total_after_remove": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._total = None",
+   "hidden": {
+    "test_remove_all": "PASS",
+    "test_remove_two": "PASS",
+    "test_total_after_add": "PASS",
+    "test_total_after_remove": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

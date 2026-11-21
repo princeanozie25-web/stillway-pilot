@@ -1,0 +1,44 @@
+{
+ "id": "dev_009",
+ "source": "iter_attr__bookings",
+ "template": "iter_attr",
+ "skin": "bookings",
+ "group": "G2",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": null,
+ "hidden": "from bookings import load_bookings, ROWS\nfrom summary import BookingSummary\n\nMEAN = sum(v for _, v in ROWS) / len(ROWS)\n\n\ndef test_mean_of_stored():\n    assert abs(BookingSummary(load_bookings()).mean_nights() - MEAN) < 1e-9\n\n\ndef test_count_then_mean():\n    s = BookingSummary(load_bookings())\n    assert s.count() == len(ROWS) and abs(s.mean_nights() - MEAN) < 1e-9\n\n\ndef test_mean_twice():\n    s = BookingSummary(load_bookings())\n    s.mean_nights()\n    assert abs(s.mean_nights() - MEAN) < 1e-9\n\n\ndef test_list_input():\n    assert abs(BookingSummary(list(load_bookings())).mean_nights() - MEAN) < 1e-9\n\n\ndef test_empty():\n    assert BookingSummary(iter([])).mean_nights() == 0.0\n",
+ "fix": {
+  "file": "summary.py",
+  "function": "__init__",
+  "code": "def __init__(self, bookings):\n    self._bookings = list(bookings)\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count_of_list": "PASS",
+    "test_mean_of_stored": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_count_then_mean": "FAIL AssertionError: ",
+    "test_empty": "PASS",
+    "test_list_input": "PASS",
+    "test_mean_of_stored": "FAIL AssertionError: ",
+    "test_mean_twice": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self._bookings = bookings\n+        self._bookings = list(bookings)",
+   "hidden": {
+    "test_count_then_mean": "PASS",
+    "test_empty": "PASS",
+    "test_list_input": "PASS",
+    "test_mean_of_stored": "PASS",
+    "test_mean_twice": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

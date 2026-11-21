@@ -1,0 +1,69 @@
+{
+ "id": "stale_index__readings",
+ "template": "stale_index",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('west', 24), ('south', 55), ('north', 43), ('north', 38), ('west', 15), ('south', 45), ('south', 26)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "directory.py": "\"\"\"Registry of readings by sensor.\"\"\"\n\n_ALL = []\n_BY_KEY = None\n\n\ndef reset():\n    \"\"\"Forget every registered reading.\"\"\"\n    global _BY_KEY\n    del _ALL[:]\n    _BY_KEY = None\n\n\ndef register(reading):\n    \"\"\"Add one reading to the registry.\"\"\"\n    _ALL.append(reading)\n\n\ndef find(sensor):\n    \"\"\"Return the readings registered under this sensor.\"\"\"\n    global _BY_KEY\n    if _BY_KEY is None:\n        _BY_KEY = {}\n        for x in _ALL:\n            _BY_KEY.setdefault(x.sensor, []).append(x)\n    return _BY_KEY.get(sensor, [])\n\n\ndef sensor_names(readings):\n    \"\"\"Return the distinct sensor values, in first-seen order.\"\"\"\n    names = []\n    for x in readings:\n        if x.sensor not in names:\n            names.append(x.sensor)\n    return names\n\n\ndef describe_reading(reading):\n    \"\"\"Return a one-line description of a reading.\"\"\"\n    return \"%s: %s\" % (reading.sensor, reading.level)\n",
+  "tests/test_visible.py": "from readings import Reading\nimport directory as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Reading(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Reading(\"k1\", 7))\n    assert len(reg.find(\"k1\")) == 2\n\n\ndef test_register_then_find():\n    reg.reset()\n    reg.register(Reading(\"k1\", 5))\n    reg.register(Reading(\"k2\", 6))\n    assert [x.level for x in reg.find(\"k2\")] == [6]\n",
+  "ISSUE.md": "A reading registered after the first find() never shows up in find(). Registering everything before the first find() works.\n"
+ },
+ "code_hash": "b635af4a4874a64e713e08cf7798fce4f153880a8778e9ed87972317ea82aa9d",
+ "logic_file": "directory.py",
+ "hidden": "from readings import Reading\nimport directory as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Reading(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Reading(\"k1\", 7))\n    assert [x.level for x in reg.find(\"k1\")] == [5, 7]\n\n\ndef test_late_new_key():\n    reg.reset()\n    reg.register(Reading(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.register(Reading(\"k9\", 2))\n    assert [x.level for x in reg.find(\"k9\")] == [2]\n\n\ndef test_unknown_key():\n    reg.reset()\n    reg.register(Reading(\"k1\", 5))\n    assert reg.find(\"nope\") == []\n\n\ndef test_reset():\n    reg.reset()\n    reg.register(Reading(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.reset()\n    assert reg.find(\"k1\") == []\n",
+ "fix": {
+  "file": "directory.py",
+  "function": "find",
+  "code": "def find(sensor):\n    \"\"\"Return the readings registered under this sensor.\"\"\"\n    return [x for x in _ALL if x.sensor == sensor]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "find() may answer from an index built on the first call that register() does not refresh.",
+    "test": "from readings import Reading\nimport directory as reg\nreg.reset()\nreg.register(Reading(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Reading(\"k1\", 7))\nprint(len(reg.find(\"k1\")), sum(1 for x in reg._ALL if x.sensor == \"k1\"))\n",
+    "predict": "1 2",
+    "observed": "1 2",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the remembered index is cleared, find() should see both, so looking through the list on every call is enough.",
+    "test": "from readings import Reading\nimport directory as reg\nreg.reset()\nreg.register(Reading(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Reading(\"k1\", 7))\nreg._BY_KEY = None\nprint(len(reg.find(\"k1\")))\n",
+    "predict": "2",
+    "observed": "2",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered index. Look through the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_register_then_find": "PASS"
+   },
+   "hidden": {
+    "test_late_new_key": "FAIL AssertionError: ",
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 7,
+   "diff": "-    global _BY_KEY\n-    if _BY_KEY is None:\n-        _BY_KEY = {}\n-        for x in _ALL:\n-            _BY_KEY.setdefault(x.sensor, []).append(x)\n-    return _BY_KEY.get(sensor, [])\n+    return [x for x in _ALL if x.sensor == sensor]",
+   "hidden": {
+    "test_late_new_key": "PASS",
+    "test_late_registration": "PASS",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

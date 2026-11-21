@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__invoices",
+ "template": "bound_loop",
+ "skin": "invoices",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "invoices.py": "\"\"\"Invoice records.\"\"\"\n\n\nclass Invoice:\n    def __init__(self, client, due):\n        self.client = client\n        self.due = due\n\n    def __repr__(self):\n        return \"Invoice(%r, %r)\" % (self.client, self.due)\n\n\nROWS = [('hale', 43), ('ivory', 34), ('ivory', 56), ('ivory', 22), ('ivory', 8), ('hale', 7), ('hale', 45)]\n\n\ndef load_invoices():\n    \"\"\"Yield the stored invoices one at a time.\"\"\"\n    for client, due in ROWS:\n        yield Invoice(client, due)\n",
+  "cumulative.py": "\"\"\"Running totals over invoices.\"\"\"\n\n\ndef running_due(invoices):\n    \"\"\"Return the running total of due after each invoice, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(invoices) - 1):\n        total += invoices[i].due\n        out.append(total)\n    return out\n\n\ndef final_due(invoices):\n    \"\"\"Return the total due of all invoices, or 0 when there are none.\"\"\"\n    totals = running_due(invoices)\n    return totals[-1] if totals else 0\n\n\ndef describe_invoice(invoice):\n    \"\"\"Return a one-line description of a invoice.\"\"\"\n    return \"%s: %s\" % (invoice.client, invoice.due)\n\n\ndef largest_due(invoices):\n    \"\"\"Return the largest due, or None when there are no invoices.\"\"\"\n    values = [x.due for x in invoices]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from invoices import load_invoices, ROWS\nfrom cumulative import running_due\n\n\ndef test_length():\n    assert len(running_due(list(load_invoices()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_due([]) == []\n",
+  "ISSUE.md": "final_due(data) is too low: it leaves out the last invoice. running_due(data) has 6 entries, not 7.\n"
+ },
+ "code_hash": "4efbfdb2e6694f803d8c95cba461997fc156284f6a6cbf6c0412fafec70f34f8",
+ "logic_file": "cumulative.py",
+ "hidden": "from invoices import load_invoices, ROWS\nfrom cumulative import running_due, final_due\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_due(list(load_invoices()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_due(list(load_invoices())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_due(list(load_invoices()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_due(list(load_invoices())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_due([]) == [] and final_due([]) == 0\n",
+ "fix": {
+  "file": "cumulative.py",
+  "function": "running_due",
+  "code": "def running_due(invoices):\n    \"\"\"Return the running total of due after each invoice, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(invoices)):\n        total += invoices[i].due\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one invoice early.",
+    "test": "from invoices import load_invoices\nfrom cumulative import running_due\ndata = list(load_invoices())\nprint(len(running_due(data)), len(data))\n",
+    "predict": "6 7",
+    "observed": "6 7",
+    "seconds": 0.035
+   },
+   {
+    "suspect": "If the loop always stops one short, one invoice gives nothing and two give one entry.",
+    "test": "from invoices import load_invoices\nfrom cumulative import running_due\ndata = list(load_invoices())\nprint(running_due(data[:1]), running_due(data[:2]))\n",
+    "predict": "[] [43]",
+    "observed": "[] [43]",
+    "seconds": 0.035
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(invoices) - 1):\n+    for i in range(len(invoices)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

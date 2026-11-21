@@ -1,0 +1,71 @@
+{
+ "id": "iter_shares__readings",
+ "template": "iter_shares",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('south', 31), ('west', 46), ('south', 18), ('east', 17), ('north', 48), ('north', 42)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "breakdown.py": "\"\"\"Share of the total level per reading.\"\"\"\nfrom readings import load_readings\n\n\ndef level_shares(readings):\n    \"\"\"Return each reading's share of the total level, in order.\"\"\"\n    total = sum(x.level for x in readings)\n    return [x.level / total for x in readings]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored readings.\"\"\"\n    return level_shares(load_readings())\n\n\ndef top_share(readings):\n    \"\"\"Return the largest share, or 0.0 when there are no readings.\"\"\"\n    shares = level_shares(readings)\n    return max(shares) if shares else 0.0\n\n\ndef sensor_names(readings):\n    \"\"\"Return the distinct sensor values, in first-seen order.\"\"\"\n    names = []\n    for x in readings:\n        if x.sensor not in names:\n            names.append(x.sensor)\n    return names\n",
+  "tests/test_visible.py": "from readings import load_readings, ROWS\nfrom breakdown import level_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = level_shares(list(load_readings()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 6 stored readings, so I expected 6 shares that add up to 1.\n"
+ },
+ "code_hash": "bf8aa2b4f20d05cb4602832255e62e9eb260990d704317135a134edf80ac5427",
+ "logic_file": "breakdown.py",
+ "hidden": "from readings import load_readings, ROWS\nfrom breakdown import level_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = level_shares(load_readings())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = level_shares(list(load_readings()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_readings()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert level_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "breakdown.py",
+  "function": "level_shares",
+  "code": "def level_shares(readings):\n    \"\"\"Return each reading's share of the total level, in order.\"\"\"\n    readings = list(readings)\n    total = sum(x.level for x in readings)\n    return [x.level / total for x in readings]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "load_readings() may return a one-shot iterator that level_shares walks twice.",
+    "test": "from readings import load_readings\ndata = load_readings()\nprint(iter(data) is data)\n",
+    "predict": "True",
+    "observed": "True",
+    "seconds": 0.035
+   },
+   {
+    "suspect": "If the input is a list the second pass should work, so turning the input into a list once is enough.",
+    "test": "from readings import load_readings\nfrom breakdown import level_shares\nprint(len(level_shares(list(load_readings()))))\n",
+    "predict": "6",
+    "observed": "6",
+    "seconds": 0.035
+   }
+  ],
+  "cause": "One-shot iterator walked twice. Turn the input into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    readings = list(readings)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

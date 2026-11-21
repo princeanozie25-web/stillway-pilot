@@ -1,0 +1,10 @@
+{
+ "id": "dev_011",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('lodge', 41), ('lodge', 30), ('grand', 51), ('plaza', 4), ('lodge', 29), ('plaza', 50), ('plaza', 35)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "settle.py": "\"\"\"Checking that bookings add up.\"\"\"\n\n\ndef is_settled(bookings, expected_total):\n    \"\"\"Return True when the nights of the bookings add up to expected_total. nights may be fractional.\"\"\"\n    return sum(x.nights for x in bookings) == expected_total\n\n\ndef shortfall(bookings, expected_total):\n    \"\"\"Return how much nights is still missing, never less than 0.\"\"\"\n    return max(0, expected_total - sum(x.nights for x in bookings))\n\n\ndef hotel_names(bookings):\n    \"\"\"Return the distinct hotel values, in first-seen order.\"\"\"\n    names = []\n    for x in bookings:\n        if x.hotel not in names:\n            names.append(x.hotel)\n    return names\n",
+  "tests/test_visible.py": "from bookings import Booking\nfrom settle import is_settled\n\n\ndef test_tenths():\n    assert is_settled([Booking(\"a\", 0.1), Booking(\"b\", 0.2)], 0.3)\n\n\ndef test_whole_numbers():\n    assert is_settled([Booking(\"a\", 2), Booking(\"b\", 3)], 5)\n",
+  "ISSUE.md": "is_settled() says False for two bookings with nights 0.1 and 0.2 against an expected total of 0.3.\n"
+ },
+ "code_hash": "1970bfbb136bb0848411e9e02b4875843d66acd0a3fa5013a5f6b8b8aab5d1e2"
+}

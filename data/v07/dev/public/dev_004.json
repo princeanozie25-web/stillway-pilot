@@ -1,0 +1,10 @@
+{
+ "id": "dev_004",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('upper', 24), ('lower', 7), ('upper', 49), ('river', 43), ('river', 58)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "distinct.py": "\"\"\"Distinct field values among harvests.\"\"\"\n\n\ndef new_fields(harvests, seen=set()):\n    \"\"\"Return each field the first time it appears among the harvests, in order. field values already in `seen` are left out.\"\"\"\n    out = []\n    for x in harvests:\n        if x.field not in seen:\n            seen.add(x.field)\n            out.append(x.field)\n    return out\n\n\ndef count_fields(harvests):\n    \"\"\"Return how many distinct field values the harvests have.\"\"\"\n    return len(set(x.field for x in harvests))\n\n\ndef describe_harvest(harvest):\n    \"\"\"Return a one-line description of a harvest.\"\"\"\n    return \"%s: %s\" % (harvest.field, harvest.kilos)\n\n\ndef field_names(harvests):\n    \"\"\"Return the distinct field values, in first-seen order.\"\"\"\n    names = []\n    for x in harvests:\n        if x.field not in names:\n            names.append(x.field)\n    return names\n",
+  "tests/test_visible.py": "from harvests import load_harvests, ROWS\nfrom distinct import new_fields\n\nEXPECTED = list(dict.fromkeys(k for k, _ in ROWS))\n\n\ndef test_called_twice():\n    data = list(load_harvests())\n    new_fields(data)\n    assert new_fields(data) == EXPECTED\n\n\ndef test_known_values_left_out():\n    data = list(load_harvests())\n    assert new_fields(data, {EXPECTED[0]}) == EXPECTED[1:]\n",
+  "ISSUE.md": "new_fields(data) returns the right list the first time and an empty list the second time, with the same data.\n"
+ },
+ "code_hash": "5e5f187417a672eefef128f8c159a71c94779d3ff1b228950352c07aedcba8f5"
+}

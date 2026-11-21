@@ -1,0 +1,42 @@
+{
+ "id": "dev_057",
+ "source": "lost_write__harvests",
+ "template": "lost_write",
+ "skin": "harvests",
+ "group": "G1",
+ "symptom": "S2",
+ "cause": "LOSTWRITE",
+ "role": "alternate",
+ "hidden": "from harvests import load_harvests, ROWS\nfrom tally import HarvestLedger\n\n\ndef test_total_after_add():\n    rows = list(load_harvests())\n    ledger = HarvestLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_add_to_empty():\n    rows = list(load_harvests())\n    ledger = HarvestLedger()\n    for x in rows:\n        ledger.add(x)\n    assert ledger.total() == sum(v for _, v in ROWS) and len(ledger.harvests()) == len(ROWS)\n\n\ndef test_copy_is_safe():\n    rows = list(load_harvests())\n    ledger = HarvestLedger(rows[:2])\n    ledger.harvests().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_initial_total():\n    assert HarvestLedger(load_harvests()).total() == sum(v for _, v in ROWS)\n",
+ "fix": {
+  "file": "tally.py",
+  "function": "add",
+  "code": "def add(self, harvest):\n    \"\"\"Add one harvest to the ledger.\"\"\"\n    self._harvests.append(harvest)\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_copy_is_safe": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_add_to_empty": "FAIL AssertionError: ",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self.harvests().append(harvest)\n+        self._harvests.append(harvest)",
+   "hidden": {
+    "test_add_to_empty": "PASS",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__tickets",
+ "template": "bound_loop",
+ "skin": "tickets",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "tickets.py": "\"\"\"Ticket records.\"\"\"\n\n\nclass Ticket:\n    def __init__(self, team, hours):\n        self.team = team\n        self.hours = hours\n\n    def __repr__(self):\n        return \"Ticket(%r, %r)\" % (self.team, self.hours)\n\n\nROWS = [('ops', 6), ('core', 25), ('data', 54), ('core', 47), ('web', 20), ('data', 17)]\n\n\ndef load_tickets():\n    \"\"\"Yield the stored tickets one at a time.\"\"\"\n    for team, hours in ROWS:\n        yield Ticket(team, hours)\n",
+  "progress.py": "\"\"\"Running totals over tickets.\"\"\"\n\n\ndef running_hours(tickets):\n    \"\"\"Return the running total of hours after each ticket, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(tickets) - 1):\n        total += tickets[i].hours\n        out.append(total)\n    return out\n\n\ndef final_hours(tickets):\n    \"\"\"Return the total hours of all tickets, or 0 when there are none.\"\"\"\n    totals = running_hours(tickets)\n    return totals[-1] if totals else 0\n",
+  "tests/test_visible.py": "from tickets import load_tickets, ROWS\nfrom progress import running_hours\n\n\ndef test_length():\n    assert len(running_hours(list(load_tickets()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_hours([]) == []\n",
+  "ISSUE.md": "final_hours(data) is too low: it leaves out the last ticket. running_hours(data) has 5 entries, not 6.\n"
+ },
+ "code_hash": "78142edd80886ea8001b7bec71bf1cb309b09a726277305f2e0f6ea38f15bba9",
+ "logic_file": "progress.py",
+ "hidden": "from tickets import load_tickets, ROWS\nfrom progress import running_hours, final_hours\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_hours(list(load_tickets()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_hours(list(load_tickets())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_hours(list(load_tickets()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_hours(list(load_tickets())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_hours([]) == [] and final_hours([]) == 0\n",
+ "fix": {
+  "file": "progress.py",
+  "function": "running_hours",
+  "code": "def running_hours(tickets):\n    \"\"\"Return the running total of hours after each ticket, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(tickets)):\n        total += tickets[i].hours\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one ticket early.",
+    "test": "from tickets import load_tickets\nfrom progress import running_hours\ndata = list(load_tickets())\nprint(len(running_hours(data)), len(data))\n",
+    "predict": "5 6",
+    "observed": "5 6",
+    "seconds": 0.037
+   },
+   {
+    "suspect": "If the loop always stops one short, one ticket gives nothing and two give one entry.",
+    "test": "from tickets import load_tickets\nfrom progress import running_hours\ndata = list(load_tickets())\nprint(running_hours(data[:1]), running_hours(data[:2]))\n",
+    "predict": "[] [6]",
+    "observed": "[] [6]",
+    "seconds": 0.037
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(tickets) - 1):\n+    for i in range(len(tickets)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

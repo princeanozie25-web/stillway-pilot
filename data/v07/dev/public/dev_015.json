@@ -1,0 +1,10 @@
+{
+ "id": "dev_015",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('city', 52), ('rovers', 30), ('town', 38), ('united', 53), ('united', 56)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "catalog.py": "\"\"\"Registry of fixtures by club.\"\"\"\n\n_ALL = []\n_BY_KEY = None\n\n\ndef reset():\n    \"\"\"Forget every registered fixture.\"\"\"\n    global _BY_KEY\n    del _ALL[:]\n    _BY_KEY = None\n\n\ndef register(fixture):\n    \"\"\"Add one fixture to the registry.\"\"\"\n    _ALL.append(fixture)\n\n\ndef find(club):\n    \"\"\"Return the fixtures registered under this club.\"\"\"\n    global _BY_KEY\n    if _BY_KEY is None:\n        _BY_KEY = {}\n        for x in _ALL:\n            _BY_KEY.setdefault(x.club, []).append(x)\n    return _BY_KEY.get(club, [])\n",
+  "tests/test_visible.py": "from fixtures import Fixture\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Fixture(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Fixture(\"k1\", 7))\n    assert len(reg.find(\"k1\")) == 2\n\n\ndef test_register_then_find():\n    reg.reset()\n    reg.register(Fixture(\"k1\", 5))\n    reg.register(Fixture(\"k2\", 6))\n    assert [x.goals for x in reg.find(\"k2\")] == [6]\n",
+  "ISSUE.md": "A fixture registered after the first find() never shows up in find(). Registering everything before the first find() works.\n"
+ },
+ "code_hash": "3d32d015ff8e0853a1c0d5200bfc7a52cce326f415591ba1f6d96938a1f8ca8d"
+}

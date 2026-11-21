@@ -1,0 +1,10 @@
+{
+ "id": "dev_005",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('lower', 56), ('river', 46), ('upper', 41), ('river', 4), ('river', 18), ('upper', 10)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "intake.py": "\"\"\"Parsing harvests from text.\"\"\"\nfrom harvests import Harvest\n\n\ndef _parse_line(line):\n    field, kilos = line.split(\",\")\n    return Harvest(field.strip(), int(kilos))\n\n\ndef parse_harvests(text):\n    \"\"\"Parse lines of 'field,kilos' into Harvest records. Blank lines are skipped.\"\"\"\n    out = []\n    line = \"\"\n    for ch in text:\n        if ch == \"\\n\":\n            if line.strip():\n                out.append(_parse_line(line))\n            line = \"\"\n        else:\n            line += ch\n    return out\n",
+  "tests/test_visible.py": "from harvests import ROWS\nfrom intake import parse_harvests\n\nLINES = [\"%s,%s\" % (k, v) for k, v in ROWS]\n\n\ndef test_all_lines():\n    assert len(parse_harvests(\"\\n\".join(LINES))) == len(ROWS)\n\n\ndef test_trailing_newline():\n    assert len(parse_harvests(\"\\n\".join(LINES) + \"\\n\")) == len(ROWS)\n",
+  "ISSUE.md": "parse_harvests(text) leaves out the last harvest of my file: 6 lines give me 5 records.\n"
+ },
+ "code_hash": "01bbd79f3100403629b18f4f7d62e46e1cd7990d096af269afdf48c7efcf89af"
+}

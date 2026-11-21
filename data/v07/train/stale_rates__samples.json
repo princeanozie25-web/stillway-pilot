@@ -1,0 +1,99 @@
+{
+ "id": "stale_rates__samples",
+ "template": "stale_rates",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b4', 23), ('b3', 21), ('b2', 16), ('b1', 50), ('b3', 46)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n",
+  "rates.py": "\"\"\"Rate lookups. Every lookup is billed, so callers must not repeat them needlessly.\"\"\"\n\nLOOKUPS = 0\n_RATES = {'b1': 3, 'b2': 5, 'b3': 5, 'b4': 3}\n\n\ndef rate_for(batch):\n    \"\"\"Return the rate for a batch. Each call is billed and counted in LOOKUPS.\"\"\"\n    global LOOKUPS\n    LOOKUPS += 1\n    return _RATES[batch]\n",
+  "fees.py": "\"\"\"Billing for samples. Rate lookups are billed, so the charge is remembered.\"\"\"\nimport rates\n\n\nclass SampleBill:\n    def __init__(self):\n        self._samples = []\n        self._charge = None\n\n    def add(self, sample):\n        \"\"\"Add one sample to the bill.\"\"\"\n        self._samples.append(sample)\n\n    def charge(self):\n        \"\"\"Return the total charge: dose times the rate for each sample's batch.\n\n        The result is remembered: asking again without adding anything makes no new rate lookups.\n        \"\"\"\n        if self._charge is None:\n            self._charge = sum(x.dose * rates.rate_for(x.batch) for x in self._samples)\n        return self._charge\n",
+  "tests/test_visible.py": "import rates\nfrom samples import load_samples, ROWS\nfrom fees import SampleBill\n\n\ndef test_charge_after_add():\n    rows = list(load_samples())\n    bill = SampleBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = SampleBill()\n    for x in load_samples():\n        bill.add(x)\n    bill.charge()\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n",
+  "ISSUE.md": "After I add a sample, charge() still returns the old charge.\n"
+ },
+ "code_hash": "c26e5252389d5cdce4556b0e8f5677887c98172589dd293d8eb27eba1c447abf",
+ "logic_file": "fees.py",
+ "hidden": "import rates\nfrom samples import load_samples, ROWS\nfrom fees import SampleBill\n\nFULL = sum(v * rates._RATES[k] for k, v in ROWS)\n\n\ndef test_charge_after_add():\n    rows = list(load_samples())\n    bill = SampleBill()\n    bill.add(rows[0])\n    first = bill.charge()\n    bill.add(rows[1])\n    assert bill.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_every_add():\n    bill = SampleBill()\n    running = 0\n    for x in load_samples():\n        bill.add(x)\n        running += x.dose * rates._RATES[x.batch]\n        assert bill.charge() == running\n\n\ndef test_no_new_lookups_when_unchanged():\n    bill = SampleBill()\n    for x in load_samples():\n        bill.add(x)\n    assert bill.charge() == FULL\n    before = rates.LOOKUPS\n    bill.charge()\n    bill.charge()\n    assert rates.LOOKUPS == before\n\n\ndef test_empty_bill():\n    assert SampleBill().charge() == 0\n",
+ "fix": {
+  "file": "fees.py",
+  "function": "add",
+  "code": "def add(self, sample):\n    \"\"\"Add one sample to the bill.\"\"\"\n    self._samples.append(sample)\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return the total charge: dose times the rate for each sample's batch.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.dose * rates.rate_for(x.batch) for x in self._samples)\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "charge() may return a remembered value that add() does not refresh.",
+    "test": "import rates\nfrom samples import load_samples\nfrom fees import SampleBill\nrows = list(load_samples())\nbill = SampleBill()\nbill.add(rows[0])\nbill.charge()\nbill.add(rows[1])\nprint(bill.charge(), sum(x.dose * rates._RATES[x.batch] for x in bill._samples))\n",
+    "predict": "69 174",
+    "observed": "69 174",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to work the value out on every call, but here every lookup is billed and a repeat call must make none.",
+    "test": "import rates\nfrom samples import load_samples\nfrom fees import SampleBill\nrows = list(load_samples())\nbill = SampleBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nprint(rates.LOOKUPS)\nbill.charge()\nprint(rates.LOOKUPS)\n",
+    "predict": "2\n2",
+    "observed": "2\n2",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered charge. Lookups are billed, so keep the remembered value and clear it in add()."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If working the charge out again costs nothing, doing it on every call is enough.",
+  "test": "import rates\nfrom samples import load_samples\nfrom fees import SampleBill\nrows = list(load_samples())\nbill = SampleBill()\nbill.add(rows[0])\nbill.add(rows[1])\nbill.charge()\nbefore = rates.LOOKUPS\nbill._charge = None\nbill.charge()\nprint(rates.LOOKUPS - before)\n",
+  "predict": "0",
+  "observed": "2",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_charge_after_add": "FAIL AssertionError: ",
+    "test_charge_after_every_add": "FAIL AssertionError: ",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self._charge = None",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.dose * rates.rate_for(x.batch) for x in self._samples)\n-        return self._charge\n+        return sum(x.dose * rates.rate_for(x.batch) for x in self._samples)",
+   "hidden": {
+    "test_charge_after_add": "PASS",
+    "test_charge_after_every_add": "PASS",
+    "test_empty_bill": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_charge_after_add": "PASS",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

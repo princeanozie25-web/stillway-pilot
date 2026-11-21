@@ -1,0 +1,44 @@
+{
+ "id": "dev_023",
+ "source": "bound_range__donations",
+ "template": "bound_range",
+ "skin": "donations",
+ "group": "G1",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "hidden": "from donations import load_donations, ROWS\nfrom positions import pounds_between, first_poundss\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_three_positions():\n    assert pounds_between(list(load_donations()), 2, 4) == VALUES[1:4]\n\n\ndef test_whole_range():\n    assert pounds_between(list(load_donations()), 1, len(ROWS)) == VALUES\n\n\ndef test_single_position():\n    assert pounds_between(list(load_donations()), 3, 3) == [VALUES[2]]\n\n\ndef test_first_n():\n    assert first_poundss(list(load_donations()), 2) == VALUES[:2]\n\n\ndef test_low_above_high():\n    assert pounds_between(list(load_donations()), 3, 2) == []\n",
+ "fix": {
+  "file": "positions.py",
+  "function": "pounds_between",
+  "code": "def pounds_between(donations, low, high):\n    \"\"\"Return the pounds of the donations at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.pounds for x in donations[low - 1:high]]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_low_above_high": "PASS",
+    "test_three_positions": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_first_n": "FAIL AssertionError: ",
+    "test_low_above_high": "PASS",
+    "test_single_position": "FAIL AssertionError: ",
+    "test_three_positions": "FAIL AssertionError: ",
+    "test_whole_range": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return [x.pounds for x in donations[low - 1:high - 1]]\n+    return [x.pounds for x in donations[low - 1:high]]",
+   "hidden": {
+    "test_first_n": "PASS",
+    "test_low_above_high": "PASS",
+    "test_single_position": "PASS",
+    "test_three_positions": "PASS",
+    "test_whole_range": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

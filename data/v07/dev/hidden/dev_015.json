@@ -1,0 +1,42 @@
+{
+ "id": "dev_015",
+ "source": "stale_index__fixtures",
+ "template": "stale_index",
+ "skin": "fixtures",
+ "group": "G1",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "hidden": "from fixtures import Fixture\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Fixture(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Fixture(\"k1\", 7))\n    assert [x.goals for x in reg.find(\"k1\")] == [5, 7]\n\n\ndef test_late_new_key():\n    reg.reset()\n    reg.register(Fixture(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.register(Fixture(\"k9\", 2))\n    assert [x.goals for x in reg.find(\"k9\")] == [2]\n\n\ndef test_unknown_key():\n    reg.reset()\n    reg.register(Fixture(\"k1\", 5))\n    assert reg.find(\"nope\") == []\n\n\ndef test_reset():\n    reg.reset()\n    reg.register(Fixture(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.reset()\n    assert reg.find(\"k1\") == []\n",
+ "fix": {
+  "file": "catalog.py",
+  "function": "find",
+  "code": "def find(club):\n    \"\"\"Return the fixtures registered under this club.\"\"\"\n    return [x for x in _ALL if x.club == club]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_register_then_find": "PASS"
+   },
+   "hidden": {
+    "test_late_new_key": "FAIL AssertionError: ",
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 7,
+   "diff": "-    global _BY_KEY\n-    if _BY_KEY is None:\n-        _BY_KEY = {}\n-        for x in _ALL:\n-            _BY_KEY.setdefault(x.club, []).append(x)\n-    return _BY_KEY.get(club, [])\n+    return [x for x in _ALL if x.club == club]",
+   "hidden": {
+    "test_late_new_key": "PASS",
+    "test_late_registration": "PASS",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

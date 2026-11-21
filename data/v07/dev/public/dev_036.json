@@ -1,0 +1,10 @@
+{
+ "id": "dev_036",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('rovers', 44), ('rovers', 58), ('rovers', 7), ('rovers', 24), ('united', 15), ('town', 45)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "running.py": "\"\"\"Running totals over fixtures.\"\"\"\n\n\ndef running_goals(fixtures):\n    \"\"\"Return the running total of goals after each fixture, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(fixtures) - 1):\n        total += fixtures[i].goals\n        out.append(total)\n    return out\n\n\ndef final_goals(fixtures):\n    \"\"\"Return the total goals of all fixtures, or 0 when there are none.\"\"\"\n    totals = running_goals(fixtures)\n    return totals[-1] if totals else 0\n",
+  "tests/test_visible.py": "from fixtures import load_fixtures, ROWS\nfrom running import running_goals\n\n\ndef test_length():\n    assert len(running_goals(list(load_fixtures()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_goals([]) == []\n",
+  "ISSUE.md": "final_goals(data) is too low: it leaves out the last fixture. running_goals(data) has 5 entries, not 6.\n"
+ },
+ "code_hash": "189e4f1e11b5674f32ed2af4994d7bd4b0f78338762f3c7db4760b6ab7f863ef"
+}

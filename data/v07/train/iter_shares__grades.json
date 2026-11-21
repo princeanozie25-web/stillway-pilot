@@ -1,0 +1,71 @@
+{
+ "id": "iter_shares__grades",
+ "template": "iter_shares",
+ "skin": "grades",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "grades.py": "\"\"\"Grade records.\"\"\"\n\n\nclass Grade:\n    def __init__(self, student, score):\n        self.student = student\n        self.score = score\n\n    def __repr__(self):\n        return \"Grade(%r, %r)\" % (self.student, self.score)\n\n\nROWS = [('ana', 54), ('ana', 29), ('ana', 51), ('cho', 59), ('ben', 42), ('ben', 38)]\n\n\ndef load_grades():\n    \"\"\"Yield the stored grades one at a time.\"\"\"\n    for student, score in ROWS:\n        yield Grade(student, score)\n",
+  "breakdown.py": "\"\"\"Share of the total score per grade.\"\"\"\nfrom grades import load_grades\n\n\ndef score_shares(grades):\n    \"\"\"Return each grade's share of the total score, in order.\"\"\"\n    total = sum(x.score for x in grades)\n    return [x.score / total for x in grades]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored grades.\"\"\"\n    return score_shares(load_grades())\n\n\ndef top_share(grades):\n    \"\"\"Return the largest share, or 0.0 when there are no grades.\"\"\"\n    shares = score_shares(grades)\n    return max(shares) if shares else 0.0\n",
+  "tests/test_visible.py": "from grades import load_grades, ROWS\nfrom breakdown import score_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = score_shares(list(load_grades()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 6 stored grades, so I expected 6 shares that add up to 1.\n"
+ },
+ "code_hash": "0471fb002b56e114bcbce0aec2aaf037af6a5389a2386f1cad1ca0df4f2e9684",
+ "logic_file": "breakdown.py",
+ "hidden": "from grades import load_grades, ROWS\nfrom breakdown import score_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = score_shares(load_grades())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = score_shares(list(load_grades()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_grades()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert score_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "breakdown.py",
+  "function": "score_shares",
+  "code": "def score_shares(grades):\n    \"\"\"Return each grade's share of the total score, in order.\"\"\"\n    grades = list(grades)\n    total = sum(x.score for x in grades)\n    return [x.score / total for x in grades]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "load_grades() may return a one-shot iterator that score_shares walks twice.",
+    "test": "from grades import load_grades\ndata = load_grades()\nprint(iter(data) is data)\n",
+    "predict": "True",
+    "observed": "True",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "If the input is a list the second pass should work, so turning the input into a list once is enough.",
+    "test": "from grades import load_grades\nfrom breakdown import score_shares\nprint(len(score_shares(list(load_grades()))))\n",
+    "predict": "6",
+    "observed": "6",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "One-shot iterator walked twice. Turn the input into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    grades = list(grades)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

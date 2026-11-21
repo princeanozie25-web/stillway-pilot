@@ -1,0 +1,10 @@
+{
+ "id": "dev_001",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('rovers', 12), ('rovers', 41), ('united', 50), ('rovers', 26), ('rovers', 58)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "unique.py": "\"\"\"Distinct club values among fixtures.\"\"\"\n\n\ndef new_clubs(fixtures, seen=set()):\n    \"\"\"Return each club the first time it appears among the fixtures, in order. club values already in `seen` are left out.\"\"\"\n    out = []\n    for x in fixtures:\n        if x.club not in seen:\n            seen.add(x.club)\n            out.append(x.club)\n    return out\n\n\ndef count_clubs(fixtures):\n    \"\"\"Return how many distinct club values the fixtures have.\"\"\"\n    return len(set(x.club for x in fixtures))\n\n\ndef group_by_club(fixtures):\n    \"\"\"Return a dict from club to the list of fixtures with that club.\"\"\"\n    groups = {}\n    for x in fixtures:\n        groups.setdefault(x.club, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from fixtures import load_fixtures, ROWS\nfrom unique import new_clubs\n\nEXPECTED = list(dict.fromkeys(k for k, _ in ROWS))\n\n\ndef test_called_twice():\n    data = list(load_fixtures())\n    new_clubs(data)\n    assert new_clubs(data) == EXPECTED\n\n\ndef test_known_values_left_out():\n    data = list(load_fixtures())\n    assert new_clubs(data, {EXPECTED[0]}) == EXPECTED[1:]\n",
+  "ISSUE.md": "new_clubs(data) returns the right list the first time and an empty list the second time, with the same data.\n"
+ },
+ "code_hash": "0aab896075ea710619584be2bfb675140d1a5db86ed1cbe954e83005e0b5851b"
+}

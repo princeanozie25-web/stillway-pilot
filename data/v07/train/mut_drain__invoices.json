@@ -1,0 +1,79 @@
+{
+ "id": "mut_drain__invoices",
+ "template": "mut_drain",
+ "skin": "invoices",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "MUT",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "invoices.py": "\"\"\"Invoice records.\"\"\"\n\n\nclass Invoice:\n    def __init__(self, client, due):\n        self.client = client\n        self.due = due\n\n    def __repr__(self):\n        return \"Invoice(%r, %r)\" % (self.client, self.due)\n\n\nROWS = [('kite', 10), ('hale', 50), ('hale', 13), ('ivory', 52), ('hale', 44)]\n\n\ndef load_invoices():\n    \"\"\"Yield the stored invoices one at a time.\"\"\"\n    for client, due in ROWS:\n        yield Invoice(client, due)\n",
+  "ranking.py": "\"\"\"Top invoices by due.\"\"\"\n\n\ndef _take_largest(invoices):\n    \"\"\"Remove and return the invoice with the largest due.\"\"\"\n    best = max(invoices, key=lambda x: x.due)\n    invoices.remove(best)\n    return best\n\n\ndef podium(invoices, places=3):\n    \"\"\"Return the top `places` invoices by due, largest first. The caller's list is left as it was.\"\"\"\n    top = []\n    while invoices and len(top) < places:\n        top.append(_take_largest(invoices))\n    return top\n\n\ndef report(invoices):\n    \"\"\"Return the podium values, the number of invoices and every due.\"\"\"\n    return {\"podium\": [x.due for x in podium(invoices)], \"count\": len(invoices), \"all\": [x.due for x in invoices]}\n",
+  "tests/test_visible.py": "from invoices import load_invoices, ROWS\nfrom ranking import podium, report\n\n\ndef test_count():\n    assert report(list(load_invoices()))[\"count\"] == len(ROWS)\n\n\ndef test_podium_values():\n    top = podium(list(load_invoices()))\n    assert [x.due for x in top] == sorted((v for _, v in ROWS), reverse=True)[:3]\n",
+  "ISSUE.md": "report(my_invoices) gives the right podium, but count is 2 and `all` has lost the largest values. I expected count 5 and every due in `all`.\n"
+ },
+ "code_hash": "029f4cdf6cd5b111de7ae3de8098e01252deccbe70a5b64e8592b801a07a2fc2",
+ "logic_file": "ranking.py",
+ "hidden": "from invoices import load_invoices, ROWS\nfrom ranking import podium, report\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_count():\n    assert report(list(load_invoices()))[\"count\"] == len(ROWS)\n\n\ndef test_all_values_kept():\n    assert report(list(load_invoices()))[\"all\"] == VALUES\n\n\ndef test_podium_values():\n    top = podium(list(load_invoices()))\n    assert [x.due for x in top] == sorted(VALUES, reverse=True)[:3]\n\n\ndef test_caller_list_unchanged():\n    data = list(load_invoices())\n    podium(data, 2)\n    assert [x.due for x in data] == VALUES\n\n\ndef test_one_place():\n    assert [x.due for x in podium(list(load_invoices()), 1)] == [max(VALUES)]\n",
+ "fix": {
+  "file": "ranking.py",
+  "function": "podium",
+  "code": "def podium(invoices, places=3):\n    \"\"\"Return the top `places` invoices by due, largest first. The caller's list is left as it was.\"\"\"\n    invoices = list(invoices)\n    top = []\n    while invoices and len(top) < places:\n        top.append(_take_largest(invoices))\n    return top\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either the data is a one-shot iterator used twice, or podium() takes items out of the caller's list.",
+    "test": "from invoices import load_invoices\nfrom ranking import podium\ndata = list(load_invoices())\nprint(iter(data) is data, len(data))\npodium(data)\nprint(len(data))\n",
+    "predict": "False 5\n2",
+    "observed": "False 5\n2",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "It is a list, and podium() shrinks it. If podium() is given a copy, the caller's list should stay whole.",
+    "test": "from invoices import load_invoices\nfrom ranking import podium\ndata = list(load_invoices())\npodium(list(data))\nprint(len(data))\n",
+    "predict": "5",
+    "observed": "5",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Not a one-shot iterator: podium() removes items from the caller's list. Work on a copy inside podium()."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "The data may be a one-shot iterator that is used twice.",
+  "test": "from invoices import load_invoices\ndata = list(load_invoices())\nprint(iter(data) is data)\n",
+  "predict": "True",
+  "observed": "False",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count": "FAIL AssertionError: ",
+    "test_podium_values": "PASS"
+   },
+   "hidden": {
+    "test_all_values_kept": "FAIL AssertionError: ",
+    "test_caller_list_unchanged": "FAIL AssertionError: ",
+    "test_count": "FAIL AssertionError: ",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    invoices = list(invoices)",
+   "hidden": {
+    "test_all_values_kept": "PASS",
+    "test_caller_list_unchanged": "PASS",
+    "test_count": "PASS",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

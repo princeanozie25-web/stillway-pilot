@@ -1,0 +1,44 @@
+{
+ "id": "dev_035",
+ "source": "float_equal__harvests",
+ "template": "float_equal",
+ "skin": "harvests",
+ "group": "G4",
+ "symptom": "X1",
+ "cause": "FLOATEQ",
+ "role": null,
+ "hidden": "from harvests import Harvest\nfrom settle import is_settled\n\n\ndef test_tenths():\n    assert is_settled([Harvest(\"a\", 0.1), Harvest(\"b\", 0.2)], 0.3)\n\n\ndef test_three_tenths():\n    assert is_settled([Harvest(\"a\", 0.1), Harvest(\"b\", 0.1), Harvest(\"c\", 0.1)], 0.3)\n\n\ndef test_not_settled():\n    assert not is_settled([Harvest(\"a\", 0.1), Harvest(\"b\", 0.2)], 0.31)\n\n\ndef test_whole_numbers():\n    assert is_settled([Harvest(\"a\", 2), Harvest(\"b\", 3)], 5) and not is_settled([Harvest(\"a\", 2), Harvest(\"b\", 3)], 6)\n\n\ndef test_nothing_owed():\n    assert is_settled([], 0)\n",
+ "fix": {
+  "file": "settle.py",
+  "function": "is_settled",
+  "code": "def is_settled(harvests, expected_total):\n    \"\"\"Return True when the kilos of the harvests add up to expected_total. kilos may be fractional.\"\"\"\n    return abs(sum(x.kilos for x in harvests) - expected_total) < 1e-9\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_tenths": "FAIL AssertionError: ",
+    "test_whole_numbers": "PASS"
+   },
+   "hidden": {
+    "test_not_settled": "PASS",
+    "test_nothing_owed": "PASS",
+    "test_tenths": "FAIL AssertionError: ",
+    "test_three_tenths": "FAIL AssertionError: ",
+    "test_whole_numbers": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return sum(x.kilos for x in harvests) == expected_total\n+    return abs(sum(x.kilos for x in harvests) - expected_total) < 1e-9",
+   "hidden": {
+    "test_not_settled": "PASS",
+    "test_nothing_owed": "PASS",
+    "test_tenths": "PASS",
+    "test_three_tenths": "PASS",
+    "test_whole_numbers": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

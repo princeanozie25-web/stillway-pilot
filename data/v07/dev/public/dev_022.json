@@ -1,0 +1,10 @@
+{
+ "id": "dev_022",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('rovers', 18), ('united', 54), ('united', 15), ('united', 40), ('rovers', 42)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "parsing.py": "\"\"\"Parsing fixtures from text.\"\"\"\nfrom fixtures import Fixture\n\n\ndef _parse_line(line):\n    club, goals = line.split(\",\")\n    return Fixture(club.strip(), int(goals))\n\n\ndef parse_fixtures(text):\n    \"\"\"Parse lines of 'club,goals' into Fixture records. Blank lines are skipped.\"\"\"\n    out = []\n    line = \"\"\n    for ch in text:\n        if ch == \"\\n\":\n            if line.strip():\n                out.append(_parse_line(line))\n            line = \"\"\n        else:\n            line += ch\n    return out\n\n\ndef group_by_club(fixtures):\n    \"\"\"Return a dict from club to the list of fixtures with that club.\"\"\"\n    groups = {}\n    for x in fixtures:\n        groups.setdefault(x.club, []).append(x)\n    return groups\n\n\ndef largest_goals(fixtures):\n    \"\"\"Return the largest goals, or None when there are no fixtures.\"\"\"\n    values = [x.goals for x in fixtures]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from fixtures import ROWS\nfrom parsing import parse_fixtures\n\nLINES = [\"%s,%s\" % (k, v) for k, v in ROWS]\n\n\ndef test_all_lines():\n    assert len(parse_fixtures(\"\\n\".join(LINES))) == len(ROWS)\n\n\ndef test_trailing_newline():\n    assert len(parse_fixtures(\"\\n\".join(LINES) + \"\\n\")) == len(ROWS)\n",
+  "ISSUE.md": "parse_fixtures(text) leaves out the last fixture of my file: 5 lines give me 4 records.\n"
+ },
+ "code_hash": "048702b221d0ccc8e0fa4e399b310b6911e031f791026a7530cad0b0e8195665"
+}

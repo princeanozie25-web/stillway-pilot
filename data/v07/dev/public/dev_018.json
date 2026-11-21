@@ -1,0 +1,10 @@
+{
+ "id": "dev_018",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('united', 17), ('city', 14), ('city', 48), ('rovers', 7), ('united', 24)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "steps.py": "\"\"\"Changes in goals from one fixture to the next.\"\"\"\n\n\ndef goals_changes(fixtures):\n    \"\"\"Return the change in goals from each fixture to the next: one entry for every neighbouring pair.\"\"\"\n    out = []\n    for i in range(2, len(fixtures)):\n        out.append(fixtures[i].goals - fixtures[i - 1].goals)\n    return out\n\n\ndef biggest_rise(fixtures):\n    \"\"\"Return the largest increase between neighbours, or 0 when there is none.\"\"\"\n    rises = [c for c in goals_changes(fixtures) if c > 0]\n    return max(rises) if rises else 0\n\n\ndef club_names(fixtures):\n    \"\"\"Return the distinct club values, in first-seen order.\"\"\"\n    names = []\n    for x in fixtures:\n        if x.club not in names:\n            names.append(x.club)\n    return names\n\n\ndef largest_goals(fixtures):\n    \"\"\"Return the largest goals, or None when there are no fixtures.\"\"\"\n    values = [x.goals for x in fixtures]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from fixtures import load_fixtures, ROWS\nfrom steps import goals_changes\n\n\ndef test_number_of_changes():\n    assert len(goals_changes(list(load_fixtures()))) == len(ROWS) - 1\n\n\ndef test_single_item():\n    assert goals_changes(list(load_fixtures())[:1]) == []\n",
+  "ISSUE.md": "goals_changes(data) has 3 entries for 5 fixtures. I expected 4: the change from the first fixture to the second is missing.\n"
+ },
+ "code_hash": "e6760fe4d39ff091dccb216bda2d8a6d518bb258731da8754bbf8c2df28cb303"
+}

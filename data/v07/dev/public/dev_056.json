@@ -1,0 +1,10 @@
+{
+ "id": "dev_056",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('mia', 37), ('pia', 24), ('noor', 48), ('noor', 58), ('noor', 9)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "finder.py": "\"\"\"Finding donations by donor.\"\"\"\n\n\ndef donations_for(donations, donor):\n    \"\"\"Return the donations whose donor matches, ignoring upper and lower case and spaces at either end.\"\"\"\n    return [x for x in donations if x.donor == donor]\n\n\ndef has_donor(donations, donor):\n    \"\"\"Return True when at least one donation matches the donor.\"\"\"\n    return len(donations_for(donations, donor)) > 0\n\n\ndef describe_donation(donation):\n    \"\"\"Return a one-line description of a donation.\"\"\"\n    return \"%s: %s\" % (donation.donor, donation.pounds)\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom finder import donations_for\n\nKEY = ROWS[0][0]\nCOUNT = sum(1 for k, _ in ROWS if k == KEY)\n\n\ndef test_upper_case_with_spaces():\n    assert len(donations_for(list(load_donations()), \" \" + KEY.upper() + \" \")) == COUNT\n\n\ndef test_exact():\n    assert len(donations_for(list(load_donations()), KEY)) == COUNT\n",
+  "ISSUE.md": "donations_for(data, ' MIA ') returns nothing, although there are donations for 'mia'.\n"
+ },
+ "code_hash": "463b06991e60c1ed0a64ee4f52f1f89ea66fee4309942359038421a98b9764cf"
+}

@@ -1,0 +1,59 @@
+{
+ "id": "dev_071",
+ "source": "look_default_seen__donations",
+ "template": "look_default_seen",
+ "skin": "donations",
+ "group": "G3",
+ "symptom": "S1",
+ "cause": "DEFAULTARG",
+ "role": null,
+ "hidden": "from donations import load_donations, ROWS\nfrom distinct import new_donors\n\nEXPECTED = list(dict.fromkeys(k for k, _ in ROWS))\n\n\ndef test_called_twice():\n    data = list(load_donations())\n    new_donors(data)\n    assert new_donors(data) == EXPECTED\n\n\ndef test_three_calls_with_generators():\n    new_donors(load_donations())\n    new_donors(load_donations())\n    assert new_donors(load_donations()) == EXPECTED\n\n\ndef test_known_values_left_out():\n    data = list(load_donations())\n    assert new_donors(data, {EXPECTED[0]}) == EXPECTED[1:]\n\n\ndef test_seen_is_updated():\n    seen = set()\n    new_donors(list(load_donations()), seen)\n    assert seen == set(EXPECTED)\n",
+ "fix": {
+  "file": "distinct.py",
+  "function": "new_donors",
+  "code": "def new_donors(donations, seen=None):\n    \"\"\"Return each donor the first time it appears among the donations, in order. donor values already in `seen` are left out.\"\"\"\n    if seen is None:\n        seen = set()\n    out = []\n    for x in donations:\n        if x.donor not in seen:\n            seen.add(x.donor)\n            out.append(x.donor)\n    return out\n"
+ },
+ "oldfix": {
+  "code": "def new_donors(donations, seen=set()):\n    \"\"\"Return each donor the first time it appears among the donations, in order. donor values already in `seen` are left out.\"\"\"\n    donations = list(donations)\n    out = []\n    for x in donations:\n        if x.donor not in seen:\n            seen.add(x.donor)\n            out.append(x.donor)\n    return out\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS"
+   },
+   "hidden": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-def new_donors(donations, seen=set()):\n+def new_donors(donations, seen=None):\n+    if seen is None:\n+        seen = set()",
+   "hidden": {
+    "test_called_twice": "PASS",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "PASS"
+   }
+  },
+  "seconds": 0.08,
+  "oldfix": {
+   "diff": "+    donations = list(donations)",
+   "hidden": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS"
+   },
+   "regressions": [],
+   "visible_regressions": []
+  }
+ }
+}

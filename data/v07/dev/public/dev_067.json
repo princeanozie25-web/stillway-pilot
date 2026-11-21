@@ -1,0 +1,10 @@
+{
+ "id": "dev_067",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('omar', 55), ('pia', 57), ('mia', 48), ('pia', 45), ('noor', 9), ('omar', 27)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "register.py": "\"\"\"A book of donations with a cached total.\"\"\"\n\n\nclass DonationBook:\n    def __init__(self):\n        self._donations = []\n        self._total = None\n\n    def add(self, donation):\n        \"\"\"Add one donation to the book.\"\"\"\n        self._donations.append(donation)\n\n    def total(self):\n        \"\"\"Return the total pounds of the donations in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.pounds for x in self._donations)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many donations the book holds.\"\"\"\n        return len(self._donations)\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom register import DonationBook\n\n\ndef test_total_after_add():\n    rows = list(load_donations())\n    book = DonationBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = DonationBook()\n    for x in load_donations():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a donation, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "ea03e866efca29635cbb352059be43add4f2472f474d388c9c2b5effdaa58196"
+}

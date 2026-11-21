@@ -1,0 +1,69 @@
+{
+ "id": "iter_zip__visits",
+ "template": "iter_zip",
+ "skin": "visits",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "visits.py": "\"\"\"Visit records.\"\"\"\n\n\nclass Visit:\n    def __init__(self, page, minutes):\n        self.page = page\n        self.minutes = minutes\n\n    def __repr__(self):\n        return \"Visit(%r, %r)\" % (self.page, self.minutes)\n\n\nROWS = [('docs', 35), ('docs', 58), ('home', 27), ('docs', 20), ('shop', 43)]\n\n\ndef load_visits():\n    \"\"\"Yield the stored visits one at a time.\"\"\"\n    for page, minutes in ROWS:\n        yield Visit(page, minutes)\n",
+  "labels.py": "\"\"\"Labels for visits.\"\"\"\n\n\ndef label_visits(names, visits):\n    \"\"\"Return (lookup, lines): a name -> minutes dict and one 'name: minutes' line per visit.\"\"\"\n    pairs = zip(names, (x.minutes for x in visits))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n",
+  "tests/test_visible.py": "from visits import load_visits, ROWS\nfrom labels import label_visits\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_visits(NAMES, load_visits())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_visits(NAMES, load_visits())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_visits gives me the lookup, but `lines` is always empty. I expected one line per visit.\n"
+ },
+ "code_hash": "e473aa7b77f20ba5971fda431914cf0e107f7d242cf555553b277407dba1a4f7",
+ "logic_file": "labels.py",
+ "hidden": "from visits import load_visits, ROWS\nfrom labels import label_visits\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_visits(NAMES, load_visits())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_visits(NAMES, list(load_visits()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_visits(NAMES, load_visits())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_visits([], load_visits()) == ({}, [])\n",
+ "fix": {
+  "file": "labels.py",
+  "function": "label_visits",
+  "code": "def label_visits(names, visits):\n    \"\"\"Return (lookup, lines): a name -> minutes dict and one 'name: minutes' line per visit.\"\"\"\n    pairs = list(zip(names, (x.minutes for x in visits)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The lookup is built first and the lines second from the same `pairs`; the second use may find it used up.",
+    "test": "from visits import load_visits\nfrom labels import label_visits\nlookup, lines = label_visits([\"a\", \"b\"], load_visits())\nprint(len(lookup), len(lines))\n",
+    "predict": "2 0",
+    "observed": "2 0",
+    "seconds": 0.035
+   },
+   {
+    "suspect": "A zip object is a one-shot iterator: after dict() has read it, nothing is left.",
+    "test": "pairs = zip(\"ab\", [1, 2])\nfirst = dict(pairs)\nprint(iter(pairs) is pairs, len(first), len(list(pairs)))\n",
+    "predict": "True 2 0",
+    "observed": "True 2 0",
+    "seconds": 0.031
+   }
+  ],
+  "cause": "The zip object is a one-shot iterator used twice. Turn it into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.minutes for x in visits))\n+    pairs = list(zip(names, (x.minutes for x in visits)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

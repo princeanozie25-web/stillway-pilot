@@ -1,0 +1,77 @@
+{
+ "id": "lost_write__trades",
+ "template": "lost_write",
+ "skin": "trades",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "LOSTWRITE",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "trades.py": "\"\"\"Trade records.\"\"\"\n\n\nclass Trade:\n    def __init__(self, desk, volume):\n        self.desk = desk\n        self.volume = volume\n\n    def __repr__(self):\n        return \"Trade(%r, %r)\" % (self.desk, self.volume)\n\n\nROWS = [('bonds', 42), ('fx', 3), ('metals', 35), ('bonds', 12), ('bonds', 44), ('fx', 45)]\n\n\ndef load_trades():\n    \"\"\"Yield the stored trades one at a time.\"\"\"\n    for desk, volume in ROWS:\n        yield Trade(desk, volume)\n",
+  "tally.py": "\"\"\"A ledger of trades.\"\"\"\n\n\nclass TradeLedger:\n    def __init__(self, trades=()):\n        self._trades = list(trades)\n\n    def trades(self):\n        \"\"\"Return the trades held (a copy, so callers cannot change the ledger).\"\"\"\n        return list(self._trades)\n\n    def add(self, trade):\n        \"\"\"Add one trade to the ledger.\"\"\"\n        self.trades().append(trade)\n\n    def total(self):\n        \"\"\"Return the total volume of the trades held.\"\"\"\n        return sum(x.volume for x in self._trades)\n\n\ndef describe_trade(trade):\n    \"\"\"Return a one-line description of a trade.\"\"\"\n    return \"%s: %s\" % (trade.desk, trade.volume)\n",
+  "tests/test_visible.py": "from trades import load_trades, ROWS\nfrom tally import TradeLedger\n\n\ndef test_total_after_add():\n    rows = list(load_trades())\n    ledger = TradeLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_copy_is_safe():\n    rows = list(load_trades())\n    ledger = TradeLedger(rows[:2])\n    ledger.trades().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n",
+  "ISSUE.md": "After I add a trade, total() still returns the old total.\n"
+ },
+ "code_hash": "ec916fe4094d36db8bf67511ba1eb09d19df611ecc75ec0e386599dadb868e1a",
+ "logic_file": "tally.py",
+ "hidden": "from trades import load_trades, ROWS\nfrom tally import TradeLedger\n\n\ndef test_total_after_add():\n    rows = list(load_trades())\n    ledger = TradeLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_add_to_empty():\n    rows = list(load_trades())\n    ledger = TradeLedger()\n    for x in rows:\n        ledger.add(x)\n    assert ledger.total() == sum(v for _, v in ROWS) and len(ledger.trades()) == len(ROWS)\n\n\ndef test_copy_is_safe():\n    rows = list(load_trades())\n    ledger = TradeLedger(rows[:2])\n    ledger.trades().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_initial_total():\n    assert TradeLedger(load_trades()).total() == sum(v for _, v in ROWS)\n",
+ "fix": {
+  "file": "tally.py",
+  "function": "add",
+  "code": "def add(self, trade):\n    \"\"\"Add one trade to the ledger.\"\"\"\n    self._trades.append(trade)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either total() returns a remembered value that add() does not refresh, or add() never stores the trade.",
+    "test": "from trades import load_trades\nfrom tally import TradeLedger\nrows = list(load_trades())\nledger = TradeLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.volume for x in ledger._trades), len(ledger._trades))\n",
+    "predict": "42 42 1",
+    "observed": "42 42 1",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "total() agrees with the list, and the list did not grow: add() loses the trade. Appending to the real list should give the right total.",
+    "test": "from trades import load_trades\nfrom tally import TradeLedger\nrows = list(load_trades())\nledger = TradeLedger(rows[:1])\nledger._trades.append(rows[1])\nprint(ledger.total())\n",
+    "predict": "45",
+    "observed": "45",
+    "seconds": 0.036
+   }
+  ],
+  "cause": "Not a stale value: add() appends to a copy, so the trade is lost. Append to the real list."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "total() may return a remembered value that add() does not refresh.",
+  "test": "from trades import load_trades\nfrom tally import TradeLedger\nrows = list(load_trades())\nledger = TradeLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.volume for x in ledger._trades))\n",
+  "predict": "42 45",
+  "observed": "42 42",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_copy_is_safe": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_add_to_empty": "FAIL AssertionError: ",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self.trades().append(trade)\n+        self._trades.append(trade)",
+   "hidden": {
+    "test_add_to_empty": "PASS",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

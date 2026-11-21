@@ -1,0 +1,10 @@
+{
+ "id": "dev_032",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('rovers', 24), ('rovers', 13), ('city', 46), ('town', 45), ('united', 38), ('rovers', 56)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "ordering.py": "\"\"\"Codes of fixtures in order.\"\"\"\n\n\ndef ranked_codes(fixtures):\n    \"\"\"Return the goals of each fixture as a text code, from the lowest number to the highest.\"\"\"\n    return sorted(str(x.goals) for x in fixtures)\n\n\ndef code_of(fixture):\n    \"\"\"Return the text code of one fixture.\"\"\"\n    return str(fixture.goals)\n\n\ndef club_names(fixtures):\n    \"\"\"Return the distinct club values, in first-seen order.\"\"\"\n    names = []\n    for x in fixtures:\n        if x.club not in names:\n            names.append(x.club)\n    return names\n",
+  "tests/test_visible.py": "from fixtures import Fixture\nfrom ordering import ranked_codes\n\n\ndef test_nine_before_ten():\n    assert ranked_codes([Fixture(\"a\", 10), Fixture(\"b\", 9)]) == [\"9\", \"10\"]\n\n\ndef test_single_digits():\n    assert ranked_codes([Fixture(\"a\", 3), Fixture(\"b\", 1), Fixture(\"c\", 2)]) == [\"1\", \"2\", \"3\"]\n",
+  "ISSUE.md": "ranked_codes() puts '10' before '9'. I expected the codes in number order.\n"
+ },
+ "code_hash": "2892b2e341eebec7bbad016e5fb5f4c697758861e8316c91cd85aa69e087ee2f"
+}

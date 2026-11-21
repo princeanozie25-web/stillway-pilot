@@ -1,0 +1,79 @@
+{
+ "id": "flush_last__tickets",
+ "template": "flush_last",
+ "skin": "tickets",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "NOFLUSH",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "tickets.py": "\"\"\"Ticket records.\"\"\"\n\n\nclass Ticket:\n    def __init__(self, team, hours):\n        self.team = team\n        self.hours = hours\n\n    def __repr__(self):\n        return \"Ticket(%r, %r)\" % (self.team, self.hours)\n\n\nROWS = [('ops', 15), ('web', 21), ('core', 10), ('ops', 5), ('ops', 34)]\n\n\ndef load_tickets():\n    \"\"\"Yield the stored tickets one at a time.\"\"\"\n    for team, hours in ROWS:\n        yield Ticket(team, hours)\n",
+  "parsing.py": "\"\"\"Parsing tickets from text.\"\"\"\nfrom tickets import Ticket\n\n\ndef _parse_line(line):\n    team, hours = line.split(\",\")\n    return Ticket(team.strip(), int(hours))\n\n\ndef parse_tickets(text):\n    \"\"\"Parse lines of 'team,hours' into Ticket records. Blank lines are skipped.\"\"\"\n    out = []\n    line = \"\"\n    for ch in text:\n        if ch == \"\\n\":\n            if line.strip():\n                out.append(_parse_line(line))\n            line = \"\"\n        else:\n            line += ch\n    return out\n",
+  "tests/test_visible.py": "from tickets import ROWS\nfrom parsing import parse_tickets\n\nLINES = [\"%s,%s\" % (k, v) for k, v in ROWS]\n\n\ndef test_all_lines():\n    assert len(parse_tickets(\"\\n\".join(LINES))) == len(ROWS)\n\n\ndef test_trailing_newline():\n    assert len(parse_tickets(\"\\n\".join(LINES) + \"\\n\")) == len(ROWS)\n",
+  "ISSUE.md": "parse_tickets(text) leaves out the last ticket of my file: 5 lines give me 4 records.\n"
+ },
+ "code_hash": "4faf265137fd263cc7705a6ec7dadff7a2f77f4200ef69a1e9f08fe4b29da0f6",
+ "logic_file": "parsing.py",
+ "hidden": "from tickets import ROWS\nfrom parsing import parse_tickets\n\nLINES = [\"%s,%s\" % (k, v) for k, v in ROWS]\n\n\ndef test_all_lines():\n    records = parse_tickets(\"\\n\".join(LINES))\n    assert [(x.team, x.hours) for x in records] == [(k, v) for k, v in ROWS]\n\n\ndef test_trailing_newline():\n    assert len(parse_tickets(\"\\n\".join(LINES) + \"\\n\")) == len(ROWS)\n\n\ndef test_blank_lines():\n    assert len(parse_tickets(LINES[0] + \"\\n\\n\" + LINES[1] + \"\\n  \")) == 2\n\n\ndef test_single_line():\n    assert len(parse_tickets(LINES[0])) == 1\n\n\ndef test_empty_text():\n    assert parse_tickets(\"\") == []\n",
+ "fix": {
+  "file": "parsing.py",
+  "function": "parse_tickets",
+  "code": "def parse_tickets(text):\n    \"\"\"Parse lines of 'team,hours' into Ticket records. Blank lines are skipped.\"\"\"\n    out = []\n    line = \"\"\n    for ch in text:\n        if ch == \"\\n\":\n            if line.strip():\n                out.append(_parse_line(line))\n            line = \"\"\n        else:\n            line += ch\n    if line.strip():\n        out.append(_parse_line(line))\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either a loop bound stops one short, or the last line is only stored when a newline follows it.",
+    "test": "from parsing import parse_tickets\nprint(len(parse_tickets(\"a,1\\nb,2\")), len(parse_tickets(\"a,1\\nb,2\\n\")))\n",
+    "predict": "1 2",
+    "observed": "1 2",
+    "seconds": 0.037
+   },
+   {
+    "suspect": "With a final newline nothing is lost, so no bound is short: a line is stored only when a newline is seen.",
+    "test": "from parsing import parse_tickets\nprint(len(parse_tickets(\"a,1\")), len(parse_tickets(\"\")))\n",
+    "predict": "0 0",
+    "observed": "0 0",
+    "seconds": 0.035
+   }
+  ],
+  "cause": "Not a loop bound: the last line is never stored when the text does not end with a newline. Store what is left after the loop."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "A loop bound may stop one line short.",
+  "test": "from parsing import parse_tickets\nprint(len(parse_tickets(\"a,1\\nb,2\\n\")))\n",
+  "predict": "1",
+  "observed": "2",
+  "seconds": 0.036
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_all_lines": "FAIL AssertionError: ",
+    "test_trailing_newline": "PASS"
+   },
+   "hidden": {
+    "test_all_lines": "FAIL AssertionError: ",
+    "test_blank_lines": "PASS",
+    "test_empty_text": "PASS",
+    "test_single_line": "FAIL AssertionError: ",
+    "test_trailing_newline": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "+    if line.strip():\n+        out.append(_parse_line(line))",
+   "hidden": {
+    "test_all_lines": "PASS",
+    "test_blank_lines": "PASS",
+    "test_empty_text": "PASS",
+    "test_single_line": "PASS",
+    "test_trailing_newline": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_047",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('lodge', 40), ('grand', 36), ('grand', 21), ('plaza', 20), ('plaza', 56), ('lodge', 8)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "marked.py": "\"\"\"Labels for the nights of bookings.\"\"\"\n\n\ndef labelled_nightss(bookings, labels):\n    \"\"\"Pair each booking's nights with its label, in order. bookings beyond the end of `labels` get the label 'unlabelled'.\"\"\"\n    return [(labels[i], bookings[i].nights) for i in range(len(labels))]\n\n\ndef label_width(labels):\n    \"\"\"Return the length of the longest label, or 0 when there are none.\"\"\"\n    return max((len(text) for text in labels), default=0)\n\n\ndef describe_booking(booking):\n    \"\"\"Return a one-line description of a booking.\"\"\"\n    return \"%s: %s\" % (booking.hotel, booking.nights)\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom marked import labelled_nightss\n\n\ndef test_fewer_labels():\n    data = list(load_bookings())\n    pairs = labelled_nightss(data, [\"a\", \"b\"])\n    assert len(pairs) == len(ROWS) and pairs[-1] == (\"unlabelled\", ROWS[-1][1])\n\n\ndef test_equal_lengths():\n    data = list(load_bookings())\n    labels = [\"l%d\" % i for i in range(len(data))]\n    assert labelled_nightss(data, labels)[-1] == (labels[-1], ROWS[-1][1])\n",
+  "ISSUE.md": "labelled_nightss(data, labels) leaves out the last bookings when I pass fewer labels than bookings. I expected them at the end with the label 'unlabelled'.\n"
+ },
+ "code_hash": "e55bb6cc389ccee90f5759f3d648d3273353759ba65e5e0a4b97dab3a0425a06"
+}

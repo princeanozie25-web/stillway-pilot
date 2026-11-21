@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__readings",
+ "template": "bound_loop",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('north', 53), ('south', 4), ('south', 31), ('south', 52), ('east', 34), ('north', 17), ('west', 20)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "running.py": "\"\"\"Running totals over readings.\"\"\"\n\n\ndef running_level(readings):\n    \"\"\"Return the running total of level after each reading, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(readings) - 1):\n        total += readings[i].level\n        out.append(total)\n    return out\n\n\ndef final_level(readings):\n    \"\"\"Return the total level of all readings, or 0 when there are none.\"\"\"\n    totals = running_level(readings)\n    return totals[-1] if totals else 0\n",
+  "tests/test_visible.py": "from readings import load_readings, ROWS\nfrom running import running_level\n\n\ndef test_length():\n    assert len(running_level(list(load_readings()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_level([]) == []\n",
+  "ISSUE.md": "final_level(data) is too low: it leaves out the last reading. running_level(data) has 6 entries, not 7.\n"
+ },
+ "code_hash": "5bbd8415486954bb7fcfde38dded0a8cd13bd550832c8e297d9f1d1dd2f219b4",
+ "logic_file": "running.py",
+ "hidden": "from readings import load_readings, ROWS\nfrom running import running_level, final_level\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_level(list(load_readings()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_level(list(load_readings())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_level(list(load_readings()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_level(list(load_readings())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_level([]) == [] and final_level([]) == 0\n",
+ "fix": {
+  "file": "running.py",
+  "function": "running_level",
+  "code": "def running_level(readings):\n    \"\"\"Return the running total of level after each reading, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(readings)):\n        total += readings[i].level\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one reading early.",
+    "test": "from readings import load_readings\nfrom running import running_level\ndata = list(load_readings())\nprint(len(running_level(data)), len(data))\n",
+    "predict": "6 7",
+    "observed": "6 7",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "If the loop always stops one short, one reading gives nothing and two give one entry.",
+    "test": "from readings import load_readings\nfrom running import running_level\ndata = list(load_readings())\nprint(running_level(data[:1]), running_level(data[:2]))\n",
+    "predict": "[] [53]",
+    "observed": "[] [53]",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(readings) - 1):\n+    for i in range(len(readings)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_044",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('lower', 36), ('river', 19), ('hill', 46), ('lower', 8), ('upper', 26), ('upper', 23)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "labelled.py": "\"\"\"Labels for the kilos of harvests.\"\"\"\n\n\ndef labelled_kiloss(harvests, labels):\n    \"\"\"Pair each harvest's kilos with its label, in order. harvests beyond the end of `labels` get the label 'unlabelled'.\"\"\"\n    return [(labels[i], harvests[i].kilos) for i in range(len(labels))]\n\n\ndef label_width(labels):\n    \"\"\"Return the length of the longest label, or 0 when there are none.\"\"\"\n    return max((len(text) for text in labels), default=0)\n",
+  "tests/test_visible.py": "from harvests import load_harvests, ROWS\nfrom labelled import labelled_kiloss\n\n\ndef test_fewer_labels():\n    data = list(load_harvests())\n    pairs = labelled_kiloss(data, [\"a\", \"b\"])\n    assert len(pairs) == len(ROWS) and pairs[-1] == (\"unlabelled\", ROWS[-1][1])\n\n\ndef test_equal_lengths():\n    data = list(load_harvests())\n    labels = [\"l%d\" % i for i in range(len(data))]\n    assert labelled_kiloss(data, labels)[-1] == (labels[-1], ROWS[-1][1])\n",
+  "ISSUE.md": "labelled_kiloss(data, labels) leaves out the last harvests when I pass fewer labels than harvests. I expected them at the end with the label 'unlabelled'.\n"
+ },
+ "code_hash": "43f91780a6566d872bc2ab1db3cdcb14df1b698c2e47c9975e6d1eae77d7e11b"
+}

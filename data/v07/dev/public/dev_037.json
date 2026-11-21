@@ -1,0 +1,10 @@
+{
+ "id": "dev_037",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('plaza', 30), ('harbour', 53), ('harbour', 36), ('grand', 48), ('harbour', 9)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n",
+  "journal.py": "\"\"\"A book of bookings with a cached total.\"\"\"\n\n\nclass BookingBook:\n    def __init__(self):\n        self._bookings = []\n        self._total = None\n\n    def add(self, booking):\n        \"\"\"Add one booking to the book.\"\"\"\n        self._bookings.append(booking)\n\n    def total(self):\n        \"\"\"Return the total nights of the bookings in the book.\"\"\"\n        if self._total is None:\n            self._total = sum(x.nights for x in self._bookings)\n        return self._total\n\n    def count(self):\n        \"\"\"Return how many bookings the book holds.\"\"\"\n        return len(self._bookings)\n\n\ndef group_by_hotel(bookings):\n    \"\"\"Return a dict from hotel to the list of bookings with that hotel.\"\"\"\n    groups = {}\n    for x in bookings:\n        groups.setdefault(x.hotel, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from bookings import load_bookings, ROWS\nfrom journal import BookingBook\n\n\ndef test_total_after_add():\n    rows = list(load_bookings())\n    book = BookingBook()\n    book.add(rows[0])\n    assert book.total() == ROWS[0][1]\n    book.add(rows[1])\n    assert book.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_total_once():\n    book = BookingBook()\n    for x in load_bookings():\n        book.add(x)\n    assert book.total() == sum(v for _, v in ROWS)\n",
+  "ISSUE.md": "After I add a booking, total() still returns the old total. count() is right.\n"
+ },
+ "code_hash": "d4ec9977004f8a8aeeb9293a4039e3a625547ac68b57b78ed3630c2aeae4710b"
+}

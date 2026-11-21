@@ -1,0 +1,10 @@
+{
+ "id": "dev_071",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('mia', 59), ('omar', 56), ('mia', 25), ('noor', 18), ('omar', 12), ('noor', 45)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "distinct.py": "\"\"\"Distinct donor values among donations.\"\"\"\n\n\ndef new_donors(donations, seen=set()):\n    \"\"\"Return each donor the first time it appears among the donations, in order. donor values already in `seen` are left out.\"\"\"\n    out = []\n    for x in donations:\n        if x.donor not in seen:\n            seen.add(x.donor)\n            out.append(x.donor)\n    return out\n\n\ndef count_donors(donations):\n    \"\"\"Return how many distinct donor values the donations have.\"\"\"\n    return len(set(x.donor for x in donations))\n\n\ndef describe_donation(donation):\n    \"\"\"Return a one-line description of a donation.\"\"\"\n    return \"%s: %s\" % (donation.donor, donation.pounds)\n\n\ndef largest_pounds(donations):\n    \"\"\"Return the largest pounds, or None when there are no donations.\"\"\"\n    values = [x.pounds for x in donations]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom distinct import new_donors\n\nEXPECTED = list(dict.fromkeys(k for k, _ in ROWS))\n\n\ndef test_called_twice():\n    data = list(load_donations())\n    new_donors(data)\n    assert new_donors(data) == EXPECTED\n\n\ndef test_known_values_left_out():\n    data = list(load_donations())\n    assert new_donors(data, {EXPECTED[0]}) == EXPECTED[1:]\n",
+  "ISSUE.md": "new_donors(data) returns the right list the first time and an empty list the second time, with the same data.\n"
+ },
+ "code_hash": "7a5f2c8163e5bbc767fbc1f3d9b29cc994a75c9dceed7af99f93a429a0e00b87"
+}

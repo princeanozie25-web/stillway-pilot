@@ -1,0 +1,71 @@
+{
+ "id": "iter_shares__visits",
+ "template": "iter_shares",
+ "skin": "visits",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "visits.py": "\"\"\"Visit records.\"\"\"\n\n\nclass Visit:\n    def __init__(self, page, minutes):\n        self.page = page\n        self.minutes = minutes\n\n    def __repr__(self):\n        return \"Visit(%r, %r)\" % (self.page, self.minutes)\n\n\nROWS = [('home', 59), ('blog', 4), ('docs', 36), ('shop', 7), ('home', 24), ('blog', 31), ('blog', 13)]\n\n\ndef load_visits():\n    \"\"\"Yield the stored visits one at a time.\"\"\"\n    for page, minutes in ROWS:\n        yield Visit(page, minutes)\n",
+  "breakdown.py": "\"\"\"Share of the total minutes per visit.\"\"\"\nfrom visits import load_visits\n\n\ndef minutes_shares(visits):\n    \"\"\"Return each visit's share of the total minutes, in order.\"\"\"\n    total = sum(x.minutes for x in visits)\n    return [x.minutes / total for x in visits]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored visits.\"\"\"\n    return minutes_shares(load_visits())\n\n\ndef top_share(visits):\n    \"\"\"Return the largest share, or 0.0 when there are no visits.\"\"\"\n    shares = minutes_shares(visits)\n    return max(shares) if shares else 0.0\n",
+  "tests/test_visible.py": "from visits import load_visits, ROWS\nfrom breakdown import minutes_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = minutes_shares(list(load_visits()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 7 stored visits, so I expected 7 shares that add up to 1.\n"
+ },
+ "code_hash": "6c5de241a4322aa4568cc28ae1c55491993d838c78cc9f2009fbca955fcb9f24",
+ "logic_file": "breakdown.py",
+ "hidden": "from visits import load_visits, ROWS\nfrom breakdown import minutes_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = minutes_shares(load_visits())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = minutes_shares(list(load_visits()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_visits()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert minutes_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "breakdown.py",
+  "function": "minutes_shares",
+  "code": "def minutes_shares(visits):\n    \"\"\"Return each visit's share of the total minutes, in order.\"\"\"\n    visits = list(visits)\n    total = sum(x.minutes for x in visits)\n    return [x.minutes / total for x in visits]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "load_visits() may return a one-shot iterator that minutes_shares walks twice.",
+    "test": "from visits import load_visits\ndata = load_visits()\nprint(iter(data) is data)\n",
+    "predict": "True",
+    "observed": "True",
+    "seconds": 0.035
+   },
+   {
+    "suspect": "If the input is a list the second pass should work, so turning the input into a list once is enough.",
+    "test": "from visits import load_visits\nfrom breakdown import minutes_shares\nprint(len(minutes_shares(list(load_visits()))))\n",
+    "predict": "7",
+    "observed": "7",
+    "seconds": 0.034
+   }
+  ],
+  "cause": "One-shot iterator walked twice. Turn the input into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    visits = list(visits)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

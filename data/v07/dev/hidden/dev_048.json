@@ -1,0 +1,59 @@
+{
+ "id": "dev_048",
+ "source": "look_default_seen__bookings",
+ "template": "look_default_seen",
+ "skin": "bookings",
+ "group": "G3",
+ "symptom": "S1",
+ "cause": "DEFAULTARG",
+ "role": null,
+ "hidden": "from bookings import load_bookings, ROWS\nfrom firsts import new_hotels\n\nEXPECTED = list(dict.fromkeys(k for k, _ in ROWS))\n\n\ndef test_called_twice():\n    data = list(load_bookings())\n    new_hotels(data)\n    assert new_hotels(data) == EXPECTED\n\n\ndef test_three_calls_with_generators():\n    new_hotels(load_bookings())\n    new_hotels(load_bookings())\n    assert new_hotels(load_bookings()) == EXPECTED\n\n\ndef test_known_values_left_out():\n    data = list(load_bookings())\n    assert new_hotels(data, {EXPECTED[0]}) == EXPECTED[1:]\n\n\ndef test_seen_is_updated():\n    seen = set()\n    new_hotels(list(load_bookings()), seen)\n    assert seen == set(EXPECTED)\n",
+ "fix": {
+  "file": "firsts.py",
+  "function": "new_hotels",
+  "code": "def new_hotels(bookings, seen=None):\n    \"\"\"Return each hotel the first time it appears among the bookings, in order. hotel values already in `seen` are left out.\"\"\"\n    if seen is None:\n        seen = set()\n    out = []\n    for x in bookings:\n        if x.hotel not in seen:\n            seen.add(x.hotel)\n            out.append(x.hotel)\n    return out\n"
+ },
+ "oldfix": {
+  "code": "def new_hotels(bookings, seen=set()):\n    \"\"\"Return each hotel the first time it appears among the bookings, in order. hotel values already in `seen` are left out.\"\"\"\n    bookings = list(bookings)\n    out = []\n    for x in bookings:\n        if x.hotel not in seen:\n            seen.add(x.hotel)\n            out.append(x.hotel)\n    return out\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS"
+   },
+   "hidden": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-def new_hotels(bookings, seen=set()):\n+def new_hotels(bookings, seen=None):\n+    if seen is None:\n+        seen = set()",
+   "hidden": {
+    "test_called_twice": "PASS",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    bookings = list(bookings)",
+   "hidden": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS"
+   },
+   "regressions": [],
+   "visible_regressions": []
+  }
+ }
+}

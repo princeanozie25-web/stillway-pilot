@@ -1,0 +1,69 @@
+{
+ "id": "iter_zip__invoices",
+ "template": "iter_zip",
+ "skin": "invoices",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "invoices.py": "\"\"\"Invoice records.\"\"\"\n\n\nclass Invoice:\n    def __init__(self, client, due):\n        self.client = client\n        self.due = due\n\n    def __repr__(self):\n        return \"Invoice(%r, %r)\" % (self.client, self.due)\n\n\nROWS = [('ivory', 47), ('hale', 5), ('ivory', 8), ('juno', 46), ('hale', 53), ('hale', 43), ('ivory', 28)]\n\n\ndef load_invoices():\n    \"\"\"Yield the stored invoices one at a time.\"\"\"\n    for client, due in ROWS:\n        yield Invoice(client, due)\n",
+  "labels.py": "\"\"\"Labels for invoices.\"\"\"\n\n\ndef label_invoices(names, invoices):\n    \"\"\"Return (lookup, lines): a name -> due dict and one 'name: due' line per invoice.\"\"\"\n    pairs = zip(names, (x.due for x in invoices))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n\n\ndef describe_invoice(invoice):\n    \"\"\"Return a one-line description of a invoice.\"\"\"\n    return \"%s: %s\" % (invoice.client, invoice.due)\n\n\ndef largest_due(invoices):\n    \"\"\"Return the largest due, or None when there are no invoices.\"\"\"\n    values = [x.due for x in invoices]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from invoices import load_invoices, ROWS\nfrom labels import label_invoices\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_invoices(NAMES, load_invoices())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_invoices(NAMES, load_invoices())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_invoices gives me the lookup, but `lines` is always empty. I expected one line per invoice.\n"
+ },
+ "code_hash": "92b619d44e2e0db712ed0251353fcbbd593d94540620a37684a533dd236f749c",
+ "logic_file": "labels.py",
+ "hidden": "from invoices import load_invoices, ROWS\nfrom labels import label_invoices\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_invoices(NAMES, load_invoices())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_invoices(NAMES, list(load_invoices()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_invoices(NAMES, load_invoices())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_invoices([], load_invoices()) == ({}, [])\n",
+ "fix": {
+  "file": "labels.py",
+  "function": "label_invoices",
+  "code": "def label_invoices(names, invoices):\n    \"\"\"Return (lookup, lines): a name -> due dict and one 'name: due' line per invoice.\"\"\"\n    pairs = list(zip(names, (x.due for x in invoices)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The lookup is built first and the lines second from the same `pairs`; the second use may find it used up.",
+    "test": "from invoices import load_invoices\nfrom labels import label_invoices\nlookup, lines = label_invoices([\"a\", \"b\"], load_invoices())\nprint(len(lookup), len(lines))\n",
+    "predict": "2 0",
+    "observed": "2 0",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "A zip object is a one-shot iterator: after dict() has read it, nothing is left.",
+    "test": "pairs = zip(\"ab\", [1, 2])\nfirst = dict(pairs)\nprint(iter(pairs) is pairs, len(first), len(list(pairs)))\n",
+    "predict": "True 2 0",
+    "observed": "True 2 0",
+    "seconds": 0.031
+   }
+  ],
+  "cause": "The zip object is a one-shot iterator used twice. Turn it into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.due for x in invoices))\n+    pairs = list(zip(names, (x.due for x in invoices)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

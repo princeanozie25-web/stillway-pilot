@@ -1,0 +1,10 @@
+{
+ "id": "dev_061",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('noor', 21), ('mia', 33), ('mia', 14), ('mia', 18), ('noor', 24), ('noor', 11), ('mia', 35)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n\n\ndef feed_donations():\n    \"\"\"Endless feed of donations: repeats the stored rows for ever.\"\"\"\n    while True:\n        for donor, pounds in ROWS:\n            yield Donation(donor, pounds)\n",
+  "frames.py": "\"\"\"Windows over the donations feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` donations from the feed and return (peak pounds, list of pounds).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.pounds for x in window)\n    values = [x.pounds for x in window]\n    return peak, values\n\n\ndef describe_donation(donation):\n    \"\"\"Return a one-line description of a donation.\"\"\"\n    return \"%s: %s\" % (donation.donor, donation.pounds)\n",
+  "tests/test_visible.py": "from donations import feed_donations, ROWS\nfrom frames import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_donations(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_donations()\n    summarize_window(feed, 2)\n    assert next(feed).pounds == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_donations(), 3) returns the right peak but an empty list of values. I expected the three pounds values.\n"
+ },
+ "code_hash": "653166bb4c9c08374f34ab474c99675baa4dbc76c3ec85410a744d941182144a"
+}

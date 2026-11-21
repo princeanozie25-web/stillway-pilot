@@ -1,0 +1,99 @@
+{
+ "id": "iter_window__visits",
+ "template": "iter_window",
+ "skin": "visits",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "visits.py": "\"\"\"Visit records.\"\"\"\n\n\nclass Visit:\n    def __init__(self, page, minutes):\n        self.page = page\n        self.minutes = minutes\n\n    def __repr__(self):\n        return \"Visit(%r, %r)\" % (self.page, self.minutes)\n\n\nROWS = [('home', 44), ('docs', 28), ('shop', 38), ('home', 34), ('blog', 43)]\n\n\ndef load_visits():\n    \"\"\"Yield the stored visits one at a time.\"\"\"\n    for page, minutes in ROWS:\n        yield Visit(page, minutes)\n\n\ndef feed_visits():\n    \"\"\"Endless feed of visits: repeats the stored rows for ever.\"\"\"\n    while True:\n        for page, minutes in ROWS:\n            yield Visit(page, minutes)\n",
+  "frames.py": "\"\"\"Windows over the visits feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` visits from the feed and return (peak minutes, list of minutes).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.minutes for x in window)\n    values = [x.minutes for x in window]\n    return peak, values\n\n\ndef largest_minutes(visits):\n    \"\"\"Return the largest minutes, or None when there are no visits.\"\"\"\n    values = [x.minutes for x in visits]\n    return max(values) if values else None\n\n\ndef describe_visit(visit):\n    \"\"\"Return a one-line description of a visit.\"\"\"\n    return \"%s: %s\" % (visit.page, visit.minutes)\n",
+  "tests/test_visible.py": "from visits import feed_visits, ROWS\nfrom frames import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_visits(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_visits()\n    summarize_window(feed, 2)\n    assert next(feed).minutes == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_visits(), 3) returns the right peak but an empty list of values. I expected the three minutes values.\n"
+ },
+ "code_hash": "e40a64d8cd26a7a33cf3c8b045605132da75bce9ed932470da87f62fff9aa350",
+ "logic_file": "frames.py",
+ "hidden": "from visits import feed_visits, ROWS\nfrom frames import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_visits(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_peak():\n    peak, values = summarize_window(feed_visits(), 4)\n    assert peak == max(v for _, v in ROWS[:4])\n\n\ndef test_reads_only_the_window():\n    feed = feed_visits()\n    summarize_window(feed, 2)\n    assert next(feed).minutes == ROWS[2][1]\n\n\ndef test_consecutive_windows():\n    feed = feed_visits()\n    summarize_window(feed, 2)\n    peak, values = summarize_window(feed, 2)\n    assert values == [v for _, v in ROWS[2:4]]\n",
+ "fix": {
+  "file": "frames.py",
+  "function": "summarize_window",
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` visits from the feed and return (peak minutes, list of minutes).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = list(itertools.islice(feed, size))\n    peak = max(x.minutes for x in window)\n    values = [x.minutes for x in window]\n    return peak, values\n"
+ },
+ "oldfix": {
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` visits from the feed and return (peak minutes, list of minutes).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    feed = list(feed)\n    window = itertools.islice(feed, size)\n    peak = max(x.minutes for x in window)\n    values = [x.minutes for x in window]\n    return peak, values\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window is read once for the peak and again for the values; the second read may find it used up.",
+    "test": "from visits import feed_visits\nfrom frames import summarize_window\nprint(summarize_window(feed_visits(), 3))\n",
+    "predict": "(44, [])",
+    "observed": "(44, [])",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "The usual fix is to turn the input into a list, but that only works if the feed ends.",
+    "test": "import itertools\nfrom visits import feed_visits\nprint(len(list(itertools.islice(feed_visits(), 1000))))\n",
+    "predict": "1000",
+    "observed": "1000",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The islice window is a one-shot iterator walked twice. The feed never ends, so turn only the window into a list."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If the feed is finite, turning the whole input into a list once is enough.",
+  "test": "import itertools\nfrom visits import feed_visits\nprint(len(list(itertools.islice(feed_visits(), 1000))))\n",
+  "predict": "5",
+  "observed": "1000",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_consecutive_windows": "FAIL AssertionError: ",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    window = itertools.islice(feed, size)\n+    window = list(itertools.islice(feed, size))",
+   "hidden": {
+    "test_consecutive_windows": "PASS",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    feed = list(feed)",
+   "hidden": {
+    "test_values": "FAIL TIMEOUT after 5.0 s",
+    "test_peak": "FAIL TIMEOUT after 5.0 s",
+    "test_reads_only_the_window": "FAIL TIMEOUT after 5.0 s",
+    "test_consecutive_windows": "FAIL TIMEOUT after 5.0 s"
+   },
+   "visible": {
+    "test_reads_only_the_window": "FAIL TimeoutError: test took longer than 2 s",
+    "test_values": "FAIL TimeoutError: test took longer than 2 s"
+   },
+   "regressions": [
+    "test_peak",
+    "test_reads_only_the_window"
+   ],
+   "visible_regressions": [
+    "test_reads_only_the_window"
+   ]
+  }
+ }
+}

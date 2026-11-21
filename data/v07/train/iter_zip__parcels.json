@@ -1,0 +1,69 @@
+{
+ "id": "iter_zip__parcels",
+ "template": "iter_zip",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('york', 44), ('leeds', 42), ('bath', 45), ('hull', 22), ('leeds', 20), ('york', 54)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n",
+  "labels.py": "\"\"\"Labels for parcels.\"\"\"\n\n\ndef label_parcels(names, parcels):\n    \"\"\"Return (lookup, lines): a name -> grams dict and one 'name: grams' line per parcel.\"\"\"\n    pairs = zip(names, (x.grams for x in parcels))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n",
+  "tests/test_visible.py": "from parcels import load_parcels, ROWS\nfrom labels import label_parcels\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_parcels(NAMES, load_parcels())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_parcels(NAMES, load_parcels())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_parcels gives me the lookup, but `lines` is always empty. I expected one line per parcel.\n"
+ },
+ "code_hash": "d92536f468ea981c6f9f440165aa91fbabe276b710d7b923648a3d8be5731665",
+ "logic_file": "labels.py",
+ "hidden": "from parcels import load_parcels, ROWS\nfrom labels import label_parcels\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_parcels(NAMES, load_parcels())\n    assert len(lines) == len(ROWS)\n\n\ndef test_line_text():\n    lookup, lines = label_parcels(NAMES, list(load_parcels()))\n    assert lines[0] == \"n0: %s\" % ROWS[0][1] and lines[-1] == \"n%d: %s\" % (len(ROWS) - 1, ROWS[-1][1])\n\n\ndef test_lookup_complete():\n    lookup, lines = label_parcels(NAMES, load_parcels())\n    assert lookup == {\"n%d\" % i: v for i, (_, v) in enumerate(ROWS)}\n\n\ndef test_no_names():\n    assert label_parcels([], load_parcels()) == ({}, [])\n",
+ "fix": {
+  "file": "labels.py",
+  "function": "label_parcels",
+  "code": "def label_parcels(names, parcels):\n    \"\"\"Return (lookup, lines): a name -> grams dict and one 'name: grams' line per parcel.\"\"\"\n    pairs = list(zip(names, (x.grams for x in parcels)))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The lookup is built first and the lines second from the same `pairs`; the second use may find it used up.",
+    "test": "from parcels import load_parcels\nfrom labels import label_parcels\nlookup, lines = label_parcels([\"a\", \"b\"], load_parcels())\nprint(len(lookup), len(lines))\n",
+    "predict": "2 0",
+    "observed": "2 0",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "A zip object is a one-shot iterator: after dict() has read it, nothing is left.",
+    "test": "pairs = zip(\"ab\", [1, 2])\nfirst = dict(pairs)\nprint(iter(pairs) is pairs, len(first), len(list(pairs)))\n",
+    "predict": "True 2 0",
+    "observed": "True 2 0",
+    "seconds": 0.03
+   }
+  ],
+  "cause": "The zip object is a one-shot iterator used twice. Turn it into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup": "PASS"
+   },
+   "hidden": {
+    "test_line_text": "FAIL IndexError: list index out of range",
+    "test_lines_present": "FAIL AssertionError: ",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    pairs = zip(names, (x.grams for x in parcels))\n+    pairs = list(zip(names, (x.grams for x in parcels)))",
+   "hidden": {
+    "test_line_text": "PASS",
+    "test_lines_present": "PASS",
+    "test_lookup_complete": "PASS",
+    "test_no_names": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

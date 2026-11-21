@@ -1,0 +1,44 @@
+{
+ "id": "dev_005",
+ "source": "flush_last__harvests",
+ "template": "flush_last",
+ "skin": "harvests",
+ "group": "G1",
+ "symptom": "S3",
+ "cause": "NOFLUSH",
+ "role": "alternate",
+ "hidden": "from harvests import ROWS\nfrom intake import parse_harvests\n\nLINES = [\"%s,%s\" % (k, v) for k, v in ROWS]\n\n\ndef test_all_lines():\n    records = parse_harvests(\"\\n\".join(LINES))\n    assert [(x.field, x.kilos) for x in records] == [(k, v) for k, v in ROWS]\n\n\ndef test_trailing_newline():\n    assert len(parse_harvests(\"\\n\".join(LINES) + \"\\n\")) == len(ROWS)\n\n\ndef test_blank_lines():\n    assert len(parse_harvests(LINES[0] + \"\\n\\n\" + LINES[1] + \"\\n  \")) == 2\n\n\ndef test_single_line():\n    assert len(parse_harvests(LINES[0])) == 1\n\n\ndef test_empty_text():\n    assert parse_harvests(\"\") == []\n",
+ "fix": {
+  "file": "intake.py",
+  "function": "parse_harvests",
+  "code": "def parse_harvests(text):\n    \"\"\"Parse lines of 'field,kilos' into Harvest records. Blank lines are skipped.\"\"\"\n    out = []\n    line = \"\"\n    for ch in text:\n        if ch == \"\\n\":\n            if line.strip():\n                out.append(_parse_line(line))\n            line = \"\"\n        else:\n            line += ch\n    if line.strip():\n        out.append(_parse_line(line))\n    return out\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_all_lines": "FAIL AssertionError: ",
+    "test_trailing_newline": "PASS"
+   },
+   "hidden": {
+    "test_all_lines": "FAIL AssertionError: ",
+    "test_blank_lines": "PASS",
+    "test_empty_text": "PASS",
+    "test_single_line": "FAIL AssertionError: ",
+    "test_trailing_newline": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "+    if line.strip():\n+        out.append(_parse_line(line))",
+   "hidden": {
+    "test_all_lines": "PASS",
+    "test_blank_lines": "PASS",
+    "test_empty_text": "PASS",
+    "test_single_line": "PASS",
+    "test_trailing_newline": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

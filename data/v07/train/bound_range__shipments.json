@@ -1,0 +1,71 @@
+{
+ "id": "bound_range__shipments",
+ "template": "bound_range",
+ "skin": "shipments",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "shipments.py": "\"\"\"Shipment records.\"\"\"\n\n\nclass Shipment:\n    def __init__(self, route, weight):\n        self.route = route\n        self.weight = weight\n\n    def __repr__(self):\n        return \"Shipment(%r, %r)\" % (self.route, self.weight)\n\n\nROWS = [('r22', 43), ('r10', 42), ('r31', 51), ('r22', 36), ('r10', 47)]\n\n\ndef load_shipments():\n    \"\"\"Yield the stored shipments one at a time.\"\"\"\n    for route, weight in ROWS:\n        yield Shipment(route, weight)\n",
+  "positions.py": "\"\"\"Position windows over shipments.\"\"\"\n\n\ndef weight_between(shipments, low, high):\n    \"\"\"Return the weight of the shipments at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.weight for x in shipments[low - 1:high - 1]]\n\n\ndef first_weights(shipments, n):\n    \"\"\"Return the weight of the first n shipments.\"\"\"\n    return weight_between(shipments, 1, n)\n\n\ndef route_names(shipments):\n    \"\"\"Return the distinct route values, in first-seen order.\"\"\"\n    names = []\n    for x in shipments:\n        if x.route not in names:\n            names.append(x.route)\n    return names\n",
+  "tests/test_visible.py": "from shipments import load_shipments, ROWS\nfrom positions import weight_between\n\n\ndef test_three_positions():\n    data = list(load_shipments())\n    assert weight_between(data, 2, 4) == [v for _, v in ROWS[1:4]]\n\n\ndef test_low_above_high():\n    data = list(load_shipments())\n    assert weight_between(data, 3, 2) == []\n",
+  "ISSUE.md": "weight_between(data, 2, 4) returns two values. I expected three, for positions 2, 3 and 4: the last one is missing.\n"
+ },
+ "code_hash": "3486fd6ae1faa976e2ec02d9859ffa4912c896b51f280e20e7feacfeea751f16",
+ "logic_file": "positions.py",
+ "hidden": "from shipments import load_shipments, ROWS\nfrom positions import weight_between, first_weights\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_three_positions():\n    assert weight_between(list(load_shipments()), 2, 4) == VALUES[1:4]\n\n\ndef test_whole_range():\n    assert weight_between(list(load_shipments()), 1, len(ROWS)) == VALUES\n\n\ndef test_single_position():\n    assert weight_between(list(load_shipments()), 3, 3) == [VALUES[2]]\n\n\ndef test_first_n():\n    assert first_weights(list(load_shipments()), 2) == VALUES[:2]\n\n\ndef test_low_above_high():\n    assert weight_between(list(load_shipments()), 3, 2) == []\n",
+ "fix": {
+  "file": "positions.py",
+  "function": "weight_between",
+  "code": "def weight_between(shipments, low, high):\n    \"\"\"Return the weight of the shipments at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.weight for x in shipments[low - 1:high]]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window may stop one position early.",
+    "test": "from shipments import load_shipments\nfrom positions import weight_between\ndata = list(load_shipments())\nprint(weight_between(data, 2, 4))\n",
+    "predict": "[42, 51]",
+    "observed": "[42, 51]",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the upper position is always left out, a one-position window is empty and the full window is one short.",
+    "test": "from shipments import load_shipments\nfrom positions import weight_between\ndata = list(load_shipments())\nprint(len(weight_between(data, 1, 1)), len(weight_between(data, 1, len(data))))\n",
+    "predict": "0 4",
+    "observed": "0 4",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "The upper bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_low_above_high": "PASS",
+    "test_three_positions": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_first_n": "FAIL AssertionError: ",
+    "test_low_above_high": "PASS",
+    "test_single_position": "FAIL AssertionError: ",
+    "test_three_positions": "FAIL AssertionError: ",
+    "test_whole_range": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return [x.weight for x in shipments[low - 1:high - 1]]\n+    return [x.weight for x in shipments[low - 1:high]]",
+   "hidden": {
+    "test_first_n": "PASS",
+    "test_low_above_high": "PASS",
+    "test_single_position": "PASS",
+    "test_three_positions": "PASS",
+    "test_whole_range": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,10 @@
+{
+ "id": "dev_058",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('plaza', 50), ('grand', 37), ('plaza', 19), ('plaza', 23), ('plaza', 22), ('grand', 58)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n\n\ndef feed_bookings():\n    \"\"\"Endless feed of bookings: repeats the stored rows for ever.\"\"\"\n    while True:\n        for hotel, nights in ROWS:\n            yield Booking(hotel, nights)\n",
+  "windows.py": "\"\"\"Windows over the bookings feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` bookings from the feed and return (peak nights, list of nights).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.nights for x in window)\n    values = [x.nights for x in window]\n    return peak, values\n",
+  "tests/test_visible.py": "from bookings import feed_bookings, ROWS\nfrom windows import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_bookings(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_bookings()\n    summarize_window(feed, 2)\n    assert next(feed).nights == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_bookings(), 3) returns the right peak but an empty list of values. I expected the three nights values.\n"
+ },
+ "code_hash": "03ce6c7e2fd9828d875cbea1e4ac028a92257b138cef313bfb74cc4e0e59d529"
+}

@@ -1,0 +1,79 @@
+{
+ "id": "mut_drain__tickets",
+ "template": "mut_drain",
+ "skin": "tickets",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "MUT",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "tickets.py": "\"\"\"Ticket records.\"\"\"\n\n\nclass Ticket:\n    def __init__(self, team, hours):\n        self.team = team\n        self.hours = hours\n\n    def __repr__(self):\n        return \"Ticket(%r, %r)\" % (self.team, self.hours)\n\n\nROWS = [('web', 50), ('ops', 51), ('web', 32), ('core', 43), ('ops', 11), ('data', 56), ('data', 42)]\n\n\ndef load_tickets():\n    \"\"\"Yield the stored tickets one at a time.\"\"\"\n    for team, hours in ROWS:\n        yield Ticket(team, hours)\n",
+  "ranking.py": "\"\"\"Top tickets by hours.\"\"\"\n\n\ndef _take_largest(tickets):\n    \"\"\"Remove and return the ticket with the largest hours.\"\"\"\n    best = max(tickets, key=lambda x: x.hours)\n    tickets.remove(best)\n    return best\n\n\ndef podium(tickets, places=3):\n    \"\"\"Return the top `places` tickets by hours, largest first. The caller's list is left as it was.\"\"\"\n    top = []\n    while tickets and len(top) < places:\n        top.append(_take_largest(tickets))\n    return top\n\n\ndef report(tickets):\n    \"\"\"Return the podium values, the number of tickets and every hours.\"\"\"\n    return {\"podium\": [x.hours for x in podium(tickets)], \"count\": len(tickets), \"all\": [x.hours for x in tickets]}\n\n\ndef describe_ticket(ticket):\n    \"\"\"Return a one-line description of a ticket.\"\"\"\n    return \"%s: %s\" % (ticket.team, ticket.hours)\n",
+  "tests/test_visible.py": "from tickets import load_tickets, ROWS\nfrom ranking import podium, report\n\n\ndef test_count():\n    assert report(list(load_tickets()))[\"count\"] == len(ROWS)\n\n\ndef test_podium_values():\n    top = podium(list(load_tickets()))\n    assert [x.hours for x in top] == sorted((v for _, v in ROWS), reverse=True)[:3]\n",
+  "ISSUE.md": "report(my_tickets) gives the right podium, but count is 4 and `all` has lost the largest values. I expected count 7 and every hours in `all`.\n"
+ },
+ "code_hash": "88810deb4683ad26d8f5674dd058f2fab1587b6feb96cdd545bccbe0bbdd8100",
+ "logic_file": "ranking.py",
+ "hidden": "from tickets import load_tickets, ROWS\nfrom ranking import podium, report\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_count():\n    assert report(list(load_tickets()))[\"count\"] == len(ROWS)\n\n\ndef test_all_values_kept():\n    assert report(list(load_tickets()))[\"all\"] == VALUES\n\n\ndef test_podium_values():\n    top = podium(list(load_tickets()))\n    assert [x.hours for x in top] == sorted(VALUES, reverse=True)[:3]\n\n\ndef test_caller_list_unchanged():\n    data = list(load_tickets())\n    podium(data, 2)\n    assert [x.hours for x in data] == VALUES\n\n\ndef test_one_place():\n    assert [x.hours for x in podium(list(load_tickets()), 1)] == [max(VALUES)]\n",
+ "fix": {
+  "file": "ranking.py",
+  "function": "podium",
+  "code": "def podium(tickets, places=3):\n    \"\"\"Return the top `places` tickets by hours, largest first. The caller's list is left as it was.\"\"\"\n    tickets = list(tickets)\n    top = []\n    while tickets and len(top) < places:\n        top.append(_take_largest(tickets))\n    return top\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either the data is a one-shot iterator used twice, or podium() takes items out of the caller's list.",
+    "test": "from tickets import load_tickets\nfrom ranking import podium\ndata = list(load_tickets())\nprint(iter(data) is data, len(data))\npodium(data)\nprint(len(data))\n",
+    "predict": "False 7\n4",
+    "observed": "False 7\n4",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "It is a list, and podium() shrinks it. If podium() is given a copy, the caller's list should stay whole.",
+    "test": "from tickets import load_tickets\nfrom ranking import podium\ndata = list(load_tickets())\npodium(list(data))\nprint(len(data))\n",
+    "predict": "7",
+    "observed": "7",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Not a one-shot iterator: podium() removes items from the caller's list. Work on a copy inside podium()."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "The data may be a one-shot iterator that is used twice.",
+  "test": "from tickets import load_tickets\ndata = list(load_tickets())\nprint(iter(data) is data)\n",
+  "predict": "True",
+  "observed": "False",
+  "seconds": 0.032
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count": "FAIL AssertionError: ",
+    "test_podium_values": "PASS"
+   },
+   "hidden": {
+    "test_all_values_kept": "FAIL AssertionError: ",
+    "test_caller_list_unchanged": "FAIL AssertionError: ",
+    "test_count": "FAIL AssertionError: ",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    tickets = list(tickets)",
+   "hidden": {
+    "test_all_values_kept": "PASS",
+    "test_caller_list_unchanged": "PASS",
+    "test_count": "PASS",
+    "test_one_place": "PASS",
+    "test_podium_values": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

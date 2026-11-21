@@ -1,0 +1,59 @@
+{
+ "id": "dev_004",
+ "source": "look_default_seen__harvests",
+ "template": "look_default_seen",
+ "skin": "harvests",
+ "group": "G3",
+ "symptom": "S1",
+ "cause": "DEFAULTARG",
+ "role": null,
+ "hidden": "from harvests import load_harvests, ROWS\nfrom distinct import new_fields\n\nEXPECTED = list(dict.fromkeys(k for k, _ in ROWS))\n\n\ndef test_called_twice():\n    data = list(load_harvests())\n    new_fields(data)\n    assert new_fields(data) == EXPECTED\n\n\ndef test_three_calls_with_generators():\n    new_fields(load_harvests())\n    new_fields(load_harvests())\n    assert new_fields(load_harvests()) == EXPECTED\n\n\ndef test_known_values_left_out():\n    data = list(load_harvests())\n    assert new_fields(data, {EXPECTED[0]}) == EXPECTED[1:]\n\n\ndef test_seen_is_updated():\n    seen = set()\n    new_fields(list(load_harvests()), seen)\n    assert seen == set(EXPECTED)\n",
+ "fix": {
+  "file": "distinct.py",
+  "function": "new_fields",
+  "code": "def new_fields(harvests, seen=None):\n    \"\"\"Return each field the first time it appears among the harvests, in order. field values already in `seen` are left out.\"\"\"\n    if seen is None:\n        seen = set()\n    out = []\n    for x in harvests:\n        if x.field not in seen:\n            seen.add(x.field)\n            out.append(x.field)\n    return out\n"
+ },
+ "oldfix": {
+  "code": "def new_fields(harvests, seen=set()):\n    \"\"\"Return each field the first time it appears among the harvests, in order. field values already in `seen` are left out.\"\"\"\n    harvests = list(harvests)\n    out = []\n    for x in harvests:\n        if x.field not in seen:\n            seen.add(x.field)\n            out.append(x.field)\n    return out\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS"
+   },
+   "hidden": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 4,
+   "diff": "-def new_fields(harvests, seen=set()):\n+def new_fields(harvests, seen=None):\n+    if seen is None:\n+        seen = set()",
+   "hidden": {
+    "test_called_twice": "PASS",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    harvests = list(harvests)",
+   "hidden": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS",
+    "test_seen_is_updated": "PASS",
+    "test_three_calls_with_generators": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_called_twice": "FAIL AssertionError: ",
+    "test_known_values_left_out": "PASS"
+   },
+   "regressions": [],
+   "visible_regressions": []
+  }
+ }
+}

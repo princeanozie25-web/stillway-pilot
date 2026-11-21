@@ -1,0 +1,44 @@
+{
+ "id": "dev_063",
+ "source": "iter_attr__harvests",
+ "template": "iter_attr",
+ "skin": "harvests",
+ "group": "G2",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": null,
+ "hidden": "from harvests import load_harvests, ROWS\nfrom summary import HarvestSummary\n\nMEAN = sum(v for _, v in ROWS) / len(ROWS)\n\n\ndef test_mean_of_stored():\n    assert abs(HarvestSummary(load_harvests()).mean_kilos() - MEAN) < 1e-9\n\n\ndef test_count_then_mean():\n    s = HarvestSummary(load_harvests())\n    assert s.count() == len(ROWS) and abs(s.mean_kilos() - MEAN) < 1e-9\n\n\ndef test_mean_twice():\n    s = HarvestSummary(load_harvests())\n    s.mean_kilos()\n    assert abs(s.mean_kilos() - MEAN) < 1e-9\n\n\ndef test_list_input():\n    assert abs(HarvestSummary(list(load_harvests())).mean_kilos() - MEAN) < 1e-9\n\n\ndef test_empty():\n    assert HarvestSummary(iter([])).mean_kilos() == 0.0\n",
+ "fix": {
+  "file": "summary.py",
+  "function": "__init__",
+  "code": "def __init__(self, harvests):\n    self._harvests = list(harvests)\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_count_of_list": "PASS",
+    "test_mean_of_stored": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_count_then_mean": "FAIL AssertionError: ",
+    "test_empty": "PASS",
+    "test_list_input": "PASS",
+    "test_mean_of_stored": "FAIL AssertionError: ",
+    "test_mean_twice": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self._harvests = harvests\n+        self._harvests = list(harvests)",
+   "hidden": {
+    "test_count_then_mean": "PASS",
+    "test_empty": "PASS",
+    "test_list_input": "PASS",
+    "test_mean_of_stored": "PASS",
+    "test_mean_twice": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "id": "iter_shares__samples",
+ "template": "iter_shares",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b4', 38), ('b1', 35), ('b1', 37), ('b2', 56), ('b2', 39), ('b4', 16)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n",
+  "shares.py": "\"\"\"Share of the total dose per sample.\"\"\"\nfrom samples import load_samples\n\n\ndef dose_shares(samples):\n    \"\"\"Return each sample's share of the total dose, in order.\"\"\"\n    total = sum(x.dose for x in samples)\n    return [x.dose / total for x in samples]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored samples.\"\"\"\n    return dose_shares(load_samples())\n\n\ndef top_share(samples):\n    \"\"\"Return the largest share, or 0.0 when there are no samples.\"\"\"\n    shares = dose_shares(samples)\n    return max(shares) if shares else 0.0\n\n\ndef describe_sample(sample):\n    \"\"\"Return a one-line description of a sample.\"\"\"\n    return \"%s: %s\" % (sample.batch, sample.dose)\n\n\ndef group_by_batch(samples):\n    \"\"\"Return a dict from batch to the list of samples with that batch.\"\"\"\n    groups = {}\n    for x in samples:\n        groups.setdefault(x.batch, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from samples import load_samples, ROWS\nfrom shares import dose_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = dose_shares(list(load_samples()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 6 stored samples, so I expected 6 shares that add up to 1.\n"
+ },
+ "code_hash": "90c589089ea6eaf58c160e4317d2938aeb2a2828ce691ee603710d45076f004d",
+ "logic_file": "shares.py",
+ "hidden": "from samples import load_samples, ROWS\nfrom shares import dose_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = dose_shares(load_samples())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = dose_shares(list(load_samples()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_samples()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert dose_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "shares.py",
+  "function": "dose_shares",
+  "code": "def dose_shares(samples):\n    \"\"\"Return each sample's share of the total dose, in order.\"\"\"\n    samples = list(samples)\n    total = sum(x.dose for x in samples)\n    return [x.dose / total for x in samples]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "load_samples() may return a one-shot iterator that dose_shares walks twice.",
+    "test": "from samples import load_samples\ndata = load_samples()\nprint(iter(data) is data)\n",
+    "predict": "True",
+    "observed": "True",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the input is a list the second pass should work, so turning the input into a list once is enough.",
+    "test": "from samples import load_samples\nfrom shares import dose_shares\nprint(len(dose_shares(list(load_samples()))))\n",
+    "predict": "6",
+    "observed": "6",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "One-shot iterator walked twice. Turn the input into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    samples = list(samples)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

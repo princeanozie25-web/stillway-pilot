@@ -1,0 +1,99 @@
+{
+ "id": "iter_window__readings",
+ "template": "iter_window",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "exception",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('south', 18), ('east', 53), ('east', 10), ('south', 6), ('south', 20), ('north', 25)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n\n\ndef feed_readings():\n    \"\"\"Endless feed of readings: repeats the stored rows for ever.\"\"\"\n    while True:\n        for sensor, level in ROWS:\n            yield Reading(sensor, level)\n",
+  "frames.py": "\"\"\"Windows over the readings feed.\"\"\"\nimport itertools\n\n\ndef summarize_window(feed, size):\n    \"\"\"Read the next `size` readings from the feed and return (peak level, list of level).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = itertools.islice(feed, size)\n    peak = max(x.level for x in window)\n    values = [x.level for x in window]\n    return peak, values\n\n\ndef group_by_sensor(readings):\n    \"\"\"Return a dict from sensor to the list of readings with that sensor.\"\"\"\n    groups = {}\n    for x in readings:\n        groups.setdefault(x.sensor, []).append(x)\n    return groups\n\n\ndef sensor_names(readings):\n    \"\"\"Return the distinct sensor values, in first-seen order.\"\"\"\n    names = []\n    for x in readings:\n        if x.sensor not in names:\n            names.append(x.sensor)\n    return names\n",
+  "tests/test_visible.py": "from readings import feed_readings, ROWS\nfrom frames import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_readings(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_readings()\n    summarize_window(feed, 2)\n    assert next(feed).level == ROWS[2][1]\n",
+  "ISSUE.md": "summarize_window(feed_readings(), 3) returns the right peak but an empty list of values. I expected the three level values.\n"
+ },
+ "code_hash": "660e3d3a5a45922035d2b0382422204ac6e42c68a90ba5d5c977cbefc77862dc",
+ "logic_file": "frames.py",
+ "hidden": "from readings import feed_readings, ROWS\nfrom frames import summarize_window\n\n\ndef test_values():\n    peak, values = summarize_window(feed_readings(), 3)\n    assert values == [v for _, v in ROWS[:3]]\n\n\ndef test_peak():\n    peak, values = summarize_window(feed_readings(), 4)\n    assert peak == max(v for _, v in ROWS[:4])\n\n\ndef test_reads_only_the_window():\n    feed = feed_readings()\n    summarize_window(feed, 2)\n    assert next(feed).level == ROWS[2][1]\n\n\ndef test_consecutive_windows():\n    feed = feed_readings()\n    summarize_window(feed, 2)\n    peak, values = summarize_window(feed, 2)\n    assert values == [v for _, v in ROWS[2:4]]\n",
+ "fix": {
+  "file": "frames.py",
+  "function": "summarize_window",
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` readings from the feed and return (peak level, list of level).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = list(itertools.islice(feed, size))\n    peak = max(x.level for x in window)\n    values = [x.level for x in window]\n    return peak, values\n"
+ },
+ "oldfix": {
+  "code": "def summarize_window(feed, size):\n    \"\"\"Read the next `size` readings from the feed and return (peak level, list of level).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    feed = list(feed)\n    window = itertools.islice(feed, size)\n    peak = max(x.level for x in window)\n    values = [x.level for x in window]\n    return peak, values\n"
+ },
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The window is read once for the peak and again for the values; the second read may find it used up.",
+    "test": "from readings import feed_readings\nfrom frames import summarize_window\nprint(summarize_window(feed_readings(), 3))\n",
+    "predict": "(53, [])",
+    "observed": "(53, [])",
+    "seconds": 0.032
+   },
+   {
+    "suspect": "The usual fix is to turn the input into a list, but that only works if the feed ends.",
+    "test": "import itertools\nfrom readings import feed_readings\nprint(len(list(itertools.islice(feed_readings(), 1000))))\n",
+    "predict": "1000",
+    "observed": "1000",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "The islice window is a one-shot iterator walked twice. The feed never ends, so turn only the window into a list."
+ },
+ "naive": {
+  "step": 2,
+  "suspect": "If the feed is finite, turning the whole input into a list once is enough.",
+  "test": "import itertools\nfrom readings import feed_readings\nprint(len(list(itertools.islice(feed_readings(), 1000))))\n",
+  "predict": "6",
+  "observed": "1000",
+  "seconds": 0.034
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_consecutive_windows": "FAIL AssertionError: ",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    window = itertools.islice(feed, size)\n+    window = list(itertools.islice(feed, size))",
+   "hidden": {
+    "test_consecutive_windows": "PASS",
+    "test_peak": "PASS",
+    "test_reads_only_the_window": "PASS",
+    "test_values": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "+    feed = list(feed)",
+   "hidden": {
+    "test_values": "FAIL TIMEOUT after 5.0 s",
+    "test_peak": "FAIL TIMEOUT after 5.0 s",
+    "test_reads_only_the_window": "FAIL TIMEOUT after 5.0 s",
+    "test_consecutive_windows": "FAIL TIMEOUT after 5.0 s"
+   },
+   "visible": {
+    "test_reads_only_the_window": "FAIL TimeoutError: test took longer than 2 s",
+    "test_values": "FAIL TimeoutError: test took longer than 2 s"
+   },
+   "regressions": [
+    "test_peak",
+    "test_reads_only_the_window"
+   ],
+   "visible_regressions": [
+    "test_reads_only_the_window"
+   ]
+  }
+ }
+}

@@ -1,0 +1,71 @@
+{
+ "id": "iter_shares__orders",
+ "template": "iter_shares",
+ "skin": "orders",
+ "split": "train",
+ "symptom": "S1",
+ "cause": "ITER",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "orders.py": "\"\"\"Order records.\"\"\"\n\n\nclass Order:\n    def __init__(self, customer, amount):\n        self.customer = customer\n        self.amount = amount\n\n    def __repr__(self):\n        return \"Order(%r, %r)\" % (self.customer, self.amount)\n\n\nROWS = [('corvo', 13), ('acme', 51), ('birch', 26), ('birch', 47), ('acme', 28)]\n\n\ndef load_orders():\n    \"\"\"Yield the stored orders one at a time.\"\"\"\n    for customer, amount in ROWS:\n        yield Order(customer, amount)\n",
+  "breakdown.py": "\"\"\"Share of the total amount per order.\"\"\"\nfrom orders import load_orders\n\n\ndef amount_shares(orders):\n    \"\"\"Return each order's share of the total amount, in order.\"\"\"\n    total = sum(x.amount for x in orders)\n    return [x.amount / total for x in orders]\n\n\ndef stored_shares():\n    \"\"\"Shares for the stored orders.\"\"\"\n    return amount_shares(load_orders())\n\n\ndef top_share(orders):\n    \"\"\"Return the largest share, or 0.0 when there are no orders.\"\"\"\n    shares = amount_shares(orders)\n    return max(shares) if shares else 0.0\n\n\ndef customer_names(orders):\n    \"\"\"Return the distinct customer values, in first-seen order.\"\"\"\n    names = []\n    for x in orders:\n        if x.customer not in names:\n            names.append(x.customer)\n    return names\n\n\ndef describe_order(order):\n    \"\"\"Return a one-line description of a order.\"\"\"\n    return \"%s: %s\" % (order.customer, order.amount)\n",
+  "tests/test_visible.py": "from orders import load_orders, ROWS\nfrom breakdown import amount_shares, stored_shares\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS)\n\n\ndef test_shares_of_a_list():\n    shares = amount_shares(list(load_orders()))\n    assert abs(sum(shares) - 1.0) < 1e-9\n",
+  "ISSUE.md": "stored_shares() returns an empty list. There are 5 stored orders, so I expected 5 shares that add up to 1.\n"
+ },
+ "code_hash": "172f8a7915b81a91a02d5294e0f040a858fd607d0691373c90304edcd423457d",
+ "logic_file": "breakdown.py",
+ "hidden": "from orders import load_orders, ROWS\nfrom breakdown import amount_shares, stored_shares, top_share\n\nTOTAL = sum(v for _, v in ROWS)\n\n\ndef test_stored_shares():\n    shares = stored_shares()\n    assert len(shares) == len(ROWS) and abs(sum(shares) - 1.0) < 1e-9\n\n\ndef test_generator_values():\n    shares = amount_shares(load_orders())\n    assert abs(shares[0] - ROWS[0][1] / TOTAL) < 1e-9 and abs(shares[-1] - ROWS[-1][1] / TOTAL) < 1e-9\n\n\ndef test_list_input():\n    shares = amount_shares(list(load_orders()))\n    assert abs(shares[1] - ROWS[1][1] / TOTAL) < 1e-9\n\n\ndef test_top_share_generator():\n    assert abs(top_share(load_orders()) - max(v for _, v in ROWS) / TOTAL) < 1e-9\n\n\ndef test_empty():\n    assert amount_shares(iter([])) == [] and top_share(iter([])) == 0.0\n",
+ "fix": {
+  "file": "breakdown.py",
+  "function": "amount_shares",
+  "code": "def amount_shares(orders):\n    \"\"\"Return each order's share of the total amount, in order.\"\"\"\n    orders = list(orders)\n    total = sum(x.amount for x in orders)\n    return [x.amount / total for x in orders]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "load_orders() may return a one-shot iterator that amount_shares walks twice.",
+    "test": "from orders import load_orders\ndata = load_orders()\nprint(iter(data) is data)\n",
+    "predict": "True",
+    "observed": "True",
+    "seconds": 0.037
+   },
+   {
+    "suspect": "If the input is a list the second pass should work, so turning the input into a list once is enough.",
+    "test": "from orders import load_orders\nfrom breakdown import amount_shares\nprint(len(amount_shares(list(load_orders()))))\n",
+    "predict": "5",
+    "observed": "5",
+    "seconds": 0.035
+   }
+  ],
+  "cause": "One-shot iterator walked twice. Turn the input into a list once."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_shares_of_a_list": "PASS",
+    "test_stored_shares": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "FAIL IndexError: list index out of range",
+    "test_list_input": "PASS",
+    "test_stored_shares": "FAIL AssertionError: ",
+    "test_top_share_generator": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+    orders = list(orders)",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_generator_values": "PASS",
+    "test_list_input": "PASS",
+    "test_stored_shares": "PASS",
+    "test_top_share_generator": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

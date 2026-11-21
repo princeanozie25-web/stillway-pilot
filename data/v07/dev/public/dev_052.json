@@ -1,0 +1,10 @@
+{
+ "id": "dev_052",
+ "repo": {
+  "bookings.py": "\"\"\"Booking records.\"\"\"\n\n\nclass Booking:\n    def __init__(self, hotel, nights):\n        self.hotel = hotel\n        self.nights = nights\n\n    def __repr__(self):\n        return \"Booking(%r, %r)\" % (self.hotel, self.nights)\n\n\nROWS = [('plaza', 5), ('plaza', 15), ('grand', 34), ('plaza', 26), ('lodge', 38)]\n\n\ndef load_bookings():\n    \"\"\"Yield the stored bookings one at a time.\"\"\"\n    for hotel, nights in ROWS:\n        yield Booking(hotel, nights)\n\n\ndef feed_bookings():\n    \"\"\"Endless feed of bookings: repeats the stored rows for ever.\"\"\"\n    while True:\n        for hotel, nights in ROWS:\n            yield Booking(hotel, nights)\n",
+  "parts.py": "\"\"\"Halves of a window over the bookings feed.\"\"\"\nimport itertools\n\n\ndef split_window(feed, size):\n    \"\"\"Read the next `size` bookings from the feed and return their nights as (first half, second half).\n\n    The feed may be endless. Exactly `size` items are read from it.\n    \"\"\"\n    window = [x.nights for x in itertools.islice(feed, size)]\n    half = size // 2\n    return window[:half], window[size:]\n\n\ndef largest_nights(bookings):\n    \"\"\"Return the largest nights, or None when there are no bookings.\"\"\"\n    values = [x.nights for x in bookings]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from bookings import feed_bookings, ROWS\nfrom parts import split_window\n\n\ndef test_second_half():\n    first, second = split_window(feed_bookings(), 4)\n    assert second == [v for _, v in ROWS[2:4]]\n\n\ndef test_reads_only_the_window():\n    feed = feed_bookings()\n    split_window(feed, 2)\n    assert next(feed).nights == ROWS[2][1]\n",
+  "ISSUE.md": "split_window(feed_bookings(), 4) returns the first half, but the second half is always empty. I expected two values in each.\n"
+ },
+ "code_hash": "ac6c7fb50e27294430009646df8f75e45aedea9a8a5fc5b6cac29c8f237b52f0"
+}

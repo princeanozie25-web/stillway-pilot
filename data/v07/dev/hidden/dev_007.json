@@ -1,0 +1,44 @@
+{
+ "id": "dev_007",
+ "source": "bound_range__bookings",
+ "template": "bound_range",
+ "skin": "bookings",
+ "group": "G1",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "hidden": "from bookings import load_bookings, ROWS\nfrom positions import nights_between, first_nightss\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_three_positions():\n    assert nights_between(list(load_bookings()), 2, 4) == VALUES[1:4]\n\n\ndef test_whole_range():\n    assert nights_between(list(load_bookings()), 1, len(ROWS)) == VALUES\n\n\ndef test_single_position():\n    assert nights_between(list(load_bookings()), 3, 3) == [VALUES[2]]\n\n\ndef test_first_n():\n    assert first_nightss(list(load_bookings()), 2) == VALUES[:2]\n\n\ndef test_low_above_high():\n    assert nights_between(list(load_bookings()), 3, 2) == []\n",
+ "fix": {
+  "file": "positions.py",
+  "function": "nights_between",
+  "code": "def nights_between(bookings, low, high):\n    \"\"\"Return the nights of the bookings at positions low to high, both included. Positions start at 1.\"\"\"\n    return [x.nights for x in bookings[low - 1:high]]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_low_above_high": "PASS",
+    "test_three_positions": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_first_n": "FAIL AssertionError: ",
+    "test_low_above_high": "PASS",
+    "test_single_position": "FAIL AssertionError: ",
+    "test_three_positions": "FAIL AssertionError: ",
+    "test_whole_range": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return [x.nights for x in bookings[low - 1:high - 1]]\n+    return [x.nights for x in bookings[low - 1:high]]",
+   "hidden": {
+    "test_first_n": "PASS",
+    "test_low_above_high": "PASS",
+    "test_single_position": "PASS",
+    "test_three_positions": "PASS",
+    "test_whole_range": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

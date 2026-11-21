@@ -1,0 +1,63 @@
+{
+ "id": "dev_012",
+ "source": "look_shared_entries__harvests",
+ "template": "look_shared_entries",
+ "skin": "harvests",
+ "group": "G3",
+ "symptom": "S2",
+ "cause": "SHAREDATTR",
+ "role": null,
+ "hidden": "import rates\nfrom harvests import load_harvests, ROWS\nfrom tabs import HarvestAccount\n\n\ndef test_accounts_are_separate():\n    rows = list(load_harvests())\n    first = HarvestAccount(\"first\")\n    first.add(rows[0])\n    second = HarvestAccount(\"second\")\n    assert second.charge() == 0\n\n\ndef test_each_account_own_charge():\n    rows = list(load_harvests())\n    a = HarvestAccount(\"a\")\n    b = HarvestAccount(\"b\")\n    a.add(rows[0])\n    b.add(rows[1])\n    assert a.charge() == ROWS[0][1] * rates._RATES[ROWS[0][0]] and b.charge() == ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_charge_after_add():\n    rows = list(load_harvests())\n    a = HarvestAccount(\"a\")\n    a.add(rows[0])\n    first = a.charge()\n    a.add(rows[1])\n    assert a.charge() == first + ROWS[1][1] * rates._RATES[ROWS[1][0]]\n\n\ndef test_no_new_lookups_when_unchanged():\n    rows = list(load_harvests())\n    account = HarvestAccount(\"solo\")\n    account.add(rows[0])\n    account.charge()\n    before = rates.LOOKUPS\n    account.charge()\n    account.charge()\n    assert rates.LOOKUPS == before\n",
+ "fix": {
+  "file": "tabs.py",
+  "function": "__init__",
+  "code": "def __init__(self, name):\n    self.name = name\n    self.entries = []\n    self._charge = None\n"
+ },
+ "oldfix": {
+  "code": "def charge(self):\n    \"\"\"Return this account's charge: kilos times the rate for each harvest's field.\n\n    The result is remembered: asking again without adding anything makes no new rate lookups.\n    \"\"\"\n    return sum(x.kilos * rates.rate_for(x.field) for x in self.entries)\n"
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_accounts_are_separate": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   },
+   "hidden": {
+    "test_accounts_are_separate": "FAIL AssertionError: ",
+    "test_charge_after_add": "PASS",
+    "test_each_account_own_charge": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 1,
+   "diff": "+        self.entries = []",
+   "hidden": {
+    "test_accounts_are_separate": "PASS",
+    "test_charge_after_add": "PASS",
+    "test_each_account_own_charge": "PASS",
+    "test_no_new_lookups_when_unchanged": "PASS"
+   }
+  },
+  "seconds": 0.07,
+  "oldfix": {
+   "diff": "-        if self._charge is None:\n-            self._charge = sum(x.kilos * rates.rate_for(x.field) for x in self.entries)\n-        return self._charge\n+        return sum(x.kilos * rates.rate_for(x.field) for x in self.entries)",
+   "hidden": {
+    "test_accounts_are_separate": "FAIL AssertionError: ",
+    "test_charge_after_add": "PASS",
+    "test_each_account_own_charge": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "visible": {
+    "test_accounts_are_separate": "FAIL AssertionError: ",
+    "test_no_new_lookups_when_unchanged": "FAIL AssertionError: "
+   },
+   "regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ],
+   "visible_regressions": [
+    "test_no_new_lookups_when_unchanged"
+   ]
+  }
+ }
+}

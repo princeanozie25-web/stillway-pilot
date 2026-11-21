@@ -1,0 +1,10 @@
+{
+ "id": "dev_043",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('mia', 17), ('omar', 25), ('omar', 23), ('noor', 37), ('mia', 3)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "percent.py": "\"\"\"Percentages of the total pounds.\"\"\"\n\n\ndef percent_of_total(donations, donor):\n    \"\"\"Return the percentage, from 0 to 100, of the total pounds that belongs to this donor.\"\"\"\n    total = sum(x.pounds for x in donations)\n    part = sum(x.pounds for x in donations if x.donor == donor)\n    return part // total * 100\n\n\ndef total_pounds(donations):\n    \"\"\"Return the total pounds.\"\"\"\n    return sum(x.pounds for x in donations)\n\n\ndef donor_names(donations):\n    \"\"\"Return the distinct donor values, in first-seen order.\"\"\"\n    names = []\n    for x in donations:\n        if x.donor not in names:\n            names.append(x.donor)\n    return names\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom percent import percent_of_total\n\nKEY = ROWS[0][0]\nTOTAL = sum(v for _, v in ROWS)\nPART = sum(v for k, v in ROWS if k == KEY)\n\n\ndef test_percent():\n    assert abs(percent_of_total(list(load_donations()), KEY) - 100.0 * PART / TOTAL) < 1e-6\n\n\ndef test_unknown_key():\n    assert percent_of_total(list(load_donations()), \"zzz\") == 0\n",
+  "ISSUE.md": "percent_of_total(data, 'mia') returns 0, although 'mia' has 20 of the total 105.\n"
+ },
+ "code_hash": "ecd1c323ae900190086eb0e86851b5c23a812ba42e98163f4d8ebf95d588c83b"
+}

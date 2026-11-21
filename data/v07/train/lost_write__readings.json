@@ -1,0 +1,77 @@
+{
+ "id": "lost_write__readings",
+ "template": "lost_write",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "LOSTWRITE",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('south', 54), ('south', 12), ('east', 58), ('south', 55), ('north', 5)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "ledger.py": "\"\"\"A ledger of readings.\"\"\"\n\n\nclass ReadingLedger:\n    def __init__(self, readings=()):\n        self._readings = list(readings)\n\n    def readings(self):\n        \"\"\"Return the readings held (a copy, so callers cannot change the ledger).\"\"\"\n        return list(self._readings)\n\n    def add(self, reading):\n        \"\"\"Add one reading to the ledger.\"\"\"\n        self.readings().append(reading)\n\n    def total(self):\n        \"\"\"Return the total level of the readings held.\"\"\"\n        return sum(x.level for x in self._readings)\n\n\ndef largest_level(readings):\n    \"\"\"Return the largest level, or None when there are no readings.\"\"\"\n    values = [x.level for x in readings]\n    return max(values) if values else None\n\n\ndef group_by_sensor(readings):\n    \"\"\"Return a dict from sensor to the list of readings with that sensor.\"\"\"\n    groups = {}\n    for x in readings:\n        groups.setdefault(x.sensor, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from readings import load_readings, ROWS\nfrom ledger import ReadingLedger\n\n\ndef test_total_after_add():\n    rows = list(load_readings())\n    ledger = ReadingLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_copy_is_safe():\n    rows = list(load_readings())\n    ledger = ReadingLedger(rows[:2])\n    ledger.readings().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n",
+  "ISSUE.md": "After I add a reading, total() still returns the old total.\n"
+ },
+ "code_hash": "689ea155d7ee0ced4e0d89679704334a434d24206e61f57cb9bb4cf279b06a07",
+ "logic_file": "ledger.py",
+ "hidden": "from readings import load_readings, ROWS\nfrom ledger import ReadingLedger\n\n\ndef test_total_after_add():\n    rows = list(load_readings())\n    ledger = ReadingLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_add_to_empty():\n    rows = list(load_readings())\n    ledger = ReadingLedger()\n    for x in rows:\n        ledger.add(x)\n    assert ledger.total() == sum(v for _, v in ROWS) and len(ledger.readings()) == len(ROWS)\n\n\ndef test_copy_is_safe():\n    rows = list(load_readings())\n    ledger = ReadingLedger(rows[:2])\n    ledger.readings().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_initial_total():\n    assert ReadingLedger(load_readings()).total() == sum(v for _, v in ROWS)\n",
+ "fix": {
+  "file": "ledger.py",
+  "function": "add",
+  "code": "def add(self, reading):\n    \"\"\"Add one reading to the ledger.\"\"\"\n    self._readings.append(reading)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either total() returns a remembered value that add() does not refresh, or add() never stores the reading.",
+    "test": "from readings import load_readings\nfrom ledger import ReadingLedger\nrows = list(load_readings())\nledger = ReadingLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.level for x in ledger._readings), len(ledger._readings))\n",
+    "predict": "54 54 1",
+    "observed": "54 54 1",
+    "seconds": 0.035
+   },
+   {
+    "suspect": "total() agrees with the list, and the list did not grow: add() loses the reading. Appending to the real list should give the right total.",
+    "test": "from readings import load_readings\nfrom ledger import ReadingLedger\nrows = list(load_readings())\nledger = ReadingLedger(rows[:1])\nledger._readings.append(rows[1])\nprint(ledger.total())\n",
+    "predict": "66",
+    "observed": "66",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Not a stale value: add() appends to a copy, so the reading is lost. Append to the real list."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "total() may return a remembered value that add() does not refresh.",
+  "test": "from readings import load_readings\nfrom ledger import ReadingLedger\nrows = list(load_readings())\nledger = ReadingLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.level for x in ledger._readings))\n",
+  "predict": "54 66",
+  "observed": "54 54",
+  "seconds": 0.034
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_copy_is_safe": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_add_to_empty": "FAIL AssertionError: ",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self.readings().append(reading)\n+        self._readings.append(reading)",
+   "hidden": {
+    "test_add_to_empty": "PASS",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

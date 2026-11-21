@@ -1,0 +1,79 @@
+{
+ "id": "flush_last__readings",
+ "template": "flush_last",
+ "skin": "readings",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "NOFLUSH",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "readings.py": "\"\"\"Reading records.\"\"\"\n\n\nclass Reading:\n    def __init__(self, sensor, level):\n        self.sensor = sensor\n        self.level = level\n\n    def __repr__(self):\n        return \"Reading(%r, %r)\" % (self.sensor, self.level)\n\n\nROWS = [('south', 37), ('east', 28), ('north', 41), ('east', 54), ('north', 50)]\n\n\ndef load_readings():\n    \"\"\"Yield the stored readings one at a time.\"\"\"\n    for sensor, level in ROWS:\n        yield Reading(sensor, level)\n",
+  "intake.py": "\"\"\"Parsing readings from text.\"\"\"\nfrom readings import Reading\n\n\ndef _parse_line(line):\n    sensor, level = line.split(\",\")\n    return Reading(sensor.strip(), int(level))\n\n\ndef parse_readings(text):\n    \"\"\"Parse lines of 'sensor,level' into Reading records. Blank lines are skipped.\"\"\"\n    out = []\n    line = \"\"\n    for ch in text:\n        if ch == \"\\n\":\n            if line.strip():\n                out.append(_parse_line(line))\n            line = \"\"\n        else:\n            line += ch\n    return out\n",
+  "tests/test_visible.py": "from readings import ROWS\nfrom intake import parse_readings\n\nLINES = [\"%s,%s\" % (k, v) for k, v in ROWS]\n\n\ndef test_all_lines():\n    assert len(parse_readings(\"\\n\".join(LINES))) == len(ROWS)\n\n\ndef test_trailing_newline():\n    assert len(parse_readings(\"\\n\".join(LINES) + \"\\n\")) == len(ROWS)\n",
+  "ISSUE.md": "parse_readings(text) leaves out the last reading of my file: 5 lines give me 4 records.\n"
+ },
+ "code_hash": "b96c57b18ff641ca1aa7b28bd3a356a7e5bedc448b34d3fb00f26c2f6401d883",
+ "logic_file": "intake.py",
+ "hidden": "from readings import ROWS\nfrom intake import parse_readings\n\nLINES = [\"%s,%s\" % (k, v) for k, v in ROWS]\n\n\ndef test_all_lines():\n    records = parse_readings(\"\\n\".join(LINES))\n    assert [(x.sensor, x.level) for x in records] == [(k, v) for k, v in ROWS]\n\n\ndef test_trailing_newline():\n    assert len(parse_readings(\"\\n\".join(LINES) + \"\\n\")) == len(ROWS)\n\n\ndef test_blank_lines():\n    assert len(parse_readings(LINES[0] + \"\\n\\n\" + LINES[1] + \"\\n  \")) == 2\n\n\ndef test_single_line():\n    assert len(parse_readings(LINES[0])) == 1\n\n\ndef test_empty_text():\n    assert parse_readings(\"\") == []\n",
+ "fix": {
+  "file": "intake.py",
+  "function": "parse_readings",
+  "code": "def parse_readings(text):\n    \"\"\"Parse lines of 'sensor,level' into Reading records. Blank lines are skipped.\"\"\"\n    out = []\n    line = \"\"\n    for ch in text:\n        if ch == \"\\n\":\n            if line.strip():\n                out.append(_parse_line(line))\n            line = \"\"\n        else:\n            line += ch\n    if line.strip():\n        out.append(_parse_line(line))\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either a loop bound stops one short, or the last line is only stored when a newline follows it.",
+    "test": "from intake import parse_readings\nprint(len(parse_readings(\"a,1\\nb,2\")), len(parse_readings(\"a,1\\nb,2\\n\")))\n",
+    "predict": "1 2",
+    "observed": "1 2",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "With a final newline nothing is lost, so no bound is short: a line is stored only when a newline is seen.",
+    "test": "from intake import parse_readings\nprint(len(parse_readings(\"a,1\")), len(parse_readings(\"\")))\n",
+    "predict": "0 0",
+    "observed": "0 0",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Not a loop bound: the last line is never stored when the text does not end with a newline. Store what is left after the loop."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "A loop bound may stop one line short.",
+  "test": "from intake import parse_readings\nprint(len(parse_readings(\"a,1\\nb,2\\n\")))\n",
+  "predict": "1",
+  "observed": "2",
+  "seconds": 0.033
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_all_lines": "FAIL AssertionError: ",
+    "test_trailing_newline": "PASS"
+   },
+   "hidden": {
+    "test_all_lines": "FAIL AssertionError: ",
+    "test_blank_lines": "PASS",
+    "test_empty_text": "PASS",
+    "test_single_line": "FAIL AssertionError: ",
+    "test_trailing_newline": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "+    if line.strip():\n+        out.append(_parse_line(line))",
+   "hidden": {
+    "test_all_lines": "PASS",
+    "test_blank_lines": "PASS",
+    "test_empty_text": "PASS",
+    "test_single_line": "PASS",
+    "test_trailing_newline": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

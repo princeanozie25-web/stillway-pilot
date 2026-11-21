@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__orders",
+ "template": "bound_loop",
+ "skin": "orders",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "orders.py": "\"\"\"Order records.\"\"\"\n\n\nclass Order:\n    def __init__(self, customer, amount):\n        self.customer = customer\n        self.amount = amount\n\n    def __repr__(self):\n        return \"Order(%r, %r)\" % (self.customer, self.amount)\n\n\nROWS = [('birch', 16), ('acme', 49), ('birch', 4), ('acme', 52), ('acme', 59), ('acme', 42)]\n\n\ndef load_orders():\n    \"\"\"Yield the stored orders one at a time.\"\"\"\n    for customer, amount in ROWS:\n        yield Order(customer, amount)\n",
+  "running.py": "\"\"\"Running totals over orders.\"\"\"\n\n\ndef running_amount(orders):\n    \"\"\"Return the running total of amount after each order, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(orders) - 1):\n        total += orders[i].amount\n        out.append(total)\n    return out\n\n\ndef final_amount(orders):\n    \"\"\"Return the total amount of all orders, or 0 when there are none.\"\"\"\n    totals = running_amount(orders)\n    return totals[-1] if totals else 0\n\n\ndef largest_amount(orders):\n    \"\"\"Return the largest amount, or None when there are no orders.\"\"\"\n    values = [x.amount for x in orders]\n    return max(values) if values else None\n\n\ndef group_by_customer(orders):\n    \"\"\"Return a dict from customer to the list of orders with that customer.\"\"\"\n    groups = {}\n    for x in orders:\n        groups.setdefault(x.customer, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from orders import load_orders, ROWS\nfrom running import running_amount\n\n\ndef test_length():\n    assert len(running_amount(list(load_orders()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_amount([]) == []\n",
+  "ISSUE.md": "final_amount(data) is too low: it leaves out the last order. running_amount(data) has 5 entries, not 6.\n"
+ },
+ "code_hash": "7d55c469987b65f5f7b34de027e23949e13d4c0c923ee226313e3abed5e16ce7",
+ "logic_file": "running.py",
+ "hidden": "from orders import load_orders, ROWS\nfrom running import running_amount, final_amount\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_amount(list(load_orders()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_amount(list(load_orders())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_amount(list(load_orders()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_amount(list(load_orders())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_amount([]) == [] and final_amount([]) == 0\n",
+ "fix": {
+  "file": "running.py",
+  "function": "running_amount",
+  "code": "def running_amount(orders):\n    \"\"\"Return the running total of amount after each order, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(orders)):\n        total += orders[i].amount\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one order early.",
+    "test": "from orders import load_orders\nfrom running import running_amount\ndata = list(load_orders())\nprint(len(running_amount(data)), len(data))\n",
+    "predict": "5 6",
+    "observed": "5 6",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the loop always stops one short, one order gives nothing and two give one entry.",
+    "test": "from orders import load_orders\nfrom running import running_amount\ndata = list(load_orders())\nprint(running_amount(data[:1]), running_amount(data[:2]))\n",
+    "predict": "[] [16]",
+    "observed": "[] [16]",
+    "seconds": 0.034
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(orders) - 1):\n+    for i in range(len(orders)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.08
+ }
+}

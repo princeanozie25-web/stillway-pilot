@@ -1,0 +1,10 @@
+{
+ "id": "dev_063",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('upper', 39), ('upper', 32), ('hill', 49), ('hill', 3), ('lower', 37), ('upper', 15)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "summary.py": "\"\"\"Summary of harvests.\"\"\"\n\n\nclass HarvestSummary:\n    def __init__(self, harvests):\n        self._harvests = harvests\n\n    def count(self):\n        \"\"\"Return how many harvests there are.\"\"\"\n        return sum(1 for _ in self._harvests)\n\n    def mean_kilos(self):\n        \"\"\"Return the mean kilos, or 0.0 when there are no harvests.\"\"\"\n        total = sum(x.kilos for x in self._harvests)\n        n = self.count()\n        return total / n if n else 0.0\n\n\ndef field_names(harvests):\n    \"\"\"Return the distinct field values, in first-seen order.\"\"\"\n    names = []\n    for x in harvests:\n        if x.field not in names:\n            names.append(x.field)\n    return names\n",
+  "tests/test_visible.py": "from harvests import load_harvests, ROWS\nfrom summary import HarvestSummary\n\nMEAN = sum(v for _, v in ROWS) / len(ROWS)\n\n\ndef test_mean_of_stored():\n    assert abs(HarvestSummary(load_harvests()).mean_kilos() - MEAN) < 1e-9\n\n\ndef test_count_of_list():\n    assert HarvestSummary(list(load_harvests())).count() == len(ROWS)\n",
+  "ISSUE.md": "HarvestSummary(load_harvests()).mean_kilos() returns 0.0, although the stored harvests have a mean kilos of 29.1667.\n"
+ },
+ "code_hash": "e0a5805048809b9140db15ff00a3b2230f79b98d4ce169aac6cf2066d2c2e120"
+}

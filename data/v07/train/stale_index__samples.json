@@ -1,0 +1,69 @@
+{
+ "id": "stale_index__samples",
+ "template": "stale_index",
+ "skin": "samples",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "samples.py": "\"\"\"Sample records.\"\"\"\n\n\nclass Sample:\n    def __init__(self, batch, dose):\n        self.batch = batch\n        self.dose = dose\n\n    def __repr__(self):\n        return \"Sample(%r, %r)\" % (self.batch, self.dose)\n\n\nROWS = [('b2', 11), ('b1', 18), ('b4', 25), ('b1', 30), ('b2', 35)]\n\n\ndef load_samples():\n    \"\"\"Yield the stored samples one at a time.\"\"\"\n    for batch, dose in ROWS:\n        yield Sample(batch, dose)\n",
+  "catalog.py": "\"\"\"Registry of samples by batch.\"\"\"\n\n_ALL = []\n_BY_KEY = None\n\n\ndef reset():\n    \"\"\"Forget every registered sample.\"\"\"\n    global _BY_KEY\n    del _ALL[:]\n    _BY_KEY = None\n\n\ndef register(sample):\n    \"\"\"Add one sample to the registry.\"\"\"\n    _ALL.append(sample)\n\n\ndef find(batch):\n    \"\"\"Return the samples registered under this batch.\"\"\"\n    global _BY_KEY\n    if _BY_KEY is None:\n        _BY_KEY = {}\n        for x in _ALL:\n            _BY_KEY.setdefault(x.batch, []).append(x)\n    return _BY_KEY.get(batch, [])\n",
+  "tests/test_visible.py": "from samples import Sample\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Sample(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Sample(\"k1\", 7))\n    assert len(reg.find(\"k1\")) == 2\n\n\ndef test_register_then_find():\n    reg.reset()\n    reg.register(Sample(\"k1\", 5))\n    reg.register(Sample(\"k2\", 6))\n    assert [x.dose for x in reg.find(\"k2\")] == [6]\n",
+  "ISSUE.md": "A sample registered after the first find() never shows up in find(). Registering everything before the first find() works.\n"
+ },
+ "code_hash": "c40bb00c9b2a8a425b2fed183e5e503b29c72782f3c9ed8646807295c4d64114",
+ "logic_file": "catalog.py",
+ "hidden": "from samples import Sample\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Sample(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Sample(\"k1\", 7))\n    assert [x.dose for x in reg.find(\"k1\")] == [5, 7]\n\n\ndef test_late_new_key():\n    reg.reset()\n    reg.register(Sample(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.register(Sample(\"k9\", 2))\n    assert [x.dose for x in reg.find(\"k9\")] == [2]\n\n\ndef test_unknown_key():\n    reg.reset()\n    reg.register(Sample(\"k1\", 5))\n    assert reg.find(\"nope\") == []\n\n\ndef test_reset():\n    reg.reset()\n    reg.register(Sample(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.reset()\n    assert reg.find(\"k1\") == []\n",
+ "fix": {
+  "file": "catalog.py",
+  "function": "find",
+  "code": "def find(batch):\n    \"\"\"Return the samples registered under this batch.\"\"\"\n    return [x for x in _ALL if x.batch == batch]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "find() may answer from an index built on the first call that register() does not refresh.",
+    "test": "from samples import Sample\nimport catalog as reg\nreg.reset()\nreg.register(Sample(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Sample(\"k1\", 7))\nprint(len(reg.find(\"k1\")), sum(1 for x in reg._ALL if x.batch == \"k1\"))\n",
+    "predict": "1 2",
+    "observed": "1 2",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the remembered index is cleared, find() should see both, so looking through the list on every call is enough.",
+    "test": "from samples import Sample\nimport catalog as reg\nreg.reset()\nreg.register(Sample(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Sample(\"k1\", 7))\nreg._BY_KEY = None\nprint(len(reg.find(\"k1\")))\n",
+    "predict": "2",
+    "observed": "2",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "Stale remembered index. Look through the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_register_then_find": "PASS"
+   },
+   "hidden": {
+    "test_late_new_key": "FAIL AssertionError: ",
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 7,
+   "diff": "-    global _BY_KEY\n-    if _BY_KEY is None:\n-        _BY_KEY = {}\n-        for x in _ALL:\n-            _BY_KEY.setdefault(x.batch, []).append(x)\n-    return _BY_KEY.get(batch, [])\n+    return [x for x in _ALL if x.batch == batch]",
+   "hidden": {
+    "test_late_new_key": "PASS",
+    "test_late_registration": "PASS",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

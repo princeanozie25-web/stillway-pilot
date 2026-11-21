@@ -1,0 +1,44 @@
+{
+ "id": "dev_033",
+ "source": "sort_text_numbers__donations",
+ "template": "sort_text_numbers",
+ "skin": "donations",
+ "group": "G4",
+ "symptom": "X4",
+ "cause": "TEXTSORT",
+ "role": null,
+ "hidden": "from donations import Donation, load_donations, ROWS\nfrom sequence import ranked_codes\n\n\ndef test_nine_before_ten():\n    assert ranked_codes([Donation(\"a\", 10), Donation(\"b\", 9)]) == [\"9\", \"10\"]\n\n\ndef test_mixed_lengths():\n    assert ranked_codes([Donation(\"a\", 100), Donation(\"b\", 25), Donation(\"c\", 9), Donation(\"d\", 1000)]) == [\"9\", \"25\", \"100\", \"1000\"]\n\n\ndef test_stored():\n    assert ranked_codes(list(load_donations())) == [str(v) for v in sorted(v for _, v in ROWS)]\n\n\ndef test_codes_are_text():\n    assert all(isinstance(c, str) for c in ranked_codes(list(load_donations())))\n\n\ndef test_empty():\n    assert ranked_codes([]) == []\n",
+ "fix": {
+  "file": "sequence.py",
+  "function": "ranked_codes",
+  "code": "def ranked_codes(donations):\n    \"\"\"Return the pounds of each donation as a text code, from the lowest number to the highest.\"\"\"\n    return [str(v) for v in sorted(x.pounds for x in donations)]\n"
+ },
+ "oldfix": null,
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_nine_before_ten": "FAIL AssertionError: ",
+    "test_single_digits": "PASS"
+   },
+   "hidden": {
+    "test_codes_are_text": "PASS",
+    "test_empty": "PASS",
+    "test_mixed_lengths": "FAIL AssertionError: ",
+    "test_nine_before_ten": "FAIL AssertionError: ",
+    "test_stored": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    return sorted(str(x.pounds) for x in donations)\n+    return [str(v) for v in sorted(x.pounds for x in donations)]",
+   "hidden": {
+    "test_codes_are_text": "PASS",
+    "test_empty": "PASS",
+    "test_mixed_lengths": "PASS",
+    "test_nine_before_ten": "PASS",
+    "test_stored": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

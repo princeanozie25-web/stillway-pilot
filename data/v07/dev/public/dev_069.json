@@ -1,0 +1,10 @@
+{
+ "id": "dev_069",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('rovers', 14), ('city', 51), ('city', 6), ('city', 39), ('united', 32), ('city', 54)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "tagged.py": "\"\"\"Labels for the goals of fixtures.\"\"\"\n\n\ndef labelled_goalss(fixtures, labels):\n    \"\"\"Pair each fixture's goals with its label, in order. fixtures beyond the end of `labels` get the label 'unlabelled'.\"\"\"\n    return [(labels[i], fixtures[i].goals) for i in range(len(labels))]\n\n\ndef label_width(labels):\n    \"\"\"Return the length of the longest label, or 0 when there are none.\"\"\"\n    return max((len(text) for text in labels), default=0)\n",
+  "tests/test_visible.py": "from fixtures import load_fixtures, ROWS\nfrom tagged import labelled_goalss\n\n\ndef test_fewer_labels():\n    data = list(load_fixtures())\n    pairs = labelled_goalss(data, [\"a\", \"b\"])\n    assert len(pairs) == len(ROWS) and pairs[-1] == (\"unlabelled\", ROWS[-1][1])\n\n\ndef test_equal_lengths():\n    data = list(load_fixtures())\n    labels = [\"l%d\" % i for i in range(len(data))]\n    assert labelled_goalss(data, labels)[-1] == (labels[-1], ROWS[-1][1])\n",
+  "ISSUE.md": "labelled_goalss(data, labels) leaves out the last fixtures when I pass fewer labels than fixtures. I expected them at the end with the label 'unlabelled'.\n"
+ },
+ "code_hash": "2c661d677389b899c39af1fd3149a65fb6141c508bf775e74cc49203723e9f02"
+}

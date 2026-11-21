@@ -1,0 +1,77 @@
+{
+ "id": "lost_write__parcels",
+ "template": "lost_write",
+ "skin": "parcels",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "LOSTWRITE",
+ "role": "alternate",
+ "group": null,
+ "repo": {
+  "parcels.py": "\"\"\"Parcel records.\"\"\"\n\n\nclass Parcel:\n    def __init__(self, depot, grams):\n        self.depot = depot\n        self.grams = grams\n\n    def __repr__(self):\n        return \"Parcel(%r, %r)\" % (self.depot, self.grams)\n\n\nROWS = [('leeds', 55), ('york', 20), ('hull', 31), ('bath', 45), ('leeds', 40), ('leeds', 13), ('york', 24)]\n\n\ndef load_parcels():\n    \"\"\"Yield the stored parcels one at a time.\"\"\"\n    for depot, grams in ROWS:\n        yield Parcel(depot, grams)\n",
+  "tally.py": "\"\"\"A ledger of parcels.\"\"\"\n\n\nclass ParcelLedger:\n    def __init__(self, parcels=()):\n        self._parcels = list(parcels)\n\n    def parcels(self):\n        \"\"\"Return the parcels held (a copy, so callers cannot change the ledger).\"\"\"\n        return list(self._parcels)\n\n    def add(self, parcel):\n        \"\"\"Add one parcel to the ledger.\"\"\"\n        self.parcels().append(parcel)\n\n    def total(self):\n        \"\"\"Return the total grams of the parcels held.\"\"\"\n        return sum(x.grams for x in self._parcels)\n\n\ndef largest_grams(parcels):\n    \"\"\"Return the largest grams, or None when there are no parcels.\"\"\"\n    values = [x.grams for x in parcels]\n    return max(values) if values else None\n\n\ndef depot_names(parcels):\n    \"\"\"Return the distinct depot values, in first-seen order.\"\"\"\n    names = []\n    for x in parcels:\n        if x.depot not in names:\n            names.append(x.depot)\n    return names\n",
+  "tests/test_visible.py": "from parcels import load_parcels, ROWS\nfrom tally import ParcelLedger\n\n\ndef test_total_after_add():\n    rows = list(load_parcels())\n    ledger = ParcelLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_copy_is_safe():\n    rows = list(load_parcels())\n    ledger = ParcelLedger(rows[:2])\n    ledger.parcels().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n",
+  "ISSUE.md": "After I add a parcel, total() still returns the old total.\n"
+ },
+ "code_hash": "3e09939af5113dac631249c7940b2da18a8e657b3b5bd42682f1a68167820f79",
+ "logic_file": "tally.py",
+ "hidden": "from parcels import load_parcels, ROWS\nfrom tally import ParcelLedger\n\n\ndef test_total_after_add():\n    rows = list(load_parcels())\n    ledger = ParcelLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_add_to_empty():\n    rows = list(load_parcels())\n    ledger = ParcelLedger()\n    for x in rows:\n        ledger.add(x)\n    assert ledger.total() == sum(v for _, v in ROWS) and len(ledger.parcels()) == len(ROWS)\n\n\ndef test_copy_is_safe():\n    rows = list(load_parcels())\n    ledger = ParcelLedger(rows[:2])\n    ledger.parcels().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_initial_total():\n    assert ParcelLedger(load_parcels()).total() == sum(v for _, v in ROWS)\n",
+ "fix": {
+  "file": "tally.py",
+  "function": "add",
+  "code": "def add(self, parcel):\n    \"\"\"Add one parcel to the ledger.\"\"\"\n    self._parcels.append(parcel)\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "Either total() returns a remembered value that add() does not refresh, or add() never stores the parcel.",
+    "test": "from parcels import load_parcels\nfrom tally import ParcelLedger\nrows = list(load_parcels())\nledger = ParcelLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.grams for x in ledger._parcels), len(ledger._parcels))\n",
+    "predict": "55 55 1",
+    "observed": "55 55 1",
+    "seconds": 0.034
+   },
+   {
+    "suspect": "total() agrees with the list, and the list did not grow: add() loses the parcel. Appending to the real list should give the right total.",
+    "test": "from parcels import load_parcels\nfrom tally import ParcelLedger\nrows = list(load_parcels())\nledger = ParcelLedger(rows[:1])\nledger._parcels.append(rows[1])\nprint(ledger.total())\n",
+    "predict": "75",
+    "observed": "75",
+    "seconds": 0.035
+   }
+  ],
+  "cause": "Not a stale value: add() appends to a copy, so the parcel is lost. Append to the real list."
+ },
+ "naive": {
+  "step": 1,
+  "suspect": "total() may return a remembered value that add() does not refresh.",
+  "test": "from parcels import load_parcels\nfrom tally import ParcelLedger\nrows = list(load_parcels())\nledger = ParcelLedger(rows[:1])\nledger.add(rows[1])\nprint(ledger.total(), sum(x.grams for x in ledger._parcels))\n",
+  "predict": "55 75",
+  "observed": "55 55",
+  "seconds": 0.032
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_copy_is_safe": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_add_to_empty": "FAIL AssertionError: ",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-        self.parcels().append(parcel)\n+        self._parcels.append(parcel)",
+   "hidden": {
+    "test_add_to_empty": "PASS",
+    "test_copy_is_safe": "PASS",
+    "test_initial_total": "PASS",
+    "test_total_after_add": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

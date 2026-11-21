@@ -1,0 +1,71 @@
+{
+ "id": "bound_loop__trades",
+ "template": "bound_loop",
+ "skin": "trades",
+ "split": "train",
+ "symptom": "S3",
+ "cause": "BOUND",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "trades.py": "\"\"\"Trade records.\"\"\"\n\n\nclass Trade:\n    def __init__(self, desk, volume):\n        self.desk = desk\n        self.volume = volume\n\n    def __repr__(self):\n        return \"Trade(%r, %r)\" % (self.desk, self.volume)\n\n\nROWS = [('energy', 13), ('metals', 29), ('bonds', 17), ('metals', 4), ('fx', 10), ('bonds', 34)]\n\n\ndef load_trades():\n    \"\"\"Yield the stored trades one at a time.\"\"\"\n    for desk, volume in ROWS:\n        yield Trade(desk, volume)\n",
+  "cumulative.py": "\"\"\"Running totals over trades.\"\"\"\n\n\ndef running_volume(trades):\n    \"\"\"Return the running total of volume after each trade, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(trades) - 1):\n        total += trades[i].volume\n        out.append(total)\n    return out\n\n\ndef final_volume(trades):\n    \"\"\"Return the total volume of all trades, or 0 when there are none.\"\"\"\n    totals = running_volume(trades)\n    return totals[-1] if totals else 0\n\n\ndef describe_trade(trade):\n    \"\"\"Return a one-line description of a trade.\"\"\"\n    return \"%s: %s\" % (trade.desk, trade.volume)\n\n\ndef group_by_desk(trades):\n    \"\"\"Return a dict from desk to the list of trades with that desk.\"\"\"\n    groups = {}\n    for x in trades:\n        groups.setdefault(x.desk, []).append(x)\n    return groups\n",
+  "tests/test_visible.py": "from trades import load_trades, ROWS\nfrom cumulative import running_volume\n\n\ndef test_length():\n    assert len(running_volume(list(load_trades()))) == len(ROWS)\n\n\ndef test_empty():\n    assert running_volume([]) == []\n",
+  "ISSUE.md": "final_volume(data) is too low: it leaves out the last trade. running_volume(data) has 5 entries, not 6.\n"
+ },
+ "code_hash": "43de3b07fe2e8a075c7c412c8efcc1f26243a2e2c5a505ed9171ae0258b44b85",
+ "logic_file": "cumulative.py",
+ "hidden": "from trades import load_trades, ROWS\nfrom cumulative import running_volume, final_volume\n\nVALUES = [v for _, v in ROWS]\n\n\ndef test_length():\n    assert len(running_volume(list(load_trades()))) == len(ROWS)\n\n\ndef test_final():\n    assert final_volume(list(load_trades())) == sum(VALUES)\n\n\ndef test_first_entry():\n    assert running_volume(list(load_trades()))[0] == VALUES[0]\n\n\ndef test_single():\n    assert running_volume(list(load_trades())[:1]) == [VALUES[0]]\n\n\ndef test_empty():\n    assert running_volume([]) == [] and final_volume([]) == 0\n",
+ "fix": {
+  "file": "cumulative.py",
+  "function": "running_volume",
+  "code": "def running_volume(trades):\n    \"\"\"Return the running total of volume after each trade, in order.\"\"\"\n    out = []\n    total = 0\n    for i in range(len(trades)):\n        total += trades[i].volume\n        out.append(total)\n    return out\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "The loop may stop one trade early.",
+    "test": "from trades import load_trades\nfrom cumulative import running_volume\ndata = list(load_trades())\nprint(len(running_volume(data)), len(data))\n",
+    "predict": "5 6",
+    "observed": "5 6",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the loop always stops one short, one trade gives nothing and two give one entry.",
+    "test": "from trades import load_trades\nfrom cumulative import running_volume\ndata = list(load_trades())\nprint(running_volume(data[:1]), running_volume(data[:2]))\n",
+    "predict": "[] [13]",
+    "observed": "[] [13]",
+    "seconds": 0.033
+   }
+  ],
+  "cause": "The loop bound stops one short. Extend it by one."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_empty": "PASS",
+    "test_length": "FAIL AssertionError: "
+   },
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "FAIL AssertionError: ",
+    "test_first_entry": "PASS",
+    "test_length": "FAIL AssertionError: ",
+    "test_single": "FAIL AssertionError: "
+   }
+  },
+  "fix": {
+   "changed_lines": 2,
+   "diff": "-    for i in range(len(trades) - 1):\n+    for i in range(len(trades)):",
+   "hidden": {
+    "test_empty": "PASS",
+    "test_final": "PASS",
+    "test_first_entry": "PASS",
+    "test_length": "PASS",
+    "test_single": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

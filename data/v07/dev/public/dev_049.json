@@ -1,0 +1,10 @@
+{
+ "id": "dev_049",
+ "repo": {
+  "fixtures.py": "\"\"\"Fixture records.\"\"\"\n\n\nclass Fixture:\n    def __init__(self, club, goals):\n        self.club = club\n        self.goals = goals\n\n    def __repr__(self):\n        return \"Fixture(%r, %r)\" % (self.club, self.goals)\n\n\nROWS = [('rovers', 30), ('town', 21), ('rovers', 50), ('united', 31), ('rovers', 22), ('united', 42), ('rovers', 40)]\n\n\ndef load_fixtures():\n    \"\"\"Yield the stored fixtures one at a time.\"\"\"\n    for club, goals in ROWS:\n        yield Fixture(club, goals)\n",
+  "holdings.py": "\"\"\"A ledger of fixtures.\"\"\"\n\n\nclass FixtureLedger:\n    def __init__(self, fixtures=()):\n        self._fixtures = list(fixtures)\n\n    def fixtures(self):\n        \"\"\"Return the fixtures held (a copy, so callers cannot change the ledger).\"\"\"\n        return list(self._fixtures)\n\n    def add(self, fixture):\n        \"\"\"Add one fixture to the ledger.\"\"\"\n        self.fixtures().append(fixture)\n\n    def total(self):\n        \"\"\"Return the total goals of the fixtures held.\"\"\"\n        return sum(x.goals for x in self._fixtures)\n\n\ndef describe_fixture(fixture):\n    \"\"\"Return a one-line description of a fixture.\"\"\"\n    return \"%s: %s\" % (fixture.club, fixture.goals)\n\n\ndef largest_goals(fixtures):\n    \"\"\"Return the largest goals, or None when there are no fixtures.\"\"\"\n    values = [x.goals for x in fixtures]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from fixtures import load_fixtures, ROWS\nfrom holdings import FixtureLedger\n\n\ndef test_total_after_add():\n    rows = list(load_fixtures())\n    ledger = FixtureLedger(rows[:1])\n    ledger.add(rows[1])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n\n\ndef test_copy_is_safe():\n    rows = list(load_fixtures())\n    ledger = FixtureLedger(rows[:2])\n    ledger.fixtures().append(rows[2])\n    assert ledger.total() == ROWS[0][1] + ROWS[1][1]\n",
+  "ISSUE.md": "After I add a fixture, total() still returns the old total.\n"
+ },
+ "code_hash": "2194a7354483d05fa911d2f6ab8b89f58d71453bed117c73a8627392ceba0ab8"
+}

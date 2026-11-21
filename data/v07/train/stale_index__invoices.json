@@ -1,0 +1,69 @@
+{
+ "id": "stale_index__invoices",
+ "template": "stale_index",
+ "skin": "invoices",
+ "split": "train",
+ "symptom": "S2",
+ "cause": "STALE",
+ "role": "prior",
+ "group": null,
+ "repo": {
+  "invoices.py": "\"\"\"Invoice records.\"\"\"\n\n\nclass Invoice:\n    def __init__(self, client, due):\n        self.client = client\n        self.due = due\n\n    def __repr__(self):\n        return \"Invoice(%r, %r)\" % (self.client, self.due)\n\n\nROWS = [('hale', 30), ('juno', 42), ('hale', 9), ('hale', 3), ('juno', 32), ('ivory', 31), ('ivory', 19)]\n\n\ndef load_invoices():\n    \"\"\"Yield the stored invoices one at a time.\"\"\"\n    for client, due in ROWS:\n        yield Invoice(client, due)\n",
+  "catalog.py": "\"\"\"Registry of invoices by client.\"\"\"\n\n_ALL = []\n_BY_KEY = None\n\n\ndef reset():\n    \"\"\"Forget every registered invoice.\"\"\"\n    global _BY_KEY\n    del _ALL[:]\n    _BY_KEY = None\n\n\ndef register(invoice):\n    \"\"\"Add one invoice to the registry.\"\"\"\n    _ALL.append(invoice)\n\n\ndef find(client):\n    \"\"\"Return the invoices registered under this client.\"\"\"\n    global _BY_KEY\n    if _BY_KEY is None:\n        _BY_KEY = {}\n        for x in _ALL:\n            _BY_KEY.setdefault(x.client, []).append(x)\n    return _BY_KEY.get(client, [])\n",
+  "tests/test_visible.py": "from invoices import Invoice\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Invoice(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Invoice(\"k1\", 7))\n    assert len(reg.find(\"k1\")) == 2\n\n\ndef test_register_then_find():\n    reg.reset()\n    reg.register(Invoice(\"k1\", 5))\n    reg.register(Invoice(\"k2\", 6))\n    assert [x.due for x in reg.find(\"k2\")] == [6]\n",
+  "ISSUE.md": "A invoice registered after the first find() never shows up in find(). Registering everything before the first find() works.\n"
+ },
+ "code_hash": "de14fce49946c27addead5ec4e22ab34ff4450b0916062a9b5da6f4f1265ee01",
+ "logic_file": "catalog.py",
+ "hidden": "from invoices import Invoice\nimport catalog as reg\n\n\ndef test_late_registration():\n    reg.reset()\n    reg.register(Invoice(\"k1\", 5))\n    assert len(reg.find(\"k1\")) == 1\n    reg.register(Invoice(\"k1\", 7))\n    assert [x.due for x in reg.find(\"k1\")] == [5, 7]\n\n\ndef test_late_new_key():\n    reg.reset()\n    reg.register(Invoice(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.register(Invoice(\"k9\", 2))\n    assert [x.due for x in reg.find(\"k9\")] == [2]\n\n\ndef test_unknown_key():\n    reg.reset()\n    reg.register(Invoice(\"k1\", 5))\n    assert reg.find(\"nope\") == []\n\n\ndef test_reset():\n    reg.reset()\n    reg.register(Invoice(\"k1\", 5))\n    reg.find(\"k1\")\n    reg.reset()\n    assert reg.find(\"k1\") == []\n",
+ "fix": {
+  "file": "catalog.py",
+  "function": "find",
+  "code": "def find(client):\n    \"\"\"Return the invoices registered under this client.\"\"\"\n    return [x for x in _ALL if x.client == client]\n"
+ },
+ "oldfix": null,
+ "teacher": {
+  "probes": [
+   {
+    "suspect": "find() may answer from an index built on the first call that register() does not refresh.",
+    "test": "from invoices import Invoice\nimport catalog as reg\nreg.reset()\nreg.register(Invoice(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Invoice(\"k1\", 7))\nprint(len(reg.find(\"k1\")), sum(1 for x in reg._ALL if x.client == \"k1\"))\n",
+    "predict": "1 2",
+    "observed": "1 2",
+    "seconds": 0.033
+   },
+   {
+    "suspect": "If the remembered index is cleared, find() should see both, so looking through the list on every call is enough.",
+    "test": "from invoices import Invoice\nimport catalog as reg\nreg.reset()\nreg.register(Invoice(\"k1\", 5))\nreg.find(\"k1\")\nreg.register(Invoice(\"k1\", 7))\nreg._BY_KEY = None\nprint(len(reg.find(\"k1\")))\n",
+    "predict": "2",
+    "observed": "2",
+    "seconds": 0.032
+   }
+  ],
+  "cause": "Stale remembered index. Look through the list on every call."
+ },
+ "verified": {
+  "savepoint": {
+   "visible": {
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_register_then_find": "PASS"
+   },
+   "hidden": {
+    "test_late_new_key": "FAIL AssertionError: ",
+    "test_late_registration": "FAIL AssertionError: ",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "fix": {
+   "changed_lines": 7,
+   "diff": "-    global _BY_KEY\n-    if _BY_KEY is None:\n-        _BY_KEY = {}\n-        for x in _ALL:\n-            _BY_KEY.setdefault(x.client, []).append(x)\n-    return _BY_KEY.get(client, [])\n+    return [x for x in _ALL if x.client == client]",
+   "hidden": {
+    "test_late_new_key": "PASS",
+    "test_late_registration": "PASS",
+    "test_reset": "PASS",
+    "test_unknown_key": "PASS"
+   }
+  },
+  "seconds": 0.07
+ }
+}

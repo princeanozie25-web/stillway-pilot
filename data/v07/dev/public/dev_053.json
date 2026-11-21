@@ -1,0 +1,10 @@
+{
+ "id": "dev_053",
+ "repo": {
+  "harvests.py": "\"\"\"Harvest records.\"\"\"\n\n\nclass Harvest:\n    def __init__(self, field, kilos):\n        self.field = field\n        self.kilos = kilos\n\n    def __repr__(self):\n        return \"Harvest(%r, %r)\" % (self.field, self.kilos)\n\n\nROWS = [('lower', 31), ('upper', 19), ('upper', 44), ('lower', 23), ('lower', 9)]\n\n\ndef load_harvests():\n    \"\"\"Yield the stored harvests one at a time.\"\"\"\n    for field, kilos in ROWS:\n        yield Harvest(field, kilos)\n",
+  "naming.py": "\"\"\"Labels for harvests.\"\"\"\n\n\ndef label_harvests(names, harvests):\n    \"\"\"Return (lookup, lines): a name -> kilos dict and one 'name: kilos' line per harvest.\"\"\"\n    pairs = zip(names, (x.kilos for x in harvests))\n    lookup = dict(pairs)\n    lines = [\"%s: %s\" % (name, value) for name, value in pairs]\n    return lookup, lines\n\n\ndef name_list(names):\n    \"\"\"Return the names joined by commas.\"\"\"\n    return \", \".join(names)\n",
+  "tests/test_visible.py": "from harvests import load_harvests, ROWS\nfrom naming import label_harvests\n\nNAMES = [\"n%d\" % i for i in range(len(ROWS))]\n\n\ndef test_lines_present():\n    lookup, lines = label_harvests(NAMES, load_harvests())\n    assert len(lines) == len(ROWS)\n\n\ndef test_lookup():\n    lookup, lines = label_harvests(NAMES, load_harvests())\n    assert lookup[\"n0\"] == ROWS[0][1]\n",
+  "ISSUE.md": "label_harvests gives me the lookup, but `lines` is always empty. I expected one line per harvest.\n"
+ },
+ "code_hash": "8599210f39e4b8957912ab1ff8ed6c2b4e79044d2e8dc13d38746a3b35ea04e7"
+}

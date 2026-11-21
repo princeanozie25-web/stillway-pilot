@@ -1,0 +1,10 @@
+{
+ "id": "dev_046",
+ "repo": {
+  "donations.py": "\"\"\"Donation records.\"\"\"\n\n\nclass Donation:\n    def __init__(self, donor, pounds):\n        self.donor = donor\n        self.pounds = pounds\n\n    def __repr__(self):\n        return \"Donation(%r, %r)\" % (self.donor, self.pounds)\n\n\nROWS = [('noor', 40), ('mia', 15), ('noor', 16), ('mia', 24), ('noor', 44)]\n\n\ndef load_donations():\n    \"\"\"Yield the stored donations one at a time.\"\"\"\n    for donor, pounds in ROWS:\n        yield Donation(donor, pounds)\n",
+  "changes.py": "\"\"\"Changes in pounds from one donation to the next.\"\"\"\n\n\ndef pounds_changes(donations):\n    \"\"\"Return the change in pounds from each donation to the next: one entry for every neighbouring pair.\"\"\"\n    out = []\n    for i in range(2, len(donations)):\n        out.append(donations[i].pounds - donations[i - 1].pounds)\n    return out\n\n\ndef biggest_rise(donations):\n    \"\"\"Return the largest increase between neighbours, or 0 when there is none.\"\"\"\n    rises = [c for c in pounds_changes(donations) if c > 0]\n    return max(rises) if rises else 0\n\n\ndef largest_pounds(donations):\n    \"\"\"Return the largest pounds, or None when there are no donations.\"\"\"\n    values = [x.pounds for x in donations]\n    return max(values) if values else None\n",
+  "tests/test_visible.py": "from donations import load_donations, ROWS\nfrom changes import pounds_changes\n\n\ndef test_number_of_changes():\n    assert len(pounds_changes(list(load_donations()))) == len(ROWS) - 1\n\n\ndef test_single_item():\n    assert pounds_changes(list(load_donations())[:1]) == []\n",
+  "ISSUE.md": "pounds_changes(data) has 3 entries for 5 donations. I expected 4: the change from the first donation to the second is missing.\n"
+ },
+ "code_hash": "605259009503dbc4488405bd6d28a6865f8875325084e5924f7e417ea57de2af"
+}
