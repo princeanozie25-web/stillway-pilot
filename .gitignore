@@ -4,3 +4,8 @@ __pycache__/
 nohup.out
 # state dictionaries are large (110 MB in total) and are rebuilt by `python -m stillway.evaluate`
 runs/*/dictionary_*.json
+# v0.2: per-chunk working files are large and are rebuilt by the v02 scripts; merged reports and maps are kept
+results/v02/maps20/*/chunk_*.json
+results/v02/expanded/*/chunk_*.json
+results/v02/counterexample/*/chunk_*.json
+runs/v2p_*/

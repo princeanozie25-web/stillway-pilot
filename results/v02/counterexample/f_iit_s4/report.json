@@ -1,0 +1,509 @@
+{
+ "episodes": 393216,
+ "failed": 20,
+ "rate": 5.0862630208333336e-05,
+ "by": {
+  "fields:dock+bay": {
+   "n": 147456,
+   "failed": 20
+  },
+  "fields:dock+gate": {
+   "n": 98304,
+   "failed": 0
+  },
+  "fields:gate+bay": {
+   "n": 147456,
+   "failed": 0
+  },
+  "split:dev": {
+   "n": 61440,
+   "failed": 2
+  },
+  "split:sealed": {
+   "n": 96768,
+   "failed": 12
+  },
+  "split:train": {
+   "n": 235008,
+   "failed": 6
+  },
+  "stage:DOCK": {
+   "n": 98304,
+   "failed": 0
+  },
+  "stage:LEG1": {
+   "n": 98304,
+   "failed": 20
+  },
+  "stage:LEG2": {
+   "n": 98304,
+   "failed": 0
+  },
+  "stage:PLAN": {
+   "n": 98304,
+   "failed": 0
+  }
+ },
+ "witnesses": [
+  {
+   "family": "KO-KO",
+   "split": "train",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KO-KO",
+    "layout": {
+     "leg1": {
+      "L": "K",
+      "R": "O"
+     },
+     "leg2": {
+      "L": "K",
+      "R": "O"
+     }
+    },
+    "gate0": 0,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 0,
+     "gate": 0,
+     "bay": 1
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "KO-KO",
+   "split": "train",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KO-KO",
+    "layout": {
+     "leg1": {
+      "L": "K",
+      "R": "O"
+     },
+     "leg2": {
+      "L": "O",
+      "R": "K"
+     }
+    },
+    "gate0": 0,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 0,
+     "gate": 0,
+     "bay": 1
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "KO-KO",
+   "split": "train",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KO-KO",
+    "layout": {
+     "leg1": {
+      "L": "K",
+      "R": "O"
+     },
+     "leg2": {
+      "L": "O",
+      "R": "K"
+     }
+    },
+    "gate0": 0,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 1,
+     "gate": 0,
+     "bay": 1
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "TC-KO",
+   "split": "train",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "TC-KO",
+    "layout": {
+     "leg1": {
+      "L": "T",
+      "R": "C"
+     },
+     "leg2": {
+      "L": "K",
+      "R": "O"
+     }
+    },
+    "gate0": 0,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 1,
+     "gate": 0,
+     "bay": 2
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       1
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       0
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "KC-KK",
+   "split": "train",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KC-KK",
+    "layout": {
+     "leg1": {
+      "L": "C",
+      "R": "K"
+     },
+     "leg2": {
+      "L": "K",
+      "R": "K"
+     }
+    },
+    "gate0": 1,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 0,
+     "gate": 0,
+     "bay": 1
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "KC-KK",
+   "split": "train",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KC-KK",
+    "layout": {
+     "leg1": {
+      "L": "C",
+      "R": "K"
+     },
+     "leg2": {
+      "L": "K",
+      "R": "K"
+     }
+    },
+    "gate0": 1,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 1,
+     "gate": 0,
+     "bay": 1
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "KO-KK",
+   "split": "sealed",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KO-KK",
+    "layout": {
+     "leg1": {
+      "L": "K",
+      "R": "O"
+     },
+     "leg2": {
+      "L": "K",
+      "R": "K"
+     }
+    },
+    "gate0": 0,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 0,
+     "gate": 0,
+     "bay": 1
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "KO-KK",
+   "split": "sealed",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KO-KK",
+    "layout": {
+     "leg1": {
+      "L": "K",
+      "R": "O"
+     },
+     "leg2": {
+      "L": "K",
+      "R": "K"
+     }
+    },
+    "gate0": 0,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 1,
+     "gate": 0,
+     "bay": 0
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "KO-KK",
+   "split": "sealed",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KO-KK",
+    "layout": {
+     "leg1": {
+      "L": "K",
+      "R": "O"
+     },
+     "leg2": {
+      "L": "K",
+      "R": "K"
+     }
+    },
+    "gate0": 0,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 1,
+     "gate": 0,
+     "bay": 1
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "family": "KO-KK",
+   "split": "sealed",
+   "first_invalid_stage": "LEG1",
+   "episode": {
+    "id": "",
+    "family": "KO-KK",
+    "layout": {
+     "leg1": {
+      "L": "K",
+      "R": "O"
+     },
+     "leg2": {
+      "L": "K",
+      "R": "K"
+     }
+    },
+    "gate0": 0,
+    "decor": 0,
+    "closed_bay": null,
+    "order": {
+     "dock": 1,
+     "gate": 0,
+     "bay": 2
+    },
+    "book": "closed",
+    "events": [
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "dock",
+       0
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "event": [
+       "msg",
+       "bay",
+       2
+      ]
+     }
+    ]
+   }
+  }
+ ]
+}
