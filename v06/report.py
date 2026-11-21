@@ -38,10 +38,10 @@ if nov:
 if seen:
     cw = np.mean([r["cautious_wrong"] for p in seen for i in range(len(B)) for r in p["curves"]["chosen/tables"][i]])
     rule("L3. A rule seen before is recognised within 16 chosen audits with no cautious error", med(seen, "chosen/tables", 1.0) <= 16 and cw == 0, f"audits to 100%: {show(med(seen, 'chosen/tables', 1.0))}; cautious wrong {100 * cw:.3f}%")
-ok4 = []; det = []
+ok4 = []; det = []      # one budget step = a factor of two (a median over an even number of rules can fall between budgets)
 for gname, g in groups.items():
     if not g: continue
     best = min(med(g, f"passive/{a}") for a in ("scratch", "bank_row", "tables", "programs")); s_ = med(g, "passive/selector")
-    ok4.append(s_ < INF and (best == INF or step[s_] <= step[best] + 1)); det.append(f"{gname.split(' (')[0]}: selector {show(s_)}, best single {show(best)}")
+    ok4.append(s_ < INF and (best == INF or s_ <= 2 * best)); det.append(f"{gname.split(' (')[0]}: selector {show(s_)}, best single {show(best)}")
 rule("L4. The selector is within one budget step of the best single learner in both groups", all(ok4), "; ".join(det))
 open(f"results/v06/{name}_tables.md", "w").write("\n".join(P) + "\n"); json.dump(S, open(f"results/v06/{name}_rules.json", "w"), indent=1); print("\n".join(P))
