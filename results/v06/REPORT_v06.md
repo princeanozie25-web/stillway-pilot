@@ -95,3 +95,17 @@ python v06/report.py cldr_cardinal
 ```
 
 Data: `plurals.json` (77 kB) and `ordinals.json` (20 kB) from `unicode-org/cldr-json`, in `data/external/cldr/`, fetched after the freeze commit.
+
+## 8. Addendum: the hidden family from Codex (run after this report)
+
+Run once at commit `e84c46e`, outputs locked in `b7120cd` before the author's breakdown was requested. Memo: `docs/v06_codex_hidden_memo.md`. Tables: `results/v06/codex_hidden_tables.md`.
+
+| Rule (frozen) | Codex's hidden family (14 novel, 6 seen new policies; 1,440 cases; 4 decisions) |
+|---|---|
+| L1. Experience helps on novel rules | **Fail**: 512 audits against 512 from scratch |
+| L2. Programs need no more audits than bank rows on novel rules | Pass, emptily: programs 976, bank rows never; both worse than scratch |
+| L3. A rule seen before is recognised exactly within 16 chosen audits, no cautious error | **Pass**: 4 audits, 0 errors |
+| L4. The selector is within one budget step of the best single learner | Pass: 512 against 512; 6 against 4 |
+| L5. Choosing audits helps the selector on novel rules | **Fail**: 512 either way |
+
+**The verdict of section 1 does not carry to this family.** "Experience makes a novel policy cheaper to learn" held on the two Unicode families and failed on the one family I had no hand in. Recognising a rule seen before held on all three. Section 5's design reading should be taken with that correction: the bank's value shown so far is recognition, not transfer.

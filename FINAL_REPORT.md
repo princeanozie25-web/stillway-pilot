@@ -383,8 +383,8 @@ Regression ticket from v0.4: the seed-4 count of 19 against 20 reproduces on one
 | 29 | The compiled planner beats the best qualifying neural comparator on compute, latency and bytes. | v0.4 | Vacuous: no other neural arm qualifies. It loses to a non-neural tracker given the rules. | `results/v04/tables.md` M4 |
 | 30 | Program search with verification beats gradient learning. | v0.4 addendum | **Corrected by v0.5**: true where the search language contains the rule (my own domain, MONK-1); false on 5 of 8 public rule tables. | `results/v05/tables.md` |
 | 31 | A small network learns other people's rules with fewer audits than a decision tree and reaches 99% on all eight public tables. | v0.5 | Stands (internal; untuned comparators). | `results/v05/tables.md` |
-| 32 | Experience with related policies cuts the audits a new policy needs, on real rule families. | v0.6 | Stands on both families by the frozen rule (64 against 128; 16 against 96). The 99% yardstick was too easy for about half the rules; the exact-rule figures are in the report. | `results/v06/*_tables.md` |
-| 33 | A rule seen before is recognised exactly within 16 chosen audits with no cautious error. | v0.6 | Stands on both families (8 and 12 audits). | same |
+| 32 | Experience with related policies cuts the audits a new policy needs, on real rule families. | v0.6 | **Corrected by Codex's hidden family**: no gain on novel rules there (512 audits against 512). Stands on the two Unicode families by the frozen rule (64 against 128; 16 against 96). The 99% yardstick was too easy for about half the rules; the exact-rule figures are in the report. | `results/v06/*_tables.md` |
+| 33 | A rule seen before is recognised exactly within 16 chosen audits with no cautious error. | v0.6 | Stands on all three families (8, 12 and, on Codex's hidden family, 4 audits). | same |
 | 34 | Programs are a better store of experience than network weights. | v0.6 | **Split**: yes on cardinal rules (weights never reach 99% on novel rules), no on ordinal rules (weights 16 audits, programs 48). | same |
 | 35 | Choosing which case to audit reduces audits. | v0.5, v0.6 | Mixed: halves a network's audits on 6 of 8 tables (v0.5); finds an exact seen rule four times faster (v0.6); no gain for novel rules at 99% (v0.6). | both |
 | 36 | A learned system beats a hand-written planner. | all | **Still not shown.** | – |
@@ -407,7 +407,7 @@ The v0.5 and v0.6 freeze commits come before the commits that add `data/external
 
 ## P2.4 Where to attack
 
-1. **The hidden family** (`docs/v06_codex_family_brief.md`). Every v0.5 and v0.6 dataset was chosen by me. This is the one test I cannot bias.
+1. **The hidden family** (`docs/v06_codex_family_brief.md`). Every v0.5 and v0.6 dataset was chosen by me. This is the one test I cannot bias. **Run on 21 November: see P2.6.**
 2. **v0.6's yardstick.** "99% of cases right" is met by answering the most common category for about half the new rules. Re-score with the exact-rule measure or a per-category one and see whether L1 survives.
 3. **v0.6's groups are small** (7, 10, 11 and 4 rules) and many locales share rules.
 4. **Comparators in v0.5** (tree, forest, network) are untuned defaults.
@@ -418,3 +418,17 @@ The v0.5 and v0.6 freeze commits come before the commits that add `data/external
 ## P2.5 Where the design stands
 
 Keep past rules as tables in a versioned bank with a promotion gate; learn a rule nothing like the past with a small network; let held-out audits choose between proposers; deploy tables. A hand-written planner still wins wherever one exists, and no test has yet been run in a domain without one.
+
+## P2.6 Addendum: Codex's hidden family (run after this report was written)
+
+One run of `family_codex.json` (SHA-256 `2a4e40c6…9565`) at commit `e84c46e`, three seeds, every arm kept. Outputs locked in commit `b7120cd` before the author's breakdown was requested. Memo: `docs/v06_codex_hidden_memo.md`. Raw: `results/v06/codex_hidden_shard0.json`.
+
+| Rule (frozen) | Result on the hidden family |
+|---|---|
+| L1. Experience helps on novel rules | **Fail**: 512 audits against 512 from scratch |
+| L2. Programs need no more audits than bank rows | Pass, emptily: programs 976, bank rows never; both worse than scratch |
+| L3. A seen rule is recognised within 16 chosen audits, no cautious error | **Pass**: 4 audits, 0 errors |
+| L4. Selector within one budget step of the best single learner | Pass (the post-freeze change to this line of `v06/report.py` is set out in the memo; every computable reading agrees) |
+| L5. Choosing audits helps on novel rules | **Fail**: 512 either way |
+
+**P2.5 corrected.** What the bank has been shown to do on rules I did not write is recognise a policy it already holds, exactly and cheaply. It has not been shown to transfer anything to a policy that is new. The run also shows it is all or nothing: one new policy that differs from a past one in 8 of 1,440 cases was taken for the past one (wrong on those 8 while unanimous), and once an audit contradicted the match the learner started again from scratch.
