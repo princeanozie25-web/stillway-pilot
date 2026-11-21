@@ -34,7 +34,7 @@ Integer tables read off the network (`extract`): start (4×4), leg step (64×64)
 The network is the same function as the tables up to floating-point ties. Two guards:
 
 - `tests/test_regcore.py`: tables and network propose the same action at 10,828 action stages of sampled jobs, for every frozen discrete-carry core.
-- Margins in each certificate: the smallest gap between the two nearest codes, and between the two routes where only one is valid. For certified imitation cores the route gap is 1.9 to 9.4.
+- Margins in each certificate: the smallest gap between the two nearest codes, and between the two routes where only one is valid. For certified imitation cores the route gap is 1.9 to 9.4 and the smallest code gap is 0.0008 to 0.09 on the four cores certified on all leg kinds (carry values lie between −1 and 1). A code gap that small is well above rounding error on this machine and is not guaranteed to survive another floating-point implementation.
 
 The outcome-trained core `v3o_s1` has a clean certificate with a route gap of 0.87 where it matters, and a smallest code gap of 0.00005. Its tables are certified; its network sits close to a tie between two codes on some inputs and should be deployed as tables.
 
