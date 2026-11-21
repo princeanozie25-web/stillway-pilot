@@ -1,0 +1,13 @@
+/Users/princ/Desktop/stillway-pilot/stillway3/train.py:88: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 1 if switch is None or it == switch else 2, "loss": round(float(loss), 5), "ema": round(ema, 5), "aux": round(float(aux), 4),
+{"step": 500, "phase": 1, "loss": 0.00208, "ema": 0.00408, "aux": 0.0, "commit": 0.0, "sec": 12.6, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 1000, "phase": 1, "loss": 0.00035, "ema": 0.00045, "aux": 0.0, "commit": 0.0, "sec": 25.8, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 1500, "phase": 1, "loss": 0.00014, "ema": 0.00016, "aux": 0.0, "commit": 0.0, "sec": 39.3, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 2000, "phase": 2, "loss": 8e-05, "ema": 8e-05, "aux": 0.0, "commit": 0.00688, "sec": 53.5, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 2500, "phase": 2, "loss": 5e-05, "ema": 5e-05, "aux": 0.0, "commit": 0.00421, "sec": 66.2, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 3000, "phase": 2, "loss": 3e-05, "ema": 3e-05, "aux": 0.0, "commit": 0.00407, "sec": 78.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 3500, "phase": 2, "loss": 2e-05, "ema": 2e-05, "aux": 0.0, "commit": 0.00326, "sec": 90.9, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4000, "phase": 2, "loss": 1e-05, "ema": 1e-05, "aux": 0.0, "commit": 0.0027, "sec": 103.1, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4500, "phase": 2, "loss": 1e-05, "ema": 1e-05, "aux": 0.0, "commit": 0.00228, "sec": 115.3, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+saved /Users/princ/Desktop/stillway-pilot/runs/v3n23_s1 ba47537a059ef3252e43bbce60dbb4dc6fb967438bbf8de1f50a88f7010ac51a

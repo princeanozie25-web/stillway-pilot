@@ -1,0 +1,13 @@
+/Users/princ/Desktop/stillway-pilot/stillway3/train.py:88: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 1 if switch is None or it == switch else 2, "loss": round(float(loss), 5), "ema": round(ema, 5), "aux": round(float(aux), 4),
+{"step": 500, "phase": 1, "loss": 0.04176, "ema": 0.05714, "aux": 0.9694, "commit": 0.0, "sec": 14.2, "train": 0.987500011920929, "dev": 0.9919999837875366, "dev_5to6_legs": 0.9760000109672546}
+{"step": 1000, "phase": 1, "loss": 0.02146, "ema": 0.00663, "aux": 0.1993, "commit": 0.0, "sec": 28.6, "train": 1.0, "dev": 0.9984999895095825, "dev_5to6_legs": 0.9990000128746033}
+{"step": 1500, "phase": 1, "loss": 0.01048, "ema": 0.00203, "aux": 0.0798, "commit": 0.0, "sec": 43.0, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9980000257492065}
+{"step": 2000, "phase": 2, "loss": 0.00494, "ema": 0.00114, "aux": 0.1009, "commit": 0.36914, "sec": 58.9, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 2500, "phase": 2, "loss": 0.00018, "ema": 0.00091, "aux": 0.0793, "commit": 0.40575, "sec": 76.1, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 3000, "phase": 2, "loss": 0.00021, "ema": 0.00065, "aux": 0.0676, "commit": 0.38759, "sec": 94.8, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 3500, "phase": 2, "loss": 0.00167, "ema": 0.00051, "aux": 0.053, "commit": 0.24272, "sec": 111.3, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 4000, "phase": 2, "loss": 6e-05, "ema": 0.00035, "aux": 0.0741, "commit": 0.44493, "sec": 127.6, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4500, "phase": 2, "loss": 4e-05, "ema": 6e-05, "aux": 0.0653, "commit": 0.71208, "sec": 144.4, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+saved /Users/princ/Desktop/stillway-pilot/runs/v3r24_s3 fb8ac74b5f30e4fb44edc8a7509e2306b0fc24f3084d95e4aacb8a2756e9a81f

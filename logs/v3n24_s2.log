@@ -1,0 +1,13 @@
+/Users/princ/Desktop/stillway-pilot/stillway3/train.py:88: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 1 if switch is None or it == switch else 2, "loss": round(float(loss), 5), "ema": round(ema, 5), "aux": round(float(aux), 4),
+{"step": 500, "phase": 1, "loss": 0.01271, "ema": 0.02614, "aux": 0.0, "commit": 0.0, "sec": 14.6, "train": 0.9940000176429749, "dev": 0.9955000281333923, "dev_5to6_legs": 0.9769999980926514}
+{"step": 1000, "phase": 1, "loss": 0.00356, "ema": 0.01329, "aux": 0.0, "commit": 0.0, "sec": 28.2, "train": 0.9940000176429749, "dev": 0.9944999814033508, "dev_5to6_legs": 0.9919999837875366}
+{"step": 1500, "phase": 1, "loss": 0.01045, "ema": 0.00996, "aux": 0.0, "commit": 0.0, "sec": 42.1, "train": 0.9944999814033508, "dev": 0.9940000176429749, "dev_5to6_legs": 0.9909999966621399}
+{"step": 2000, "phase": 2, "loss": 0.00353, "ema": 0.00867, "aux": 0.0, "commit": 0.04238, "sec": 57.4, "train": 0.9959999918937683, "dev": 0.9980000257492065, "dev_5to6_legs": 0.9929999709129333}
+{"step": 2500, "phase": 2, "loss": 0.00283, "ema": 0.00762, "aux": 0.0, "commit": 0.03143, "sec": 72.1, "train": 0.9944999814033508, "dev": 0.9975000023841858, "dev_5to6_legs": 0.9919999837875366}
+{"step": 3000, "phase": 2, "loss": 0.00341, "ema": 0.0049, "aux": 0.0, "commit": 0.01478, "sec": 87.1, "train": 0.9975000023841858, "dev": 0.9990000128746033, "dev_5to6_legs": 0.9950000047683716}
+{"step": 3500, "phase": 2, "loss": 0.00176, "ema": 0.00319, "aux": 0.0, "commit": 0.01586, "sec": 101.2, "train": 0.9994999766349792, "dev": 0.9975000023841858, "dev_5to6_legs": 0.9990000128746033}
+{"step": 4000, "phase": 2, "loss": 0.00124, "ema": 0.00202, "aux": 0.0, "commit": 0.01152, "sec": 114.8, "train": 0.9994999766349792, "dev": 0.9975000023841858, "dev_5to6_legs": 1.0}
+{"step": 4500, "phase": 2, "loss": 0.001, "ema": 0.00115, "aux": 0.0, "commit": 0.00922, "sec": 127.9, "train": 0.9990000128746033, "dev": 0.9984999895095825, "dev_5to6_legs": 0.9990000128746033}
+saved /Users/princ/Desktop/stillway-pilot/runs/v3n24_s2 d792236cdb62e29c32ad25276238dba38f4fe20b9267628566e42946e270d807

@@ -1,0 +1,217 @@
+<title>Stillway Proof Bench</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Sans+Condensed:wght@600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: one column of instrument panels; the job is a track diagram read left to right, one column per leg. */
+:root {
+  --bg: #eef2f5; --panel: #ffffff; --ink: #13202c; --muted: #566676; --line: #cdd7e0; --soft: #e4ebf1;
+  --accent: #1d5fc2; --ok: #177a49; --bad: #bd3426; --warn: #9a6a12; --changed: #fff1cf;
+  --display: "IBM Plex Sans Condensed", "Arial Narrow", sans-serif; --body: "IBM Plex Sans", system-ui, sans-serif; --mono: "IBM Plex Mono", ui-monospace, Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #0e151d; --panel: #16202b; --ink: #e5ecf2; --muted: #93a3b2; --line: #2a3948; --soft: #1e2a37;
+  --accent: #74abff; --ok: #4dc48b; --bad: #ff8070; --warn: #e2b455; --changed: #3a3113; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #0e151d; --panel: #16202b; --ink: #e5ecf2; --muted: #93a3b2; --line: #2a3948; --soft: #1e2a37;
+  --accent: #74abff; --ok: #4dc48b; --bad: #ff8070; --warn: #e2b455; --changed: #3a3113; color-scheme: dark }
+body { background: var(--bg); color: var(--ink); font: 15px/1.5 var(--body); padding-block: 28px 56px;
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+.wrap { max-width: 1080px; margin: 0 auto; display: flex; flex-direction: column; gap: 20px; }
+h1 { font: 600 34px/1.1 var(--display); margin: 0; letter-spacing: .01em; text-wrap: balance; }
+h2 { font: 600 20px/1.2 var(--display); margin: 0; letter-spacing: .02em; text-transform: uppercase; }
+p { margin: 0; max-width: 68ch; }
+.lede { color: var(--muted); font-size: 16px; }
+.panel { background: var(--panel); border: 1px solid var(--line); border-radius: 6px; padding: 18px; display: flex; flex-direction: column; gap: 14px; min-width: 0; }
+.row { display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: flex-end; }
+label.f { display: flex; flex-direction: column; gap: 4px; font-size: 12px; color: var(--muted); letter-spacing: .04em; text-transform: uppercase; }
+select, button, input[type=number] { font: 500 14px var(--body); color: var(--ink); background: var(--panel); border: 1px solid var(--line); border-radius: 4px; padding: 7px 10px; }
+button { cursor: pointer; background: var(--soft); }
+button.primary { background: var(--accent); border-color: var(--accent); color: var(--panel); }
+button:focus-visible, select:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.chip { display: inline-block; font: 500 12px var(--mono); padding: 3px 8px; border-radius: 3px; border: 1px solid currentColor; }
+.chip.ok { color: var(--ok); } .chip.bad { color: var(--bad); } .chip.warn { color: var(--warn); }
+.scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: 4px; }
+table.track { border-collapse: collapse; font: 13px var(--mono); font-variant-numeric: tabular-nums; min-width: 100%; }
+table.track th, table.track td { border-bottom: 1px solid var(--line); border-right: 1px solid var(--line); padding: 6px 8px; text-align: center; white-space: nowrap; }
+table.track th[scope=row] { position: sticky; left: 0; background: var(--panel); text-align: left; font: 500 12px var(--body); color: var(--muted); z-index: 1; min-width: 132px; }
+table.track tr.sec th, table.track tr.sec td { background: var(--soft); font: 600 12px var(--body); letter-spacing: .05em; text-transform: uppercase; color: var(--ink); text-align: left; }
+table.track select { font: 12px var(--mono); padding: 3px 4px; }
+td.pick { font-weight: 500; color: var(--accent); } td.changed { background: var(--changed); } td.wrong { color: var(--bad); font-weight: 500; }
+td.dim { color: var(--muted); } td.pause { border-left: 3px solid var(--warn); }
+.gate { display: inline-block; width: 9px; height: 9px; border-radius: 50%; border: 1.5px solid var(--ink); margin: 0 1px; vertical-align: middle; }
+.gate.open { background: transparent; } .gate.closed { background: var(--ink); }
+.verdict { display: flex; flex-wrap: wrap; gap: 10px 24px; font-size: 14px; } .verdict b { font-family: var(--mono); font-weight: 500; }
+.big { font: 500 26px/1.1 var(--mono); font-variant-numeric: tabular-nums; } .small { font-size: 13px; color: var(--muted); }
+.stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 14px; }
+.stats div { display: flex; flex-direction: column; gap: 2px; }
+.note { font-size: 13px; color: var(--muted); border-top: 1px solid var(--line); padding-top: 12px; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 18px; font-size: 12px; color: var(--muted); }
+@media (max-width: 520px) { h1 { font-size: 28px; } .panel { padding: 14px; } }
+</style>
+<div class="wrap">
+  <header style="display:flex;flex-direction:column;gap:8px">
+    <h1>Stillway Proof Bench</h1>
+    <p class="lede">A trained planner for dispatch jobs of any length. Build a job, pause it, correct the order, and see the plan change. Then run the check that covers every job that could ever be built.</p>
+  </header>
+
+  <section class="panel">
+    <div class="row">
+      <label class="f" for="core">Planner<select id="core"></select></label>
+      <span id="coreChip"></span>
+    </div>
+    <p class="small" id="coreNote"></p>
+  </section>
+
+  <section class="panel">
+    <h2>The job</h2>
+    <div class="row">
+      <label class="f" for="nlegs">Legs<input id="nlegs" type="number" min="1" max="40" value="8" style="width:76px"></label>
+      <label class="f" for="reqA">Gate A must end<select id="reqA"><option value="0">any</option><option value="1">closed</option><option value="2">open</option></select></label>
+      <label class="f" for="reqB">Gate B must end<select id="reqB"><option value="0">any</option><option value="1">closed</option><option value="2">open</option></select></label>
+      <label class="f" for="g0">Gate A starts<select id="g0"><option value="0">closed</option><option value="1">open</option></select></label>
+      <label class="f" for="g1">Gate B starts<select id="g1"><option value="0">closed</option><option value="1">open</option></select></label>
+      <button id="rand" type="button">New random job</button>
+    </div>
+    <div class="row">
+      <label class="f" for="pause">Pause before leg<input id="pause" type="number" min="1" max="40" value="4" style="width:76px"></label>
+      <label class="f" for="corrField">Correction<select id="corrField"><option value="0">Gate A must end</option><option value="1">Gate B must end</option></select></label>
+      <label class="f" for="corrVal">New value<select id="corrVal"><option value="0">any</option><option value="1">closed</option><option value="2">open</option></select></label>
+    </div>
+    <div class="scroll"><table class="track" id="track"></table></div>
+    <div class="legend">
+      <span><span class="gate closed"></span> closed &nbsp;<span class="gate open"></span> open (gate A, gate B)</span>
+      <span><span style="color:var(--accent);font-weight:600">L / R</span> route taken</span>
+      <span><span style="background:var(--changed);padding:0 6px">&nbsp;</span> step changed by the correction</span>
+      <span>code = what the reader carries back from the legs after this one</span>
+    </div>
+    <div class="verdict" id="verdict"></div>
+  </section>
+
+  <section class="panel">
+    <h2>The check</h2>
+    <p>The planner reads a job from the last leg back to the current one and carries a single code. The check lists every code that can ever arise, beside what the exact planner would hold at the same place. For each of them it tries every kind of leg and every gate state. If no entry is wrong, the planner is right on jobs of every length.</p>
+    <div class="row">
+      <button class="primary" id="runCheck" type="button">Run the check</button>
+      <button id="damage" type="button">Damage one table entry</button>
+      <button id="undo" type="button" hidden>Undo the damage</button>
+      <button id="loadWit" type="button" hidden>Load the failing job above</button>
+    </div>
+    <div class="stats" id="stats"></div>
+    <p class="small" id="checkNote"></p>
+    <p class="note" id="facts"></p>
+  </section>
+</div>
+<script>
+const DATA = /*DATA*/null;
+const EFF = [g => g, g => 1 - g, g => 1, g => 0], EFFN = ["keep", "toggle", "open", "close"], GN = ["A", "B"];
+const tripName = t => EFFN[t >> 1] + " " + GN[t & 1];
+function take(s, trip) { let a = s >> 1, b = s & 1; if ((trip & 1) === 0) a = EFF[trip >> 1](a); else b = EFF[trip >> 1](b); return a * 2 + b; }
+function termTable(q) { return [0, 1, 2, 3].map(s => (q[0] && (s >> 1) === q[0] - 1 ? 1 : 0) + (q[1] && (s & 1) === q[1] - 1 ? 1 : 0)); }
+function back(T, leg) { return [0, 1, 2, 3].map(s => Math.max(T[take(s, leg[0])], T[take(s, leg[1])])); }
+function decode(c) {
+  const cell = [], route = [];
+  for (let k = 0; k < 64; k++) { cell.push(Array.from(c.cell.slice(k * 64, k * 64 + 64), ch => ch.charCodeAt(0) - 48)); const r = []; for (let l = 0; l < 64; l++) r.push(Array.from(c.route.slice(k * 256 + l * 4, k * 256 + l * 4 + 4), ch => +ch)); route.push(r); }
+  return { term: c.term, cell, route };
+}
+let cores = DATA.cores.map(c => ({ ...c, tab: decode(c) })), cur = 0, saved = null, witness = null;
+let job = { legs: [], req: [1, 2], gates: [1, 0] }, rngState = 20261121;
+function rnd(n) { rngState = (rngState * 1664525 + 1013904223) >>> 0; return Math.floor(rngState / 4294967296 * n); }
+function randomJob(n) {
+  job.legs = []; for (let i = 0; i < n; i++) { const a = rnd(8); const b = rnd(10) < 3 ? rnd(8) : (rnd(4) * 2 + (a & 1)); job.legs.push([a, b]); }
+  job.req = [1 + rnd(2), 1 + rnd(2)]; job.gates = [rnd(2), rnd(2)];
+}
+// ---- the planner (integer tables only) and the exact planner (value table) ----
+function sweep(tab, req, legs) { const n = legs.length, codes = new Array(n), exact = new Array(n + 1); let c = tab.term[req[0]][req[1]], T = termTable(req); exact[n] = T;
+  for (let i = n - 1; i >= 0; i--) { codes[i] = c; c = tab.cell[c][legs[i][0] * 8 + legs[i][1]]; T = back(T, legs[i]); exact[i] = T; } return { codes, exact }; }
+function run(tab, req, legs, s0, from, sw) {
+  sw = sw || sweep(tab, req, legs); let s = s0; const steps = [];
+  for (let i = from; i < legs.length; i++) {
+    const leg = legs[i], r = tab.route[sw.codes[i]][leg[0] * 8 + leg[1]][s], T = sw.exact[i + 1];
+    const v = [T[take(s, leg[0])], T[take(s, leg[1])]], m = Math.max(v[0], v[1]);
+    s = take(s, leg[r]); steps.push({ i, r, code: sw.codes[i], s, ok: v[r] === m, allow: v[0] === v[1] ? "either" : (v[0] > v[1] ? "L" : "R") });
+  }
+  return { steps, end: s, sw };
+}
+const metCount = (s, q) => termTable(q)[s];
+function gatesHtml(s) { return `<span class="gate ${s >> 1 ? "open" : "closed"}"></span><span class="gate ${s & 1 ? "open" : "closed"}"></span>`; }
+function tripSelect(i, r, v) { let h = `<select id="t${i}_${r}" aria-label="Leg ${i + 1} ${r ? "right" : "left"} route">`; for (let t = 0; t < 8; t++) h += `<option value="${t}"${t === v ? " selected" : ""}>${tripName(t)}</option>`; return h + "</select>"; }
+function render() {
+  const tab = cores[cur].tab, n = job.legs.length, s0 = job.gates[0] * 2 + job.gates[1];
+  const P = Math.min(Math.max(1, +document.getElementById("pause").value || 1), n) - 1;
+  const f = +document.getElementById("corrField").value, v = +document.getElementById("corrVal").value;
+  const req2 = job.req.slice(); req2[f] = v;
+  const a = run(tab, job.req, job.legs, s0, 0); const sAt = P === 0 ? s0 : a.steps[P - 1].s; const b = run(tab, req2, job.legs, sAt, P);
+  const cols = [...Array(n).keys()], cell = (i, html, cls) => `<td class="${cls || ""}${i === P ? " pause" : ""}">${html}</td>`;
+  let h = `<tr><th scope="row">Leg</th>${cols.map(i => cell(i, i + 1)).join("")}</tr>`;
+  h += `<tr><th scope="row">Left route (L)</th>${cols.map(i => cell(i, tripSelect(i, 0, job.legs[i][0]))).join("")}</tr>`;
+  h += `<tr><th scope="row">Right route (R)</th>${cols.map(i => cell(i, tripSelect(i, 1, job.legs[i][1]))).join("")}</tr>`;
+  h += `<tr class="sec"><th scope="row">Original order</th><td colspan="${n}">Gate A ${["any", "closed", "open"][job.req[0]]}, gate B ${["any", "closed", "open"][job.req[1]]}</td></tr>`;
+  h += `<tr><th scope="row">Code carried</th>${cols.map(i => cell(i, a.steps[i].code, "dim")).join("")}</tr>`;
+  h += `<tr><th scope="row">Route taken</th>${cols.map(i => cell(i, "LR"[a.steps[i].r], a.steps[i].ok ? "pick" : "wrong")).join("")}</tr>`;
+  h += `<tr><th scope="row">Exact planner allows</th>${cols.map(i => cell(i, a.steps[i].allow, "dim")).join("")}</tr>`;
+  h += `<tr><th scope="row">Gates after</th>${cols.map(i => cell(i, gatesHtml(a.steps[i].s))).join("")}</tr>`;
+  h += `<tr class="sec"><th scope="row">After the correction</th><td colspan="${n}">Paused before leg ${P + 1}. Register written: gate ${GN[f]} must end ${["any", "closed", "open"][v]}. Nothing else is touched.</td></tr>`;
+  const bs = i => i < P ? null : b.steps[i - P]; let changed = 0;
+  h += `<tr><th scope="row">Code carried</th>${cols.map(i => bs(i) ? cell(i, bs(i).code, "dim" + (bs(i).code !== a.steps[i].code ? " changed" : "")) : cell(i, "·", "dim")).join("")}</tr>`;
+  h += `<tr><th scope="row">Route taken</th>${cols.map(i => { const x = bs(i); if (!x) return cell(i, "LR"[a.steps[i].r], "dim"); const ch = x.r !== a.steps[i].r; changed += ch; return cell(i, "LR"[x.r], (x.ok ? "pick" : "wrong") + (ch ? " changed" : "")); }).join("")}</tr>`;
+  h += `<tr><th scope="row">Exact planner allows</th>${cols.map(i => bs(i) ? cell(i, bs(i).allow, "dim") : cell(i, "·", "dim")).join("")}</tr>`;
+  h += `<tr><th scope="row">Gates after</th>${cols.map(i => cell(i, gatesHtml(bs(i) ? bs(i).s : a.steps[i].s), bs(i) ? "" : "dim")).join("")}</tr>`;
+  document.getElementById("track").innerHTML = h;
+  const need = q => (q[0] > 0) + (q[1] > 0), bestA = a.sw.exact[0][s0], bestB = b.sw.exact[P][sAt], gotA = metCount(a.end, job.req), gotB = metCount(b.end, req2);
+  const chip = (ok, t) => `<span class="chip ${ok ? "ok" : "bad"}">${t}</span>`;
+  document.getElementById("verdict").innerHTML =
+    `<span>Original order: <b>${gotA} of ${need(job.req)}</b> requirements met. Best possible: <b>${bestA}</b>. ${chip(gotA === bestA, gotA === bestA ? "optimal" : "not optimal")}</span>` +
+    `<span>After the correction: <b>${gotB} of ${need(req2)}</b> met. Best possible from the pause: <b>${bestB}</b>. ${chip(gotB === bestB, gotB === bestB ? "optimal" : "not optimal")}</span>` +
+    `<span>Steps changed after the pause: <b>${changed} of ${n - P}</b></span>`;
+  for (let i = 0; i < n; i++) for (const r of [0, 1]) document.getElementById(`t${i}_${r}`).onchange = e => { job.legs[i][r] = +e.target.value; render(); };
+}
+// ---- the check: closure over (code, exact value table) ----
+function check(tab) {
+  const t0 = performance.now(), seen = new Map(), todo = [];
+  for (let q0 = 0; q0 < 3; q0++) for (let q1 = 0; q1 < 3; q1++) { const c = tab.term[q0][q1], T = termTable([q0, q1]), k = c + "|" + T.join(""); if (!seen.has(k)) { seen.set(k, { c, T, parent: null, via: [q0, q1] }); todo.push(k); } }
+  while (todo.length) { const k = todo.pop(), p = seen.get(k);
+    for (let a = 0; a < 8; a++) for (let b = 0; b < 8; b++) { const c = tab.cell[p.c][a * 8 + b], T = back(p.T, [a, b]), k2 = c + "|" + T.join(""); if (!seen.has(k2)) { seen.set(k2, { c, T, parent: k, via: [a, b] }); todo.push(k2); } } }
+  let checks = 0, wrong = 0, first = null; const decisive = [];
+  for (const [k, p] of seen) for (let a = 0; a < 8; a++) for (let b = 0; b < 8; b++) for (let s = 0; s < 4; s++) {
+    checks++; const v = [p.T[take(s, a)], p.T[take(s, b)]], r = tab.route[p.c][a * 8 + b][s];
+    if (v[r] !== Math.max(v[0], v[1])) { wrong++; if (!first) first = { k, leg: [a, b], s }; } else if (v[0] !== v[1]) decisive.push([p.c, a * 8 + b, s]);
+  }
+  let wit = null;
+  if (first) { const legs = [first.leg]; let k = first.k; while (seen.get(k).parent) { legs.push(seen.get(k).via); k = seen.get(k).parent; } wit = { legs, req: seen.get(k).via, gates: [first.s >> 1, first.s & 1] }; }
+  return { pairs: seen.size, checks, wrong, ms: performance.now() - t0, wit, decisive, codes: new Set([...seen.values()].map(p => p.c)).size };
+}
+function showCheck() {
+  const res = check(cores[cur].tab); witness = res.wit; const clean = res.wrong === 0;
+  document.getElementById("stats").innerHTML =
+    `<div><span class="big" style="color:var(--${clean ? "ok" : "bad"})">${res.wrong.toLocaleString()}</span><span class="small">wrong entries</span></div>` +
+    `<div><span class="big">${res.checks.toLocaleString()}</span><span class="small">entries checked</span></div>` +
+    `<div><span class="big">${res.pairs}</span><span class="small">reachable (code, exact table) pairs</span></div>` +
+    `<div><span class="big">${res.codes}</span><span class="small">codes in use</span></div>` +
+    `<div><span class="big">${res.ms.toFixed(0)} ms</span><span class="small">in this browser</span></div>`;
+  document.getElementById("checkNote").textContent = clean
+    ? "No wrong entry. Every route this planner proposes is one the exact planner allows, for any number of legs, any leg kinds, any gate requirements and any gate states."
+    : "The check found entries where the proposed route is worse than the best one. Each has a job that shows it. Load the first one to see the wrong step in the table above.";
+  document.getElementById("loadWit").hidden = clean; return res;
+}
+function coreUi() {
+  const c = cores[cur]; document.getElementById("coreChip").innerHTML = `<span class="chip ${c.status}">${c.statusText}</span>`;
+  document.getElementById("coreNote").textContent = c.note; saved = null; document.getElementById("undo").hidden = true; render(); showCheck();
+}
+const sel = document.getElementById("core"); cores.forEach((c, i) => sel.add(new Option(c.label, i))); sel.onchange = () => { cur = +sel.value; coreUi(); };
+function syncInputs() { document.getElementById("nlegs").value = job.legs.length; document.getElementById("reqA").value = job.req[0]; document.getElementById("reqB").value = job.req[1];
+  document.getElementById("g0").value = job.gates[0]; document.getElementById("g1").value = job.gates[1]; document.getElementById("pause").max = job.legs.length;
+  if (+document.getElementById("pause").value > job.legs.length) document.getElementById("pause").value = job.legs.length; }
+document.getElementById("rand").onclick = () => { randomJob(Math.min(40, Math.max(1, +document.getElementById("nlegs").value || 8))); syncInputs(); render(); };
+document.getElementById("nlegs").onchange = e => { const n = Math.min(40, Math.max(1, +e.target.value || 1)); while (job.legs.length < n) { const a = rnd(8); job.legs.push([a, rnd(4) * 2 + (a & 1)]); } job.legs.length = n; syncInputs(); render(); };
+for (const [id, fn] of [["reqA", v => job.req[0] = v], ["reqB", v => job.req[1] = v], ["g0", v => job.gates[0] = v], ["g1", v => job.gates[1] = v]]) document.getElementById(id).onchange = e => { fn(+e.target.value); render(); };
+for (const id of ["pause", "corrField", "corrVal"]) document.getElementById(id).onchange = render;
+document.getElementById("runCheck").onclick = showCheck;
+document.getElementById("damage").onclick = () => { const tab = cores[cur].tab, res = check(tab); if (!res.decisive.length) return; const [c, li, s] = res.decisive[rnd(res.decisive.length)];
+  if (!saved) saved = []; saved.push([c, li, s]); tab.route[c][li][s] ^= 1; document.getElementById("undo").hidden = false; showCheck(); render(); };
+document.getElementById("undo").onclick = () => { const tab = cores[cur].tab; (saved || []).forEach(([c, li, s]) => tab.route[c][li][s] ^= 1); saved = null; document.getElementById("undo").hidden = true; showCheck(); render(); };
+document.getElementById("loadWit").onclick = () => { if (!witness) return; job = { legs: witness.legs.map(l => l.slice()), req: witness.req.slice(), gates: witness.gates.slice() };
+  document.getElementById("pause").value = 1; document.getElementById("corrField").value = 0; document.getElementById("corrVal").value = job.req[0]; syncInputs(); render();
+  document.getElementById("track").scrollIntoView({ behavior: "smooth", block: "center" }); };
+document.getElementById("facts").textContent = DATA.facts;
+randomJob(8); document.getElementById("corrField").value = 0; document.getElementById("corrVal").value = job.req[0] === 1 ? 2 : 1; syncInputs(); coreUi();
+</script>

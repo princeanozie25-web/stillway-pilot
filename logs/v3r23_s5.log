@@ -1,0 +1,13 @@
+/Users/princ/Desktop/stillway-pilot/stillway3/train.py:88: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 1 if switch is None or it == switch else 2, "loss": round(float(loss), 5), "ema": round(ema, 5), "aux": round(float(aux), 4),
+{"step": 500, "phase": 1, "loss": 0.00462, "ema": 0.01165, "aux": 0.2189, "commit": 0.0, "sec": 12.5, "train": 0.9990000128746033, "dev": 0.9990000128746033, "dev_5to6_legs": 0.9959999918937683}
+{"step": 1000, "phase": 1, "loss": 0.00094, "ema": 0.00106, "aux": 0.0605, "commit": 0.0, "sec": 25.1, "train": 0.9994999766349792, "dev": 0.9994999766349792, "dev_5to6_legs": 0.9929999709129333}
+{"step": 1500, "phase": 1, "loss": 0.0002, "ema": 0.00029, "aux": 0.0291, "commit": 0.0, "sec": 37.4, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 2000, "phase": 2, "loss": 9e-05, "ema": 9e-05, "aux": 0.0191, "commit": 0.16208, "sec": 50.3, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 2500, "phase": 2, "loss": 5e-05, "ema": 5e-05, "aux": 0.0121, "commit": 0.0144, "sec": 63.4, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 3000, "phase": 2, "loss": 3e-05, "ema": 3e-05, "aux": 0.0082, "commit": 0.00224, "sec": 76.1, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 3500, "phase": 2, "loss": 2e-05, "ema": 2e-05, "aux": 0.0058, "commit": 0.02783, "sec": 88.8, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4000, "phase": 2, "loss": 1e-05, "ema": 1e-05, "aux": 0.004, "commit": 0.00053, "sec": 101.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4500, "phase": 2, "loss": 1e-05, "ema": 1e-05, "aux": 0.0031, "commit": 0.00064, "sec": 115.2, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+saved /Users/princ/Desktop/stillway-pilot/runs/v3r23_s5 17274cc66d6a86544f736d83e58ab2c7f0e184d5349200c28cce8924a19d6e5e

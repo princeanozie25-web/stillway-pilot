@@ -1,0 +1,13 @@
+/Users/princ/Desktop/stillway-pilot/stillway3/train.py:88: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 1 if switch is None or it == switch else 2, "loss": round(float(loss), 5), "ema": round(ema, 5), "aux": round(float(aux), 4),
+{"step": 500, "phase": 1, "loss": 0.00355, "ema": 0.00936, "aux": 0.2465, "commit": 0.0, "sec": 12.9, "train": 0.9994999766349792, "dev": 0.9994999766349792, "dev_5to6_legs": 0.9950000047683716}
+{"step": 1000, "phase": 1, "loss": 0.00063, "ema": 0.00072, "aux": 0.0735, "commit": 0.0, "sec": 25.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 1500, "phase": 1, "loss": 0.00021, "ema": 0.00024, "aux": 0.0364, "commit": 0.0, "sec": 38.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 2000, "phase": 2, "loss": 9e-05, "ema": 0.00011, "aux": 0.0316, "commit": 0.1489, "sec": 52.6, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 2500, "phase": 2, "loss": 7e-05, "ema": 6e-05, "aux": 0.0244, "commit": 0.15108, "sec": 66.3, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 3000, "phase": 2, "loss": 4e-05, "ema": 4e-05, "aux": 0.0235, "commit": 0.07753, "sec": 80.8, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 3500, "phase": 2, "loss": 2e-05, "ema": 3e-05, "aux": 0.0198, "commit": 0.07463, "sec": 94.9, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 4000, "phase": 2, "loss": 2e-05, "ema": 2e-05, "aux": 0.0107, "commit": 0.02598, "sec": 107.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 4500, "phase": 2, "loss": 1e-05, "ema": 1e-05, "aux": 0.0114, "commit": 0.04438, "sec": 121.0, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+saved /Users/princ/Desktop/stillway-pilot/runs/v3r23_s3 9031562a72697c0ee7cbc9a66d49cc2673e0a286b332128dfb154ed6fb65c69a

@@ -1,0 +1,13 @@
+/Users/princ/Desktop/stillway-pilot/v03/train_m.py:98: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 2 if phase2 else 1, "loss": round(loss.item(), 4), "ema": round(ema, 4), "aux": round(float(iit_loss), 4),
+{"step": 500, "phase": 1, "loss": 2.3402, "ema": 2.2057, "aux": 4.741, "sec": 34.7, "train": 0.4126666784286499, "dev": 0.41600000858306885, "dev_plain": 0.39133334159851074}
+{"step": 1000, "phase": 1, "loss": 1.7935, "ema": 1.7083, "aux": 2.0512, "sec": 67.3, "train": 0.5586666464805603, "dev": 0.5386666655540466, "dev_plain": 0.531333327293396}
+{"step": 1500, "phase": 1, "loss": 1.5478, "ema": 1.3827, "aux": 0.9424, "sec": 103.9, "train": 0.5806666612625122, "dev": 0.5693333148956299, "dev_plain": 0.5706666707992554}
+{"step": 2000, "phase": 1, "loss": 0.9647, "ema": 1.0159, "aux": 0.5846, "sec": 157.6, "train": 0.6600000262260437, "dev": 0.6333333253860474, "dev_plain": 0.659333348274231}
+{"step": 2500, "phase": 1, "loss": 0.7133, "ema": 0.7855, "aux": 0.451, "sec": 195.0, "train": 0.6833333373069763, "dev": 0.6639999747276306, "dev_plain": 0.6840000152587891}
+{"step": 3000, "phase": 1, "loss": 0.6276, "ema": 0.7094, "aux": 0.398, "sec": 226.2, "train": 0.7273333072662354, "dev": 0.7139999866485596, "dev_plain": 0.7386666536331177}
+{"step": 3500, "phase": 1, "loss": 0.2555, "ema": 0.3583, "aux": 0.2583, "sec": 267.3, "train": 0.949999988079071, "dev": 0.9506666660308838, "dev_plain": 0.9700000286102295}
+{"step": 4000, "phase": 1, "loss": 0.1196, "ema": 0.0858, "aux": 0.1402, "sec": 299.2, "train": 0.9953333139419556, "dev": 0.9919999837875366, "dev_plain": 0.9986666440963745}
+{"step": 4500, "phase": 1, "loss": 0.0085, "ema": 0.0564, "aux": 0.0312, "sec": 348.8, "train": 0.9980000257492065, "dev": 0.9986666440963745, "dev_plain": 0.9973333477973938}
+{"step": 5000, "phase": 2, "loss": 2.2378, "ema": 2.406, "aux": 62.491, "sec": 395.5, "train": 0.6359999775886536, "dev": 0.6380000114440918, "dev_plain": 0.6480000019073486}

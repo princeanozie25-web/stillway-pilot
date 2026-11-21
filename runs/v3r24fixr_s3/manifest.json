@@ -1,0 +1,136 @@
+{
+ "name": "v3r24fixr_s3",
+ "args": {
+  "name": "v3r24_s3",
+  "data": "t24x",
+  "seed": 3,
+  "carry": "vq",
+  "aid": 1.0,
+  "n_codes": 64,
+  "init": "table",
+  "batch": 512,
+  "lr": 0.001,
+  "warmup": 12000,
+  "min_warmup": 1500,
+  "switch_loss": 0.01,
+  "post": 3000,
+  "repair": {
+   "run": "runs/v3r24_s3",
+   "out": "runs/v3r24fixr_s3",
+   "alphabet": "all",
+   "rounds": 30,
+   "steps": 300,
+   "lr": 0.0003,
+   "batch": 512,
+   "seed": 0,
+   "rehearsal": 4000
+  }
+ },
+ "config": {
+  "width": 128,
+  "carry_dim": 16,
+  "n_codes": 64,
+  "carry": "vq",
+  "beta": 0.25,
+  "ema": 0.99
+ },
+ "checkpoint_sha256": "c01cbed9e3633becc466e1039df16ac9179c63a238d62ea402586cd3f651896e",
+ "repaired_from": {
+  "run": "v3r24_s3",
+  "checkpoint_sha256": "fb8ac74b5f30e4fb44edc8a7509e2306b0fc24f3084d95e4aacb8a2756e9a81f"
+ },
+ "alphabet": "all",
+ "repair_rounds": [
+  {
+   "round": 0,
+   "pairs": 76,
+   "codes_used": 29,
+   "route_checks": 19456,
+   "route_wrong": 1344,
+   "pool": 0,
+   "sec": 0.2
+  },
+  {
+   "round": 1,
+   "pairs": 132,
+   "codes_used": 29,
+   "route_checks": 33792,
+   "route_wrong": 1806,
+   "pool": 1344,
+   "sec": 26.2
+  },
+  {
+   "round": 2,
+   "pairs": 103,
+   "codes_used": 29,
+   "route_checks": 26368,
+   "route_wrong": 1280,
+   "pool": 3150,
+   "sec": 58.3
+  },
+  {
+   "round": 3,
+   "pairs": 131,
+   "codes_used": 29,
+   "route_checks": 33536,
+   "route_wrong": 3200,
+   "pool": 4430,
+   "sec": 87.2
+  },
+  {
+   "round": 4,
+   "pairs": 188,
+   "codes_used": 29,
+   "route_checks": 48128,
+   "route_wrong": 5034,
+   "pool": 7630,
+   "sec": 117.6
+  },
+  {
+   "round": 5,
+   "pairs": 82,
+   "codes_used": 29,
+   "route_checks": 20992,
+   "route_wrong": 1028,
+   "pool": 12664,
+   "sec": 149.1
+  },
+  {
+   "round": 6,
+   "pairs": 77,
+   "codes_used": 29,
+   "route_checks": 19712,
+   "route_wrong": 960,
+   "pool": 13692,
+   "sec": 178.8
+  },
+  {
+   "round": 7,
+   "pairs": 155,
+   "codes_used": 29,
+   "route_checks": 39680,
+   "route_wrong": 4768,
+   "pool": 14652,
+   "sec": 208.0
+  },
+  {
+   "round": 8,
+   "pairs": 47,
+   "codes_used": 29,
+   "route_checks": 12032,
+   "route_wrong": 0,
+   "pool": 19420,
+   "sec": 240.3
+  }
+ ],
+ "repair_gradient_steps": 2400,
+ "witness_jobs_in_pool": 19420,
+ "longest_witness_job_legs": 11,
+ "clean": true,
+ "wall_seconds": 240.3,
+ "dev_after": 1.0,
+ "train_after": 1.0,
+ "supervision": "set-valued valid actions from the exact planner; training aid: the exact planner's value table after each sweep step; certificate-guided repair: exact-planner labels on jobs built from the closure's wrong decisions",
+ "memory": "typed registers, written by rule (not learned)",
+ "world": "Dispatch-3, training families, 2-4 legs, cross-gate legs with probability 0.3 per leg"
+}

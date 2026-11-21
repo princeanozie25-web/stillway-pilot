@@ -1,0 +1,24 @@
+/Users/princ/Desktop/stillway-pilot/v03/train_outcome.py:70: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 1 if it <= a.warmup else 2, "route_loss": round(float(lr_), 4), "deliver_loss": round(float(ld), 4), "sec": round(time.time() - t0, 1),
+{"step": 500, "phase": 1, "route_loss": 1.7587, "deliver_loss": 0.0021, "sec": 11.3, "train": 0.7400000095367432, "dev": 0.753000020980835, "dev_5to6_legs": 0.6290000081062317}
+{"step": 1000, "phase": 1, "route_loss": 1.1928, "deliver_loss": 0.0006, "sec": 22.6, "train": 0.9190000295639038, "dev": 0.9144999980926514, "dev_5to6_legs": 0.8429999947547913}
+{"step": 1500, "phase": 1, "route_loss": 0.4547, "deliver_loss": 0.0003, "sec": 34.2, "train": 0.9819999933242798, "dev": 0.9909999966621399, "dev_5to6_legs": 0.9559999704360962}
+{"step": 2000, "phase": 1, "route_loss": 0.1488, "deliver_loss": 0.0002, "sec": 46.2, "train": 0.9894999861717224, "dev": 0.9934999942779541, "dev_5to6_legs": 0.9789999723434448}
+{"step": 2500, "phase": 1, "route_loss": 0.07, "deliver_loss": 0.0001, "sec": 58.0, "train": 0.9944999814033508, "dev": 0.9955000281333923, "dev_5to6_legs": 0.9900000095367432}
+{"step": 3000, "phase": 1, "route_loss": 0.0466, "deliver_loss": 0.0, "sec": 69.7, "train": 0.9950000047683716, "dev": 0.9959999918937683, "dev_5to6_legs": 0.9909999966621399}
+{"step": 3500, "phase": 1, "route_loss": 0.0167, "deliver_loss": 0.0, "sec": 81.5, "train": 0.9955000281333923, "dev": 0.9965000152587891, "dev_5to6_legs": 0.996999979019165}
+{"step": 4000, "phase": 1, "route_loss": 0.0268, "deliver_loss": 0.0, "sec": 93.4, "train": 0.9980000257492065, "dev": 0.996999979019165, "dev_5to6_legs": 0.9959999918937683}
+{"step": 4500, "phase": 1, "route_loss": 0.0072, "deliver_loss": 0.0, "sec": 105.2, "train": 0.9980000257492065, "dev": 0.9959999918937683, "dev_5to6_legs": 0.9940000176429749}
+{"step": 5000, "phase": 1, "route_loss": 0.0264, "deliver_loss": 0.0, "sec": 117.0, "train": 0.9965000152587891, "dev": 0.9975000023841858, "dev_5to6_legs": 0.9869999885559082}
+{"step": 5500, "phase": 2, "route_loss": 0.0885, "deliver_loss": 0.0, "sec": 131.1, "train": 0.9984999895095825, "dev": 0.996999979019165, "dev_5to6_legs": 0.9940000176429749}
+{"step": 6000, "phase": 2, "route_loss": 0.0201, "deliver_loss": 0.0, "sec": 145.0, "train": 0.9975000023841858, "dev": 0.9980000257492065, "dev_5to6_legs": 0.9940000176429749}
+{"step": 6500, "phase": 2, "route_loss": 0.0212, "deliver_loss": 0.0, "sec": 159.0, "train": 0.9980000257492065, "dev": 0.996999979019165, "dev_5to6_legs": 0.996999979019165}
+{"step": 7000, "phase": 2, "route_loss": 0.0249, "deliver_loss": 0.0, "sec": 172.5, "train": 0.9980000257492065, "dev": 0.9984999895095825, "dev_5to6_legs": 0.996999979019165}
+{"step": 7500, "phase": 2, "route_loss": 0.0181, "deliver_loss": 0.0, "sec": 186.2, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 8000, "phase": 2, "route_loss": 0.001, "deliver_loss": 0.0, "sec": 199.6, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 8500, "phase": 2, "route_loss": 0.0016, "deliver_loss": 0.0, "sec": 213.1, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 9000, "phase": 2, "route_loss": 0.0006, "deliver_loss": 0.0, "sec": 226.4, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 9500, "phase": 2, "route_loss": 0.0008, "deliver_loss": 0.0, "sec": 239.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 10000, "phase": 2, "route_loss": 0.0005, "deliver_loss": 0.0, "sec": 253.0, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+saved runs/v3o_s1 4407f5c5a1fb32f71460f68370297e3a263fad15df07f9f98147fb0976bcd284

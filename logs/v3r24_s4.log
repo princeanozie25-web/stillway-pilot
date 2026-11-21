@@ -1,0 +1,13 @@
+/Users/princ/Desktop/stillway-pilot/stillway3/train.py:88: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 1 if switch is None or it == switch else 2, "loss": round(float(loss), 5), "ema": round(ema, 5), "aux": round(float(aux), 4),
+{"step": 500, "phase": 1, "loss": 0.03435, "ema": 0.05775, "aux": 0.9283, "commit": 0.0, "sec": 14.5, "train": 0.9869999885559082, "dev": 0.9925000071525574, "dev_5to6_legs": 0.9700000286102295}
+{"step": 1000, "phase": 1, "loss": 0.00209, "ema": 0.00583, "aux": 0.1268, "commit": 0.0, "sec": 29.2, "train": 0.9975000023841858, "dev": 0.9984999895095825, "dev_5to6_legs": 0.996999979019165}
+{"step": 1500, "phase": 1, "loss": 0.00137, "ema": 0.00193, "aux": 0.0558, "commit": 0.0, "sec": 44.0, "train": 1.0, "dev": 0.9994999766349792, "dev_5to6_legs": 1.0}
+{"step": 2000, "phase": 2, "loss": 0.0109, "ema": 0.00101, "aux": 0.0423, "commit": 0.11897, "sec": 61.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 2500, "phase": 2, "loss": 0.00026, "ema": 0.00051, "aux": 0.0214, "commit": 0.03563, "sec": 77.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 3000, "phase": 2, "loss": 0.00024, "ema": 0.00035, "aux": 0.0268, "commit": 0.0488, "sec": 93.8, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 3500, "phase": 2, "loss": 0.00014, "ema": 0.00013, "aux": 0.0118, "commit": 0.03006, "sec": 110.7, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4000, "phase": 2, "loss": 0.00011, "ema": 8e-05, "aux": 0.0096, "commit": 0.03871, "sec": 128.3, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4500, "phase": 2, "loss": 4e-05, "ema": 6e-05, "aux": 0.0068, "commit": 0.00803, "sec": 146.0, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+saved /Users/princ/Desktop/stillway-pilot/runs/v3r24_s4 eba116d0b2be1ca4c6b443db68f07528303ae8798fe8ec5b6fcbd2d63e919b80

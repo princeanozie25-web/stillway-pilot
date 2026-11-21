@@ -1,0 +1,81 @@
+{
+ "name": "v3r23fix_s3",
+ "args": {
+  "name": "v3r23_s3",
+  "data": "t23",
+  "seed": 3,
+  "carry": "vq",
+  "aid": 1.0,
+  "n_codes": 64,
+  "init": "table",
+  "batch": 512,
+  "lr": 0.001,
+  "warmup": 12000,
+  "min_warmup": 1500,
+  "switch_loss": 0.01,
+  "post": 3000,
+  "repair": {
+   "run": "runs/v3r23_s3",
+   "out": "runs/v3r23fix_s3",
+   "alphabet": "same",
+   "rounds": 30,
+   "steps": 300,
+   "lr": 0.0003,
+   "batch": 512,
+   "seed": 0
+  }
+ },
+ "config": {
+  "width": 128,
+  "carry_dim": 16,
+  "n_codes": 64,
+  "carry": "vq",
+  "beta": 0.25,
+  "ema": 0.99
+ },
+ "checkpoint_sha256": "0a0e8203563dce99313e621cf3289920b7c9600eaf8ca788dcac7dcbc9b08ea8",
+ "repaired_from": {
+  "run": "v3r23_s3",
+  "checkpoint_sha256": "9031562a72697c0ee7cbc9a66d49cc2673e0a286b332128dfb154ed6fb65c69a"
+ },
+ "alphabet": "same",
+ "repair_rounds": [
+  {
+   "round": 0,
+   "pairs": 18,
+   "codes_used": 15,
+   "route_checks": 2304,
+   "route_wrong": 32,
+   "pool": 0,
+   "sec": 0.0
+  },
+  {
+   "round": 1,
+   "pairs": 22,
+   "codes_used": 15,
+   "route_checks": 2816,
+   "route_wrong": 64,
+   "pool": 32,
+   "sec": 10.6
+  },
+  {
+   "round": 2,
+   "pairs": 20,
+   "codes_used": 15,
+   "route_checks": 2560,
+   "route_wrong": 0,
+   "pool": 96,
+   "sec": 25.7
+  }
+ ],
+ "repair_gradient_steps": 600,
+ "witness_jobs_in_pool": 96,
+ "longest_witness_job_legs": 5,
+ "clean": true,
+ "wall_seconds": 25.7,
+ "dev_after": 1.0,
+ "train_after": 1.0,
+ "supervision": "set-valued valid actions from the exact planner; training aid: the exact planner's value table after each sweep step; certificate-guided repair: exact-planner labels on jobs built from the closure's wrong decisions",
+ "memory": "typed registers, written by rule (not learned)",
+ "world": "Dispatch-3, training families, 2-3 legs, same-gate legs (the v0.2 training distribution)"
+}

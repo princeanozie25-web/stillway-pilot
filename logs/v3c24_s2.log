@@ -1,0 +1,13 @@
+/Users/princ/Desktop/stillway-pilot/stillway3/train.py:88: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  row = {"step": it, "phase": 1 if switch is None or it == switch else 2, "loss": round(float(loss), 5), "ema": round(ema, 5), "aux": round(float(aux), 4),
+{"step": 500, "phase": 1, "loss": 0.0182, "ema": 0.04791, "aux": 0.9905, "commit": 0.0, "sec": 15.5, "train": 0.9915000200271606, "dev": 0.9944999814033508, "dev_5to6_legs": 0.9769999980926514}
+{"step": 1000, "phase": 1, "loss": 0.00271, "ema": 0.00592, "aux": 0.1507, "commit": 0.0, "sec": 29.9, "train": 0.9975000023841858, "dev": 0.9990000128746033, "dev_5to6_legs": 0.9929999709129333}
+{"step": 1500, "phase": 1, "loss": 0.00071, "ema": 0.00158, "aux": 0.0623, "commit": 0.0, "sec": 44.5, "train": 1.0, "dev": 0.9994999766349792, "dev_5to6_legs": 0.996999979019165}
+{"step": 2000, "phase": 2, "loss": 0.00058, "ema": 0.00079, "aux": 0.0413, "commit": 0.0, "sec": 59.2, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 0.9990000128746033}
+{"step": 2500, "phase": 2, "loss": 0.00013, "ema": 0.00043, "aux": 0.0231, "commit": 0.0, "sec": 74.1, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 3000, "phase": 2, "loss": 0.00012, "ema": 0.00062, "aux": 0.0164, "commit": 0.0, "sec": 88.9, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 3500, "phase": 2, "loss": 0.00011, "ema": 0.00015, "aux": 0.0148, "commit": 0.0, "sec": 103.4, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4000, "phase": 2, "loss": 4e-05, "ema": 9e-05, "aux": 0.0084, "commit": 0.0, "sec": 116.3, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+{"step": 4500, "phase": 2, "loss": 0.00015, "ema": 0.00015, "aux": 0.0067, "commit": 0.0, "sec": 129.1, "train": 1.0, "dev": 1.0, "dev_5to6_legs": 1.0}
+saved /Users/princ/Desktop/stillway-pilot/runs/v3c24_s2 6926e3db79a87ab21190bfd795266cb9a4f8f534419291ec9e4fbffbe03ba0bb

@@ -1,0 +1,236 @@
+{
+ "name": "v3o_s3",
+ "args": {
+  "name": "v3o_s3",
+  "seed": 3,
+  "warmup": 5000,
+  "post": 5000,
+  "batch": 512,
+  "lr": 0.001,
+  "sync": 100,
+  "data": "t24x",
+  "aid": 0.0
+ },
+ "config": {
+  "width": 128,
+  "carry_dim": 16,
+  "n_codes": 64,
+  "carry": "vq",
+  "beta": 0.25,
+  "ema": 0.99,
+  "route_out": 6
+ },
+ "checkpoint_sha256": "09018a787e2a6fa58b38b9d29256d6974f59cb9d973fb91438426ab169aff7fe",
+ "parameters": 85749,
+ "gradient_steps": 10000,
+ "episodes_seen": 5120000,
+ "phase2_started_at_step": 5000,
+ "wall_seconds": 254.4,
+ "exploratory": true,
+ "world": "Dispatch-3, training families, 2-4 legs, cross-gate legs with probability 0.3; logged jobs with random actions",
+ "supervision": "logged outcomes only: parcel accepted or not; number of gate requirements held at the end.  No planner labels.",
+ "memory": "typed registers, written by rule (not learned)",
+ "torch": "2.14.1",
+ "log": [
+  {
+   "step": 500,
+   "phase": 1,
+   "route_loss": 1.8103,
+   "deliver_loss": 0.002,
+   "sec": 11.2,
+   "train": 0.8029999732971191,
+   "dev": 0.7985000014305115,
+   "dev_5to6_legs": 0.6729999780654907
+  },
+  {
+   "step": 1000,
+   "phase": 1,
+   "route_loss": 0.9,
+   "deliver_loss": 0.0007,
+   "sec": 22.5,
+   "train": 0.9595000147819519,
+   "dev": 0.9585000276565552,
+   "dev_5to6_legs": 0.8949999809265137
+  },
+  {
+   "step": 1500,
+   "phase": 1,
+   "route_loss": 0.2711,
+   "deliver_loss": 0.0004,
+   "sec": 34.1,
+   "train": 0.9884999990463257,
+   "dev": 0.9955000281333923,
+   "dev_5to6_legs": 0.9789999723434448
+  },
+  {
+   "step": 2000,
+   "phase": 1,
+   "route_loss": 0.0645,
+   "deliver_loss": 0.0002,
+   "sec": 46.0,
+   "train": 0.9944999814033508,
+   "dev": 0.9965000152587891,
+   "dev_5to6_legs": 0.9860000014305115
+  },
+  {
+   "step": 2500,
+   "phase": 1,
+   "route_loss": 0.043,
+   "deliver_loss": 0.0001,
+   "sec": 57.8,
+   "train": 0.9950000047683716,
+   "dev": 0.9950000047683716,
+   "dev_5to6_legs": 0.9900000095367432
+  },
+  {
+   "step": 3000,
+   "phase": 1,
+   "route_loss": 0.023,
+   "deliver_loss": 0.0,
+   "sec": 69.5,
+   "train": 0.9944999814033508,
+   "dev": 0.9944999814033508,
+   "dev_5to6_legs": 0.9909999966621399
+  },
+  {
+   "step": 3500,
+   "phase": 1,
+   "route_loss": 0.0472,
+   "deliver_loss": 0.0,
+   "sec": 81.4,
+   "train": 0.9955000281333923,
+   "dev": 0.9950000047683716,
+   "dev_5to6_legs": 0.9940000176429749
+  },
+  {
+   "step": 4000,
+   "phase": 1,
+   "route_loss": 0.0396,
+   "deliver_loss": 0.0,
+   "sec": 93.4,
+   "train": 0.9955000281333923,
+   "dev": 0.9950000047683716,
+   "dev_5to6_legs": 0.9950000047683716
+  },
+  {
+   "step": 4500,
+   "phase": 1,
+   "route_loss": 0.0231,
+   "deliver_loss": 0.0,
+   "sec": 104.8,
+   "train": 0.9975000023841858,
+   "dev": 0.9975000023841858,
+   "dev_5to6_legs": 0.9950000047683716
+  },
+  {
+   "step": 5000,
+   "phase": 1,
+   "route_loss": 0.0159,
+   "deliver_loss": 0.0,
+   "sec": 116.5,
+   "train": 0.9959999918937683,
+   "dev": 0.9965000152587891,
+   "dev_5to6_legs": 0.9879999756813049
+  },
+  {
+   "step": 5500,
+   "phase": 2,
+   "route_loss": 0.0326,
+   "deliver_loss": 0.0,
+   "sec": 130.4,
+   "train": 0.9955000281333923,
+   "dev": 0.996999979019165,
+   "dev_5to6_legs": 0.9909999966621399
+  },
+  {
+   "step": 6000,
+   "phase": 2,
+   "route_loss": 0.0647,
+   "deliver_loss": 0.0,
+   "sec": 144.3,
+   "train": 0.9980000257492065,
+   "dev": 0.9965000152587891,
+   "dev_5to6_legs": 0.9950000047683716
+  },
+  {
+   "step": 6500,
+   "phase": 2,
+   "route_loss": 0.0155,
+   "deliver_loss": 0.0,
+   "sec": 158.3,
+   "train": 0.9984999895095825,
+   "dev": 0.9975000023841858,
+   "dev_5to6_legs": 0.9950000047683716
+  },
+  {
+   "step": 7000,
+   "phase": 2,
+   "route_loss": 0.0213,
+   "deliver_loss": 0.0,
+   "sec": 172.8,
+   "train": 0.9994999766349792,
+   "dev": 0.9984999895095825,
+   "dev_5to6_legs": 0.9980000257492065
+  },
+  {
+   "step": 7500,
+   "phase": 2,
+   "route_loss": 0.003,
+   "deliver_loss": 0.0,
+   "sec": 186.9,
+   "train": 0.9990000128746033,
+   "dev": 0.9994999766349792,
+   "dev_5to6_legs": 0.9980000257492065
+  },
+  {
+   "step": 8000,
+   "phase": 2,
+   "route_loss": 0.0057,
+   "deliver_loss": 0.0,
+   "sec": 200.7,
+   "train": 0.9994999766349792,
+   "dev": 0.9990000128746033,
+   "dev_5to6_legs": 1.0
+  },
+  {
+   "step": 8500,
+   "phase": 2,
+   "route_loss": 0.0028,
+   "deliver_loss": 0.0,
+   "sec": 214.1,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_5to6_legs": 1.0
+  },
+  {
+   "step": 9000,
+   "phase": 2,
+   "route_loss": 0.0031,
+   "deliver_loss": 0.0,
+   "sec": 227.6,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_5to6_legs": 0.9990000128746033
+  },
+  {
+   "step": 9500,
+   "phase": 2,
+   "route_loss": 0.0011,
+   "deliver_loss": 0.0,
+   "sec": 241.0,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_5to6_legs": 1.0
+  },
+  {
+   "step": 10000,
+   "phase": 2,
+   "route_loss": 0.0144,
+   "deliver_loss": 0.0,
+   "sec": 254.2,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_5to6_legs": 1.0
+  }
+ ]
+}
