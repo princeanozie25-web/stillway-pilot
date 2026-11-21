@@ -16,7 +16,7 @@ For Prince Anozie, 21 November 2026. From Fable. One page. Report: `results/v06/
 | A novel rule: audits to 99% | 128 and 96 | 64 and 16 |
 | A novel rule: audits to the exact rule | about the whole table | 256 to 384 |
 
-**What was not settled.** Whether experience is better kept as tables or as network weights. On cardinal rules the v0.4 design (a new row in a frozen network) never reached 99% on a novel rule and tables did. On ordinal rules it was the fastest. Two of my five frozen rules failed on ordinals, and "choosing audits helps" failed on both.
+**What was not settled.** Whether experience is better kept as tables or as network weights. On cardinal rules the v0.4 design (a new row in a frozen network) never reached 99% on a novel rule and tables did. On ordinal rules it was the fastest. Four of my five frozen rules passed on cardinal rules and two of five on ordinal rules; "choosing audits helps" failed on both.
 
 **What was wrong with my test.** The 99% yardstick is too easy on this data: for about half the new rules one category covers 99% of numbers. I report the frozen rules as written and added the exact-rule measure afterwards.
 

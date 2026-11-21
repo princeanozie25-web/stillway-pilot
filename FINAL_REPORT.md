@@ -1,6 +1,8 @@
-# Stillway pilot: combined final report, v0.1 to v0.3
+# Stillway pilot: combined final report, v0.1 to v0.6
 
 For Codex, for independent replay. From Fable (the assistant that built it), for Prince Anozie, Stillway Labs. 21 November 2026.
+
+**Part 1 (sections 1 to 10 and the appendices) covers v0.1 to v0.3 and is unchanged. Part 2, at the end, covers v0.4 to v0.6.**
 
 This file stands alone. It covers three versions built in one session on one machine: what was claimed, what was later corrected, what stands now, and how to check each claim without trusting the author. The detailed reports are `REPORT.md` (v0.1), `results/v02/REPORT_v02.md` and `results/v03/REPORT_v03.md`.
 
@@ -350,3 +352,69 @@ A clean result covers every job of every length over that alphabet. Exact wordin
 | How each number was produced | `README.md`, `README_v02.md`, `README_v03.md` |
 | Prior art checked | `docs/claim_matrix.md` |
 | Interactive pages (private to Prince until shared) | Replay Bench (v0.1), Shift Replay (v0.2), Proof Bench (v0.3); sources in `demo/` |
+
+---
+
+# Part 2: v0.4 to v0.6
+
+Added 21 November 2026. Each version has its own frozen spec, report and memo; this part is the map and the ledger.
+
+## P2.1 What happened
+
+| Version | Branch, freeze commit | What it tested | Outcome |
+|---|---|---|---|
+| v0.4 | `v0.4`, `d9a9047` | Prince's brief "a small planner that gets cheaper with experience": proof cost at 2 to 5 gates; a synthetic approvals workflow with procedures chosen by a learned code; sleep (retrieval, rehearsal, consolidation, dreaming); whole-system cost. | Frozen thresholds not met. Registers and the versioned bank work. Learned procedure selection is 1.75 points below a hand-coded macro on novel combinations. Consolidation keeps old policies (98.8%) and learns new ones worse than rule induction. A non-neural tracker given the rules wins on speed, bytes and accuracy. |
+| v0.4 addendum | `v0.4`, after the freeze | Programs found by search instead of weights by descent. | In my own domain: procedures found by enumeration reach 100%; a learned rule library beats the neural arms; the whole planner is induced from logs with no network at 99.99%. **Qualified by v0.5.** |
+| v0.5 | `v0.5`, `3858823` | The same program search on eight public rule tables, frozen before the data was fetched. | Failed all five rules. A small network reached 99% on 8 of 8 tables; program search on 3. Search wins only where its language contains the rule. |
+| v0.6 | `v0.6`, `2b125d1` | Whether experience with related policies makes a new one cheaper to learn, on Unicode plural and ordinal rules, frozen before the data was fetched. | Yes on both families. Mostly by recognising a rule seen before (4 audits against 128; exact in about 10 chosen audits; no cautious error). Tables against weights as the store of experience: split. |
+
+Regression ticket from v0.4: the seed-4 count of 19 against 20 reproduces on one machine across numeric runtimes (CPU 20, Apple GPU 19). The differing episode is `L032.g0.o100.s2.dock0.bay2`; two codes are 0.00001 apart at its PLAN step.
+
+## P2.2 Claims ledger, continued
+
+| # | Claim | Version | Status | Evidence |
+|---|---|---|---|---|
+| 23 | Learned route planners certify at 2 and 3 gates (15 of 15 seeds each) and their tables equal the exact planner's in size and speed. | v0.4 | Stands. No advantage over the exact planner, which compiles 1,000 to 6,000 times faster. | `results/v04/tables.md` M1 |
+| 24 | A learned route planner certifies at 4 gates within an hour. | v0.4 | **Not achieved** (both pilots incomplete). The exact planner closed 5 gates: 3,016,838 states. | `results/v04/MANIFEST_RUNS.json` |
+| 25 | Learned procedure selection is within 1 point of a hand-coded macro on novel event combinations. | v0.4 | **Failed**: −1.75 points (−2.02 to −1.50). | `results/v04/tables.md` M2 |
+| 26 | Suppressing the selected procedure code changes outcomes as predicted and nothing protected moves. | v0.4 | Stands (99.76%, 0 of 49,679). Swapping codes matches the prediction only 88.7%. | `results/v04/m2/` |
+| 27 | Consolidation into a versioned bank retains older policies where rehearsal does not. | v0.4 | Stands (98.2% to 98.8% against 82.4%), in my own domain. | `results/v04/tables.md` M3 |
+| 28 | Dreaming earns inclusion (beats both consolidation and rehearsal on transfer). | v0.4 | **Failed**: beats consolidation (+13.4), not rehearsal (−5.1). | same |
+| 29 | The compiled planner beats the best qualifying neural comparator on compute, latency and bytes. | v0.4 | Vacuous: no other neural arm qualifies. It loses to a non-neural tracker given the rules. | `results/v04/tables.md` M4 |
+| 30 | Program search with verification beats gradient learning. | v0.4 addendum | **Corrected by v0.5**: true where the search language contains the rule (my own domain, MONK-1); false on 5 of 8 public rule tables. | `results/v05/tables.md` |
+| 31 | A small network learns other people's rules with fewer audits than a decision tree and reaches 99% on all eight public tables. | v0.5 | Stands (internal; untuned comparators). | `results/v05/tables.md` |
+| 32 | Experience with related policies cuts the audits a new policy needs, on real rule families. | v0.6 | Stands on both families by the frozen rule (64 against 128; 16 against 96). The 99% yardstick was too easy for about half the rules; the exact-rule figures are in the report. | `results/v06/*_tables.md` |
+| 33 | A rule seen before is recognised exactly within 16 chosen audits with no cautious error. | v0.6 | Stands on both families (8 and 12 audits). | same |
+| 34 | Programs are a better store of experience than network weights. | v0.6 | **Split**: yes on cardinal rules (weights never reach 99% on novel rules), no on ordinal rules (weights 16 audits, programs 48). | same |
+| 35 | Choosing which case to audit reduces audits. | v0.5, v0.6 | Mixed: halves a network's audits on 6 of 8 tables (v0.5); finds an exact seen rule four times faster (v0.6); no gain for novel rules at 99% (v0.6). | both |
+| 36 | A learned system beats a hand-written planner. | all | **Still not shown.** | – |
+
+## P2.3 Replay, cheapest first
+
+```bash
+git checkout v0.6
+python v04/check_freeze.py                                   # v0.4 freeze (22 files); also ./v03/check_all_freezes.sh for v0.1 to v0.3
+./run_v04.sh                                                 # v0.4 smoke: certificate, mutation test, fixtures, regrading, demo trace
+python v04/regrade.py runs/v4f_proc_s_s1/raw_outputs.npz     # success from raw outputs with the plain grader
+python v04/seed4_diff.py results/v04/seed4/failing_ids_cpu_f32_b1.json YOUR_IDS.json
+python -I v05/blind.py monks1 --tests 2 && python v05/report.py          # one public table, all learners; then the five v0.5 rules
+python -I v06/family.py data/external/cldr/family_cardinal.json --shard 0 --of 4 && python v06/report.py cldr_cardinal
+git diff 3858823 -- v05/blind.py                             # empty: the v0.5 learner is as frozen
+git diff 2b125d1 -- v06/family.py v06/cldr_to_family.py      # empty: the v0.6 harness is as frozen
+```
+
+The v0.5 and v0.6 freeze commits come before the commits that add `data/external/`; `git log --stat` shows the order.
+
+## P2.4 Where to attack
+
+1. **The hidden family** (`docs/v06_codex_family_brief.md`). Every v0.5 and v0.6 dataset was chosen by me. This is the one test I cannot bias.
+2. **v0.6's yardstick.** "99% of cases right" is met by answering the most common category for about half the new rules. Re-score with the exact-rule measure or a per-category one and see whether L1 survives.
+3. **v0.6's groups are small** (7, 10, 11 and 4 rules) and many locales share rules.
+4. **Comparators in v0.5** (tree, forest, network) are untuned defaults.
+5. **v0.4's rehearsal arm** got as many update steps as consolidation, but each of its steps trains every row. Its edge on new policies may come from that.
+6. **v0.4's approvals domain and its rule family are mine.** A short rule engine solves it.
+7. **Everything after a freeze** is labelled exploratory in its report: the v0.4 addendum, the v0.5 selector, the exact-rule table in v0.6.
+
+## P2.5 Where the design stands
+
+Keep past rules as tables in a versioned bank with a promotion gate; learn a rule nothing like the past with a small network; let held-out audits choose between proposers; deploy tables. A hand-written planner still wins wherever one exists, and no test has yet been run in a domain without one.
