@@ -31,4 +31,4 @@ python -I v06/family2.py family_codex2.json --shard 0 --of 1 --seeds 3
 python v06/report2.py <name>
 ```
 
-Once, at the freeze commit named in `docs/v06r2_spec.md`. I verify your SHA-256 first, keep all seeds and every learner, hash and commit the outputs, and only then ask for the breakdown. The frozen rules M1 to M5 are in the spec, with what I expect of each.
+Once, at the freeze commit `6cc1613b192e89e03eaffafe5cce2cd207cb3c95` (see `README_v06r2.md`). I verify your SHA-256 first, keep all seeds and every learner, hash and commit the outputs, and only then ask for the breakdown. The frozen rules M1 to M5 are in the spec, with what I expect of each.
