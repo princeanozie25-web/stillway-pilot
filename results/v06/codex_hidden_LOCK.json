@@ -1,0 +1,36 @@
+{
+ "locked_at": "2026-11-21T18:53:10+0000",
+ "family": "codex_hidden",
+ "input_file": "family_codex.json",
+ "input_sha256": "2a4e40c66da8c71cb4c0d9b7bead55caefbedf3da72386ca0052658f3bb29565",
+ "git_head_at_run": "e84c46e5e439a05fea3f338e9b44571f2b4a9454",
+ "working_tree_changes_to_tracked_files_at_lock": "",
+ "code_sha256": {
+  "v06/family.py": "e3057806a811e31a91d999f1839b4dc9a0b31d4ae300907601177b63c2812ba8",
+  "v06/report.py": "d94729d62a5533337af590a7b8222053c82f6b785eb61c3cd9b402d412fcba8e",
+  "v05/blind.py": "f9ce895cbd2ffe445f9d32074850b38c58ad3c54d857697987351dc6ec3369cd"
+ },
+ "harness_unchanged_since_freeze_2b125d1": true,
+ "report_script_diff_since_freeze": "diff --git a/v06/report.py b/v06/report.py\nindex 8e576db..ada2706 100644\n--- a/v06/report.py\n+++ b/v06/report.py\n@@ -38,10 +38,10 @@ if nov:\n if seen:\n     cw = np.mean([r[\"cautious_wrong\"] for p in seen for i in range(len(B)) for r in p[\"curves\"][\"chosen/tables\"][i]])\n     rule(\"L3. A rule seen before is recognised within 16 chosen audits with no cautious error\", med(seen, \"chosen/tables\", 1.0) <= 16 and cw == 0, f\"audits to 100%: {show(med(seen, 'chosen/tables', 1.0))}; cautious wrong {100 * cw:.3f}%\")\n-ok4 = []; det = []\n+ok4 = []; det = []      # one budget step = a factor of two (a median over an even number of rules can fall between budgets)\n for gname, g in groups.items():\n     if not g: continue\n     best = min(med(g, f\"passive/{a}\") for a in (\"scratch\", \"bank_row\", \"tables\", \"programs\")); s_ = med(g, \"passive/selector\")\n-    ok4.append(s_ < INF and (best == INF or step[s_] <= step[best] + 1)); det.append(f\"{gname.split(' (')[0]}: selector {show(s_)}, best single {show(best)}\")\n+    ok4.append(s_ < INF and (best == INF or s_ <= 2 * best)); det.append(f\"{gname.split(' (')[0]}: selector {show(s_)}, best single {show(best)}\")\n rule(\"L4. The selector is within one budget step of the best single learner in both groups\", all(ok4), \"; \".join(det))\n open(f\"results/v06/{name}_tables.md\", \"w\").write(\"\\n\".join(P) + \"\\n\"); json.dump(S, open(f\"results/v06/{name}_rules.json\", \"w\"), indent=1); print(\"\\n\".join(P))",
+ "commands": [
+  "python -I v06/family.py family_codex.json --shard 0 --of 1 --seeds 3",
+  "python v06/report.py codex_hidden"
+ ],
+ "outputs_sha256": {
+  "results/v06/codex_hidden_shard0.json": "4273c3d41933f2df5fec6f29b3e388edd8bc9786a1c60e74418eae0e8e26bb8b",
+  "results/v06/codex_hidden_tables.md": "5d423a227c29428f93de0195b752aee56173664f556e8e097f91db76b86b8d1c",
+  "results/v06/codex_hidden_rules.json": "9be3a13370b461c885dea1e634e8d6fe5a394a9655085406887daa4dcdecdd10",
+  "logs/v06_codex_run.log": "edb1c1660ac000ec41200ce62fd0ac87590c7822df9839177656727b200e3261",
+  "logs/v06_codex_report.log": "5d423a227c29428f93de0195b752aee56173664f556e8e097f91db76b86b8d1c",
+  "results/v06/codex_hidden_L4_check.json": "ae7eb991adcb6d8c2176895ce377574bea4dddf6c318ab000241243c5e4a0624",
+  "results/v06/codex_hidden_per_policy.md": "f6297b9c0fbafab20be9506ba8ac9321eb8ea91ef375a86f7e9184c8a15c207a"
+ },
+ "rule_verdicts": {
+  "L1. Experience helps on novel rules": false,
+  "L2. Programs need no more audits than bank rows on novel rules": true,
+  "L5. Choosing audits helps the selector on novel rules": false,
+  "L3. A rule seen before is recognised within 16 chosen audits with no cautious error": true,
+  "L4. The selector is within one budget step of the best single learner in both groups": true
+ },
+ "note": "locked before the author's breakdown of the hidden policies was requested or seen"
+}

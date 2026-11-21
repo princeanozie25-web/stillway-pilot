@@ -1,0 +1,48 @@
+{
+ "budgets": [
+  4,
+  8,
+  16,
+  32,
+  64,
+  128,
+  256,
+  512,
+  1440
+ ],
+ "groups": {
+  "novel": {
+   "policies": 14,
+   "medians": {
+    "scratch": 512.0,
+    "bank_row": null,
+    "tables": 512.0,
+    "programs": 976.0,
+    "selector": 512.0
+   },
+   "best_single": 512.0,
+   "L4_frozen_code": true,
+   "L4_post_freeze_code": true,
+   "L4_spec_wording": true
+  },
+  "seen": {
+   "policies": 6,
+   "medians": {
+    "scratch": 1440.0,
+    "bank_row": 256.0,
+    "tables": 4.0,
+    "programs": 1440.0,
+    "selector": 6.0
+   },
+   "best_single": 4.0,
+   "L4_frozen_code": "undefined (a median is not a budget; the frozen code raises KeyError)",
+   "L4_post_freeze_code": true,
+   "L4_spec_wording": true
+  }
+ },
+ "L4_frozen_code_overall": null,
+ "L4_post_freeze_code_overall": true,
+ "L4_spec_wording_overall": true,
+ "frozen_code_runs_on_this_family": false,
+ "all_available_readings_agree": true
+}
