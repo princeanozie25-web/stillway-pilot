@@ -1,0 +1,9 @@
+393216 episodes
+cpu_f32_b1 failed 20 distinct forward passes 524724 144s
+cpu_f32_batch failed 20 distinct forward passes 524686 22s
+cpu_f64_batch failed 20 distinct forward passes 524703 28s
+mps_f32_batch failed 19 distinct forward passes 524703 20s
+cpu_f32_batch {'failed': 20, 'episodes_with_a_different_verdict': 0, 'forward_passes_on_identical_inputs': 524557, 'of_which_different_action': 0, 'of_which_different_code': 220, 'largest_logit_difference': 1.9788742065429688e-05}
+cpu_f64_batch {'failed': 20, 'episodes_with_a_different_verdict': 0, 'forward_passes_on_identical_inputs': 524537, 'of_which_different_action': 0, 'of_which_different_code': 115, 'largest_logit_difference': 9.30657277525837e-06}
+mps_f32_batch {'failed': 19, 'episodes_with_a_different_verdict': 1, 'forward_passes_on_identical_inputs': 524472, 'of_which_different_action': 0, 'of_which_different_code': 231, 'largest_logit_difference': 1.7523765563964844e-05}
+reference failed 20 | closest ties: [(0.0, 1, 0), (0.0, 1, 0), (0.0, 1, 0), (0.0, 1, 0), (0.0, 1, 0)]

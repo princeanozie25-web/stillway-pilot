@@ -1,0 +1,396 @@
+{
+ "name": "v4f_text_s_s5",
+ "args": {
+  "size": "s",
+  "seed": 5,
+  "steps": 12000,
+  "budget": 3600.0,
+  "salt": 2701878737,
+  "name": "v4f_text_s_s5"
+ },
+ "arm": "text",
+ "width": 64,
+ "checkpoint_sha256": "1f4c1181a8f1184c28e5788d32e398c4e67a0edfbc9cfd7ee790f5c5697dda92",
+ "active_parameters_per_decision": 113782,
+ "resident_parameters": 118262,
+ "multiply_accumulates_per_step": 5013120,
+ "train_steps": 12000,
+ "train_seconds": 1228.8,
+ "status": "complete",
+ "log": [
+  {
+   "step": 1000,
+   "loss": 0.1687,
+   "dev_success": 0.001,
+   "dev_status_accuracy": 0.77547,
+   "sec": 101.9
+  },
+  {
+   "step": 2000,
+   "loss": 0.1338,
+   "dev_success": 0.001,
+   "dev_status_accuracy": 0.80239,
+   "sec": 201.2
+  },
+  {
+   "step": 3000,
+   "loss": 0.0493,
+   "dev_success": 0.133,
+   "dev_status_accuracy": 0.92361,
+   "sec": 305.1
+  },
+  {
+   "step": 4000,
+   "loss": 0.0432,
+   "dev_success": 0.13,
+   "dev_status_accuracy": 0.92356,
+   "sec": 411.7
+  },
+  {
+   "step": 5000,
+   "loss": 0.0399,
+   "dev_success": 0.133,
+   "dev_status_accuracy": 0.92559,
+   "sec": 516.1
+  },
+  {
+   "step": 6000,
+   "loss": 0.0001,
+   "dev_success": 0.151,
+   "dev_status_accuracy": 0.92816,
+   "sec": 620.9
+  },
+  {
+   "step": 7000,
+   "loss": 0.0296,
+   "dev_success": 0.144,
+   "dev_status_accuracy": 0.92698,
+   "sec": 724.8
+  },
+  {
+   "step": 8000,
+   "loss": 0.0147,
+   "dev_success": 0.158,
+   "dev_status_accuracy": 0.92961,
+   "sec": 828.1
+  },
+  {
+   "step": 9000,
+   "loss": 0.0,
+   "dev_success": 0.156,
+   "dev_status_accuracy": 0.93005,
+   "sec": 928.4
+  },
+  {
+   "step": 10000,
+   "loss": 0.0102,
+   "dev_success": 0.145,
+   "dev_status_accuracy": 0.92823,
+   "sec": 1029.6
+  },
+  {
+   "step": 11000,
+   "loss": 0.0065,
+   "dev_success": 0.165,
+   "dev_status_accuracy": 0.93198,
+   "sec": 1127.5
+  },
+  {
+   "step": 12000,
+   "loss": 0.0066,
+   "dev_success": 0.164,
+   "dev_status_accuracy": 0.93389,
+   "sec": 1228.8
+  }
+ ],
+ "training_information": "the same 20,000 logged documents, plus teacher labels: the correct 39-token scratchpad after every event (20,000 x 19 x 39 tokens)",
+ "teacher_label_tokens": 14820000,
+ "dev": {
+  "success": 0.16949999332427979,
+  "status_accuracy": 0.9352315664291382,
+  "protected_changed": 1,
+  "slots_recomputed_per_event": null,
+  "by_family": {
+   "0": [
+    20,
+    152
+   ],
+   "2": [
+    3,
+    29
+   ],
+   "3": [
+    12,
+    93
+   ],
+   "4": [
+    12,
+    54
+   ],
+   "8": [
+    26,
+    160
+   ],
+   "9": [
+    14,
+    96
+   ],
+   "11": [
+    10,
+    68
+   ],
+   "12": [
+    11,
+    54
+   ],
+   "13": [
+    18,
+    103
+   ],
+   "14": [
+    32,
+    144
+   ],
+   "16": [
+    21,
+    104
+   ],
+   "17": [
+    16,
+    113
+   ],
+   "19": [
+    5,
+    40
+   ],
+   "22": [
+    26,
+    127
+   ],
+   "24": [
+    21,
+    125
+   ],
+   "26": [
+    5,
+    29
+   ],
+   "27": [
+    14,
+    74
+   ],
+   "28": [
+    16,
+    124
+   ],
+   "30": [
+    5,
+    28
+   ],
+   "32": [
+    19,
+    112
+   ],
+   "33": [
+    16,
+    66
+   ],
+   "35": [
+    17,
+    105
+   ]
+  }
+ },
+ "test_iid": {
+  "success": 0.1679999977350235,
+  "status_accuracy": 0.9336763024330139,
+  "protected_changed": 2,
+  "slots_recomputed_per_event": null,
+  "by_family": {
+   "0": [
+    53,
+    288
+   ],
+   "2": [
+    11,
+    59
+   ],
+   "3": [
+    21,
+    181
+   ],
+   "4": [
+    29,
+    137
+   ],
+   "8": [
+    52,
+    343
+   ],
+   "9": [
+    34,
+    203
+   ],
+   "11": [
+    21,
+    134
+   ],
+   "12": [
+    22,
+    129
+   ],
+   "13": [
+    21,
+    191
+   ],
+   "14": [
+    44,
+    266
+   ],
+   "16": [
+    43,
+    194
+   ],
+   "17": [
+    24,
+    194
+   ],
+   "19": [
+    13,
+    60
+   ],
+   "22": [
+    58,
+    271
+   ],
+   "24": [
+    46,
+    256
+   ],
+   "26": [
+    12,
+    64
+   ],
+   "27": [
+    31,
+    150
+   ],
+   "28": [
+    46,
+    267
+   ],
+   "30": [
+    16,
+    69
+   ],
+   "32": [
+    34,
+    196
+   ],
+   "33": [
+    14,
+    131
+   ],
+   "35": [
+    27,
+    217
+   ]
+  }
+ },
+ "test_novel": {
+  "success": 0.17274999618530273,
+  "status_accuracy": 0.9388026595115662,
+  "protected_changed": 2,
+  "slots_recomputed_per_event": null,
+  "by_family": {
+   "0": [
+    50,
+    277
+   ],
+   "2": [
+    14,
+    67
+   ],
+   "3": [
+    35,
+    207
+   ],
+   "4": [
+    28,
+    123
+   ],
+   "8": [
+    67,
+    310
+   ],
+   "9": [
+    42,
+    221
+   ],
+   "11": [
+    17,
+    140
+   ],
+   "12": [
+    36,
+    123
+   ],
+   "13": [
+    32,
+    194
+   ],
+   "14": [
+    51,
+    279
+   ],
+   "16": [
+    30,
+    188
+   ],
+   "17": [
+    31,
+    196
+   ],
+   "19": [
+    12,
+    78
+   ],
+   "22": [
+    47,
+    283
+   ],
+   "24": [
+    32,
+    257
+   ],
+   "26": [
+    12,
+    69
+   ],
+   "27": [
+    18,
+    139
+   ],
+   "28": [
+    52,
+    279
+   ],
+   "30": [
+    5,
+    59
+   ],
+   "32": [
+    29,
+    167
+   ],
+   "33": [
+    19,
+    129
+   ],
+   "35": [
+    32,
+    215
+   ]
+  }
+ }
+}

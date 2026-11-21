@@ -1,0 +1,25 @@
+{
+ "what": "exact 3-gate tables with one route entry flipped; the checker must report it and give a failing job",
+ "gates": 3,
+ "flipped_entry": {
+  "vector": 1,
+  "leg": 3,
+  "gate_state": 0
+ },
+ "checker": {
+  "route_wrong": 1,
+  "witness": {
+   "requirements": 18,
+   "gates": 0,
+   "legs": [
+    3
+   ],
+   "proposed_route": 0,
+   "valid_mask": 2
+  }
+ },
+ "brute_force_valid_routes": [
+  1
+ ],
+ "proposed_by_mutated_tables": 0
+}

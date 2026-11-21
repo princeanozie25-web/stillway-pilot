@@ -1,0 +1,301 @@
+{
+ "name": "v4r2_g3_w128_s4",
+ "args": {
+  "G": 3,
+  "width": 128,
+  "n_codes": 1024,
+  "seed": 4,
+  "lmax": 5,
+  "budget": 3600.0,
+  "batch": 512,
+  "lr": 0.001,
+  "min_warmup": 1500,
+  "warmup": 20000,
+  "switch_loss": 0.01,
+  "post": 3000,
+  "alloc": "exact",
+  "machine_share": 0.8,
+  "rounds": 40,
+  "repair_steps": 300,
+  "name": ""
+ },
+ "checkpoint_sha256": "65bfd815cd3181c4b885e969a11c183dcce9c03b0518a5534a3f1cc52b91a930",
+ "tables_bytes": 720078,
+ "tables_sha256": "a15ff61d2064e4042fcfa6221196d42c7e9849d0dd153d9ffc3c50ded278530d",
+ "tables_codes": 500,
+ "witnesses_last_round": [],
+ "G": 3,
+ "exact_vectors": 500,
+ "exact_closure_and_compile_seconds": 0.11,
+ "active_parameters_per_decision": 68562,
+ "resident_parameters": 85490,
+ "train_steps": 6629,
+ "machine_steps": 21000,
+ "train_seconds": 240.5,
+ "quantiser_switched_on_at": 3629,
+ "repair_rounds": [
+  {
+   "round": 0,
+   "pairs": 500,
+   "codes_used": 500,
+   "exact_vectors_reached": 500,
+   "depth": 3,
+   "route_checks": 576000,
+   "route_wrong": 0,
+   "shortest_witness_legs": null,
+   "closure_seconds": 0.01,
+   "complete": true,
+   "sec": 241.1
+  }
+ ],
+ "repair_steps": 0,
+ "clean": true,
+ "status": "complete",
+ "wall_seconds": 241.5,
+ "peak_rss_bytes": 1071644672,
+ "log": [
+  {
+   "step": 500,
+   "loss": 0.13765,
+   "ema": 0.14046,
+   "acc": 0.9434,
+   "sec": 4.3
+  },
+  {
+   "step": 1000,
+   "loss": 0.03765,
+   "ema": 0.04904,
+   "acc": 0.9883,
+   "sec": 7.8
+  },
+  {
+   "step": 1500,
+   "loss": 0.04019,
+   "ema": 0.02721,
+   "acc": 0.9863,
+   "sec": 11.1
+  },
+  {
+   "step": 2000,
+   "loss": 0.03592,
+   "ema": 0.01934,
+   "acc": 0.9863,
+   "sec": 14.4
+  },
+  {
+   "step": 2500,
+   "loss": 0.01348,
+   "ema": 0.01527,
+   "acc": 0.9922,
+   "sec": 17.7
+  },
+  {
+   "step": 3000,
+   "loss": 0.01061,
+   "ema": 0.01287,
+   "acc": 0.9961,
+   "sec": 21.0
+  },
+  {
+   "step": 3500,
+   "loss": 0.02658,
+   "ema": 0.01288,
+   "acc": 0.9883,
+   "sec": 24.3
+  },
+  {
+   "step": 3629,
+   "note": "quantiser on, 500 codes placed for 500 exact vectors"
+  },
+  {
+   "step": 4000,
+   "loss": 0.01609,
+   "ema": 0.01171,
+   "acc": 0.9902,
+   "sec": 30.7
+  },
+  {
+   "step": 4500,
+   "loss": 0.01324,
+   "ema": 0.01032,
+   "acc": 0.9941,
+   "sec": 38.3
+  },
+  {
+   "step": 5000,
+   "loss": 0.00497,
+   "ema": 0.00987,
+   "acc": 0.998,
+   "sec": 45.8
+  },
+  {
+   "step": 5500,
+   "loss": 0.00928,
+   "ema": 0.01084,
+   "acc": 0.9961,
+   "sec": 53.4
+  },
+  {
+   "step": 6000,
+   "loss": 0.00467,
+   "ema": 0.00816,
+   "acc": 0.998,
+   "sec": 61.0
+  },
+  {
+   "step": 6500,
+   "loss": 0.00057,
+   "ema": 0.00759,
+   "acc": 1.0,
+   "sec": 68.6
+  },
+  {
+   "machine_step": 1000,
+   "loss": 1.92317,
+   "cell_wrong_sampled": 0.4272499978542328,
+   "route_wrong_sampled": 0.03265000134706497,
+   "sec": 8.6
+  },
+  {
+   "machine_step": 2000,
+   "loss": 1.05025,
+   "cell_wrong_sampled": 0.27309998869895935,
+   "route_wrong_sampled": 0.017899999395012856,
+   "sec": 17.1
+  },
+  {
+   "machine_step": 3000,
+   "loss": 0.60877,
+   "cell_wrong_sampled": 0.17389999330043793,
+   "route_wrong_sampled": 0.006750000175088644,
+   "sec": 25.0
+  },
+  {
+   "machine_step": 4000,
+   "loss": 0.30718,
+   "cell_wrong_sampled": 0.10495000332593918,
+   "route_wrong_sampled": 0.0017999999690800905,
+   "sec": 32.7
+  },
+  {
+   "machine_step": 5000,
+   "loss": 0.18457,
+   "cell_wrong_sampled": 0.06449999660253525,
+   "route_wrong_sampled": 0.0003000000142492354,
+   "sec": 40.3
+  },
+  {
+   "machine_step": 6000,
+   "loss": 0.11312,
+   "cell_wrong_sampled": 0.03674999997019768,
+   "route_wrong_sampled": 0.00044999999227002263,
+   "sec": 47.9
+  },
+  {
+   "machine_step": 7000,
+   "loss": 0.06342,
+   "cell_wrong_sampled": 0.01730000041425228,
+   "route_wrong_sampled": 0.0,
+   "sec": 55.6
+  },
+  {
+   "machine_step": 8000,
+   "loss": 0.03153,
+   "cell_wrong_sampled": 0.010350000113248825,
+   "route_wrong_sampled": 0.0,
+   "sec": 63.0
+  },
+  {
+   "machine_step": 9000,
+   "loss": 0.0196,
+   "cell_wrong_sampled": 0.00559999980032444,
+   "route_wrong_sampled": 0.0,
+   "sec": 70.5
+  },
+  {
+   "machine_step": 10000,
+   "loss": 0.0163,
+   "cell_wrong_sampled": 0.0035000001080334187,
+   "route_wrong_sampled": 9.999999747378752e-05,
+   "sec": 78.1
+  },
+  {
+   "machine_step": 11000,
+   "loss": 0.01348,
+   "cell_wrong_sampled": 0.006500000134110451,
+   "route_wrong_sampled": 0.0,
+   "sec": 85.7
+  },
+  {
+   "machine_step": 12000,
+   "loss": 0.01713,
+   "cell_wrong_sampled": 0.005100000184029341,
+   "route_wrong_sampled": 0.0,
+   "sec": 93.2
+  },
+  {
+   "machine_step": 13000,
+   "loss": 0.01011,
+   "cell_wrong_sampled": 0.0038999998942017555,
+   "route_wrong_sampled": 0.0,
+   "sec": 100.7
+  },
+  {
+   "machine_step": 14000,
+   "loss": 0.01075,
+   "cell_wrong_sampled": 0.004399999976158142,
+   "route_wrong_sampled": 0.0,
+   "sec": 108.1
+  },
+  {
+   "machine_step": 15000,
+   "loss": 0.00259,
+   "cell_wrong_sampled": 0.000750000006519258,
+   "route_wrong_sampled": 0.0,
+   "sec": 115.5
+  },
+  {
+   "machine_step": 16000,
+   "loss": 0.00645,
+   "cell_wrong_sampled": 0.0019000000320374966,
+   "route_wrong_sampled": 0.0,
+   "sec": 123.1
+  },
+  {
+   "machine_step": 17000,
+   "loss": 0.00547,
+   "cell_wrong_sampled": 0.0012000000569969416,
+   "route_wrong_sampled": 0.0,
+   "sec": 132.5
+  },
+  {
+   "machine_step": 18000,
+   "loss": 0.00821,
+   "cell_wrong_sampled": 0.00139999995008111,
+   "route_wrong_sampled": 0.0,
+   "sec": 142.0
+  },
+  {
+   "machine_step": 19000,
+   "loss": 0.00339,
+   "cell_wrong_sampled": 0.0010000000474974513,
+   "route_wrong_sampled": 0.0,
+   "sec": 151.4
+  },
+  {
+   "machine_step": 20000,
+   "loss": 0.00494,
+   "cell_wrong_sampled": 0.0032500000670552254,
+   "route_wrong_sampled": 0.0,
+   "sec": 160.7
+  },
+  {
+   "machine_step": 21000,
+   "loss": 0.00012,
+   "cell_wrong_sampled": 0.0,
+   "route_wrong_sampled": 0.0,
+   "sec": 170.0
+  }
+ ],
+ "torch": "2.14.1"
+}

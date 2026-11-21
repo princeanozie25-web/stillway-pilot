@@ -1,0 +1,282 @@
+{
+ "seed": 3,
+ "core": "v4f_proc_s_s3",
+ "salt": 2701878737,
+ "W2": {
+  "stillway_tables": {
+   "documents": 600,
+   "grader_success": 0.9916666666666667,
+   "protected_statuses_changed": 0,
+   "job_us_median": 15.583,
+   "job_us_p95": 16.667,
+   "event_us_median": 0.75,
+   "event_us_p95": 0.917,
+   "cpu_us_per_successful_job": 15.755537815126049,
+   "table_lookups_per_job": 12.96833324432373
+  },
+  "tracker": {
+   "documents": 600,
+   "grader_success": 1.0,
+   "protected_statuses_changed": 0,
+   "job_us_median": 7.709,
+   "job_us_p95": 8.542,
+   "event_us_median": 0.25,
+   "event_us_p95": 0.5,
+   "cpu_us_per_successful_job": 7.751855
+  },
+  "replay": {
+   "documents": 600,
+   "grader_success": 1.0,
+   "protected_statuses_changed": 0,
+   "job_us_median": 60.791,
+   "job_us_p95": 64.791,
+   "event_us_median": 2.875,
+   "event_us_p95": 6.0,
+   "cpu_us_per_successful_job": 60.824104166666665
+  },
+  "proc_network": {
+   "documents": 150,
+   "grader_success": 0.9866666666666667,
+   "protected_statuses_changed": 0,
+   "job_us_median": 3832.1665,
+   "job_us_p95": 4014.43125,
+   "event_us_median": 201.69297368421053,
+   "event_us_p95": 211.28585526315788,
+   "cpu_us_per_successful_job": 3883.841222972973,
+   "multiply_accumulates_per_job": 952809.3801269531,
+   "slots_recomputed_per_job": 12.96833324432373
+  },
+  "cont_network": {
+   "documents": 150,
+   "grader_success": 0.08,
+   "protected_statuses_changed": 195,
+   "job_us_median": 1841.5835,
+   "job_us_p95": 1855.3295,
+   "event_us_median": 96.92544736842105,
+   "event_us_p95": 97.64892105263158,
+   "cpu_us_per_successful_job": 23038.791083333334,
+   "multiply_accumulates_per_job": 1679904
+  },
+  "direct_network": {
+   "documents": 60,
+   "grader_success": 0.1,
+   "protected_statuses_changed": 60,
+   "job_us_median": 17314.3545,
+   "job_us_p95": 17391.9143,
+   "event_us_median": 911.2818157894737,
+   "event_us_p95": 915.3639105263157,
+   "cpu_us_per_successful_job": 173128.58366666667,
+   "multiply_accumulates_per_job": 16799040
+  },
+  "vq_network": {
+   "documents": 150,
+   "grader_success": 0.06,
+   "protected_statuses_changed": 10,
+   "job_us_median": 3087.0,
+   "job_us_p95": 3199.25435,
+   "event_us_median": 162.47368421052633,
+   "event_us_p95": 168.38180789473685,
+   "cpu_us_per_successful_job": 51700.166777777784,
+   "multiply_accumulates_per_job": 2149888
+  }
+ },
+ "W3": {
+  "stillway_tables": {
+   "documents": 600,
+   "grader_success": 0.6566666666666666,
+   "protected_statuses_changed": 0,
+   "job_us_median": 15.584,
+   "job_us_p95": 16.5,
+   "event_us_median": 0.791,
+   "event_us_p95": 0.917,
+   "cpu_us_per_successful_job": 23.79323984771574
+  },
+  "retrieval_tables": {
+   "documents": 600,
+   "grader_success": 0.5,
+   "protected_statuses_changed": 0,
+   "job_us_median": 15.875,
+   "job_us_p95": 16.875,
+   "event_us_median": 0.791,
+   "event_us_p95": 0.958,
+   "cpu_us_per_successful_job": 31.789886666666664
+  },
+  "tracker": {
+   "documents": 600,
+   "grader_success": 1.0,
+   "protected_statuses_changed": 0,
+   "job_us_median": 7.75,
+   "job_us_p95": 8.459,
+   "event_us_median": 0.291,
+   "event_us_p95": 0.5,
+   "cpu_us_per_successful_job": 7.771538333333333
+  },
+  "replay": {
+   "documents": 600,
+   "grader_success": 1.0,
+   "protected_statuses_changed": 0,
+   "job_us_median": 60.792,
+   "job_us_p95": 64.667,
+   "event_us_median": 2.875,
+   "event_us_p95": 6.0,
+   "cpu_us_per_successful_job": 60.745619166666664
+  },
+  "proc_network_dreaming": {
+   "documents": 150,
+   "grader_success": 0.29333333333333333,
+   "protected_statuses_changed": 0,
+   "job_us_median": 3951.5835,
+   "job_us_p95": 4073.7100499999997,
+   "event_us_median": 207.97807894736843,
+   "event_us_p95": 214.40579210526312,
+   "cpu_us_per_successful_job": 13427.337318181817,
+   "grader_success_all_600": 0.6566666666666666,
+   "grader_success_new_policies": 0.32,
+   "grader_success_older_policies": 0.9933333333333333
+  },
+  "proc_network_consolidation": {
+   "documents": 150,
+   "grader_success": 0.94,
+   "protected_statuses_changed": 0,
+   "job_us_median": 3956.979,
+   "job_us_p95": 4098.2208,
+   "event_us_median": 208.26205263157894,
+   "event_us_p95": 215.69583157894738,
+   "cpu_us_per_successful_job": 4202.372879432624,
+   "grader_success_all_600": 0.95,
+   "grader_success_new_policies": 0.9066666666666666,
+   "grader_success_older_policies": 0.9933333333333333
+  },
+  "proc_network_rehearsal": {
+   "documents": 150,
+   "grader_success": 1.0,
+   "protected_statuses_changed": 0,
+   "job_us_median": 3968.3545,
+   "job_us_p95": 4108.129199999999,
+   "event_us_median": 208.86076315789475,
+   "event_us_p95": 216.21732631578945,
+   "cpu_us_per_successful_job": 3966.3391066666663,
+   "grader_success_all_600": 0.9966666666666667,
+   "grader_success_new_policies": 1.0,
+   "grader_success_older_policies": 0.9933333333333333
+  },
+  "proc_network_retrieval": {
+   "documents": 150,
+   "grader_success": 0.14666666666666667,
+   "protected_statuses_changed": 0,
+   "job_us_median": 4287.729,
+   "job_us_p95": 4467.9894,
+   "event_us_median": 225.66994736842108,
+   "event_us_p95": 235.15733684210525,
+   "cpu_us_per_successful_job": 29078.06040909091,
+   "grader_success_all_600": 0.5,
+   "grader_success_new_policies": 0.16,
+   "grader_success_older_policies": 0.84
+  },
+  "proc_network_none": {
+   "documents": 150,
+   "grader_success": 0.0,
+   "protected_statuses_changed": 0,
+   "job_us_median": 3963.208,
+   "job_us_p95": 4195.88155,
+   "event_us_median": 208.5898947368421,
+   "event_us_p95": 220.83587105263155,
+   "cpu_us_per_successful_job": null,
+   "grader_success_all_600": 0.09,
+   "grader_success_new_policies": 0.0,
+   "grader_success_older_policies": 0.18
+  }
+ },
+ "bytes": {
+  "cont_network": {
+   "checkpoint_bytes": 366908,
+   "active_parameters": 89568,
+   "fp16_bytes_active": 179136
+  },
+  "vq_network": {
+   "checkpoint_bytes": 536548,
+   "active_parameters": 114512,
+   "fp16_bytes_active": 229024
+  },
+  "stillway_tables": {
+   "procedure_tables_bytes": 255,
+   "bank_bytes_one_byte_per_entry": 2772,
+   "policies_in_bank": 77,
+   "registry_bytes": 12,
+   "total_runtime_bytes": 3039,
+   "needed_only_at_sleep_checkpoint_bytes": 304389
+  },
+  "proc_network": {
+   "checkpoint_bytes": 304389,
+   "active_parameters": 74018,
+   "fp16_bytes_active": 148036,
+   "bank_rows": 80,
+   "bank_fp16_bytes": 2560
+  },
+  "retrieval_tables": {
+   "index_entries": 965,
+   "index_bytes_4_per_entry": 3860,
+   "base_bank_bytes": 2160,
+   "total_runtime_bytes": 6275
+  },
+  "tracker": {
+   "policies": 78,
+   "bytes_4_per_policy": 312
+  }
+ },
+ "process": {
+  "tables": {
+   "load_seconds": 0.0002394169569015503,
+   "first_job_seconds": 2.683280035853386e-05,
+   "peak_rss_bytes": 30228480
+  },
+  "tracker": {
+   "load_seconds": 0.0002310001291334629,
+   "first_job_seconds": 1.4916062355041504e-05,
+   "peak_rss_bytes": 30212096
+  },
+  "replay": {
+   "load_seconds": 0.00023679202422499657,
+   "first_job_seconds": 7.229158654808998e-05,
+   "peak_rss_bytes": 30048256
+  },
+  "proc_net": {
+   "load_seconds": 0.5939249168150127,
+   "first_job_seconds": 0.004113875329494476,
+   "peak_rss_bytes": 215711744
+  }
+ },
+ "resume": {
+  "resumed_one_event_us_median": 5.0625,
+  "fresh_replay_13_events_us_median": 9.792,
+  "saved_job_bytes_median": 160
+ },
+ "break_even": {
+  "sleep_cycle_seconds_dreaming_plus_compile": 0.39795529184490447,
+  "against": {
+   "retrieval_tables": {
+    "saving_us_per_job": 0.29100000000000037,
+    "jobs_to_break_even": 1367543.9582299106
+   },
+   "tracker": {
+    "saving_us_per_job": -7.834,
+    "jobs_to_break_even": null
+   },
+   "replay": {
+    "saving_us_per_job": 45.208,
+    "jobs_to_break_even": 8802.762604957186
+   },
+   "proc_network_dreaming": {
+    "saving_us_per_job": 3935.9995000000004,
+    "jobs_to_break_even": 101.10654024343866
+   }
+  },
+  "cost_per_job_us_by_jobs_per_sleep_cycle": {
+   "10": 39811.11318449045,
+   "100": 3995.1369184490445,
+   "1000": 413.5392918449045,
+   "10000": 55.37952918449045,
+   "100000": 19.563552918449044
+  }
+ }
+}

@@ -1,0 +1,148 @@
+{
+ "name": "v4a_macro_m_s1",
+ "args": {
+  "arm": "macro",
+  "size": "m",
+  "seed": 1,
+  "steps": 3000,
+  "budget": 3600.0,
+  "name": "",
+  "salt": 0
+ },
+ "arm": "macro",
+ "width": 512,
+ "checkpoint_sha256": "ab2089b4ff81b896e7448b1e4c9bffc950a0247949fcef20f4a8cf1ccfde1b31",
+ "active_parameters_per_decision": 279074,
+ "resident_parameters": 280180,
+ "train_steps": 3000,
+ "train_seconds": 111.4,
+ "status": "complete",
+ "log": [
+  {
+   "step": 500,
+   "loss": 0.0001,
+   "dev_success": 1.0,
+   "dev_status_accuracy": 1.0,
+   "sec": 21.7
+  },
+  {
+   "step": 1000,
+   "loss": 0.0,
+   "dev_success": 1.0,
+   "dev_status_accuracy": 1.0,
+   "sec": 40.5
+  },
+  {
+   "step": 1500,
+   "loss": 0.0,
+   "dev_success": 1.0,
+   "dev_status_accuracy": 1.0,
+   "sec": 58.5
+  },
+  {
+   "step": 2000,
+   "loss": 0.0,
+   "dev_success": 1.0,
+   "dev_status_accuracy": 1.0,
+   "sec": 76.5
+  },
+  {
+   "step": 2500,
+   "loss": 0.0,
+   "dev_success": 1.0,
+   "dev_status_accuracy": 1.0,
+   "sec": 94.3
+  },
+  {
+   "step": 3000,
+   "loss": 0.0,
+   "dev_success": 1.0,
+   "dev_status_accuracy": 1.0,
+   "sec": 111.4
+  }
+ ],
+ "torch": "2.14.1",
+ "training_information": "20,000 logged documents: events and the 5 statuses after every event; no other label",
+ "dev": {
+  "success": 1.0,
+  "status_accuracy": 1.0,
+  "protected_changed": 0,
+  "slots_recomputed_per_event": 0.6747631430625916
+ },
+ "test_iid": {
+  "success": 1.0,
+  "status_accuracy": 1.0,
+  "protected_changed": 0,
+  "slots_recomputed_per_event": 0.6762763261795044
+ },
+ "test_novel": {
+  "success": 1.0,
+  "status_accuracy": 1.0,
+  "protected_changed": 0,
+  "slots_recomputed_per_event": 0.6851447224617004
+ },
+ "procedure_tables": {
+  "code_of_kind": [
+   0,
+   1,
+   0,
+   2,
+   3,
+   2,
+   3,
+   3
+  ],
+  "gate_weights": [
+   [
+    40.0,
+    0.0,
+    -20.0
+   ],
+   [
+    40.0,
+    0.0,
+    -20.0
+   ],
+   [
+    0.0,
+    40.0,
+    -20.0
+   ],
+   [
+    0.0,
+    0.0,
+    -20.0
+   ],
+   [
+    0.0,
+    0.0,
+    -20.0
+   ],
+   [
+    0.0,
+    0.0,
+    -20.0
+   ],
+   [
+    0.0,
+    0.0,
+    -20.0
+   ],
+   [
+    0.0,
+    0.0,
+    -20.0
+   ]
+  ],
+  "source_of_code": [
+   0,
+   1,
+   2,
+   0,
+   0,
+   0,
+   0,
+   0
+  ]
+ }
+}

@@ -1,0 +1,119 @@
+{
+ "name": "v4r_g2_w512_s1",
+ "args": {
+  "G": 2,
+  "width": 512,
+  "n_codes": 64,
+  "seed": 1,
+  "lmax": 4,
+  "budget": 3600.0,
+  "batch": 512,
+  "lr": 0.001,
+  "min_warmup": 1500,
+  "warmup": 20000,
+  "switch_loss": 0.01,
+  "post": 3000,
+  "rounds": 40,
+  "repair_steps": 300,
+  "name": ""
+ },
+ "checkpoint_sha256": "58d581982c4207ad2b45b293634d63b448e3831d56198159beebd196f59ab4ed",
+ "tables_bytes": 11178,
+ "tables_sha256": "ea2f9858d19683580f0794494689008206cfc5c8f591397aeb817a3391c8674e",
+ "tables_codes": 29,
+ "witnesses_last_round": [],
+ "G": 2,
+ "exact_vectors": 29,
+ "exact_closure_and_compile_seconds": 0.01,
+ "active_parameters_per_decision": 853074,
+ "resident_parameters": 854302,
+ "train_steps": 4500,
+ "train_seconds": 75.9,
+ "quantiser_switched_on_at": 1500,
+ "repair_rounds": [
+  {
+   "round": 0,
+   "pairs": 29,
+   "codes_used": 29,
+   "exact_vectors_reached": 29,
+   "depth": 2,
+   "route_checks": 7424,
+   "route_wrong": 0,
+   "shortest_witness_legs": null,
+   "closure_seconds": 0.0,
+   "complete": true,
+   "sec": 75.9
+  }
+ ],
+ "repair_steps": 0,
+ "clean": true,
+ "status": "complete",
+ "wall_seconds": 75.9,
+ "peak_rss_bytes": 374030336,
+ "log": [
+  {
+   "step": 500,
+   "loss": 0.00221,
+   "ema": 0.00666,
+   "acc": 1.0,
+   "sec": 8.8
+  },
+  {
+   "step": 1000,
+   "loss": 0.00074,
+   "ema": 0.00109,
+   "acc": 1.0,
+   "sec": 16.1
+  },
+  {
+   "step": 1500,
+   "loss": 0.00011,
+   "ema": 0.00025,
+   "acc": 1.0,
+   "sec": 24.7
+  },
+  {
+   "step": 2000,
+   "loss": 3e-05,
+   "ema": 4e-05,
+   "acc": 1.0,
+   "sec": 33.6
+  },
+  {
+   "step": 2500,
+   "loss": 2e-05,
+   "ema": 2e-05,
+   "acc": 1.0,
+   "sec": 42.5
+  },
+  {
+   "step": 3000,
+   "loss": 2e-05,
+   "ema": 1e-05,
+   "acc": 1.0,
+   "sec": 50.5
+  },
+  {
+   "step": 3500,
+   "loss": 1e-05,
+   "ema": 1e-05,
+   "acc": 1.0,
+   "sec": 59.0
+  },
+  {
+   "step": 4000,
+   "loss": 1e-05,
+   "ema": 1e-05,
+   "acc": 1.0,
+   "sec": 67.5
+  },
+  {
+   "step": 4500,
+   "loss": 0.0,
+   "ema": 1e-05,
+   "acc": 1.0,
+   "sec": 75.9
+  }
+ ],
+ "torch": "2.14.1"
+}

@@ -1,0 +1,668 @@
+{
+ "name": "v4f_r_g2_w128_s1",
+ "G": 2,
+ "exact": {
+  "dp_program_file_bytes": 42,
+  "vectors": 29,
+  "closure_depth": 2,
+  "growth_by_depth": [
+   9,
+   19,
+   1
+  ],
+  "closure_and_compile_seconds": 0.008,
+  "table_bytes": 11178,
+  "peak_rss_bytes_python_compile": 210911232
+ },
+ "by_length": {
+  "2": {
+   "one_decision": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 0.0,
+      "p95_ns": 5.0,
+      "mean_ns": 1.9831249713897705
+     },
+     "cold": {
+      "median_ns": 0.0,
+      "p95_ns": 5.0,
+      "mean_ns": 1.9924999475479126
+     },
+     "load_ns": 29000,
+     "peak_rss_bytes": 1818624
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 25.0,
+      "p95_ns": 30.0,
+      "mean_ns": 27.103750228881836
+     },
+     "cold": {
+      "median_ns": 30.0,
+      "p95_ns": 30.0,
+      "mean_ns": 27.649999618530273
+     },
+     "load_ns": 29000,
+     "peak_rss_bytes": 1802240
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 0.0,
+      "p95_ns": 5.0,
+      "mean_ns": 2.0625
+     },
+     "cold": {
+      "median_ns": 0.0,
+      "p95_ns": 5.0,
+      "mean_ns": 2.0274999141693115
+     },
+     "load_ns": 48000,
+     "peak_rss_bytes": 1818624
+    },
+    "network_batch_one": {
+     "median_ns": 111500.26693940163,
+     "p95_ns": 113087.19404041767,
+     "mean_ns": 110516.37430985768
+    }
+   },
+   "learned_decisions_valid": 2000,
+   "exact_decisions_valid": 2000,
+   "jobs": 2000,
+   "whole_job": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 5.0,
+      "p95_ns": 10.0,
+      "mean_ns": 6.063125133514404
+     },
+     "cold": {
+      "median_ns": 5.0,
+      "p95_ns": 10.0,
+      "mean_ns": 5.957499980926514
+     },
+     "load_ns": 50000,
+     "peak_rss_bytes": 1818624
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 45.0,
+      "p95_ns": 50.0,
+      "mean_ns": 44.73812484741211
+     },
+     "cold": {
+      "median_ns": 45.0,
+      "p95_ns": 50.0,
+      "mean_ns": 45.192501068115234
+     },
+     "load_ns": 43000,
+     "peak_rss_bytes": 1802240
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 5.0,
+      "p95_ns": 10.0,
+      "mean_ns": 6.064374923706055
+     },
+     "cold": {
+      "median_ns": 5.0,
+      "p95_ns": 10.0,
+      "mean_ns": 5.985000133514404
+     },
+     "load_ns": 45000,
+     "peak_rss_bytes": 1818624
+    }
+   },
+   "network_equals_learned_tables": 300,
+   "network_jobs": 300
+  },
+  "4": {
+   "one_decision": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 5.0,
+      "p95_ns": 5.0,
+      "mean_ns": 3.250624895095825
+     },
+     "cold": {
+      "median_ns": 5.0,
+      "p95_ns": 5.0,
+      "mean_ns": 3.25
+     },
+     "load_ns": 36000,
+     "peak_rss_bytes": 1835008
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 50.0,
+      "p95_ns": 50.0,
+      "mean_ns": 48.509376525878906
+     },
+     "cold": {
+      "median_ns": 50.0,
+      "p95_ns": 50.0,
+      "mean_ns": 48.59749984741211
+     },
+     "load_ns": 26000,
+     "peak_rss_bytes": 1818624
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 5.0,
+      "p95_ns": 5.0,
+      "mean_ns": 3.2362499237060547
+     },
+     "cold": {
+      "median_ns": 5.0,
+      "p95_ns": 5.0,
+      "mean_ns": 3.2325000762939453
+     },
+     "load_ns": 37000,
+     "peak_rss_bytes": 1835008
+    },
+    "network_batch_one": {
+     "median_ns": 193000.0726133585,
+     "p95_ns": 199845.45651823282,
+     "mean_ns": 193822.92249550423
+    }
+   },
+   "learned_decisions_valid": 2000,
+   "exact_decisions_valid": 2000,
+   "jobs": 2000,
+   "whole_job": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 15.0,
+      "p95_ns": 20.0,
+      "mean_ns": 16.829374313354492
+     },
+     "cold": {
+      "median_ns": 15.0,
+      "p95_ns": 20.0,
+      "mean_ns": 16.912500381469727
+     },
+     "load_ns": 34000,
+     "peak_rss_bytes": 1835008
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 135.0,
+      "p95_ns": 140.0,
+      "mean_ns": 133.57249450683594
+     },
+     "cold": {
+      "median_ns": 135.0,
+      "p95_ns": 135.0,
+      "mean_ns": 132.90249633789062
+     },
+     "load_ns": 31000,
+     "peak_rss_bytes": 1818624
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 15.0,
+      "p95_ns": 20.0,
+      "mean_ns": 17.168750762939453
+     },
+     "cold": {
+      "median_ns": 15.0,
+      "p95_ns": 20.0,
+      "mean_ns": 16.774999618530273
+     },
+     "load_ns": 46000,
+     "peak_rss_bytes": 1835008
+    }
+   },
+   "network_equals_learned_tables": 300,
+   "network_jobs": 300
+  },
+  "8": {
+   "one_decision": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 5.0,
+      "p95_ns": 5.0,
+      "mean_ns": 5.09499979019165
+     },
+     "cold": {
+      "median_ns": 5.0,
+      "p95_ns": 5.0,
+      "mean_ns": 5.110000133514404
+     },
+     "load_ns": 37000,
+     "peak_rss_bytes": 1867776
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 95.0,
+      "p95_ns": 95.0,
+      "mean_ns": 94.12562561035156
+     },
+     "cold": {
+      "median_ns": 95.0,
+      "p95_ns": 95.0,
+      "mean_ns": 93.625
+     },
+     "load_ns": 30000,
+     "peak_rss_bytes": 1851392
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 5.0,
+      "p95_ns": 5.0,
+      "mean_ns": 5.25124979019165
+     },
+     "cold": {
+      "median_ns": 5.0,
+      "p95_ns": 5.0,
+      "mean_ns": 5.227499961853027
+     },
+     "load_ns": 37000,
+     "peak_rss_bytes": 1867776
+    },
+    "network_batch_one": {
+     "median_ns": 352561.93950772285,
+     "p95_ns": 358752.2078305483,
+     "mean_ns": 353105.952963233
+    }
+   },
+   "learned_decisions_valid": 2000,
+   "exact_decisions_valid": 2000,
+   "jobs": 2000,
+   "whole_job": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 50.0,
+      "p95_ns": 50.0,
+      "mean_ns": 49.373748779296875
+     },
+     "cold": {
+      "median_ns": 50.0,
+      "p95_ns": 50.0,
+      "mean_ns": 49.477500915527344
+     },
+     "load_ns": 38000,
+     "peak_rss_bytes": 1867776
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 475.0,
+      "p95_ns": 495.0,
+      "mean_ns": 480.8743896484375
+     },
+     "cold": {
+      "median_ns": 480.0,
+      "p95_ns": 500.0,
+      "mean_ns": 483.7025146484375
+     },
+     "load_ns": 31000,
+     "peak_rss_bytes": 1851392
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 50.0,
+      "p95_ns": 50.0,
+      "mean_ns": 48.180625915527344
+     },
+     "cold": {
+      "median_ns": 50.0,
+      "p95_ns": 50.0,
+      "mean_ns": 48.157501220703125
+     },
+     "load_ns": 41000,
+     "peak_rss_bytes": 1867776
+    }
+   },
+   "network_equals_learned_tables": 300,
+   "network_jobs": 300
+  },
+  "16": {
+   "one_decision": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 15.0,
+      "p95_ns": 15.0,
+      "mean_ns": 13.602499961853027
+     },
+     "cold": {
+      "median_ns": 15.0,
+      "p95_ns": 15.0,
+      "mean_ns": 13.579999923706055
+     },
+     "load_ns": 44000,
+     "peak_rss_bytes": 1933312
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 190.0,
+      "p95_ns": 195.0,
+      "mean_ns": 189.77125549316406
+     },
+     "cold": {
+      "median_ns": 190.0,
+      "p95_ns": 195.0,
+      "mean_ns": 189.80499267578125
+     },
+     "load_ns": 37000,
+     "peak_rss_bytes": 1916928
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 15.0,
+      "p95_ns": 15.0,
+      "mean_ns": 13.795624732971191
+     },
+     "cold": {
+      "median_ns": 15.0,
+      "p95_ns": 15.0,
+      "mean_ns": 14.050000190734863
+     },
+     "load_ns": 40000,
+     "peak_rss_bytes": 1933312
+    },
+    "network_batch_one": {
+     "median_ns": 672187.6561641693,
+     "p95_ns": 707139.1679346561,
+     "mean_ns": 677531.9529697299
+    }
+   },
+   "learned_decisions_valid": 2000,
+   "exact_decisions_valid": 2000,
+   "jobs": 2000,
+   "whole_job": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 145.0,
+      "p95_ns": 150.0,
+      "mean_ns": 143.65374755859375
+     },
+     "cold": {
+      "median_ns": 145.0,
+      "p95_ns": 150.0,
+      "mean_ns": 143.34750366210938
+     },
+     "load_ns": 35000,
+     "peak_rss_bytes": 1933312
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 1700.0,
+      "p95_ns": 1750.0,
+      "mean_ns": 1707.0050048828125
+     },
+     "cold": {
+      "median_ns": 1705.0,
+      "p95_ns": 1760.0,
+      "mean_ns": 1713.4324951171875
+     },
+     "load_ns": 30000,
+     "peak_rss_bytes": 1916928
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 145.0,
+      "p95_ns": 150.0,
+      "mean_ns": 144.4875030517578
+     },
+     "cold": {
+      "median_ns": 150.0,
+      "p95_ns": 155.0,
+      "mean_ns": 149.13250732421875
+     },
+     "load_ns": 52000,
+     "peak_rss_bytes": 1933312
+    }
+   },
+   "network_equals_learned_tables": 300,
+   "network_jobs": 300
+  },
+  "32": {
+   "one_decision": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 35.0,
+      "p95_ns": 40.0,
+      "mean_ns": 35.7556266784668
+     },
+     "cold": {
+      "median_ns": 35.0,
+      "p95_ns": 40.0,
+      "mean_ns": 36.095001220703125
+     },
+     "load_ns": 36000,
+     "peak_rss_bytes": 2064384
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 365.0,
+      "p95_ns": 380.0,
+      "mean_ns": 367.2037353515625
+     },
+     "cold": {
+      "median_ns": 365.0,
+      "p95_ns": 380.0,
+      "mean_ns": 366.4175109863281
+     },
+     "load_ns": 36000,
+     "peak_rss_bytes": 2048000
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 35.0,
+      "p95_ns": 35.0,
+      "mean_ns": 35.201873779296875
+     },
+     "cold": {
+      "median_ns": 35.0,
+      "p95_ns": 35.0,
+      "mean_ns": 35.23500061035156
+     },
+     "load_ns": 45000,
+     "peak_rss_bytes": 2064384
+    },
+    "network_batch_one": {
+     "median_ns": 1314083.1142663956,
+     "p95_ns": 1337516.9364735484,
+     "mean_ns": 1317548.8635897636
+    }
+   },
+   "learned_decisions_valid": 2000,
+   "exact_decisions_valid": 2000,
+   "jobs": 2000,
+   "whole_job": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 580.0,
+      "p95_ns": 600.0,
+      "mean_ns": 583.79248046875
+     },
+     "cold": {
+      "median_ns": 580.0,
+      "p95_ns": 600.0,
+      "mean_ns": 582.3300170898438
+     },
+     "load_ns": 48000,
+     "peak_rss_bytes": 2064384
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 6250.0,
+      "p95_ns": 6385.0,
+      "mean_ns": 6258.9326171875
+     },
+     "cold": {
+      "median_ns": 6255.0,
+      "p95_ns": 6430.0,
+      "mean_ns": 6269.0
+     },
+     "load_ns": 37000,
+     "peak_rss_bytes": 2048000
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 580.0,
+      "p95_ns": 600.0,
+      "mean_ns": 582.8256225585938
+     },
+     "cold": {
+      "median_ns": 580.0,
+      "p95_ns": 600.0,
+      "mean_ns": 582.2249755859375
+     },
+     "load_ns": 46000,
+     "peak_rss_bytes": 2064384
+    }
+   },
+   "network_equals_learned_tables": 300,
+   "network_jobs": 300
+  },
+  "64": {
+   "one_decision": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 105.0,
+      "p95_ns": 110.0,
+      "mean_ns": 103.80062866210938
+     },
+     "cold": {
+      "median_ns": 100.0,
+      "p95_ns": 105.0,
+      "mean_ns": 102.63749694824219
+     },
+     "load_ns": 48000,
+     "peak_rss_bytes": 2310144
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 720.0,
+      "p95_ns": 740.0,
+      "mean_ns": 721.0
+     },
+     "cold": {
+      "median_ns": 715.0,
+      "p95_ns": 740.0,
+      "mean_ns": 720.4949951171875
+     },
+     "load_ns": 31000,
+     "peak_rss_bytes": 2293760
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 105.0,
+      "p95_ns": 110.0,
+      "mean_ns": 103.6656265258789
+     },
+     "cold": {
+      "median_ns": 100.0,
+      "p95_ns": 105.0,
+      "mean_ns": 102.34500122070312
+     },
+     "load_ns": 45000,
+     "peak_rss_bytes": 2310144
+    },
+    "network_batch_one": {
+     "median_ns": 2592083.9980244637,
+     "p95_ns": 2658533.677458763,
+     "mean_ns": 2600218.787168463
+    }
+   },
+   "learned_decisions_valid": 2000,
+   "exact_decisions_valid": 2000,
+   "jobs": 2000,
+   "whole_job": {
+    "exact_tables": {
+     "warm": {
+      "median_ns": 2940.0,
+      "p95_ns": 3025.0,
+      "mean_ns": 2947.81689453125
+     },
+     "cold": {
+      "median_ns": 2940.0,
+      "p95_ns": 3020.0,
+      "mean_ns": 2945.08251953125
+     },
+     "load_ns": 49000,
+     "peak_rss_bytes": 2310144
+    },
+    "exact_dp_no_tables": {
+     "warm": {
+      "median_ns": 23830.0,
+      "p95_ns": 24080.25,
+      "mean_ns": 23846.896484375
+     },
+     "cold": {
+      "median_ns": 23830.0,
+      "p95_ns": 24065.0,
+      "mean_ns": 23843.9921875
+     },
+     "load_ns": 42000,
+     "peak_rss_bytes": 2293760
+    },
+    "learned_tables": {
+     "warm": {
+      "median_ns": 2940.0,
+      "p95_ns": 3000.0,
+      "mean_ns": 2943.38134765625
+     },
+     "cold": {
+      "median_ns": 2940.0,
+      "p95_ns": 2975.0,
+      "mean_ns": 2941.782470703125
+     },
+     "load_ns": 45000,
+     "peak_rss_bytes": 2310144
+    }
+   },
+   "network_equals_learned_tables": 300,
+   "network_jobs": 300
+  }
+ },
+ "learned": {
+  "tables_bytes": 11178,
+  "tables_codes": 29,
+  "train_seconds": 24.1,
+  "wall_seconds": 24.1,
+  "clean": true,
+  "status": "complete",
+  "active_parameters_per_decision": 65874,
+  "resident_parameters": 67102,
+  "checkpoint_sha256": "3ded6d59a5b23a56d694e165e6f122ca0b85ef06b557ee26284535468a781d85",
+  "tables_sha256": "25e3422ccf0ebf7e12a84a95b7e4fbeef2a2f8d7ad525b575cb98a58eaaba56a",
+  "checkpoint_bytes": 285263
+ },
+ "runtime_check": {
+  "closure_entries": 7424,
+  "entries_run": 7424,
+  "sampled": false,
+  "longest_job_legs": 3,
+  "c_runner_equals_tables": 7424,
+  "network_equals_tables": 7424,
+  "seconds": 0.0
+ },
+ "certificate": {
+  "complete": true,
+  "pairs": 29,
+  "depth": 2,
+  "growth_by_depth": [
+   9,
+   19,
+   1
+  ],
+  "codes_used": 29,
+  "exact_vectors_reached": 29,
+  "route_checks": 7424,
+  "route_wrong": 0,
+  "entries_with_one_valid_route": 2560,
+  "shortest_witness_legs": null,
+  "artifact": "tables.bin",
+  "artifact_sha256": "25e3422ccf0ebf7e12a84a95b7e4fbeef2a2f8d7ad525b575cb98a58eaaba56a",
+  "alphabet": "all 64 leg kinds, 2 gates",
+  "seconds": 0.001
+ },
+ "break_even": {
+  "learned_offline_seconds": 24.1,
+  "exact_offline_seconds": 0.008,
+  "tables_against_network_calls_to_recover_learned_offline_cost_at_16_legs": 35853.88334230884,
+  "learned_tables_against_exact_tables_saving_ns_per_call_at_16_legs": 0.0,
+  "note": "the exact tables need no training; the learned tables break even against them only if their per-call saving is positive"
+ }
+}

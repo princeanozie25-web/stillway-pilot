@@ -1,0 +1,176 @@
+{
+ "name": "v4a_proc_l_s1",
+ "args": {
+  "arm": "proc",
+  "size": "l",
+  "seed": 1,
+  "steps": 5000,
+  "budget": 3600.0,
+  "name": "",
+  "salt": 0
+ },
+ "arm": "proc",
+ "width": 960,
+ "checkpoint_sha256": "d19c42956d2b98f2348451511b653530ee3759edbb9ee8b45355718b9a28bb82",
+ "active_parameters_per_decision": 953314,
+ "resident_parameters": 954420,
+ "train_steps": 5000,
+ "train_seconds": 2688.7,
+ "status": "complete",
+ "log": [
+  {
+   "step": 500,
+   "loss": 0.0433,
+   "dev_success": 0.539,
+   "dev_status_accuracy": 0.97954,
+   "sec": 489.2
+  },
+  {
+   "step": 1000,
+   "loss": 0.0179,
+   "dev_success": 0.5445,
+   "dev_status_accuracy": 0.97997,
+   "sec": 1331.7
+  },
+  {
+   "step": 1500,
+   "loss": 0.0477,
+   "dev_success": 0.5485,
+   "dev_status_accuracy": 0.97999,
+   "sec": 1627.7
+  },
+  {
+   "step": 2000,
+   "loss": 0.046,
+   "dev_success": 0.551,
+   "dev_status_accuracy": 0.98011,
+   "sec": 1820.8
+  },
+  {
+   "step": 2500,
+   "loss": 0.0505,
+   "dev_success": 0.5475,
+   "dev_status_accuracy": 0.98008,
+   "sec": 1973.9
+  },
+  {
+   "step": 3000,
+   "loss": 0.057,
+   "dev_success": 0.551,
+   "dev_status_accuracy": 0.98004,
+   "sec": 2128.7
+  },
+  {
+   "step": 3500,
+   "loss": 0.0518,
+   "dev_success": 0.551,
+   "dev_status_accuracy": 0.98012,
+   "sec": 2270.9
+  },
+  {
+   "step": 4000,
+   "loss": 0.0496,
+   "dev_success": 0.551,
+   "dev_status_accuracy": 0.98003,
+   "sec": 2409.9
+  },
+  {
+   "step": 4500,
+   "loss": 0.0501,
+   "dev_success": 0.547,
+   "dev_status_accuracy": 0.98,
+   "sec": 2548.3
+  },
+  {
+   "step": 5000,
+   "loss": 0.0499,
+   "dev_success": 0.552,
+   "dev_status_accuracy": 0.98008,
+   "sec": 2688.7
+  }
+ ],
+ "torch": "2.14.1",
+ "training_information": "20,000 logged documents: events and the 5 statuses after every event; no other label",
+ "dev": {
+  "success": 0.5519999861717224,
+  "status_accuracy": 0.9800841808319092,
+  "protected_changed": 800,
+  "slots_recomputed_per_event": 3.2909209728240967
+ },
+ "test_iid": {
+  "success": 0.5479999780654907,
+  "status_accuracy": 0.9810289740562439,
+  "protected_changed": 1630,
+  "slots_recomputed_per_event": 3.291447401046753
+ },
+ "test_novel": {
+  "success": 0.5534999966621399,
+  "status_accuracy": 0.9843868613243103,
+  "protected_changed": 1711,
+  "slots_recomputed_per_event": 3.3142762184143066
+ },
+ "procedure_tables": {
+  "code_of_kind": [
+   0,
+   0,
+   7,
+   4,
+   5,
+   7,
+   6,
+   6
+  ],
+  "gate_weights": [
+   [
+    1.4614661931991577,
+    0.8114609718322754,
+    1.3980261087417603
+   ],
+   [
+    0.43888407945632935,
+    -0.36950019001960754,
+    0.7158071398735046
+   ],
+   [
+    0.1397203654050827,
+    0.22337421774864197,
+    0.5409518480300903
+   ],
+   [
+    -0.6166704893112183,
+    0.35390734672546387,
+    0.256696879863739
+   ],
+   [
+    0.41966238617897034,
+    1.596121072769165,
+    0.4744018316268921
+   ],
+   [
+    1.2914119958877563,
+    -1.2953016757965088,
+    -0.43254849314689636
+   ],
+   [
+    -0.7797054052352905,
+    0.28018641471862793,
+    -1.6825931072235107
+   ],
+   [
+    2.3732757568359375,
+    1.7876191139221191,
+    0.3349086046218872
+   ]
+  ],
+  "source_of_code": [
+   1,
+   1,
+   0,
+   1,
+   0,
+   1,
+   1,
+   0
+  ]
+ }
+}

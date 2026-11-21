@@ -1,0 +1,62 @@
+{
+ "name": "v4x_cont10x_s_s1",
+ "exploratory": true,
+ "arm": "cont",
+ "args": {
+  "seed": 1,
+  "salt": 2701878737
+ },
+ "training_documents": 200000,
+ "train_steps": 60000,
+ "train_seconds": 1668.9,
+ "status": "complete",
+ "checkpoint_sha256": "27aa7666676336886ecc5494dfe6f3bed2ffffbc00f3e2494379e5b5e96bb0b2",
+ "active_parameters_per_decision": 89568,
+ "log": [
+  {
+   "step": 58000,
+   "loss": 0.0184,
+   "dev_success": 0.5855,
+   "dev_status_accuracy": 0.98551,
+   "sec": 1611.1
+  },
+  {
+   "step": 58500,
+   "loss": 0.0193,
+   "dev_success": 0.5815,
+   "dev_status_accuracy": 0.98547,
+   "sec": 1625.6
+  },
+  {
+   "step": 59000,
+   "loss": 0.0205,
+   "dev_success": 0.585,
+   "dev_status_accuracy": 0.98548,
+   "sec": 1640.1
+  },
+  {
+   "step": 59500,
+   "loss": 0.0198,
+   "dev_success": 0.5815,
+   "dev_status_accuracy": 0.98563,
+   "sec": 1654.4
+  },
+  {
+   "step": 60000,
+   "loss": 0.0202,
+   "dev_success": 0.58,
+   "dev_status_accuracy": 0.98555,
+   "sec": 1668.9
+  }
+ ],
+ "test_iid": {
+  "success": 0.5899999737739563,
+  "status_accuracy": 0.9851131439208984,
+  "protected_changed": 632
+ },
+ "test_novel": {
+  "success": 0.4632500112056732,
+  "status_accuracy": 0.9801841974258423,
+  "protected_changed": 801
+ }
+}

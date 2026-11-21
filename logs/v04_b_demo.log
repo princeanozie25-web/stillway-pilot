@@ -1,0 +1,12 @@
+document A (today, yesterday's bank): SIGN AMEN MOVE SIGN CORR SIGN SIGN CORR MOVE OVER
+document B (after sleep and restart): MOVE SIGN AMEN SIGN SIGN MOVE SIGN SIGN SIGN AMEN
+system                       A: success A: abstain B: success B: wrong steps
+none                              False          3      False              9
+retrieval                         False          3      False              6
+retrieval_naive                   False          3      False              6
+rehearsal                         False          1       True              0
+consolidation                     False          3       True              0
+dreaming                          False          3       True              0
+induction                         False          3       True              0
+tracker_with_rules_given           True          -       True              0
+restart: {'sha256_matches_recorded_version': True, 'compiled_tables_success_on_B': True, 'compiled_tables_equal_network_on_B': True, 'todays_policies_promoted': [67, 68, 69], 'todays_policies_known_yesterday': []}

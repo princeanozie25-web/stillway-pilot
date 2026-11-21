@@ -1,0 +1,176 @@
+{
+ "name": "v4a_proc_s_s1",
+ "args": {
+  "arm": "proc",
+  "size": "s",
+  "seed": 1,
+  "steps": 5000,
+  "budget": 3600.0,
+  "name": "",
+  "salt": 0
+ },
+ "arm": "proc",
+ "width": 256,
+ "checkpoint_sha256": "6ebf21e59cdba4f8463552619032ceb8a751db6976eb2bf0eaa1459cb2a06bd3",
+ "active_parameters_per_decision": 74018,
+ "resident_parameters": 75124,
+ "train_steps": 5000,
+ "train_seconds": 1006.9,
+ "status": "complete",
+ "log": [
+  {
+   "step": 500,
+   "loss": 0.0406,
+   "dev_success": 0.807,
+   "dev_status_accuracy": 0.99378,
+   "sec": 134.0
+  },
+  {
+   "step": 1000,
+   "loss": 0.0148,
+   "dev_success": 0.912,
+   "dev_status_accuracy": 0.99743,
+   "sec": 280.2
+  },
+  {
+   "step": 1500,
+   "loss": 0.0053,
+   "dev_success": 0.992,
+   "dev_status_accuracy": 0.99981,
+   "sec": 428.8
+  },
+  {
+   "step": 2000,
+   "loss": 0.0015,
+   "dev_success": 0.992,
+   "dev_status_accuracy": 0.99981,
+   "sec": 571.3
+  },
+  {
+   "step": 2500,
+   "loss": 0.0004,
+   "dev_success": 0.992,
+   "dev_status_accuracy": 0.99981,
+   "sec": 712.3
+  },
+  {
+   "step": 3000,
+   "loss": 0.0008,
+   "dev_success": 0.992,
+   "dev_status_accuracy": 0.99981,
+   "sec": 844.7
+  },
+  {
+   "step": 3500,
+   "loss": 0.0003,
+   "dev_success": 0.992,
+   "dev_status_accuracy": 0.99981,
+   "sec": 971.7
+  },
+  {
+   "step": 4000,
+   "loss": 0.0004,
+   "dev_success": 0.992,
+   "dev_status_accuracy": 0.99981,
+   "sec": 983.5
+  },
+  {
+   "step": 4500,
+   "loss": 0.0007,
+   "dev_success": 0.992,
+   "dev_status_accuracy": 0.99981,
+   "sec": 995.2
+  },
+  {
+   "step": 5000,
+   "loss": 0.0015,
+   "dev_success": 0.992,
+   "dev_status_accuracy": 0.99981,
+   "sec": 1006.9
+  }
+ ],
+ "torch": "2.14.1",
+ "training_information": "20,000 logged documents: events and the 5 statuses after every event; no other label",
+ "dev": {
+  "success": 0.9919999837875366,
+  "status_accuracy": 0.9998052716255188,
+  "protected_changed": 0,
+  "slots_recomputed_per_event": 0.6747631430625916
+ },
+ "test_iid": {
+  "success": 0.9952499866485596,
+  "status_accuracy": 0.9998605251312256,
+  "protected_changed": 0,
+  "slots_recomputed_per_event": 0.6762763261795044
+ },
+ "test_novel": {
+  "success": 0.9919999837875366,
+  "status_accuracy": 0.9997947216033936,
+  "protected_changed": 0,
+  "slots_recomputed_per_event": 0.6851447224617004
+ },
+ "procedure_tables": {
+  "code_of_kind": [
+   7,
+   7,
+   7,
+   6,
+   3,
+   6,
+   4,
+   4
+  ],
+  "gate_weights": [
+   [
+    0.7426322102546692,
+    0.46102195978164673,
+    0.23614266514778137
+   ],
+   [
+    1.5152316093444824,
+    0.31697314977645874,
+    1.0894867181777954
+   ],
+   [
+    0.5386319756507874,
+    0.4820212721824646,
+    0.5297636985778809
+   ],
+   [
+    -0.5820237398147583,
+    -1.6597836017608643,
+    -1.592678427696228
+   ],
+   [
+    -1.1841953992843628,
+    1.0057291984558105,
+    -2.215909242630005
+   ],
+   [
+    1.3686412572860718,
+    1.1663390398025513,
+    1.179296851158142
+   ],
+   [
+    0.9042644500732422,
+    3.4126479625701904,
+    -1.1697499752044678
+   ],
+   [
+    4.466738224029541,
+    -0.23298749327659607,
+    -1.6122361421585083
+   ]
+  ],
+  "source_of_code": [
+   0,
+   1,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0
+  ]
+ }
+}

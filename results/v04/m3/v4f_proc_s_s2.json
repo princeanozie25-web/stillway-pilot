@@ -1,0 +1,2564 @@
+{
+ "core": "runs/v4f_proc_s_s2/checkpoint.pt",
+ "seed": 2,
+ "sessions": [
+  {
+   "session": 1,
+   "tenant_changed": 0,
+   "new_ids": [
+    61,
+    62,
+    63
+   ],
+   "new_rules": [
+    34,
+    33,
+    20
+   ],
+   "expired_id": 1,
+   "records_logged": 721,
+   "overrides_logged": 36,
+   "consolidation_promoted": [
+    61,
+    62,
+    63
+   ],
+   "consolidation_discarded": [],
+   "dreaming_promoted": [
+    61,
+    62,
+    63
+   ],
+   "dreaming_discarded": [],
+   "dreams": {
+    "61": {
+     "fact_combinations_missing_from_log": 19,
+     "candidate_labels_proposed": 57,
+     "candidates_confirmed": 19,
+     "candidates_rejected": 38,
+     "dream_cases_kept": 12
+    },
+    "62": {
+     "fact_combinations_missing_from_log": 20,
+     "candidate_labels_proposed": 60,
+     "candidates_confirmed": 15,
+     "candidates_rejected": 45,
+     "dream_cases_kept": 12
+    },
+    "63": {
+     "fact_combinations_missing_from_log": 18,
+     "candidate_labels_proposed": 54,
+     "candidates_confirmed": 23,
+     "candidates_rejected": 31,
+     "dream_cases_kept": 14
+    }
+   },
+   "sleep_seconds": {
+    "retrieval": 0.0,
+    "retrieval_naive": 0.0,
+    "induction": 0.0002,
+    "consolidation": 1.0364,
+    "dreaming": 0.2086,
+    "rehearsal": 1.0681,
+    "rehearsal_core": 1.0548
+   },
+   "wake": {
+    "none": {
+     "documents": 120,
+     "success": 0.7083333134651184,
+     "status_accuracy": 0.9701754450798035,
+     "protected_changed": 0
+    },
+    "retrieval": {
+     "documents": 120,
+     "success": 0.7083333134651184,
+     "status_accuracy": 0.9701754450798035,
+     "protected_changed": 0
+    },
+    "retrieval_naive": {
+     "documents": 120,
+     "success": 0.7083333134651184,
+     "status_accuracy": 0.9701754450798035,
+     "protected_changed": 0
+    },
+    "rehearsal": {
+     "documents": 120,
+     "success": 0.7916666865348816,
+     "status_accuracy": 0.9881578683853149,
+     "protected_changed": 0
+    },
+    "consolidation": {
+     "documents": 120,
+     "success": 0.7083333134651184,
+     "status_accuracy": 0.9701754450798035,
+     "protected_changed": 0
+    },
+    "dreaming": {
+     "documents": 120,
+     "success": 0.7083333134651184,
+     "status_accuracy": 0.9701754450798035,
+     "protected_changed": 0
+    },
+    "induction": {
+     "documents": 120,
+     "success": 0.7083333134651184,
+     "status_accuracy": 0.9701754450798035,
+     "protected_changed": 0
+    },
+    "rehearsal_core": {
+     "documents": 120,
+     "success": 0.7916666865348816,
+     "status_accuracy": 0.9881578683853149,
+     "protected_changed": 0
+    }
+   },
+   "arms": {
+    "none": {
+     "learn": {
+      "documents": 600,
+      "success": 0.0033333334140479565,
+      "status_accuracy": 0.8109649419784546,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.07301212102174759
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.0033333334140479565,
+      "status_accuracy": 0.8109649419784546,
+      "protected_changed": 0,
+      "decisions": 628,
+      "decision_accuracy": 0.22133758664131165
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.3233333230018616,
+      "status_accuracy": 0.9317193031311035,
+      "protected_changed": 0,
+      "decisions": 1259,
+      "decision_accuracy": 0.11993645876646042
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval": {
+     "learn": {
+      "documents": 600,
+      "success": 0.4716666638851166,
+      "status_accuracy": 0.9712631702423096,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.8548625707626343
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.4716666638851166,
+      "status_accuracy": 0.9712631702423096,
+      "protected_changed": 0,
+      "decisions": 628,
+      "decision_accuracy": 0.22133758664131165
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9998772144317627,
+      "protected_changed": 0,
+      "decisions": 1259,
+      "decision_accuracy": 0.9992057085037231
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval_naive": {
+     "learn": {
+      "documents": 600,
+      "success": 0.3050000071525574,
+      "status_accuracy": 0.9553157687187195,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.7750517129898071
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.3050000071525574,
+      "status_accuracy": 0.9553157687187195,
+      "protected_changed": 0,
+      "decisions": 628,
+      "decision_accuracy": 0.22133758664131165
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.7683333158493042,
+      "status_accuracy": 0.9888421297073364,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9416666626930237,
+      "status_accuracy": 0.9973157644271851,
+      "protected_changed": 0,
+      "decisions": 1259,
+      "decision_accuracy": 0.9992057085037231
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 1079,
+     "interference_right_before_wrong_after": 1077
+    },
+    "rehearsal": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.999982476234436,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.9997044205665588
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.999982476234436,
+      "protected_changed": 0,
+      "decisions": 628,
+      "decision_accuracy": 1.0
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9750000238418579,
+      "status_accuracy": 0.9991227984428406,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.6200000047683716,
+      "status_accuracy": 0.9771578907966614,
+      "protected_changed": 213,
+      "decisions": 1259,
+      "decision_accuracy": 0.9992057085037231
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 15,
+     "interference_right_before_wrong_after": 15
+    },
+    "consolidation": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9883333444595337,
+      "status_accuracy": 0.99952632188797,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.9979308247566223
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9883333444595337,
+      "status_accuracy": 0.99952632188797,
+      "protected_changed": 0,
+      "decisions": 628,
+      "decision_accuracy": 0.9904458522796631
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9998772144317627,
+      "protected_changed": 0,
+      "decisions": 1259,
+      "decision_accuracy": 0.9992057085037231
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "dreaming": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.999982476234436,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.9997044205665588
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.999982476234436,
+      "protected_changed": 0,
+      "decisions": 628,
+      "decision_accuracy": 1.0
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9998772144317627,
+      "protected_changed": 0,
+      "decisions": 1259,
+      "decision_accuracy": 0.9992057085037231
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "induction": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.999982476234436,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.9997044205665588
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.999982476234436,
+      "protected_changed": 0,
+      "decisions": 628,
+      "decision_accuracy": 1.0
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9983333349227905,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9998772144317627,
+      "protected_changed": 0,
+      "decisions": 1259,
+      "decision_accuracy": 0.9992057085037231
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "rehearsal_core": {
+     "learn": {
+      "documents": 600,
+      "success": 0.7716666460037231,
+      "status_accuracy": 0.9851929545402527,
+      "protected_changed": 219,
+      "decisions": 3383,
+      "decision_accuracy": 0.9997044205665588
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.7716666460037231,
+      "status_accuracy": 0.9851929545402527,
+      "protected_changed": 219,
+      "decisions": 628,
+      "decision_accuracy": 1.0
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.6766666769981384,
+      "status_accuracy": 0.9774035215377808,
+      "protected_changed": 292
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.4466666579246521,
+      "status_accuracy": 0.9570175409317017,
+      "protected_changed": 460,
+      "decisions": 1259,
+      "decision_accuracy": 0.9992057085037231
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 827,
+     "interference_right_before_wrong_after": 827
+    }
+   }
+  },
+  {
+   "session": 2,
+   "tenant_changed": 1,
+   "new_ids": [
+    64,
+    65,
+    66
+   ],
+   "new_rules": [
+    25,
+    21,
+    34
+   ],
+   "expired_id": 60,
+   "records_logged": 735,
+   "overrides_logged": 32,
+   "consolidation_promoted": [
+    64,
+    65,
+    66
+   ],
+   "consolidation_discarded": [],
+   "dreaming_promoted": [
+    64,
+    65,
+    66
+   ],
+   "dreaming_discarded": [],
+   "dreams": {
+    "64": {
+     "fact_combinations_missing_from_log": 22,
+     "candidate_labels_proposed": 66,
+     "candidates_confirmed": 21,
+     "candidates_rejected": 45,
+     "dream_cases_kept": 16
+    },
+    "65": {
+     "fact_combinations_missing_from_log": 19,
+     "candidate_labels_proposed": 57,
+     "candidates_confirmed": 7,
+     "candidates_rejected": 50,
+     "dream_cases_kept": 3
+    },
+    "66": {
+     "fact_combinations_missing_from_log": 21,
+     "candidate_labels_proposed": 63,
+     "candidates_confirmed": 21,
+     "candidates_rejected": 42,
+     "dream_cases_kept": 15
+    }
+   },
+   "sleep_seconds": {
+    "retrieval": 0.0,
+    "retrieval_naive": 0.0,
+    "induction": 0.0011,
+    "consolidation": 0.24,
+    "dreaming": 0.2445,
+    "rehearsal": 3.091,
+    "rehearsal_core": 3.2152
+   },
+   "wake": {
+    "none": {
+     "documents": 120,
+     "success": 0.36666667461395264,
+     "status_accuracy": 0.9416666626930237,
+     "protected_changed": 0
+    },
+    "retrieval": {
+     "documents": 120,
+     "success": 0.574999988079071,
+     "status_accuracy": 0.9649999737739563,
+     "protected_changed": 0
+    },
+    "retrieval_naive": {
+     "documents": 120,
+     "success": 0.4166666567325592,
+     "status_accuracy": 0.9526315927505493,
+     "protected_changed": 0
+    },
+    "rehearsal": {
+     "documents": 120,
+     "success": 0.7833333611488342,
+     "status_accuracy": 0.9892105460166931,
+     "protected_changed": 0
+    },
+    "consolidation": {
+     "documents": 120,
+     "success": 0.6499999761581421,
+     "status_accuracy": 0.968508780002594,
+     "protected_changed": 0
+    },
+    "dreaming": {
+     "documents": 120,
+     "success": 0.6499999761581421,
+     "status_accuracy": 0.968508780002594,
+     "protected_changed": 0
+    },
+    "induction": {
+     "documents": 120,
+     "success": 0.6499999761581421,
+     "status_accuracy": 0.968508780002594,
+     "protected_changed": 0
+    },
+    "rehearsal_core": {
+     "documents": 120,
+     "success": 0.5416666865348816,
+     "status_accuracy": 0.9672806859016418,
+     "protected_changed": 62
+    }
+   },
+   "arms": {
+    "none": {
+     "learn": {
+      "documents": 600,
+      "success": 0.009999999776482582,
+      "status_accuracy": 0.8081052899360657,
+      "protected_changed": 0,
+      "decisions": 3342,
+      "decision_accuracy": 0.03770197555422783
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.009999999776482582,
+      "status_accuracy": 0.8081052899360657,
+      "protected_changed": 0,
+      "decisions": 837,
+      "decision_accuracy": 0.09677419066429138
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.6833333373069763,
+      "status_accuracy": 0.9701579213142395,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.4000000059604645,
+      "status_accuracy": 0.9473684430122375,
+      "protected_changed": 0,
+      "decisions": 1010,
+      "decision_accuracy": 0.1158415824174881
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval": {
+     "learn": {
+      "documents": 600,
+      "success": 0.3083333373069763,
+      "status_accuracy": 0.9558771848678589,
+      "protected_changed": 0,
+      "decisions": 3342,
+      "decision_accuracy": 0.7734889388084412
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.3083333373069763,
+      "status_accuracy": 0.9558771848678589,
+      "protected_changed": 0,
+      "decisions": 837,
+      "decision_accuracy": 0.09677419066429138
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9583333134651184,
+      "status_accuracy": 0.9981228113174438,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9816666841506958,
+      "status_accuracy": 0.9994385838508606,
+      "protected_changed": 0,
+      "decisions": 1010,
+      "decision_accuracy": 0.996039628982544
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 221,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval_naive": {
+     "learn": {
+      "documents": 600,
+      "success": 0.21833333373069763,
+      "status_accuracy": 0.9404561519622803,
+      "protected_changed": 0,
+      "decisions": 3342,
+      "decision_accuracy": 0.7016756534576416
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.21833333373069763,
+      "status_accuracy": 0.9404561519622803,
+      "protected_changed": 0,
+      "decisions": 837,
+      "decision_accuracy": 0.09677419066429138
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.6783333420753479,
+      "status_accuracy": 0.9835965037345886,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.7983333468437195,
+      "status_accuracy": 0.9922807216644287,
+      "protected_changed": 0,
+      "decisions": 1010,
+      "decision_accuracy": 0.997029721736908
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 1508,
+     "interference_right_before_wrong_after": 849
+    },
+    "rehearsal": {
+     "learn": {
+      "documents": 600,
+      "success": 0.8816666603088379,
+      "status_accuracy": 0.995736837387085,
+      "protected_changed": 0,
+      "decisions": 3342,
+      "decision_accuracy": 0.9763614535331726
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.8816666603088379,
+      "status_accuracy": 0.995736837387085,
+      "protected_changed": 0,
+      "decisions": 837,
+      "decision_accuracy": 0.9056152701377869
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9883333444595337,
+      "status_accuracy": 0.9994912147521973,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.6416666507720947,
+      "status_accuracy": 0.9760701656341553,
+      "protected_changed": 169,
+      "decisions": 1010,
+      "decision_accuracy": 0.996039628982544
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 73,
+     "interference_right_before_wrong_after": 0
+    },
+    "consolidation": {
+     "learn": {
+      "documents": 600,
+      "success": 0.8816666603088379,
+      "status_accuracy": 0.995736837387085,
+      "protected_changed": 0,
+      "decisions": 3342,
+      "decision_accuracy": 0.9763614535331726
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.8816666603088379,
+      "status_accuracy": 0.995736837387085,
+      "protected_changed": 0,
+      "decisions": 837,
+      "decision_accuracy": 0.9056152701377869
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9997894763946533,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9816666841506958,
+      "status_accuracy": 0.9994385838508606,
+      "protected_changed": 0,
+      "decisions": 1010,
+      "decision_accuracy": 0.996039628982544
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "dreaming": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0,
+      "decisions": 3342,
+      "decision_accuracy": 0.9997007846832275
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0,
+      "decisions": 837,
+      "decision_accuracy": 0.9988052845001221
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9997894763946533,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9816666841506958,
+      "status_accuracy": 0.9994385838508606,
+      "protected_changed": 0,
+      "decisions": 1010,
+      "decision_accuracy": 0.996039628982544
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "induction": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0,
+      "decisions": 3342,
+      "decision_accuracy": 0.9997007846832275
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0,
+      "decisions": 837,
+      "decision_accuracy": 0.9988052845001221
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9997894763946533,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9816666841506958,
+      "status_accuracy": 0.9994385838508606,
+      "protected_changed": 0,
+      "decisions": 1010,
+      "decision_accuracy": 0.996039628982544
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "rehearsal_core": {
+     "learn": {
+      "documents": 600,
+      "success": 0.4716666638851166,
+      "status_accuracy": 0.9592280983924866,
+      "protected_changed": 397,
+      "decisions": 3342,
+      "decision_accuracy": 0.9943147897720337
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.4716666638851166,
+      "status_accuracy": 0.9592280983924866,
+      "protected_changed": 397,
+      "decisions": 837,
+      "decision_accuracy": 0.9772998690605164
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.20999999344348907,
+      "status_accuracy": 0.9223859906196594,
+      "protected_changed": 626
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.18333333730697632,
+      "status_accuracy": 0.9164736866950989,
+      "protected_changed": 634,
+      "decisions": 1010,
+      "decision_accuracy": 0.996039628982544
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 2641,
+     "interference_right_before_wrong_after": 2641
+    }
+   }
+  },
+  {
+   "session": 3,
+   "tenant_changed": 0,
+   "new_ids": [
+    67,
+    68,
+    69
+   ],
+   "new_rules": [
+    25,
+    30,
+    34
+   ],
+   "expired_id": 51,
+   "records_logged": 725,
+   "overrides_logged": 31,
+   "consolidation_promoted": [
+    67,
+    68,
+    69,
+    61,
+    64
+   ],
+   "consolidation_discarded": [],
+   "dreaming_promoted": [
+    67,
+    68,
+    69
+   ],
+   "dreaming_discarded": [],
+   "dreams": {
+    "67": {
+     "fact_combinations_missing_from_log": 20,
+     "candidate_labels_proposed": 60,
+     "candidates_confirmed": 29,
+     "candidates_rejected": 31,
+     "dream_cases_kept": 16
+    },
+    "68": {
+     "fact_combinations_missing_from_log": 23,
+     "candidate_labels_proposed": 69,
+     "candidates_confirmed": 16,
+     "candidates_rejected": 53,
+     "dream_cases_kept": 12
+    },
+    "69": {
+     "fact_combinations_missing_from_log": 22,
+     "candidate_labels_proposed": 66,
+     "candidates_confirmed": 35,
+     "candidates_rejected": 31,
+     "dream_cases_kept": 22
+    }
+   },
+   "sleep_seconds": {
+    "retrieval": 0.0,
+    "retrieval_naive": 0.0,
+    "induction": 0.0005,
+    "consolidation": 0.4924,
+    "dreaming": 0.3645,
+    "rehearsal": 7.2558,
+    "rehearsal_core": 7.9529
+   },
+   "wake": {
+    "none": {
+     "documents": 120,
+     "success": 0.2916666567325592,
+     "status_accuracy": 0.9174561500549316,
+     "protected_changed": 0
+    },
+    "retrieval": {
+     "documents": 120,
+     "success": 0.574999988079071,
+     "status_accuracy": 0.9636842012405396,
+     "protected_changed": 0
+    },
+    "retrieval_naive": {
+     "documents": 120,
+     "success": 0.4166666567325592,
+     "status_accuracy": 0.9500877261161804,
+     "protected_changed": 0
+    },
+    "rehearsal": {
+     "documents": 120,
+     "success": 0.8083333373069763,
+     "status_accuracy": 0.9897368550300598,
+     "protected_changed": 0
+    },
+    "consolidation": {
+     "documents": 120,
+     "success": 0.7250000238418579,
+     "status_accuracy": 0.9715789556503296,
+     "protected_changed": 0
+    },
+    "dreaming": {
+     "documents": 120,
+     "success": 0.7416666746139526,
+     "status_accuracy": 0.9719298481941223,
+     "protected_changed": 0
+    },
+    "induction": {
+     "documents": 120,
+     "success": 0.7416666746139526,
+     "status_accuracy": 0.9719298481941223,
+     "protected_changed": 0
+    },
+    "rehearsal_core": {
+     "documents": 120,
+     "success": 0.24166665971279144,
+     "status_accuracy": 0.9317544102668762,
+     "protected_changed": 111
+    }
+   },
+   "arms": {
+    "none": {
+     "learn": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.8160350918769836,
+      "protected_changed": 0,
+      "decisions": 3312,
+      "decision_accuracy": 0.07850241661071777
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.8160350918769836,
+      "protected_changed": 0,
+      "decisions": 816,
+      "decision_accuracy": 0.2193627506494522
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.3616666793823242,
+      "status_accuracy": 0.9396666884422302,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.34833332896232605,
+      "status_accuracy": 0.9422105550765991,
+      "protected_changed": 0,
+      "decisions": 1144,
+      "decision_accuracy": 0.12937062978744507
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval": {
+     "learn": {
+      "documents": 600,
+      "success": 0.3566666543483734,
+      "status_accuracy": 0.9615263342857361,
+      "protected_changed": 0,
+      "decisions": 3312,
+      "decision_accuracy": 0.8067632913589478
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.3566666543483734,
+      "status_accuracy": 0.9615263342857361,
+      "protected_changed": 0,
+      "decisions": 816,
+      "decision_accuracy": 0.2193627506494522
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.8866666555404663,
+      "status_accuracy": 0.9956666827201843,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0,
+      "decisions": 1144,
+      "decision_accuracy": 1.0
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 584,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval_naive": {
+     "learn": {
+      "documents": 600,
+      "success": 0.2566666603088379,
+      "status_accuracy": 0.9522982239723206,
+      "protected_changed": 0,
+      "decisions": 3312,
+      "decision_accuracy": 0.7617753744125366
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.2566666603088379,
+      "status_accuracy": 0.9522982239723206,
+      "protected_changed": 0,
+      "decisions": 816,
+      "decision_accuracy": 0.2193627506494522
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.57833331823349,
+      "status_accuracy": 0.9792807102203369,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9583333134651184,
+      "status_accuracy": 0.9987017512321472,
+      "protected_changed": 0,
+      "decisions": 1144,
+      "decision_accuracy": 1.0
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 2309,
+     "interference_right_before_wrong_after": 1260
+    },
+    "rehearsal": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.99984210729599,
+      "protected_changed": 0,
+      "decisions": 3312,
+      "decision_accuracy": 0.998792290687561
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.99984210729599,
+      "protected_changed": 0,
+      "decisions": 816,
+      "decision_accuracy": 0.998774528503418
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.925000011920929,
+      "status_accuracy": 0.9964736700057983,
+      "protected_changed": 28
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.6299999952316284,
+      "status_accuracy": 0.9772631525993347,
+      "protected_changed": 202,
+      "decisions": 1144,
+      "decision_accuracy": 1.0
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 88,
+     "interference_right_before_wrong_after": 0
+    },
+    "consolidation": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.99984210729599,
+      "protected_changed": 0,
+      "decisions": 3312,
+      "decision_accuracy": 0.998792290687561
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.99984210729599,
+      "protected_changed": 0,
+      "decisions": 816,
+      "decision_accuracy": 0.998774528503418
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9850000143051147,
+      "status_accuracy": 0.9994561672210693,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0,
+      "decisions": 1144,
+      "decision_accuracy": 1.0
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 71,
+     "interference_right_before_wrong_after": 0
+    },
+    "dreaming": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.99984210729599,
+      "protected_changed": 0,
+      "decisions": 3312,
+      "decision_accuracy": 0.998792290687561
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.99984210729599,
+      "protected_changed": 0,
+      "decisions": 816,
+      "decision_accuracy": 0.998774528503418
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.9997543692588806,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0,
+      "decisions": 1144,
+      "decision_accuracy": 1.0
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "induction": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.99984210729599,
+      "protected_changed": 0,
+      "decisions": 3312,
+      "decision_accuracy": 0.998792290687561
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.99984210729599,
+      "protected_changed": 0,
+      "decisions": 816,
+      "decision_accuracy": 0.998774528503418
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9916666746139526,
+      "status_accuracy": 0.9997543692588806,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9950000047683716,
+      "status_accuracy": 0.9999298453330994,
+      "protected_changed": 0,
+      "decisions": 1144,
+      "decision_accuracy": 1.0
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "rehearsal_core": {
+     "learn": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.32794737815856934,
+      "protected_changed": 251,
+      "decisions": 3312,
+      "decision_accuracy": 0.998792290687561
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.32794737815856934,
+      "protected_changed": 251,
+      "decisions": 816,
+      "decision_accuracy": 0.998774528503418
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.32826316356658936,
+      "protected_changed": 384
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.32273682951927185,
+      "protected_changed": 431,
+      "decisions": 1144,
+      "decision_accuracy": 1.0
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 34779,
+     "interference_right_before_wrong_after": 34316
+    }
+   }
+  },
+  {
+   "session": 4,
+   "tenant_changed": 1,
+   "new_ids": [
+    70,
+    71,
+    72
+   ],
+   "new_rules": [
+    31,
+    32,
+    15
+   ],
+   "expired_id": 48,
+   "records_logged": 735,
+   "overrides_logged": 29,
+   "consolidation_promoted": [
+    70,
+    71,
+    72
+   ],
+   "consolidation_discarded": [],
+   "dreaming_promoted": [
+    70,
+    71,
+    72
+   ],
+   "dreaming_discarded": [],
+   "dreams": {
+    "70": {
+     "fact_combinations_missing_from_log": 20,
+     "candidate_labels_proposed": 60,
+     "candidates_confirmed": 19,
+     "candidates_rejected": 41,
+     "dream_cases_kept": 14
+    },
+    "71": {
+     "fact_combinations_missing_from_log": 23,
+     "candidate_labels_proposed": 69,
+     "candidates_confirmed": 66,
+     "candidates_rejected": 3,
+     "dream_cases_kept": 22
+    },
+    "72": {
+     "fact_combinations_missing_from_log": 25,
+     "candidate_labels_proposed": 75,
+     "candidates_confirmed": 40,
+     "candidates_rejected": 35,
+     "dream_cases_kept": 19
+    }
+   },
+   "sleep_seconds": {
+    "retrieval": 0.0,
+    "retrieval_naive": 0.0,
+    "induction": 0.0008,
+    "consolidation": 0.275,
+    "dreaming": 0.2493,
+    "rehearsal": 5.9177,
+    "rehearsal_core": 6.6631
+   },
+   "wake": {
+    "none": {
+     "documents": 120,
+     "success": 0.2083333283662796,
+     "status_accuracy": 0.9119298458099365,
+     "protected_changed": 0
+    },
+    "retrieval": {
+     "documents": 120,
+     "success": 0.5416666865348816,
+     "status_accuracy": 0.9605262875556946,
+     "protected_changed": 0
+    },
+    "retrieval_naive": {
+     "documents": 120,
+     "success": 0.3166666626930237,
+     "status_accuracy": 0.9478947520256042,
+     "protected_changed": 0
+    },
+    "rehearsal": {
+     "documents": 120,
+     "success": 0.7749999761581421,
+     "status_accuracy": 0.9914035201072693,
+     "protected_changed": 5
+    },
+    "consolidation": {
+     "documents": 120,
+     "success": 0.675000011920929,
+     "status_accuracy": 0.9687719345092773,
+     "protected_changed": 0
+    },
+    "dreaming": {
+     "documents": 120,
+     "success": 0.675000011920929,
+     "status_accuracy": 0.9687719345092773,
+     "protected_changed": 0
+    },
+    "induction": {
+     "documents": 120,
+     "success": 0.675000011920929,
+     "status_accuracy": 0.9687719345092773,
+     "protected_changed": 0
+    },
+    "rehearsal_core": {
+     "documents": 120,
+     "success": 0.0,
+     "status_accuracy": 0.32903507351875305,
+     "protected_changed": 65
+    }
+   },
+   "arms": {
+    "none": {
+     "learn": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.8079824447631836,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.038427431136369705
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.8079824447631836,
+      "protected_changed": 0,
+      "decisions": 1141,
+      "decision_accuracy": 0.09903593361377716
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.273333340883255,
+      "status_accuracy": 0.9191579222679138,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.3566666543483734,
+      "status_accuracy": 0.9442806839942932,
+      "protected_changed": 0,
+      "decisions": 1062,
+      "decision_accuracy": 0.10451977699995041
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval": {
+     "learn": {
+      "documents": 600,
+      "success": 0.22499999403953552,
+      "status_accuracy": 0.941438615322113,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.6958320736885071
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.22499999403953552,
+      "status_accuracy": 0.941438615322113,
+      "protected_changed": 0,
+      "decisions": 1141,
+      "decision_accuracy": 0.09903593361377716
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.8333333134651184,
+      "status_accuracy": 0.9923508763313293,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9883333444595337,
+      "status_accuracy": 0.9997193217277527,
+      "protected_changed": 0,
+      "decisions": 1062,
+      "decision_accuracy": 0.9981167316436768
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 212,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval_naive": {
+     "learn": {
+      "documents": 600,
+      "success": 0.20000000298023224,
+      "status_accuracy": 0.937964916229248,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.6795743703842163
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.20000000298023224,
+      "status_accuracy": 0.937964916229248,
+      "protected_changed": 0,
+      "decisions": 1141,
+      "decision_accuracy": 0.09903593361377716
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.5933333039283752,
+      "status_accuracy": 0.980526328086853,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.621666669845581,
+      "status_accuracy": 0.9814035296440125,
+      "protected_changed": 0,
+      "decisions": 1062,
+      "decision_accuracy": 0.9981167316436768
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 919,
+     "interference_right_before_wrong_after": 210
+    },
+    "rehearsal": {
+     "learn": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9999473690986633,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.9994087815284729
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9999473690986633,
+      "protected_changed": 0,
+      "decisions": 1141,
+      "decision_accuracy": 0.9991235733032227
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.8650000095367432,
+      "status_accuracy": 0.992719292640686,
+      "protected_changed": 65
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.6583333611488342,
+      "status_accuracy": 0.9789122939109802,
+      "protected_changed": 188,
+      "decisions": 1062,
+      "decision_accuracy": 0.9981167316436768
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "consolidation": {
+     "learn": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9999473690986633,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.9994087815284729
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9999473690986633,
+      "protected_changed": 0,
+      "decisions": 1141,
+      "decision_accuracy": 0.9991235733032227
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9883333444595337,
+      "status_accuracy": 0.9995789527893066,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9883333444595337,
+      "status_accuracy": 0.9997193217277527,
+      "protected_changed": 0,
+      "decisions": 1062,
+      "decision_accuracy": 0.9981167316436768
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "dreaming": {
+     "learn": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9999473690986633,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.9994087815284729
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.996666669845581,
+      "status_accuracy": 0.9999473690986633,
+      "protected_changed": 0,
+      "decisions": 1141,
+      "decision_accuracy": 0.9991235733032227
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9933333396911621,
+      "status_accuracy": 0.9997894763946533,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9883333444595337,
+      "status_accuracy": 0.9997193217277527,
+      "protected_changed": 0,
+      "decisions": 1062,
+      "decision_accuracy": 0.9981167316436768
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "induction": {
+     "learn": {
+      "documents": 600,
+      "success": 0.6483333110809326,
+      "status_accuracy": 0.9808070063591003,
+      "protected_changed": 0,
+      "decisions": 3383,
+      "decision_accuracy": 0.9012710452079773
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.6483333110809326,
+      "status_accuracy": 0.9808070063591003,
+      "protected_changed": 0,
+      "decisions": 1141,
+      "decision_accuracy": 0.7081507444381714
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9933333396911621,
+      "status_accuracy": 0.9997894763946533,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9883333444595337,
+      "status_accuracy": 0.9997193217277527,
+      "protected_changed": 0,
+      "decisions": 1062,
+      "decision_accuracy": 0.9981167316436768
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "rehearsal_core": {
+     "learn": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.3117368519306183,
+      "protected_changed": 260,
+      "decisions": 3383,
+      "decision_accuracy": 0.9193024039268494
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.3117368519306183,
+      "protected_changed": 260,
+      "decisions": 1141,
+      "decision_accuracy": 0.761612594127655
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.33605262637138367,
+      "protected_changed": 325
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.3245614171028137,
+      "protected_changed": 413,
+      "decisions": 1062,
+      "decision_accuracy": 0.9981167316436768
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 2,
+     "interference_right_before_wrong_after": 0
+    }
+   }
+  },
+  {
+   "session": 5,
+   "tenant_changed": 0,
+   "new_ids": [
+    73,
+    74,
+    75
+   ],
+   "new_rules": [
+    15,
+    14,
+    34
+   ],
+   "expired_id": 37,
+   "records_logged": 719,
+   "overrides_logged": 36,
+   "consolidation_promoted": [
+    73,
+    74,
+    66
+   ],
+   "consolidation_discarded": [
+    75
+   ],
+   "dreaming_promoted": [
+    73,
+    74,
+    75
+   ],
+   "dreaming_discarded": [],
+   "dreams": {
+    "73": {
+     "fact_combinations_missing_from_log": 26,
+     "candidate_labels_proposed": 78,
+     "candidates_confirmed": 32,
+     "candidates_rejected": 46,
+     "dream_cases_kept": 21
+    },
+    "74": {
+     "fact_combinations_missing_from_log": 28,
+     "candidate_labels_proposed": 84,
+     "candidates_confirmed": 28,
+     "candidates_rejected": 56,
+     "dream_cases_kept": 12
+    },
+    "75": {
+     "fact_combinations_missing_from_log": 21,
+     "candidate_labels_proposed": 63,
+     "candidates_confirmed": 23,
+     "candidates_rejected": 40,
+     "dream_cases_kept": 15
+    }
+   },
+   "sleep_seconds": {
+    "retrieval": 0.0,
+    "retrieval_naive": 0.0,
+    "induction": 0.0011,
+    "consolidation": 0.4758,
+    "dreaming": 0.3334,
+    "rehearsal": 9.2497,
+    "rehearsal_core": 10.5147
+   },
+   "wake": {
+    "none": {
+     "documents": 120,
+     "success": 0.14166666567325592,
+     "status_accuracy": 0.8991228342056274,
+     "protected_changed": 0
+    },
+    "retrieval": {
+     "documents": 120,
+     "success": 0.6166666746139526,
+     "status_accuracy": 0.9735965132713318,
+     "protected_changed": 0
+    },
+    "retrieval_naive": {
+     "documents": 120,
+     "success": 0.44999998807907104,
+     "status_accuracy": 0.9649122953414917,
+     "protected_changed": 0
+    },
+    "rehearsal": {
+     "documents": 120,
+     "success": 0.7916666865348816,
+     "status_accuracy": 0.9870175719261169,
+     "protected_changed": 18
+    },
+    "consolidation": {
+     "documents": 120,
+     "success": 0.800000011920929,
+     "status_accuracy": 0.9851754307746887,
+     "protected_changed": 0
+    },
+    "dreaming": {
+     "documents": 120,
+     "success": 0.8083333373069763,
+     "status_accuracy": 0.9859648942947388,
+     "protected_changed": 0
+    },
+    "induction": {
+     "documents": 120,
+     "success": 0.75,
+     "status_accuracy": 0.9836841821670532,
+     "protected_changed": 0
+    },
+    "rehearsal_core": {
+     "documents": 120,
+     "success": 0.0,
+     "status_accuracy": 0.3246491253376007,
+     "protected_changed": 60
+    }
+   },
+   "arms": {
+    "none": {
+     "learn": {
+      "documents": 600,
+      "success": 0.0033333334140479565,
+      "status_accuracy": 0.8201929926872253,
+      "protected_changed": 0,
+      "decisions": 3332,
+      "decision_accuracy": 0.09183673560619354
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.0033333334140479565,
+      "status_accuracy": 0.8201929926872253,
+      "protected_changed": 0,
+      "decisions": 1463,
+      "decision_accuracy": 0.1818181872367859
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.15833333134651184,
+      "status_accuracy": 0.8962105512619019,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.31833332777023315,
+      "status_accuracy": 0.9294736981391907,
+      "protected_changed": 0,
+      "decisions": 1186,
+      "decision_accuracy": 0.0
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval": {
+     "learn": {
+      "documents": 600,
+      "success": 0.14499999582767487,
+      "status_accuracy": 0.9297017455101013,
+      "protected_changed": 0,
+      "decisions": 3332,
+      "decision_accuracy": 0.6410564184188843
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.14499999582767487,
+      "status_accuracy": 0.9297017455101013,
+      "protected_changed": 0,
+      "decisions": 1463,
+      "decision_accuracy": 0.18386876583099365
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.8316666483879089,
+      "status_accuracy": 0.9926491379737854,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9996491074562073,
+      "protected_changed": 0,
+      "decisions": 1186,
+      "decision_accuracy": 0.997470498085022
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 574,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval_naive": {
+     "learn": {
+      "documents": 600,
+      "success": 0.07333333045244217,
+      "status_accuracy": 0.9112982749938965,
+      "protected_changed": 0,
+      "decisions": 3332,
+      "decision_accuracy": 0.5552220940589905
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.07333333045244217,
+      "status_accuracy": 0.9112982749938965,
+      "protected_changed": 0,
+      "decisions": 1463,
+      "decision_accuracy": 0.18386876583099365
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.6499999761581421,
+      "status_accuracy": 0.9831403493881226,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9316666722297668,
+      "status_accuracy": 0.9980175495147705,
+      "protected_changed": 0,
+      "decisions": 1186,
+      "decision_accuracy": 0.997470498085022
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 1940,
+     "interference_right_before_wrong_after": 767
+    },
+    "rehearsal": {
+     "learn": {
+      "documents": 600,
+      "success": 0.79666668176651,
+      "status_accuracy": 0.9912105202674866,
+      "protected_changed": 0,
+      "decisions": 3332,
+      "decision_accuracy": 0.9561824798583984
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.79666668176651,
+      "status_accuracy": 0.9912105202674866,
+      "protected_changed": 0,
+      "decisions": 1463,
+      "decision_accuracy": 0.9002050757408142
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.8450000286102295,
+      "status_accuracy": 0.9914035201072693,
+      "protected_changed": 65
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.6233333349227905,
+      "status_accuracy": 0.9771578907966614,
+      "protected_changed": 199,
+      "decisions": 1186,
+      "decision_accuracy": 0.997470498085022
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 19,
+     "interference_right_before_wrong_after": 0
+    },
+    "consolidation": {
+     "learn": {
+      "documents": 600,
+      "success": 0.27166667580604553,
+      "status_accuracy": 0.9360877275466919,
+      "protected_changed": 0,
+      "decisions": 3332,
+      "decision_accuracy": 0.6737695336341858
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.27166667580604553,
+      "status_accuracy": 0.9360877275466919,
+      "protected_changed": 0,
+      "decisions": 1463,
+      "decision_accuracy": 0.7265892028808594
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9997368454933167,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9996491074562073,
+      "protected_changed": 0,
+      "decisions": 1186,
+      "decision_accuracy": 0.997470498085022
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 39,
+     "interference_right_before_wrong_after": 0
+    },
+    "dreaming": {
+     "learn": {
+      "documents": 600,
+      "success": 0.7416666746139526,
+      "status_accuracy": 0.9877017736434937,
+      "protected_changed": 0,
+      "decisions": 3332,
+      "decision_accuracy": 0.9399759769439697
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.7416666746139526,
+      "status_accuracy": 0.9877017736434937,
+      "protected_changed": 0,
+      "decisions": 1463,
+      "decision_accuracy": 0.8632946014404297
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9997368454933167,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9996491074562073,
+      "protected_changed": 0,
+      "decisions": 1186,
+      "decision_accuracy": 0.997470498085022
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "induction": {
+     "learn": {
+      "documents": 600,
+      "success": 0.8166666626930237,
+      "status_accuracy": 0.991754412651062,
+      "protected_changed": 0,
+      "decisions": 3332,
+      "decision_accuracy": 0.959483802318573
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.8166666626930237,
+      "status_accuracy": 0.991754412651062,
+      "protected_changed": 0,
+      "decisions": 1463,
+      "decision_accuracy": 0.9077238440513611
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9997368454933167,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9996491074562073,
+      "protected_changed": 0,
+      "decisions": 1186,
+      "decision_accuracy": 0.997470498085022
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 244,
+     "interference_right_before_wrong_after": 0
+    },
+    "rehearsal_core": {
+     "learn": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.320087730884552,
+      "protected_changed": 535,
+      "decisions": 3332,
+      "decision_accuracy": 0.9660864472389221
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.320087730884552,
+      "protected_changed": 535,
+      "decisions": 1463,
+      "decision_accuracy": 0.9227614402770996
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.32850876450538635,
+      "protected_changed": 343
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.3268420994281769,
+      "protected_changed": 407,
+      "decisions": 1186,
+      "decision_accuracy": 0.997470498085022
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 537,
+     "interference_right_before_wrong_after": 0
+    }
+   }
+  },
+  {
+   "session": 6,
+   "tenant_changed": 1,
+   "new_ids": [
+    76,
+    77,
+    78
+   ],
+   "new_rules": [
+    25,
+    0,
+    6
+   ],
+   "expired_id": 50,
+   "records_logged": 762,
+   "overrides_logged": 30,
+   "consolidation_promoted": [
+    77,
+    78,
+    75
+   ],
+   "consolidation_discarded": [
+    76
+   ],
+   "dreaming_promoted": [
+    76,
+    77,
+    78,
+    74
+   ],
+   "dreaming_discarded": [],
+   "dreams": {
+    "76": {
+     "fact_combinations_missing_from_log": 24,
+     "candidate_labels_proposed": 72,
+     "candidates_confirmed": 53,
+     "candidates_rejected": 19,
+     "dream_cases_kept": 24
+    },
+    "77": {
+     "fact_combinations_missing_from_log": 27,
+     "candidate_labels_proposed": 81,
+     "candidates_confirmed": 26,
+     "candidates_rejected": 55,
+     "dream_cases_kept": 12
+    },
+    "78": {
+     "fact_combinations_missing_from_log": 20,
+     "candidate_labels_proposed": 60,
+     "candidates_confirmed": 35,
+     "candidates_rejected": 25,
+     "dream_cases_kept": 20
+    },
+    "74": {
+     "fact_combinations_missing_from_log": 24,
+     "candidate_labels_proposed": 72,
+     "candidates_confirmed": 14,
+     "candidates_rejected": 58,
+     "dream_cases_kept": 6
+    }
+   },
+   "sleep_seconds": {
+    "retrieval": 0.0,
+    "retrieval_naive": 0.0,
+    "induction": 0.002,
+    "consolidation": 0.4619,
+    "dreaming": 0.5149,
+    "rehearsal": 11.5433,
+    "rehearsal_core": 11.9095
+   },
+   "wake": {
+    "none": {
+     "documents": 120,
+     "success": 0.0833333358168602,
+     "status_accuracy": 0.8681579232215881,
+     "protected_changed": 0
+    },
+    "retrieval": {
+     "documents": 120,
+     "success": 0.5416666865348816,
+     "status_accuracy": 0.9616666436195374,
+     "protected_changed": 0
+    },
+    "retrieval_naive": {
+     "documents": 120,
+     "success": 0.36666667461395264,
+     "status_accuracy": 0.9487719535827637,
+     "protected_changed": 0
+    },
+    "rehearsal": {
+     "documents": 120,
+     "success": 0.5916666388511658,
+     "status_accuracy": 0.9756140112876892,
+     "protected_changed": 26
+    },
+    "consolidation": {
+     "documents": 120,
+     "success": 0.6583333611488342,
+     "status_accuracy": 0.969298243522644,
+     "protected_changed": 0
+    },
+    "dreaming": {
+     "documents": 120,
+     "success": 0.699999988079071,
+     "status_accuracy": 0.9732456207275391,
+     "protected_changed": 0
+    },
+    "induction": {
+     "documents": 120,
+     "success": 0.699999988079071,
+     "status_accuracy": 0.9732456207275391,
+     "protected_changed": 0
+    },
+    "rehearsal_core": {
+     "documents": 120,
+     "success": 0.0,
+     "status_accuracy": 0.3221052587032318,
+     "protected_changed": 81
+    }
+   },
+   "arms": {
+    "none": {
+     "learn": {
+      "documents": 600,
+      "success": 0.009999999776482582,
+      "status_accuracy": 0.8160526156425476,
+      "protected_changed": 0,
+      "decisions": 3325,
+      "decision_accuracy": 0.08812030404806137
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.009999999776482582,
+      "status_accuracy": 0.8160526156425476,
+      "protected_changed": 0,
+      "decisions": 1207,
+      "decision_accuracy": 0.20463959872722626
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.11833333224058151,
+      "status_accuracy": 0.8810877203941345,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.34333333373069763,
+      "status_accuracy": 0.937964916229248,
+      "protected_changed": 0,
+      "decisions": 1198,
+      "decision_accuracy": 0.1302170306444168
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 0,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval": {
+     "learn": {
+      "documents": 600,
+      "success": 0.2083333283662796,
+      "status_accuracy": 0.9415438771247864,
+      "protected_changed": 0,
+      "decisions": 3325,
+      "decision_accuracy": 0.7106766700744629
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.2083333283662796,
+      "status_accuracy": 0.9415438771247864,
+      "protected_changed": 0,
+      "decisions": 1207,
+      "decision_accuracy": 0.20463959872722626
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.7833333611488342,
+      "status_accuracy": 0.9897192716598511,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9997719526290894,
+      "protected_changed": 0,
+      "decisions": 1198,
+      "decision_accuracy": 0.9983305335044861
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 557,
+     "interference_right_before_wrong_after": 0
+    },
+    "retrieval_naive": {
+     "learn": {
+      "documents": 600,
+      "success": 0.1599999964237213,
+      "status_accuracy": 0.9332455992698669,
+      "protected_changed": 0,
+      "decisions": 3325,
+      "decision_accuracy": 0.671278178691864
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.1599999964237213,
+      "status_accuracy": 0.9332455992698669,
+      "protected_changed": 0,
+      "decisions": 1207,
+      "decision_accuracy": 0.20463959872722626
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.621666669845581,
+      "status_accuracy": 0.9806491136550903,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.7166666388511658,
+      "status_accuracy": 0.9880877137184143,
+      "protected_changed": 0,
+      "decisions": 1198,
+      "decision_accuracy": 0.9983305335044861
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 1376,
+     "interference_right_before_wrong_after": 475
+    },
+    "rehearsal": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9850000143051147,
+      "status_accuracy": 0.9995789527893066,
+      "protected_changed": 0,
+      "decisions": 3325,
+      "decision_accuracy": 0.9975939989089966
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9850000143051147,
+      "status_accuracy": 0.9995789527893066,
+      "protected_changed": 0,
+      "decisions": 1207,
+      "decision_accuracy": 0.9950289726257324
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.8266666531562805,
+      "status_accuracy": 0.9910877346992493,
+      "protected_changed": 86
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9997719526290894,
+      "protected_changed": 0,
+      "decisions": 1198,
+      "decision_accuracy": 0.9983305335044861
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 93,
+     "interference_right_before_wrong_after": 0
+    },
+    "consolidation": {
+     "learn": {
+      "documents": 600,
+      "success": 0.273333340883255,
+      "status_accuracy": 0.9254210591316223,
+      "protected_changed": 0,
+      "decisions": 3325,
+      "decision_accuracy": 0.6351879835128784
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.273333340883255,
+      "status_accuracy": 0.9254210591316223,
+      "protected_changed": 0,
+      "decisions": 1207,
+      "decision_accuracy": 0.7009113430976868
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9683333039283752,
+      "status_accuracy": 0.9991579055786133,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9997719526290894,
+      "protected_changed": 0,
+      "decisions": 1198,
+      "decision_accuracy": 0.9983305335044861
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 533,
+     "interference_right_before_wrong_after": 0
+    },
+    "dreaming": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9850000143051147,
+      "status_accuracy": 0.9995789527893066,
+      "protected_changed": 0,
+      "decisions": 3325,
+      "decision_accuracy": 0.9975939989089966
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9850000143051147,
+      "status_accuracy": 0.9995789527893066,
+      "protected_changed": 0,
+      "decisions": 1207,
+      "decision_accuracy": 0.9950289726257324
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.9683333039283752,
+      "status_accuracy": 0.9991579055786133,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9997719526290894,
+      "protected_changed": 0,
+      "decisions": 1198,
+      "decision_accuracy": 0.9983305335044861
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 70,
+     "interference_right_before_wrong_after": 0
+    },
+    "induction": {
+     "learn": {
+      "documents": 600,
+      "success": 0.9850000143051147,
+      "status_accuracy": 0.9995789527893066,
+      "protected_changed": 0,
+      "decisions": 3325,
+      "decision_accuracy": 0.9975939989089966
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.9850000143051147,
+      "status_accuracy": 0.9995789527893066,
+      "protected_changed": 0,
+      "decisions": 1207,
+      "decision_accuracy": 0.9950289726257324
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.971666693687439,
+      "status_accuracy": 0.9992631673812866,
+      "protected_changed": 0
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.9866666793823242,
+      "status_accuracy": 0.9997719526290894,
+      "protected_changed": 0,
+      "decisions": 1198,
+      "decision_accuracy": 0.9983305335044861
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 54,
+     "interference_right_before_wrong_after": 0
+    },
+    "rehearsal_core": {
+     "learn": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.3312456011772156,
+      "protected_changed": 505,
+      "decisions": 3325,
+      "decision_accuracy": 0.9960902333259583
+     },
+     "learn_unseen": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.3312456011772156,
+      "protected_changed": 505,
+      "decisions": 1207,
+      "decision_accuracy": 0.9908865094184875
+     },
+     "retain": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.3249298334121704,
+      "protected_changed": 431
+     },
+     "expired": {
+      "documents": 600,
+      "success": 0.0,
+      "status_accuracy": 0.33471930027008057,
+      "protected_changed": 371,
+      "decisions": 1198,
+      "decision_accuracy": 0.9983305335044861
+     },
+     "probe_decisions": 57000,
+     "interference_decisions_changed": 317,
+     "interference_right_before_wrong_after": 0
+    }
+   }
+  }
+ ],
+ "arms": [
+  "none",
+  "retrieval",
+  "retrieval_naive",
+  "rehearsal",
+  "consolidation",
+  "dreaming",
+  "induction",
+  "rehearsal_core"
+ ],
+ "bank_versions": {
+  "consolidation_v1": {
+   "sha256": "b17aa1d7d84defc840749567cc22d954b521a278d5eae74e7900ed3e55e5595c",
+   "bytes": 7841,
+   "promoted": [
+    61,
+    62,
+    63
+   ],
+   "discarded": []
+  },
+  "dreaming_v1": {
+   "sha256": "d80e4f1c26fc4acae99b4f837ad0d740807483b9800d58cfa9582509864525b3",
+   "bytes": 7841,
+   "promoted": [
+    61,
+    62,
+    63
+   ],
+   "discarded": []
+  },
+  "consolidation_v2": {
+   "sha256": "002e44591387fd57ce62208502dd9464e9a8ee1e00e2a1a5343c99f17a2f156d",
+   "bytes": 7841,
+   "promoted": [
+    64,
+    65,
+    66
+   ],
+   "discarded": []
+  },
+  "dreaming_v2": {
+   "sha256": "1e6d56c08ff7fa739cba915627a86b6537e3ccd5cffeb896c546dbd720fb47a0",
+   "bytes": 7841,
+   "promoted": [
+    64,
+    65,
+    66
+   ],
+   "discarded": []
+  },
+  "consolidation_v3": {
+   "sha256": "2c71a3499b27305aba29712cc6540d75148e184a15664052a5c91fd0ecc90f30",
+   "bytes": 7841,
+   "promoted": [
+    67,
+    68,
+    69,
+    61,
+    64
+   ],
+   "discarded": []
+  },
+  "dreaming_v3": {
+   "sha256": "54cc2896b43ddf8e8cb51bc156f8166c4be14aa5553d1b09945f763a9d9472e9",
+   "bytes": 7841,
+   "promoted": [
+    67,
+    68,
+    69
+   ],
+   "discarded": []
+  },
+  "consolidation_v4": {
+   "sha256": "fda2edc9b9619bda2f17b8d13e859d5097be22f45e5c3a906cb99a3fbaacec58",
+   "bytes": 7841,
+   "promoted": [
+    70,
+    71,
+    72
+   ],
+   "discarded": []
+  },
+  "dreaming_v4": {
+   "sha256": "35b59693bb40c0cafc52d0c1c2c9756bad47b29e6daaf5aea5499bf1bb314072",
+   "bytes": 7841,
+   "promoted": [
+    70,
+    71,
+    72
+   ],
+   "discarded": []
+  },
+  "consolidation_v5": {
+   "sha256": "333b524bb3aa8f9c356e71de3c0e6c74e87eec1fec7b5b849bcfdb65f96dba8b",
+   "bytes": 7841,
+   "promoted": [
+    73,
+    74,
+    66
+   ],
+   "discarded": [
+    75
+   ]
+  },
+  "dreaming_v5": {
+   "sha256": "2f1643b5cbe6429d240481c03414a8633893633eb8a70fc894fa9d867f6c9dbb",
+   "bytes": 7841,
+   "promoted": [
+    73,
+    74,
+    75
+   ],
+   "discarded": []
+  },
+  "consolidation_v6": {
+   "sha256": "7d23fec53a97c81f91edbf96485154afa7a62dad4e70f62340e7d207d56f9a9a",
+   "bytes": 7841,
+   "promoted": [
+    77,
+    78,
+    75
+   ],
+   "discarded": [
+    76
+   ]
+  },
+  "dreaming_v6": {
+   "sha256": "9bc12f289dc46a896861d6dd1936f5fa98927cd4d3967cdba6959e31eb77722c",
+   "bytes": 7841,
+   "promoted": [
+    76,
+    77,
+    78,
+    74
+   ],
+   "discarded": []
+  }
+ },
+ "rollback": {
+  "version_loaded": 5,
+  "sha256_matches": true,
+  "retain_success_under_old_version": 0.8700000047683716
+ },
+ "update_steps_used": {
+  "none": 0,
+  "retrieval": 0,
+  "retrieval_naive": 0,
+  "rehearsal": 4400,
+  "consolidation": 4400,
+  "dreaming": 3800,
+  "induction": 0,
+  "rehearsal_core": 4400
+ },
+ "index_entries": {
+  "retrieval": 958,
+  "retrieval_naive": 958,
+  "induction": 856
+ },
+ "final_state": {
+  "none": {
+   "rows_known": 60
+  },
+  "retrieval": {
+   "rows_known": 60
+  },
+  "retrieval_naive": {
+   "rows_known": 60
+  },
+  "rehearsal": {
+   "rows_known": 78
+  },
+  "consolidation": {
+   "rows_known": 77
+  },
+  "dreaming": {
+   "rows_known": 78
+  },
+  "induction": {
+   "rows_known": 60
+  },
+  "rehearsal_core": {
+   "rows_known": 78
+  }
+ },
+ "salt": 2701878737
+}
