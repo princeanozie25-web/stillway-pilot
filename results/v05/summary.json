@@ -1,0 +1,152 @@
+{
+ "rules": {
+  "R1. Program needs no more audits than the network (5 of 8 needed)": {
+   "datasets": [
+    "monks1",
+    "monks3",
+    "lenses"
+   ],
+   "pass": false
+  },
+  "R2. Program's cautious wrong share at most half the network's (5 of 8)": {
+   "datasets": [
+    "monks3"
+   ],
+   "pass": false
+  },
+  "R3. Program needs no more audits than a decision tree (4 of 8)": {
+   "datasets": [
+    "monks1",
+    "monks3",
+    "lenses"
+   ],
+   "pass": false
+  },
+  "R4. Chosen audits beat passive for the program learner (5 of 8)": {
+   "datasets": [],
+   "pass": false
+  },
+  "R5. Network as proposer: no later on 5 of 8 and strictly earlier on 2": {
+   "datasets": [
+    "monks1",
+    "monks3",
+    "lenses"
+   ],
+   "pass": false
+  }
+ },
+ "datasets": {
+  "car": {
+   "passive/program": null,
+   "passive/program+net": null,
+   "passive/net": 1024.0,
+   "passive/tree": 1728.0,
+   "passive/forest": 1728.0,
+   "passive/index": 1728.0,
+   "chosen/program": null,
+   "chosen/program+net": null,
+   "chosen/net": 512.0,
+   "chosen/tree": 1728.0,
+   "chosen/forest": 1024.0,
+   "chosen/index": 1728.0
+  },
+  "nursery": {
+   "passive/program": null,
+   "passive/program+net": null,
+   "passive/net": 2048.0,
+   "passive/tree": null,
+   "passive/forest": null,
+   "passive/index": null,
+   "chosen/program": null,
+   "chosen/program+net": null,
+   "chosen/net": 1024.0,
+   "chosen/tree": null,
+   "chosen/forest": null,
+   "chosen/index": null
+  },
+  "balance": {
+   "passive/program": null,
+   "passive/program+net": null,
+   "passive/net": 512.0,
+   "passive/tree": 625.0,
+   "passive/forest": 625.0,
+   "passive/index": 625.0,
+   "chosen/program": null,
+   "chosen/program+net": null,
+   "chosen/net": 256.0,
+   "chosen/tree": 625.0,
+   "chosen/forest": 512.0,
+   "chosen/index": 625.0
+  },
+  "monks1": {
+   "passive/program": 64.0,
+   "passive/program+net": 64.0,
+   "passive/net": 256.0,
+   "passive/tree": 432.0,
+   "passive/forest": 432.0,
+   "passive/index": 432.0,
+   "chosen/program": 128.0,
+   "chosen/program+net": 128.0,
+   "chosen/net": 128.0,
+   "chosen/tree": 432.0,
+   "chosen/forest": 432.0,
+   "chosen/index": 432.0
+  },
+  "monks2": {
+   "passive/program": null,
+   "passive/program+net": null,
+   "passive/net": 256.0,
+   "passive/tree": 432.0,
+   "passive/forest": 432.0,
+   "passive/index": 432.0,
+   "chosen/program": null,
+   "chosen/program+net": null,
+   "chosen/net": 128.0,
+   "chosen/tree": 432.0,
+   "chosen/forest": 432.0,
+   "chosen/index": 432.0
+  },
+  "monks3": {
+   "passive/program": 128.0,
+   "passive/program+net": 32.0,
+   "passive/net": 128.0,
+   "passive/tree": 128.0,
+   "passive/forest": 128.0,
+   "passive/index": 432.0,
+   "chosen/program": 128.0,
+   "chosen/program+net": 64.0,
+   "chosen/net": 128.0,
+   "chosen/tree": 64.0,
+   "chosen/forest": 128.0,
+   "chosen/index": 432.0
+  },
+  "lenses": {
+   "passive/program": 24.0,
+   "passive/program+net": 24.0,
+   "passive/net": 24.0,
+   "passive/tree": 24.0,
+   "passive/forest": 24.0,
+   "passive/index": 24.0,
+   "chosen/program": 24.0,
+   "chosen/program+net": 24.0,
+   "chosen/net": 24.0,
+   "chosen/tree": 24.0,
+   "chosen/forest": 24.0,
+   "chosen/index": 24.0
+  },
+  "tictactoe": {
+   "passive/program": null,
+   "passive/program+net": null,
+   "passive/net": 958.0,
+   "passive/tree": 958.0,
+   "passive/forest": 958.0,
+   "passive/index": 958.0,
+   "chosen/program": null,
+   "chosen/program+net": null,
+   "chosen/net": 512.0,
+   "chosen/tree": 958.0,
+   "chosen/forest": 958.0,
+   "chosen/index": 958.0
+  }
+ }
+}
