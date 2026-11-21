@@ -96,7 +96,7 @@ for i, f in enumerate(rfail):                                    # how fragile i
     if f is None: continue
     steps = [ref.memo[k] for k in rtrace[i]]
     lg = min(abs(sorted([m[2][a] for a in STAGE_ACTIONS[k[1]]])[-1] - sorted([m[2][a] for a in STAGE_ACTIONS[k[1]]])[-2]) for k, m in zip(rtrace[i], steps) if k[1] in STAGE_ACTIONS)
-    report["reference_failures"].append({"id": eps[i][0], "family": family_of(eps[i][1].layout), "split": SPLIT[family_of(eps[i][1].layout)], "first_invalid_stage": STAGE_NAMES[f],
+    report["reference_failures"].append({"id": eps[i][0], "family": family_of(eps[i][1].effects), "split": SPLIT[family_of(eps[i][1].effects)], "first_invalid_stage": STAGE_NAMES[f],
                                          "smallest_code_gap_on_trajectory": min(min(m[3]) for m in steps), "smallest_action_logit_gap_on_trajectory": lg})
 report["reference_failures"].sort(key=lambda r: r["smallest_code_gap_on_trajectory"])
 for rt in RT[1:]:
