@@ -8,7 +8,7 @@ Fable, 21 November 2026. Branch `v0.2`, from commit `6588d9f`. All work on the M
 2. **The advancement rule fails.** Pooled over the three final strata the editor reaches 73.3%, below the 90% bar. On four-leg jobs it gets 41.5% and on cross-gate layouts 86.5%. A message and a full restart fail to the same degree, and the planner alone, with no edit, gets 50% and 84% there. The limit is the planner core.
 3. **No advantage over a message was measured.** The edit is 28% slower end to end (424 µs against 332 µs). Against a full restart it saves work: no re-briefing ticks and about half the needless step changes.
 4. **Editing needs interchange-trained memory.** On plain-imitation cores the same editor succeeds on 12% and abstains on about 80%.
-5. **The v0.1 certificate was narrower than stated.** It covered 20 of the 36 operator-message patterns. With all 36, no seed is error-free, and quotient memory repairs nothing on matched jobs.
+5. **The v0.1 certificate was narrower than stated.** It covered 20 of the 36 operator-message patterns. With all 36, no seed is error-free, and quotient memory does not reliably repair jobs: the original maps change almost nothing on matched jobs, and rebuilt maps help on two seeds and hurt on three.
 6. **On the new world the saved state cannot be listed.** 26,000 distinct states for about 800 meanings; a sampled dictionary knows 20% of the steps of fresh jobs. State count grows with irrelevant history; task success does not drop.
 7. **Recommendation: change the architecture of the memory, do not scale, keep the benchmark.**
 
@@ -26,11 +26,11 @@ Command: `v02/m0_custody.sh <workdir>`. Fresh clone of `6588d9f`, fresh virtual 
 | Ordinary accuracy on sealed fixtures | 2,489 / 2,500 (matches Codex) |
 | Run time | about 31 s per checkpoint to rescore |
 
-**Retraining.** Seeds 1 and 4 retrained from the archived manifests into `runs/r_iit_s1` and `runs/r_iit_s4`: **weights bit-identical to the frozen checkpoints** (largest difference 0), same step counts (10,150 and 10,311). Every score is therefore identical. The checkpoint files differ only in the run name stored inside. Seeds 2, 3 and 5: see the status line at the end of this section.
+**Retraining.** Seeds 1 and 4 retrained from the archived manifests into `runs/r_iit_s1` and `runs/r_iit_s4`: **weights bit-identical to the frozen checkpoints** (largest difference 0), same step counts (10,150 and 10,311). Every score is therefore identical. The checkpoint files differ only in the run name stored inside. 
 
 This shows that training is exactly repeatable on this machine and torch build. It says nothing about another machine.
 
-RETRAIN_STATUS
+Seeds 2, 3 and 5 were retrained afterwards (`runs/r_iit_s2`, `r_iit_s3`, `r_iit_s5`): also bit-identical. All five primary seeds retrain exactly.
 
 ## 3. M1: the certificate's input coverage gap
 
@@ -38,7 +38,7 @@ Full tables: `results/v02/M1_tables.md`. Scope and wording: `docs/v02_certificat
 
 **The gap.** The simulator accepts two order fields revised at the same stage. The v0.1 extractor listed 20 message patterns; the schema permits 36. `stillway2/automaton.py` enumerates them from the field domains. `tests/test_messages36.py` builds simulator events for every mask and value at every stage (8,640 episodes), with repeated writes, a reissue followed by an override, and closed-bay handling, and checks the encoded observation and the order of record.
 
-**Counterexample from the simulator alone**, seed 4: 20 failures in 393,216 two-field episodes, 6 of them on trained families. All 20 revise dock and bay together at LEG1.
+**Counterexample from the simulator alone**, seed 4: 20 failures in 393,216 two-field episodes, 6 of them on trained families. All 20 revise dock and bay together at LEG1. The other seeds, same sweep: 1,890 (seed 1), 1,744 (seed 2), 34 (seed 3), 3,292 (seed 5); every seed fails on trained families too (6 to 1,578 episodes).
 
 **The original maps.** v0.1 saved only counts. `v02/m1_recover_maps.py` repeats the v0.1 code with the unchanged v0.1 extractor and saves the maps. For seed 4 it reproduces the archived counts exactly (plain 3 / 174,345,600; quotient 0 / 7,864,320). SHA-256 of the maps: `24856aba6cd5c1cfb747aa395254e76dfa2037c9ba4e033184e31b5bc5d01c13`.
 
@@ -63,9 +63,21 @@ So the original map is incomplete and also wrong: one fifth of the wrong decisio
 | Original maps | 106 | 3 | 11 | 42,162 |
 | Rebuilt maps | 505 | 10 | 417 | 51,098 |
 
-Quotient memory did not repair jobs. Failures are also rare when weighted by how often a state is reached (98 in 2,000,000) and much less rare when every reachable state counts once (0.15%).
+On this seed quotient memory did not repair jobs. Failures are also rare when weighted by how often a state is reached (98 in 2,000,000) and much less rare when every reachable state counts once (0.15%).
 
-M1_ALL_SEEDS
+**All five primary seeds.** Every seed's recovered maps reproduce its archived v0.1 counts. With 36 patterns none is error-free.
+
+| Seed | Plain memory: wrong pairs | Original maps unchanged | Maps rebuilt on 36 patterns | Same 2,000,000 jobs, jobs with a wrong decision: plain / original maps / rebuilt maps |
+|---|---|---|---|---|
+| 1 | 1.547% | 1.364% | 5.698% | 6,786 / 6,794 / 8,434 |
+| 2 | 1.817% | 1.681% | 2.976% | 8,040 / 8,044 / 8,459 |
+| 3 | 1.410% | 1.741% | 0.116% | 434 / 654 / 97 |
+| 4 | 0.154% | 0.226% | 0.441% | 98 / 106 / 505 |
+| 5 | 0.578% | 0.633% | 0.017% | 6,265 / 6,125 / 2,685 |
+
+- **The original maps change almost nothing on matched jobs**: between 140 fewer and 220 more wrong jobs per 2,000,000, with 19,000 to 42,000 jobs changing only a tie-break. 7 to 14% of their transitions land on a state they do not know.
+- **Rebuilt maps are a coin toss**: they cut wrong jobs by 78% on seed 3 and 57% on seed 5, and add wrong jobs on seeds 1, 2 and 4.
+- Pair counts (529 to 791 million per seed for plain memory) and matched-job counts tell different stories, because a pair count gives a rarely reached state the same weight as a common one.
 
 Cost: seed 4 took 2,236 CPU-seconds to recover the maps and 11,765 CPU-seconds for the 36-pattern run (30 minutes on 8 cores; the estimate from one family was 12 minutes, so the profile under-estimated by a factor of 2).
 
@@ -212,7 +224,7 @@ Core `v2_iit_s1`, frozen predictor editor; ranges over the five cores in bracket
 
 **Frozen findings** (code, checkpoints and rules fixed before the data existed):
 
-- M0 custody and bit-identical retraining of seeds 1 and 4.
+- M0 custody and bit-identical retraining of all five primary seeds.
 - M3 final results on strata A, B and C for seven cores and both editors; the shift results in section 7 use the same frozen cores and editor.
 
 **Recomputed on v0.1 assets** (no new training, new analysis code): all of M1; M4 hidden-channel table; the sampled-against-exact comparison.
@@ -221,7 +233,8 @@ Core `v2_iit_s1`, frozen predictor editor; ranges over the five cores in bracket
 
 - The scaling sweep (one core, development families).
 - The three training-recipe changes that produced the v0.2 core (made on development evidence before the freeze).
-- EXPLORATORY_CORE
+- **A core with canonical memory** (`v02/x_canonical.py`, one seed). One slot per order field and a fixed code table; the code each slot must hold is given as a label. Accuracy 100% on training and development families after a quarter of the usual steps. Distinct saved states: 708 to 718 at every history length (the frozen core: 26,323 rising to 73,041). A sampled dictionary knows 98.9 to 99.4% of the steps of fresh jobs (the frozen core: 19.5% falling to 6.4%). Edits on stratum A: 100% for both editors, and the slot table is the identity, so no fitting is needed. Strata B and C: 36% and 85%, as for the frozen cores. So canonical memory makes the state listable at no cost in accuracy, by making the memory symbolic by construction. It does not make the planner extrapolate.
+- **A core that saw four-leg and cross-gate jobs in training** (`v02/x_train_all.py`, one seed, 18,326 steps). Message and restart: 100% on A, B and C. Slot-write edit: 100.0%, 99.96%, 100.0%. Predictor edit: 99.95%, **82.5%**, 99.9%: the predictor was fitted on two- and three-leg training jobs only and does not carry to four-leg states, while the slot table does. So the failures on B and C in section 5 are a lack of exposure, not a limit of the design, and the slot-write editor is the more portable of the two. The frozen selection rule picked the predictor by 0.1 point on development data. Stratum B is not untouched for this core.
 
 **Awaiting independent confirmation:** rescoring of the v0.2 final items by a rebuilt scorer; the 36-pattern counts; a challenge set that I did not author (`docs/v02_codex_challenge.md`).
 

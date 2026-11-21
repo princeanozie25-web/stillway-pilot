@@ -26,13 +26,13 @@ The editor is within one point of a message everywhere and is slower end to end.
 
 **3. The saved state is no longer listable.** On the new world one core reaches 26,000 distinct saved states for about 800 meanings. A dictionary built from 20,000 sampled jobs knows 20% of the steps of fresh jobs. With 16 extra wait steps per leg the state count grows to 73,000 while task success stays at 100%: the growth is irrelevant history. So the v0.1 assets that depend on listing states (certificate, typed patch, quotient memory, tamper alarm) stop at Dispatch-2.
 
-**4. On Dispatch-2 the certificate was narrower than v0.1 said.** With all 36 operator-message patterns no seed is error-free, and quotient memory repairs nothing on matched jobs. Three corrections are in `docs/v02_certificate_scope.md`.
+**4. On Dispatch-2 the certificate was narrower than v0.1 said.** With all 36 operator-message patterns no seed is error-free, and quotient memory does not reliably repair jobs (rebuilt maps help on two seeds and hurt on three). Three corrections are in `docs/v02_certificate_scope.md`.
 
 **5. The exact planner wins this world.** It revises a shift in 29 µs against about 6 ms, and it never changes a step without need (the learned planner changes 195 to 254 per 300 shifts where routes tie).
 
 ## What did hold
 
-- **Custody and reproducibility.** A fresh clone in a fresh environment reproduces the freeze, the fixtures and all 20,000 swap decisions. Retraining seeds 1 and 4 gives bit-identical weights.
+- **Custody and reproducibility.** A fresh clone in a fresh environment reproduces the freeze, the fixtures and all 20,000 swap decisions. Retraining all five primary seeds gives bit-identical weights.
 - **An edit is a real operation on trained memory.** On interchange-trained cores it applies corrections, no-ops, added and withdrawn requirements, and two successive edits as well as a message does. On plain-imitation cores it cannot: the predictor succeeds on 12% and abstains on about 80%. Interchange training is what makes memory editable.
 - **Edit and resume beats restart on work saved.** Over 300 shifts: 0 ticks lost to re-briefing against 1,279, and 195 to 254 needless step changes against 348 to 442 (five cores). This is the one measured advantage, and it is against restart, not against a message.
 - **The explicit failure is there.** The editor abstains on tangled memory; requests on delivered parcels are declined (150 of 150); a wrong edit on a core that cannot plan the layout is not detected by the editor.
@@ -49,7 +49,9 @@ The editor is within one point of a message everywhere and is slower end to end.
 ## What "change architecture" means, in three small experiments
 
 1. **Canonical memory.** One code per field value by construction (a fixed table for order fields, learned state only for planning). Target: distinct states within a small factor of distinct meanings, flat in history length. Then the dictionary, patch and certificate apply again, and an edit becomes a table write that needs no training.
+   **Already tried once, after the freeze, one seed, exploratory** (`v02/x_canonical.py`): accuracy 100% on training and development families; about 710 distinct saved states at every history length (against 26,000 rising to 73,000); a sampled dictionary knows 99% of the steps of fresh jobs (against 20% falling to 6%); edits on unseen families 100%, with a table that is the identity and needs no fitting. It trains four times faster. Its cost: the order schema is given to the memory as labels, so the memory is symbolic by construction and only the planning is learned. It does not fix four-leg jobs (36%).
 2. **A reader that extrapolates.** Train on 2 to 4 legs with the same sweep supervision, test on 5 and 6, before anything else is built on the core.
+   *Already tried once, exploratory:** a core that saw four-leg and cross-gate jobs in training gets 100% on all three strata with a message, and 99.96 to 100% with the slot-write edit. The predictor edit, fitted on shorter jobs, drops to 82.5% on four legs. So the failures are a lack of exposure, and slot write is the more portable editor.
 3. **A domain with no exact planner.** Here the symbolic planner dominates, so nothing learned can win. The second domain in the brief (document approval) only tests the idea if its rules cannot be written down in a page.
 
 Stop condition: if experiment 1 does not make states listable, drop discrete saved state as the company's bet and keep the evaluator.

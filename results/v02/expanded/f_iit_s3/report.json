@@ -1,0 +1,1026 @@
+{
+ "raw36_checked": 309550464,
+ "raw36_wrong": 4365307,
+ "old_checked": 172505088,
+ "old_wrong": 3003894,
+ "old_wrong_unmapped_state": 2707428,
+ "old_wrong_mapped_rep": 296466,
+ "old_missing_transitions": 21398225,
+ "old_transitions": 149553792,
+ "old_missing_codes": 85463,
+ "fresh_checked": 34019712,
+ "fresh_wrong": 39314,
+ "fresh_wrong_first_choice": 39293,
+ "seconds": 7290.300000000002,
+ "families": 100,
+ "families_wrong": {
+  "raw36": [
+   "CC-KC",
+   "CC-KO",
+   "CC-KT",
+   "CC-OC",
+   "CC-TC",
+   "CC-TO",
+   "KC-KC",
+   "KC-KK",
+   "KC-KO",
+   "KC-KT",
+   "KC-OC",
+   "KC-TC",
+   "KC-TO",
+   "KC-TT",
+   "KK-KC",
+   "KK-KO",
+   "KK-KT",
+   "KK-OC",
+   "KK-TC",
+   "KK-TO",
+   "KO-KC",
+   "KO-KK",
+   "KO-KO",
+   "KO-KT",
+   "KO-OC",
+   "KO-TC",
+   "KO-TO",
+   "KO-TT",
+   "KT-KC",
+   "KT-KK",
+   "KT-KO",
+   "KT-KT",
+   "KT-OC",
+   "KT-TC",
+   "KT-TO",
+   "KT-TT",
+   "OC-KC",
+   "OC-KK",
+   "OC-KO",
+   "OC-KT",
+   "OC-OC",
+   "OC-TC",
+   "OC-TO",
+   "OC-TT",
+   "OO-KC",
+   "OO-KO",
+   "OO-KT",
+   "OO-OC",
+   "OO-TC",
+   "OO-TO",
+   "TC-KC",
+   "TC-KK",
+   "TC-KO",
+   "TC-KT",
+   "TC-OC",
+   "TC-TC",
+   "TC-TO",
+   "TC-TT",
+   "TO-KC",
+   "TO-KK",
+   "TO-KO",
+   "TO-KT",
+   "TO-OC",
+   "TO-TC",
+   "TO-TO",
+   "TO-TT",
+   "TT-KC",
+   "TT-KO",
+   "TT-KT",
+   "TT-OC",
+   "TT-TC",
+   "TT-TO"
+  ],
+  "old": [
+   "CC-KC",
+   "CC-KO",
+   "CC-KT",
+   "CC-OC",
+   "CC-TC",
+   "CC-TO",
+   "KC-KC",
+   "KC-KK",
+   "KC-KO",
+   "KC-KT",
+   "KC-OC",
+   "KC-TC",
+   "KC-TO",
+   "KC-TT",
+   "KK-KC",
+   "KK-KO",
+   "KK-KT",
+   "KK-OC",
+   "KK-TC",
+   "KK-TO",
+   "KO-KC",
+   "KO-KK",
+   "KO-KO",
+   "KO-KT",
+   "KO-OC",
+   "KO-TC",
+   "KO-TO",
+   "KO-TT",
+   "KT-KC",
+   "KT-KK",
+   "KT-KO",
+   "KT-KT",
+   "KT-OC",
+   "KT-TC",
+   "KT-TO",
+   "KT-TT",
+   "OC-KC",
+   "OC-KK",
+   "OC-KO",
+   "OC-KT",
+   "OC-OC",
+   "OC-TC",
+   "OC-TO",
+   "OC-TT",
+   "OO-KC",
+   "OO-KO",
+   "OO-KT",
+   "OO-OC",
+   "OO-TC",
+   "OO-TO",
+   "TC-KC",
+   "TC-KK",
+   "TC-KO",
+   "TC-KT",
+   "TC-OC",
+   "TC-TC",
+   "TC-TO",
+   "TC-TT",
+   "TO-KC",
+   "TO-KK",
+   "TO-KO",
+   "TO-KT",
+   "TO-OC",
+   "TO-TC",
+   "TO-TO",
+   "TO-TT",
+   "TT-KC",
+   "TT-KO",
+   "TT-KT",
+   "TT-OC",
+   "TT-TC",
+   "TT-TO"
+  ],
+  "fresh": [
+   "KC-KO",
+   "KC-KT",
+   "KC-TT",
+   "KK-KC",
+   "KK-KT",
+   "KO-KC",
+   "KO-KK",
+   "KO-KT",
+   "KT-KK",
+   "KT-KO",
+   "OC-KK",
+   "OC-KO",
+   "TC-KK",
+   "TC-KT",
+   "TO-KK"
+  ]
+ },
+ "exploded_families": [],
+ "mean_states_per_family": {
+  "raw36": [
+   14.0,
+   167.5,
+   230.6,
+   209.7,
+   265.3,
+   544.2
+  ],
+  "old": [
+   12.0,
+   95.0,
+   114.8,
+   118.8,
+   145.8,
+   271.6
+  ],
+  "fresh": [
+   12.0,
+   12.0,
+   28.4,
+   52.5,
+   3.0,
+   1.0
+  ]
+ },
+ "witnesses": {
+  "raw36": [
+   {
+    "family": "CC-TO",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       2
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "CC",
+      "leg2": "OT",
+      "gate": 0,
+      "closed_bay": 1,
+      "decor": 0,
+      "message": [
+       1,
+       null,
+       1
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       null,
+       2
+      ]
+     },
+     {
+      "stage": "DOCK",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       null,
+       2
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG2",
+     "leg1": "CC",
+     "leg2": "TO",
+     "gate": 1,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      null,
+      null,
+      null
+     ]
+    },
+    "order_now": [
+     1,
+     0,
+     2
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 384,
+    "two_field_messages_in_history": 3
+   },
+   {
+    "family": "KK-KT",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": 1,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       1
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 1,
+      "closed_bay": 1,
+      "decor": 2,
+      "message": [
+       1,
+       null,
+       1
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       null,
+       2
+      ]
+     },
+     {
+      "stage": "DOCK",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       null,
+       2
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG2",
+     "leg1": "KK",
+     "leg2": "KT",
+     "gate": 0,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      null,
+      null,
+      null
+     ]
+    },
+    "order_now": [
+     1,
+     0,
+     2
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 768,
+    "two_field_messages_in_history": 3
+   },
+   {
+    "family": "KO-KK",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       1,
+       0
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       0,
+       1
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "OK",
+     "leg2": "KK",
+     "gate": 0,
+     "closed_bay": 0,
+     "decor": 1,
+     "message": [
+      0,
+      null,
+      2
+     ]
+    },
+    "order_now": [
+     0,
+     0,
+     2
+    ],
+    "proposed": 0,
+    "n_bad_for_this_state": 5,
+    "two_field_messages_in_history": 2
+   }
+  ],
+  "old_unmapped": [
+   {
+    "family": "CC-TO",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       2
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "CC",
+      "leg2": "OT",
+      "gate": 0,
+      "closed_bay": 1,
+      "decor": 0,
+      "message": [
+       1,
+       null,
+       1
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       null,
+       0
+      ]
+     },
+     {
+      "stage": "DOCK",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       null,
+       2
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG2",
+     "leg1": "CC",
+     "leg2": "TO",
+     "gate": 1,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      null,
+      null,
+      null
+     ]
+    },
+    "order_now": [
+     1,
+     0,
+     2
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 384,
+    "two_field_messages_in_history": 3
+   },
+   {
+    "family": "KK-KT",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       1
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 1,
+      "closed_bay": 1,
+      "decor": 2,
+      "message": [
+       1,
+       null,
+       1
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       null,
+       0
+      ]
+     },
+     {
+      "stage": "DOCK",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       null,
+       2
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG2",
+     "leg1": "KK",
+     "leg2": "KT",
+     "gate": 0,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      null,
+      null,
+      null
+     ]
+    },
+    "order_now": [
+     1,
+     0,
+     2
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 768,
+    "two_field_messages_in_history": 3
+   },
+   {
+    "family": "KO-KK",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       1,
+       0
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       0,
+       1
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "OK",
+     "leg2": "KK",
+     "gate": 0,
+     "closed_bay": 0,
+     "decor": 1,
+     "message": [
+      0,
+      null,
+      2
+     ]
+    },
+    "order_now": [
+     0,
+     0,
+     2
+    ],
+    "proposed": 0,
+    "n_bad_for_this_state": 5,
+    "two_field_messages_in_history": 2
+   }
+  ],
+  "old_mapped": [
+   {
+    "family": "CC-TO",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       2
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "CC",
+      "leg2": "OT",
+      "gate": 0,
+      "closed_bay": 1,
+      "decor": 0,
+      "message": [
+       1,
+       null,
+       1
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       null,
+       0
+      ]
+     },
+     {
+      "stage": "DOCK",
+      "leg1": "CC",
+      "leg2": "TO",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       null,
+       null
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG2",
+     "leg1": "CC",
+     "leg2": "TO",
+     "gate": 1,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      null,
+      null,
+      null
+     ]
+    },
+    "order_now": [
+     0,
+     0,
+     0
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 384,
+    "two_field_messages_in_history": 2
+   },
+   {
+    "family": "KK-KT",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       1
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 1,
+      "closed_bay": 1,
+      "decor": 2,
+      "message": [
+       1,
+       null,
+       1
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       null,
+       0
+      ]
+     },
+     {
+      "stage": "DOCK",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       null,
+       null
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG2",
+     "leg1": "KK",
+     "leg2": "KT",
+     "gate": 0,
+     "closed_bay": null,
+     "decor": 0,
+     "message": [
+      null,
+      null,
+      null
+     ]
+    },
+    "order_now": [
+     0,
+     0,
+     0
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 768,
+    "two_field_messages_in_history": 2
+   },
+   {
+    "family": "KO-KK",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       1,
+       0
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       2
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "KO",
+     "leg2": "KK",
+     "gate": 0,
+     "closed_bay": 0,
+     "decor": 0,
+     "message": [
+      0,
+      null,
+      0
+     ]
+    },
+    "order_now": [
+     0,
+     0,
+     0
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 15,
+    "two_field_messages_in_history": 1
+   }
+  ],
+  "fresh": [
+   {
+    "family": "KK-KT",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       1,
+       0
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       null,
+       null
+      ]
+     },
+     {
+      "stage": "LEG1",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       null,
+       null
+      ]
+     },
+     {
+      "stage": "DOCK",
+      "leg1": "KK",
+      "leg2": "KT",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       null,
+       0,
+       1
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG2",
+     "leg1": "KK",
+     "leg2": "KT",
+     "gate": 1,
+     "closed_bay": 2,
+     "decor": 0,
+     "message": [
+      1,
+      null,
+      0
+     ]
+    },
+    "order_now": [
+     1,
+     0,
+     0
+    ],
+    "proposed": 0,
+    "n_bad_for_this_state": 3,
+    "two_field_messages_in_history": 2
+   },
+   {
+    "family": "KO-KK",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       1,
+       0
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "KO",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       2
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "KO",
+     "leg2": "KK",
+     "gate": 0,
+     "closed_bay": 0,
+     "decor": 0,
+     "message": [
+      0,
+      null,
+      0
+     ]
+    },
+    "order_now": [
+     0,
+     0,
+     0
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 15,
+    "two_field_messages_in_history": 1
+   },
+   {
+    "family": "TC-KK",
+    "history": [
+     {
+      "stage": "INIT",
+      "leg1": "TC",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       0,
+       1,
+       0
+      ]
+     },
+     {
+      "stage": "PLAN",
+      "leg1": "TC",
+      "leg2": "KK",
+      "gate": 0,
+      "closed_bay": null,
+      "decor": 0,
+      "message": [
+       1,
+       0,
+       2
+      ]
+     }
+    ],
+    "failing_obs": {
+     "stage": "LEG1",
+     "leg1": "CT",
+     "leg2": "KK",
+     "gate": 0,
+     "closed_bay": 0,
+     "decor": 0,
+     "message": [
+      0,
+      null,
+      0
+     ]
+    },
+    "order_now": [
+     0,
+     0,
+     0
+    ],
+    "proposed": 1,
+    "n_bad_for_this_state": 5,
+    "two_field_messages_in_history": 1
+   }
+  ]
+ }
+}

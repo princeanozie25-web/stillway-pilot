@@ -1,0 +1,189 @@
+{
+ "name": "v2x_canon_s1",
+ "args": {
+  "name": "v2x_canon_s1",
+  "seed": 1,
+  "steps": 9000,
+  "batch": 512,
+  "iit": 1.0
+ },
+ "config": {
+  "width": 128,
+  "n_slots": 6,
+  "n_codes": 4,
+  "code_dim": 16,
+  "quantizer": "vq",
+  "beta": 0.25,
+  "ema": 0.99
+ },
+ "checkpoint_sha256": "1c9b99037cd1823b8df9d45334f607bd8680c827287473ee8af86da0407f1968",
+ "parameters": 172023,
+ "gradient_steps": 9000,
+ "wall_seconds": 1121.7,
+ "exploratory": true,
+ "supervision": "valid action sets, value head, sweep head, AND the code each slot must hold (the order of record)",
+ "log": [
+  {
+   "step": 500,
+   "loss": 0.6587,
+   "mem_loss": 0.0434,
+   "sec": 65.3,
+   "train": 0.687333345413208,
+   "dev": 0.6666666865348816,
+   "dev_plain": 0.6566666960716248
+  },
+  {
+   "step": 1000,
+   "loss": 0.0332,
+   "mem_loss": 0.0201,
+   "sec": 130.0,
+   "train": 0.9959999918937683,
+   "dev": 0.9986666440963745,
+   "dev_plain": 0.9986666440963745
+  },
+  {
+   "step": 1500,
+   "loss": 0.0026,
+   "mem_loss": 0.0088,
+   "sec": 180.4,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 2000,
+   "loss": 0.0006,
+   "mem_loss": 0.0039,
+   "sec": 218.4,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 2500,
+   "loss": 0.0003,
+   "mem_loss": 0.0018,
+   "sec": 277.8,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 3000,
+   "loss": 0.0002,
+   "mem_loss": 0.0013,
+   "sec": 342.5,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 3500,
+   "loss": 0.0001,
+   "mem_loss": 0.0007,
+   "sec": 407.1,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 4000,
+   "loss": 0.0001,
+   "mem_loss": 0.0005,
+   "sec": 471.8,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 4500,
+   "loss": 0.0003,
+   "mem_loss": 0.0005,
+   "sec": 536.6,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 5000,
+   "loss": 0.0,
+   "mem_loss": 0.0003,
+   "sec": 601.6,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 5500,
+   "loss": 0.0001,
+   "mem_loss": 0.0002,
+   "sec": 666.6,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 6000,
+   "loss": 0.0,
+   "mem_loss": 0.0002,
+   "sec": 732.2,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 6500,
+   "loss": 0.0,
+   "mem_loss": 0.0001,
+   "sec": 797.2,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 7000,
+   "loss": 0.0,
+   "mem_loss": 0.0001,
+   "sec": 861.8,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 7500,
+   "loss": 0.0,
+   "mem_loss": 0.0003,
+   "sec": 926.2,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 8000,
+   "loss": 0.0,
+   "mem_loss": 0.0001,
+   "sec": 991.0,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 8500,
+   "loss": 0.0,
+   "mem_loss": 0.0001,
+   "sec": 1056.0,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  },
+  {
+   "step": 9000,
+   "loss": 0.0,
+   "mem_loss": 0.0001,
+   "sec": 1120.9,
+   "train": 1.0,
+   "dev": 1.0,
+   "dev_plain": 1.0
+  }
+ ]
+}
