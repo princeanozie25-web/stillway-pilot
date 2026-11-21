@@ -37,6 +37,12 @@ def advance(model, w, mem, quant, t0, t1):
             continue
         idx = act.nonzero().squeeze(1)                              # only jobs that have this slot are stepped
         h, logits, z_e = model.step(mem[idx], obs[idx])
+        if DP_W > 0 and model.leg_h:
+            # sweep supervision: after reading leg i the state should hold the exact planner's value table for leg i
+            dp = w.dp_tables()[idx]
+            for (i, hi, m) in model.leg_h:
+                if m.any():
+                    aux = aux + DP_W * F.cross_entropy(model.dp_head(hi[m]).view(-1, 3), dp[m, i].reshape(-1)) / max(1, len(model.leg_h))
         if kind in (ROUTE, DELIVER):
             valid = w.valid_mask()
             loss = loss + set_ce(logits, valid[idx], w.stage_mask(), torch.ones(len(idx)))
@@ -51,36 +57,37 @@ def advance(model, w, mem, quant, t0, t1):
         else:
             st = z_e.reshape(len(idx), -1)
         mem = mem.index_copy(0, idx, st)
-    return loss + aux, commit, mem, zs
+    return loss, commit, mem, zs, aux
 
 
 VALUE_W = 0.5
+DP_W = 1.0
 
 
 def rollout_loss(model, w, quant, iit):
     B, S, D = w.B, model.cfg.n_slots, model.cfg.code_dim
     mem = torch.zeros(B, S * D)
     if iit <= 0:
-        loss, commit, mem, zs = advance(model, w, mem, quant, 0, w.T)
-        return loss, commit, torch.zeros(()), torch.cat(zs)
+        loss, commit, mem, zs, aux = advance(model, w, mem, quant, 0, w.T)
+        return loss, commit, aux, torch.cat(zs)
     ts = int(torch.randint(1, w.T - 1, (1,), generator=w.gen))             # swap after slot ts-1
-    l1, c1, mem, z1 = advance(model, w, mem, quant, 0, ts)
+    l1, c1, mem, z1, a1 = advance(model, w, mem, quant, 0, ts)
     f = int(torch.randint(0, NF, (1,), generator=w.gen)); perm = torch.randperm(B, generator=w.gen)
     m3 = mem.view(B, S, D).clone(); m3[:, f] = mem.view(B, S, D)[perm, f]
     w2 = w.clone()
     if f < 2: w2.q[:, f] = w.q[perm, f]
     else: w2.p[:, f - 2] = w.p[perm, f - 2]
-    l2, c2, _, z2 = advance(model, w, mem, quant, ts, w.T)
-    l3, c3, _, z3 = advance(model, w2, m3.reshape(B, -1), quant, ts, w.T)
-    return l1 + l2, c1 + c2 + c3, iit * l3, torch.cat(z1 + z2)
+    l2, c2, _, z2, a2 = advance(model, w, mem, quant, ts, w.T)
+    l3, c3, _, z3, a3 = advance(model, w2, m3.reshape(B, -1), quant, ts, w.T)
+    return l1 + l2, c1 + c2 + c3, iit * (l3 + a3) + a1 + a2, torch.cat(z1 + z2)
 
 
 @torch.no_grad()
-def batch_eval3(model, spec, n, seed):
+def batch_eval3(model, spec, n, seed, cont=False):
     """Closed-loop run with discrete inference.  Returns the share of jobs with every action valid."""
     model.eval(); gen = torch.Generator().manual_seed(seed)
     w = World3(n, {**spec, "env": "model"}, gen)
-    disc = model.cfg.quantizer == "vq"
+    disc = model.cfg.quantizer == "vq" and not cont
     ids = torch.full((n, model.cfg.n_slots), -1); mem = torch.zeros(n, model.cfg.n_slots * model.cfg.code_dim)
     ok = torch.ones(n, dtype=torch.bool)
     for t in range(w.T):
@@ -117,7 +124,7 @@ def main():
         w = World3(a.batch, SPECS[profs[it % len(profs)]], gen)
         phase2 = switch is not None
         loss, commit, iit_loss, zs = rollout_loss(model, w, use_q and phase2, a.iit if phase2 else 0.0)
-        ema = 0.98 * ema + 0.02 * loss.item()
+        ema = 0.98 * ema + 0.02 * loss.item()                      # task loss only (training aids are in iit_loss)
         if switch is None and ((it >= a.min_warmup and ema < a.switch_loss) or it >= a.warmup):
             switch = it
             if use_q: model.init_codebook(zs.reshape(-1, cfg.n_slots, cfg.code_dim))
@@ -127,15 +134,16 @@ def main():
         if it % 500 == 0 or last:
             row = {"step": it, "phase": 2 if phase2 else 1, "loss": round(loss.item(), 4), "ema": round(ema, 4), "commit": round(commit.item(), 4),
                    "iit": round(float(iit_loss), 4), "sec": round(time.time() - t0, 1)}
-            if not use_q or phase2:
-                row["train"] = batch_eval3(model, SPECS["train"], 1500, 7); row["dev"] = batch_eval3(model, SPECS["dev"], 1500, 9)
-                row["dev_plain"] = batch_eval3(model, SPECS["dev_plain"], 1500, 10)
+            c = not phase2
+            row["train"] = batch_eval3(model, SPECS["train"], 1500, 7, c); row["dev"] = batch_eval3(model, SPECS["dev"], 1500, 9, c)
+            row["dev_plain"] = batch_eval3(model, SPECS["dev_plain"], 1500, 10, c)
             log.append(row); print(json.dumps(row), flush=True)
+            if it % 2000 == 0: save3(model, os.path.join(out, "checkpoint_tmp.pt"), {"args": vars(a), "step": it})
         if last: break
     model.eval(); sha = save3(model, os.path.join(out, "checkpoint.pt"), {"args": vars(a)})
     json.dump({"name": a.name, "args": vars(a), "config": cfg.__dict__, "checkpoint_sha256": sha, "parameters": model.n_params(),
                "gradient_steps": it, "episodes_seen": it * a.batch, "phase2_started_at_step": switch, "wall_seconds": round(time.time() - t0, 1),
-               "world": "Dispatch-3, train split, 2-3 legs, same-gate legs", "supervision": "set-valued valid actions from the exact planner; value head: per-route count of reachable gate requirements (weight 0.5)"
+               "world": "Dispatch-3, train split, 2-3 legs, same-gate legs", "supervision": "set-valued valid actions from the exact planner; value head: per-route count of reachable gate requirements (weight 0.5); sweep head: the exact planner's value table at each leg (weight 1.0)"
                + ("; interchange training with counterfactual labels" if a.iit > 0 else ""), "torch": torch.__version__, "log": log},
               open(os.path.join(out, "manifest.json"), "w"), indent=1)
     print("saved", out, sha)

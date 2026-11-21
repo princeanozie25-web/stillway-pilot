@@ -227,6 +227,9 @@ class World3:
                 if k < 2: self.q[:, k] = torch.where(mk, v, self.q[:, k])
                 else: self.p[:, k - 2] = torch.where(mk, v, self.p[:, k - 2])
                 has[:, k] = mk & show
+            if s.get("noop_msg", 0) > 0:                       # an irrelevant edit: a field is re-sent with the value it already has
+                mn = act & (self._r(B) < s["noop_msg"]); fn = self._ri(NF, B)
+                has[ar[mn], fn[mn]] = True
             full = act & ((self._r(B) < s["full"]) | re)
             if script is not None and script.get("full_rows") is not None:
                 full = full | (script["full_rows"] & act)
@@ -268,6 +271,27 @@ class World3:
         first = C.T[self.cur.clamp(max=LMAX - 1)]                   # (B,16) route taken at the current leg
         best = torch.stack([sat.masked_fill(first != a, -1).max(1).values for a in (0, 1)], 1)
         return best
+
+    def dp_tables(self) -> torch.Tensor:
+        """(B, LMAX, 4): the exact planner's value table at each leg.  Entry [i, s] = the largest number of gate
+        requirements that can be met at the end if the carrier stands before leg i with gates in joint state
+        s (s = gate0 * 2 + gate1).  Used only as a training target for the backward sweep."""
+        B = self.B
+        g = torch.tensor([[0, 0], [0, 1], [1, 0], [1, 1]])                     # (4,2) joint states
+        V = ((self.q[:, None, :] > 0) & (g[None] == self.q[:, None, :] - 1)).sum(2)          # terminal (B,4)
+        out = torch.zeros(B, LMAX, 4, dtype=torch.long)
+        for i in range(LMAX - 1, -1, -1):
+            ex = (i < self.L)[:, None]
+            cand = []
+            for r in (0, 1):
+                e = self.eff[:, i, r][:, None].expand(B, 4); tgt = self.tg[:, i, r][:, None].expand(B, 4)
+                gs = g[None].expand(B, 4, 2)
+                cur_g = gs.gather(2, tgt[:, :, None]).squeeze(2)
+                ng = gs.scatter(2, tgt[:, :, None], EFF_T[e, cur_g][:, :, None])
+                cand.append(V.gather(1, ng[:, :, 0] * 2 + ng[:, :, 1]))
+            V = torch.where(ex, torch.maximum(cand[0], cand[1]), V)
+            out[:, i] = V
+        return out
 
     def valid_mask(self) -> torch.Tensor:
         kind, leg = self.slot(self.t)

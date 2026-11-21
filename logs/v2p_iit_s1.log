@@ -1,23 +1,30 @@
-{"step": 500, "phase": 1, "loss": 3.5418, "ema": 3.146, "commit": 0.0, "iit": 0.0, "sec": 75.4}
-{"step": 1000, "phase": 1, "loss": 2.9404, "ema": 2.7125, "commit": 0.0, "iit": 0.0, "sec": 142.9}
-{"step": 1500, "phase": 1, "loss": 2.6845, "ema": 2.3045, "commit": 0.0, "iit": 0.0, "sec": 199.2}
-{"step": 2000, "phase": 1, "loss": 2.4256, "ema": 2.243, "commit": 0.0, "iit": 0.0, "sec": 252.1}
-{"step": 2500, "phase": 1, "loss": 2.4932, "ema": 2.1865, "commit": 0.0, "iit": 0.0, "sec": 302.0}
-{"step": 3000, "phase": 1, "loss": 2.2946, "ema": 2.0646, "commit": 0.0, "iit": 0.0, "sec": 352.7}
-{"step": 3500, "phase": 1, "loss": 1.9917, "ema": 1.9238, "commit": 0.0, "iit": 0.0, "sec": 399.3}
-{"step": 4000, "phase": 1, "loss": 2.0596, "ema": 1.854, "commit": 0.0, "iit": 0.0, "sec": 446.0}
-{"step": 4500, "phase": 1, "loss": 1.9589, "ema": 1.7826, "commit": 0.0, "iit": 0.0, "sec": 484.2}
-{"step": 5000, "phase": 1, "loss": 1.9254, "ema": 1.7541, "commit": 0.0, "iit": 0.0, "sec": 526.3}
-{"step": 5500, "phase": 1, "loss": 1.8251, "ema": 1.669, "commit": 0.0, "iit": 0.0, "sec": 564.8}
-{"step": 6000, "phase": 1, "loss": 1.6434, "ema": 1.4928, "commit": 0.0, "iit": 0.0, "sec": 603.6}
-{"step": 6500, "phase": 1, "loss": 1.5339, "ema": 1.3806, "commit": 0.0, "iit": 0.0, "sec": 680.7}
-{"step": 7000, "phase": 1, "loss": 1.2849, "ema": 1.2411, "commit": 0.0, "iit": 0.0, "sec": 758.1}
-{"step": 7500, "phase": 1, "loss": 1.2417, "ema": 1.1099, "commit": 0.0, "iit": 0.0, "sec": 814.5}
-{"step": 8000, "phase": 1, "loss": 1.2156, "ema": 1.0411, "commit": 0.0, "iit": 0.0, "sec": 878.3}
-{"step": 8500, "phase": 1, "loss": 1.187, "ema": 1.0108, "commit": 0.0, "iit": 0.0, "sec": 948.8}
-{"step": 9000, "phase": 1, "loss": 1.1847, "ema": 0.9797, "commit": 0.0, "iit": 0.0, "sec": 1019.4}
-{"step": 9500, "phase": 1, "loss": 0.9651, "ema": 0.8831, "commit": 0.0, "iit": 0.0, "sec": 1089.1}
-{"step": 10000, "phase": 1, "loss": 0.9668, "ema": 0.8806, "commit": 0.0, "iit": 0.0, "sec": 1159.6}
-{"step": 10500, "phase": 1, "loss": 0.728, "ema": 0.5864, "commit": 0.0, "iit": 0.0, "sec": 1230.2}
-{"step": 11000, "phase": 1, "loss": 0.5048, "ema": 0.4705, "commit": 0.0, "iit": 0.0, "sec": 1300.7}
-{"step": 11500, "phase": 1, "loss": 0.4854, "ema": 0.4223, "commit": 0.0, "iit": 0.0, "sec": 1369.8}
+/Users/princ/Desktop/stillway-pilot/stillway2/train3.py:136: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  "iit": round(float(iit_loss), 4), "sec": round(time.time() - t0, 1)}
+{"step": 500, "phase": 1, "loss": 2.3402, "ema": 2.2057, "commit": 0.0, "iit": 4.741, "sec": 48.8, "train": 0.4126666784286499, "dev": 0.41600000858306885, "dev_plain": 0.39133334159851074}
+{"step": 1000, "phase": 1, "loss": 1.7935, "ema": 1.7083, "commit": 0.0, "iit": 2.0512, "sec": 89.3, "train": 0.5586666464805603, "dev": 0.5386666655540466, "dev_plain": 0.531333327293396}
+{"step": 1500, "phase": 1, "loss": 1.5478, "ema": 1.3827, "commit": 0.0, "iit": 0.9424, "sec": 150.6, "train": 0.5806666612625122, "dev": 0.5693333148956299, "dev_plain": 0.5706666707992554}
+{"step": 2000, "phase": 1, "loss": 0.9647, "ema": 1.0159, "commit": 0.0, "iit": 0.5846, "sec": 212.2, "train": 0.6600000262260437, "dev": 0.6333333253860474, "dev_plain": 0.659333348274231}
+{"step": 2500, "phase": 1, "loss": 0.7133, "ema": 0.7855, "commit": 0.0, "iit": 0.451, "sec": 274.0, "train": 0.6833333373069763, "dev": 0.6639999747276306, "dev_plain": 0.6840000152587891}
+{"step": 3000, "phase": 1, "loss": 0.6276, "ema": 0.7094, "commit": 0.0, "iit": 0.398, "sec": 335.4, "train": 0.7273333072662354, "dev": 0.7139999866485596, "dev_plain": 0.7386666536331177}
+{"step": 3500, "phase": 1, "loss": 0.2555, "ema": 0.3583, "commit": 0.0, "iit": 0.2583, "sec": 395.9, "train": 0.949999988079071, "dev": 0.9506666660308838, "dev_plain": 0.9700000286102295}
+{"step": 4000, "phase": 1, "loss": 0.1196, "ema": 0.0858, "commit": 0.0, "iit": 0.1402, "sec": 466.3, "train": 0.9953333139419556, "dev": 0.9919999837875366, "dev_plain": 0.9986666440963745}
+{"step": 4500, "phase": 1, "loss": 0.0085, "ema": 0.0564, "commit": 0.0, "iit": 0.0312, "sec": 548.9, "train": 0.9980000257492065, "dev": 0.9986666440963745, "dev_plain": 0.9973333477973938}
+{"step": 5000, "phase": 2, "loss": 2.3169, "ema": 2.0812, "commit": 2.2126, "iit": 0.5999, "sec": 634.6, "train": 0.6460000276565552, "dev": 0.6186666488647461, "dev_plain": 0.5986666679382324}
+{"step": 5500, "phase": 2, "loss": 0.9193, "ema": 0.7691, "commit": 7.3165, "iit": 17.5281, "sec": 746.7, "train": 0.8253333568572998, "dev": 0.831333339214325, "dev_plain": 0.8613333106040955}
+{"step": 6000, "phase": 2, "loss": 0.2331, "ema": 0.455, "commit": 4.8024, "iit": 1.9384, "sec": 857.0, "train": 0.9739999771118164, "dev": 0.9753333330154419, "dev_plain": 0.9893333315849304}
+{"step": 6500, "phase": 2, "loss": 0.0326, "ema": 0.1216, "commit": 0.7939, "iit": 0.0523, "sec": 968.4, "train": 0.9913333058357239, "dev": 0.9926666617393494, "dev_plain": 0.9959999918937683}
+{"step": 7000, "phase": 2, "loss": 0.0614, "ema": 0.0761, "commit": 0.4248, "iit": 0.0575, "sec": 1081.1, "train": 0.9953333139419556, "dev": 0.9959999918937683, "dev_plain": 0.9993333220481873}
+{"step": 7500, "phase": 2, "loss": 0.0492, "ema": 0.0353, "commit": 0.2275, "iit": 0.0266, "sec": 1192.2, "train": 0.9986666440963745, "dev": 0.9973333477973938, "dev_plain": 0.9980000257492065}
+{"step": 8000, "phase": 2, "loss": 0.0033, "ema": 0.0222, "commit": 0.1623, "iit": 0.0186, "sec": 1303.7, "train": 0.9993333220481873, "dev": 0.9993333220481873, "dev_plain": 1.0}
+{"step": 8500, "phase": 2, "loss": 0.0015, "ema": 0.0118, "commit": 0.1242, "iit": 0.0138, "sec": 1415.6, "train": 1.0, "dev": 0.9993333220481873, "dev_plain": 1.0}
+{"step": 9000, "phase": 2, "loss": 0.002, "ema": 0.015, "commit": 0.1199, "iit": 0.0131, "sec": 1526.6, "train": 1.0, "dev": 1.0, "dev_plain": 1.0}
+{"step": 9500, "phase": 2, "loss": 0.0461, "ema": 0.0118, "commit": 0.1165, "iit": 0.008, "sec": 1639.9, "train": 0.9980000257492065, "dev": 0.9993333220481873, "dev_plain": 0.9993333220481873}
+{"step": 10000, "phase": 2, "loss": 0.0013, "ema": 0.008, "commit": 0.0664, "iit": 0.049, "sec": 1758.5, "train": 1.0, "dev": 1.0, "dev_plain": 1.0}
+{"step": 10500, "phase": 2, "loss": 0.0004, "ema": 0.0037, "commit": 0.0306, "iit": 0.0029, "sec": 1878.0, "train": 1.0, "dev": 0.9993333220481873, "dev_plain": 1.0}
+{"step": 11000, "phase": 2, "loss": 0.0285, "ema": 0.0064, "commit": 0.0243, "iit": 0.0024, "sec": 2002.9, "train": 1.0, "dev": 0.9993333220481873, "dev_plain": 1.0}
+{"step": 11500, "phase": 2, "loss": 0.002, "ema": 0.1029, "commit": 0.0868, "iit": 0.0088, "sec": 2120.4, "train": 1.0, "dev": 0.9993333220481873, "dev_plain": 1.0}
+{"step": 12000, "phase": 2, "loss": 0.0003, "ema": 0.0011, "commit": 0.0275, "iit": 0.0017, "sec": 2239.9, "train": 1.0, "dev": 1.0, "dev_plain": 1.0}
+{"step": 12500, "phase": 2, "loss": 0.0003, "ema": 0.0049, "commit": 0.0179, "iit": 0.0016, "sec": 2359.0, "train": 1.0, "dev": 1.0, "dev_plain": 1.0}
+{"step": 12921, "phase": 2, "loss": 0.0001, "ema": 0.0008, "commit": 0.0124, "iit": 0.0007, "sec": 2459.4, "train": 1.0, "dev": 1.0, "dev_plain": 1.0}
+saved /Users/princ/Desktop/stillway-pilot/runs/v2p_iit_s1 4755dd79dc0aca5d4415406c5a21f92c720f50e57ec7846eb97eefcfad6c0653

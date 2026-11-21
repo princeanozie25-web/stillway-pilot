@@ -122,6 +122,7 @@ def run_edits(model: Core3, n: int, seed: int, spec: dict, method: str, kind: st
             donor[i] = c[torch.randint(0, len(c), (1,), generator=pg)] if len(c) else i
         donor_ids, donor_acts = ref["ids_trace"], ref["act_trace"]
     ids_trace, act_trace = [], {}
+    last_active = torch.zeros(n, dtype=torch.long)                 # the last slot each job really took part in
     plans = [plan] + ([plan2] if plan2 is not None else [])
     for t in range(w.T):
         # at most one edit lands on a job at a slot (the second edit is always at a later slot than the first)
@@ -152,9 +153,11 @@ def run_edits(model: Core3, n: int, seed: int, spec: dict, method: str, kind: st
             if method in ("restart", "original"): ids[rows] = -1
             elif method == "overwrite": ids[rows] = donor_ids[t - 1][donor[rows]]
             elif method == "editor":
+                if hasattr(editor, "set_rows"): editor.set_rows(rows.nonzero().squeeze(1), t, last_active[rows])
                 new, abst = editor(ids[rows], ft[rows], vt[rows], obs[rows])
                 abstained[rows] |= abst; ids[rows] = torch.where(abst[:, None], ids[rows], new)
         logits, new_ids = model.infer(ids, obs)
+        last_active = torch.where(act, torch.full((n,), t), last_active)
         if kind_t in (ROUTE, DELIVER):
             a = act_argmax(logits, kind_t)
             if method == "actioncopy":

@@ -53,6 +53,22 @@ def twin_states(model: Core3, n: int, seed: int, spec: dict = FIT_SPEC, kinds=("
     return {k: torch.cat(v) for k, v in out.items()}
 
 
+@torch.no_grad()
+def order_states(model: Core3, n: int, seed: int, spec: dict = FIT_SPEC) -> dict:
+    """Saved states of training-family jobs with the value of EVERY order field, taken at the first three
+    slots a job takes part in (the order is given at INIT whether or not the layout uses the field)."""
+    gen = torch.Generator().manual_seed(seed); w = World3(n, spec, gen); S = model.cfg.n_slots
+    ids = torch.full((n, S), -1); seen = torch.zeros(n, dtype=torch.long); out_i, out_v = [], []
+    for t in range(w.T):
+        obs, act = w.next_obs(); logits, new = model.infer(ids, obs); kind_t, _ = w.slot(t)
+        if kind_t in (ROUTE, DELIVER): w.apply(act_argmax(logits, kind_t), act)
+        ids = torch.where(act[:, None], new, ids); seen += act.long()
+        keep = act & (seen <= 3)
+        vals = torch.cat([w.q, w.p], 1)
+        if keep.any(): out_i.append(ids[keep]); out_v.append(vals[keep])
+    return {"ids": torch.cat(out_i), "vals": torch.cat(out_v)}
+
+
 class SlotWrite:
     name = "slot_write"
 
@@ -60,10 +76,8 @@ class SlotWrite:
         K = model.cfg.n_codes
         self.table = torch.full((NF, 3), -1); self.known = torch.zeros(NF, K, dtype=torch.bool); self.purity = torch.zeros(NF, 3)
         for f in range(NF):
-            m = data["field"] == f
             for v in range(3):
-                # states whose field f is known to hold value v: 'post' rows with that value, 'pre' rows with that old value
-                codes = torch.cat([data["post"][m & (data["value"] == v), f], data["pre"][m & (data["old"] == v), f]])
+                codes = data["ids"][data["vals"][:, f] == v, f]         # slot f of jobs whose field f holds value v
                 if len(codes) == 0: continue
                 cnt = torch.bincount(codes.clamp(min=0), minlength=K).float()
                 self.table[f, v] = int(cnt.argmax()); self.purity[f, v] = float(cnt.max() / cnt.sum())
