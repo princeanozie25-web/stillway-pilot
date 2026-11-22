@@ -90,6 +90,66 @@
    "regression_share": 24.07,
    "generation_seconds_per_correct_fix": 10.74
   },
+  "HB final patches, half strength": {
+   "all": 52.78,
+   "not repeats (G2+G3+G4)": 29.86,
+   "G1": 98.61,
+   "G2": 50.0,
+   "G3": 16.67,
+   "G4": 22.92,
+   "regression_share": 8.8,
+   "generation_seconds_per_correct_fix": 10.71
+  },
+  "HC experience, half strength": {
+   "all": 36.11,
+   "not repeats (G2+G3+G4)": 31.94,
+   "G1": 44.44,
+   "G2": 31.25,
+   "G3": 37.5,
+   "G4": 27.08,
+   "regression_share": 14.81,
+   "generation_seconds_per_correct_fix": 14.45
+  },
+  "HD half strength + bank": {
+   "all": 45.37,
+   "not repeats (G2+G3+G4)": 31.94,
+   "G1": 72.22,
+   "G2": 52.08,
+   "G3": 22.92,
+   "G4": 20.83,
+   "regression_share": 17.13,
+   "generation_seconds_per_correct_fix": 12.21
+  },
+  "HF half strength, no insert": {
+   "all": 41.2,
+   "not repeats (G2+G3+G4)": 38.19,
+   "G1": 47.22,
+   "G2": 39.58,
+   "G3": 45.83,
+   "G4": 29.17,
+   "regression_share": 13.89,
+   "generation_seconds_per_correct_fix": 12.32
+  },
+  "HQ quarter strength, no insert": {
+   "all": 32.41,
+   "not repeats (G2+G3+G4)": 36.11,
+   "G1": 25.0,
+   "G2": 27.08,
+   "G3": 33.33,
+   "G4": 47.92,
+   "regression_share": 4.63,
+   "generation_seconds_per_correct_fix": 15.72
+  },
+  "HT three-quarter strength, no insert": {
+   "all": 48.15,
+   "not repeats (G2+G3+G4)": 31.25,
+   "G1": 81.94,
+   "G2": 54.17,
+   "G3": 20.83,
+   "G4": 18.75,
+   "regression_share": 22.22,
+   "generation_seconds_per_correct_fix": 10.93
+  },
   "W wrong diagnostic": {
    "all": 48.61,
    "not repeats (G2+G3+G4)": 27.78,
@@ -1277,6 +1337,846 @@
    "better": 0,
    "same": 13,
    "worse": 3
+  },
+  "HF half strength, no insert minus A unchanged | all": {
+   "difference": 21.76,
+   "ci_repositories": [
+    12.96,
+    31.02
+   ],
+   "ci_families": [
+    8.82,
+    37.22
+   ],
+   "better": 28,
+   "same": 40,
+   "worse": 4
+  },
+  "HF half strength, no insert minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": 13.19,
+   "ci_repositories": [
+    4.86,
+    22.22
+   ],
+   "ci_families": [
+    -2.08,
+    31.25
+   ],
+   "better": 17,
+   "same": 27,
+   "worse": 4
+  },
+  "HF half strength, no insert minus A unchanged | G1": {
+   "difference": 38.89,
+   "ci_repositories": [
+    20.83,
+    56.94
+   ],
+   "ci_families": [
+    15.28,
+    63.89
+   ],
+   "better": 11,
+   "same": 13,
+   "worse": 0
+  },
+  "HF half strength, no insert minus A unchanged | G2": {
+   "difference": 14.58,
+   "ci_repositories": [
+    6.25,
+    25.0
+   ],
+   "ci_families": [
+    0.0,
+    31.25
+   ],
+   "better": 6,
+   "same": 10,
+   "worse": 0
+  },
+  "HF half strength, no insert minus A unchanged | G3": {
+   "difference": 20.83,
+   "ci_repositories": [
+    4.17,
+    39.58
+   ],
+   "ci_families": [
+    0.0,
+    62.5
+   ],
+   "better": 4,
+   "same": 12,
+   "worse": 0
+  },
+  "HF half strength, no insert minus A unchanged | G4": {
+   "difference": 4.17,
+   "ci_repositories": [
+    -10.42,
+    18.75
+   ],
+   "ci_families": [
+    -27.08,
+    27.08
+   ],
+   "better": 7,
+   "same": 5,
+   "worse": 4
+  },
+  "HC experience, half strength minus A unchanged | all": {
+   "difference": 16.67,
+   "ci_repositories": [
+    8.33,
+    25.46
+   ],
+   "ci_families": [
+    3.24,
+    29.9
+   ],
+   "better": 24,
+   "same": 44,
+   "worse": 4
+  },
+  "HC experience, half strength minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": 6.94,
+   "ci_repositories": [
+    -2.08,
+    15.97
+   ],
+   "ci_families": [
+    -7.64,
+    20.83
+   ],
+   "better": 11,
+   "same": 33,
+   "worse": 4
+  },
+  "HC experience, half strength minus A unchanged | G1": {
+   "difference": 36.11,
+   "ci_repositories": [
+    20.83,
+    52.78
+   ],
+   "ci_families": [
+    15.28,
+    58.33
+   ],
+   "better": 13,
+   "same": 11,
+   "worse": 0
+  },
+  "HC experience, half strength minus A unchanged | G2": {
+   "difference": 6.25,
+   "ci_repositories": [
+    0.0,
+    16.67
+   ],
+   "ci_families": [
+    0.0,
+    18.75
+   ],
+   "better": 2,
+   "same": 14,
+   "worse": 0
+  },
+  "HC experience, half strength minus A unchanged | G3": {
+   "difference": 12.5,
+   "ci_repositories": [
+    0.0,
+    25.0
+   ],
+   "ci_families": [
+    0.0,
+    37.5
+   ],
+   "better": 3,
+   "same": 13,
+   "worse": 0
+  },
+  "HC experience, half strength minus A unchanged | G4": {
+   "difference": 2.08,
+   "ci_repositories": [
+    -20.83,
+    22.92
+   ],
+   "ci_families": [
+    -37.5,
+    33.33
+   ],
+   "better": 6,
+   "same": 6,
+   "worse": 4
+  },
+  "HB final patches, half strength minus A unchanged | all": {
+   "difference": 33.33,
+   "ci_repositories": [
+    21.76,
+    45.37
+   ],
+   "ci_families": [
+    15.31,
+    54.3
+   ],
+   "better": 28,
+   "same": 38,
+   "worse": 6
+  },
+  "HB final patches, half strength minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": 4.86,
+   "ci_repositories": [
+    -3.47,
+    14.58
+   ],
+   "ci_families": [
+    -9.72,
+    25.69
+   ],
+   "better": 6,
+   "same": 36,
+   "worse": 6
+  },
+  "HB final patches, half strength minus A unchanged | G1": {
+   "difference": 90.28,
+   "ci_repositories": [
+    77.78,
+    100.0
+   ],
+   "ci_families": [
+    73.61,
+    100.0
+   ],
+   "better": 22,
+   "same": 2,
+   "worse": 0
+  },
+  "HB final patches, half strength minus A unchanged | G2": {
+   "difference": 25.0,
+   "ci_repositories": [
+    6.25,
+    50.0
+   ],
+   "ci_families": [
+    0.0,
+    75.0
+   ],
+   "better": 4,
+   "same": 12,
+   "worse": 0
+  },
+  "HB final patches, half strength minus A unchanged | G3": {
+   "difference": -8.33,
+   "ci_repositories": [
+    -20.83,
+    2.08
+   ],
+   "ci_families": [
+    -31.25,
+    6.25
+   ],
+   "better": 1,
+   "same": 11,
+   "worse": 4
+  },
+  "HB final patches, half strength minus A unchanged | G4": {
+   "difference": -2.08,
+   "ci_repositories": [
+    -8.33,
+    4.17
+   ],
+   "ci_families": [
+    -12.5,
+    6.25
+   ],
+   "better": 1,
+   "same": 13,
+   "worse": 2
+  },
+  "HD half strength + bank minus A unchanged | all": {
+   "difference": 25.93,
+   "ci_repositories": [
+    15.28,
+    36.59
+   ],
+   "ci_families": [
+    8.57,
+    44.09
+   ],
+   "better": 34,
+   "same": 31,
+   "worse": 7
+  },
+  "HD half strength + bank minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": 6.94,
+   "ci_repositories": [
+    -4.17,
+    18.06
+   ],
+   "ci_families": [
+    -13.19,
+    26.39
+   ],
+   "better": 14,
+   "same": 27,
+   "worse": 7
+  },
+  "HD half strength + bank minus A unchanged | G1": {
+   "difference": 63.89,
+   "ci_repositories": [
+    48.61,
+    77.78
+   ],
+   "ci_families": [
+    44.44,
+    81.98
+   ],
+   "better": 20,
+   "same": 4,
+   "worse": 0
+  },
+  "HD half strength + bank minus A unchanged | G2": {
+   "difference": 27.08,
+   "ci_repositories": [
+    10.42,
+    45.83
+   ],
+   "ci_families": [
+    4.17,
+    64.58
+   ],
+   "better": 6,
+   "same": 10,
+   "worse": 0
+  },
+  "HD half strength + bank minus A unchanged | G3": {
+   "difference": -2.08,
+   "ci_repositories": [
+    -10.42,
+    6.25
+   ],
+   "ci_families": [
+    -18.75,
+    12.5
+   ],
+   "better": 2,
+   "same": 11,
+   "worse": 3
+  },
+  "HD half strength + bank minus A unchanged | G4": {
+   "difference": -4.17,
+   "ci_repositories": [
+    -27.08,
+    16.67
+   ],
+   "ci_families": [
+    -50.0,
+    29.17
+   ],
+   "better": 6,
+   "same": 6,
+   "worse": 4
+  },
+  "HF half strength, no insert minus HB final patches, half strength | all": {
+   "difference": -11.57,
+   "ci_repositories": [
+    -22.69,
+    -0.93
+   ],
+   "ci_families": [
+    -30.65,
+    5.56
+   ],
+   "better": 16,
+   "same": 34,
+   "worse": 22
+  },
+  "HF half strength, no insert minus HB final patches, half strength | not repeats (G2+G3+G4)": {
+   "difference": 8.33,
+   "ci_repositories": [
+    -1.39,
+    18.06
+   ],
+   "ci_families": [
+    -9.72,
+    26.39
+   ],
+   "better": 16,
+   "same": 25,
+   "worse": 7
+  },
+  "HF half strength, no insert minus HB final patches, half strength | G1": {
+   "difference": -51.39,
+   "ci_repositories": [
+    -69.44,
+    -33.33
+   ],
+   "ci_families": [
+    -76.39,
+    -26.39
+   ],
+   "better": 0,
+   "same": 9,
+   "worse": 15
+  },
+  "HF half strength, no insert minus HB final patches, half strength | G2": {
+   "difference": -10.42,
+   "ci_repositories": [
+    -27.08,
+    4.17
+   ],
+   "ci_families": [
+    -43.75,
+    12.5
+   ],
+   "better": 2,
+   "same": 10,
+   "worse": 4
+  },
+  "HF half strength, no insert minus HB final patches, half strength | G3": {
+   "difference": 29.17,
+   "ci_repositories": [
+    12.5,
+    47.92
+   ],
+   "ci_families": [
+    0.0,
+    58.33
+   ],
+   "better": 8,
+   "same": 8,
+   "worse": 0
+  },
+  "HF half strength, no insert minus HB final patches, half strength | G4": {
+   "difference": 6.25,
+   "ci_repositories": [
+    -6.25,
+    18.75
+   ],
+   "ci_families": [
+    -14.58,
+    20.83
+   ],
+   "better": 6,
+   "same": 7,
+   "worse": 3
+  },
+  "HC experience, half strength minus HB final patches, half strength | all": {
+   "difference": -16.67,
+   "ci_repositories": [
+    -28.24,
+    -6.02
+   ],
+   "ci_families": [
+    -35.86,
+    -0.44
+   ],
+   "better": 13,
+   "same": 36,
+   "worse": 23
+  },
+  "HC experience, half strength minus HB final patches, half strength | not repeats (G2+G3+G4)": {
+   "difference": 2.08,
+   "ci_repositories": [
+    -9.03,
+    12.5
+   ],
+   "ci_families": [
+    -16.67,
+    19.44
+   ],
+   "better": 13,
+   "same": 28,
+   "worse": 7
+  },
+  "HC experience, half strength minus HB final patches, half strength | G1": {
+   "difference": -54.17,
+   "ci_repositories": [
+    -70.83,
+    -37.47
+   ],
+   "ci_families": [
+    -76.39,
+    -31.94
+   ],
+   "better": 0,
+   "same": 8,
+   "worse": 16
+  },
+  "HC experience, half strength minus HB final patches, half strength | G2": {
+   "difference": -18.75,
+   "ci_repositories": [
+    -37.5,
+    -4.17
+   ],
+   "ci_families": [
+    -56.25,
+    0.0
+   ],
+   "better": 0,
+   "same": 12,
+   "worse": 4
+  },
+  "HC experience, half strength minus HB final patches, half strength | G3": {
+   "difference": 20.83,
+   "ci_repositories": [
+    8.33,
+    33.33
+   ],
+   "ci_families": [
+    0.0,
+    41.67
+   ],
+   "better": 7,
+   "same": 9,
+   "worse": 0
+  },
+  "HC experience, half strength minus HB final patches, half strength | G4": {
+   "difference": 4.17,
+   "ci_repositories": [
+    -14.58,
+    20.83
+   ],
+   "ci_families": [
+    -25.0,
+    29.17
+   ],
+   "better": 6,
+   "same": 7,
+   "worse": 3
+  },
+  "HF half strength, no insert minus HD half strength + bank | all": {
+   "difference": -4.17,
+   "ci_repositories": [
+    -12.04,
+    3.7
+   ],
+   "ci_families": [
+    -17.13,
+    8.33
+   ],
+   "better": 14,
+   "same": 41,
+   "worse": 17
+  },
+  "HF half strength, no insert minus HD half strength + bank | not repeats (G2+G3+G4)": {
+   "difference": 6.25,
+   "ci_repositories": [
+    -2.78,
+    15.28
+   ],
+   "ci_families": [
+    -7.64,
+    21.53
+   ],
+   "better": 13,
+   "same": 30,
+   "worse": 5
+  },
+  "HF half strength, no insert minus HD half strength + bank | G1": {
+   "difference": -25.0,
+   "ci_repositories": [
+    -37.5,
+    -12.5
+   ],
+   "ci_families": [
+    -41.67,
+    -9.72
+   ],
+   "better": 1,
+   "same": 11,
+   "worse": 12
+  },
+  "HF half strength, no insert minus HD half strength + bank | G2": {
+   "difference": -12.5,
+   "ci_repositories": [
+    -27.08,
+    0.0
+   ],
+   "ci_families": [
+    -31.25,
+    4.17
+   ],
+   "better": 1,
+   "same": 11,
+   "worse": 4
+  },
+  "HF half strength, no insert minus HD half strength + bank | G3": {
+   "difference": 22.92,
+   "ci_repositories": [
+    10.42,
+    37.5
+   ],
+   "ci_families": [
+    0.0,
+    50.0
+   ],
+   "better": 7,
+   "same": 9,
+   "worse": 0
+  },
+  "HF half strength, no insert minus HD half strength + bank | G4": {
+   "difference": 8.33,
+   "ci_repositories": [
+    -6.25,
+    20.83
+   ],
+   "ci_families": [
+    -4.17,
+    25.0
+   ],
+   "better": 5,
+   "same": 10,
+   "worse": 1
+  },
+  "HF half strength, no insert minus F bank disabled | all": {
+   "difference": -7.41,
+   "ci_repositories": [
+    -18.98,
+    4.17
+   ],
+   "ci_families": [
+    -27.45,
+    11.4
+   ],
+   "better": 16,
+   "same": 33,
+   "worse": 23
+  },
+  "HF half strength, no insert minus F bank disabled | not repeats (G2+G3+G4)": {
+   "difference": 11.11,
+   "ci_repositories": [
+    -0.69,
+    23.61
+   ],
+   "ci_families": [
+    -10.42,
+    34.72
+   ],
+   "better": 16,
+   "same": 23,
+   "worse": 9
+  },
+  "HF half strength, no insert minus F bank disabled | G1": {
+   "difference": -44.44,
+   "ci_repositories": [
+    -62.5,
+    -27.78
+   ],
+   "ci_families": [
+    -69.44,
+    -20.83
+   ],
+   "better": 0,
+   "same": 10,
+   "worse": 14
+  },
+  "HF half strength, no insert minus F bank disabled | G2": {
+   "difference": -20.83,
+   "ci_repositories": [
+    -35.42,
+    -6.25
+   ],
+   "ci_families": [
+    -45.83,
+    4.17
+   ],
+   "better": 1,
+   "same": 8,
+   "worse": 7
+  },
+  "HF half strength, no insert minus F bank disabled | G3": {
+   "difference": 37.5,
+   "ci_repositories": [
+    16.67,
+    58.33
+   ],
+   "ci_families": [
+    0.0,
+    75.0
+   ],
+   "better": 7,
+   "same": 9,
+   "worse": 0
+  },
+  "HF half strength, no insert minus F bank disabled | G4": {
+   "difference": 16.67,
+   "ci_repositories": [
+    2.08,
+    31.25
+   ],
+   "ci_families": [
+    -6.25,
+    39.58
+   ],
+   "better": 8,
+   "same": 6,
+   "worse": 2
+  },
+  "HQ quarter strength, no insert minus A unchanged | all": {
+   "difference": 12.96,
+   "ci_repositories": [
+    6.48,
+    19.91
+   ],
+   "ci_families": [
+    4.17,
+    23.34
+   ],
+   "better": 14,
+   "same": 58,
+   "worse": 0
+  },
+  "HQ quarter strength, no insert minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": 11.11,
+   "ci_repositories": [
+    4.17,
+    18.75
+   ],
+   "ci_families": [
+    1.39,
+    22.92
+   ],
+   "better": 9,
+   "same": 39,
+   "worse": 0
+  },
+  "HQ quarter strength, no insert minus A unchanged | G1": {
+   "difference": 16.67,
+   "ci_repositories": [
+    4.17,
+    31.94
+   ],
+   "ci_families": [
+    0.0,
+    38.89
+   ],
+   "better": 5,
+   "same": 19,
+   "worse": 0
+  },
+  "HQ quarter strength, no insert minus A unchanged | G2": {
+   "difference": 2.08,
+   "ci_repositories": [
+    0.0,
+    6.25
+   ],
+   "ci_families": [
+    0.0,
+    6.25
+   ],
+   "better": 1,
+   "same": 15,
+   "worse": 0
+  },
+  "HQ quarter strength, no insert minus A unchanged | G3": {
+   "difference": 8.33,
+   "ci_repositories": [
+    0.0,
+    18.75
+   ],
+   "ci_families": [
+    0.0,
+    25.0
+   ],
+   "better": 3,
+   "same": 13,
+   "worse": 0
+  },
+  "HQ quarter strength, no insert minus A unchanged | G4": {
+   "difference": 22.92,
+   "ci_repositories": [
+    6.25,
+    41.67
+   ],
+   "ci_families": [
+    0.0,
+    45.83
+   ],
+   "better": 5,
+   "same": 11,
+   "worse": 0
+  },
+  "HT three-quarter strength, no insert minus A unchanged | all": {
+   "difference": 28.7,
+   "ci_repositories": [
+    15.74,
+    41.2
+   ],
+   "ci_families": [
+    6.76,
+    51.67
+   ],
+   "better": 36,
+   "same": 28,
+   "worse": 8
+  },
+  "HT three-quarter strength, no insert minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": 6.25,
+   "ci_repositories": [
+    -6.94,
+    20.14
+   ],
+   "ci_families": [
+    -19.46,
+    31.25
+   ],
+   "better": 15,
+   "same": 25,
+   "worse": 8
+  },
+  "HT three-quarter strength, no insert minus A unchanged | G1": {
+   "difference": 73.61,
+   "ci_repositories": [
+    56.94,
+    87.5
+   ],
+   "ci_families": [
+    51.39,
+    94.44
+   ],
+   "better": 21,
+   "same": 3,
+   "worse": 0
+  },
+  "HT three-quarter strength, no insert minus A unchanged | G2": {
+   "difference": 29.17,
+   "ci_repositories": [
+    10.42,
+    50.0
+   ],
+   "ci_families": [
+    0.0,
+    68.75
+   ],
+   "better": 6,
+   "same": 10,
+   "worse": 0
+  },
+  "HT three-quarter strength, no insert minus A unchanged | G3": {
+   "difference": -4.17,
+   "ci_repositories": [
+    -29.17,
+    20.83
+   ],
+   "ci_families": [
+    -56.25,
+    43.75
+   ],
+   "better": 4,
+   "same": 8,
+   "worse": 4
+  },
+  "HT three-quarter strength, no insert minus A unchanged | G4": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -29.17,
+    14.58
+   ],
+   "ci_families": [
+    -52.08,
+    25.0
+   ],
+   "better": 5,
+   "same": 7,
+   "worse": 4
   }
  },
  "rules": [
@@ -1389,6 +2289,60 @@
    "result": "FAIL"
   },
   {
+   "rule": "X1",
+   "text": "added after development: the half-strength student helps on unfamiliar repositories: HF minus A at least +10 points on repositories that are not repeats, interval above 0",
+   "difference": 13.19,
+   "ci_repositories": [
+    4.86,
+    22.22
+   ],
+   "ci_families": [
+    -2.08,
+    31.25
+   ],
+   "better_worse": [
+    17,
+    4
+   ],
+   "result": "PASS"
+  },
+  {
+   "rule": "X4",
+   "text": "added after development, picked from the dose curve: HQ (quarter strength) minus A at least +10 points on repositories that are not repeats, interval above 0",
+   "difference": 11.11,
+   "ci_repositories": [
+    4.17,
+    18.75
+   ],
+   "ci_families": [
+    1.39,
+    22.92
+   ],
+   "better_worse": [
+    9,
+    0
+   ],
+   "result": "PASS"
+  },
+  {
+   "rule": "X2",
+   "text": "added after development: at half strength, experience beats final patches: HF minus HB at least +5 points on repositories that are not repeats, interval above 0",
+   "difference": 8.33,
+   "ci_repositories": [
+    -1.39,
+    18.06
+   ],
+   "ci_families": [
+    -9.72,
+    26.39
+   ],
+   "better_worse": [
+    16,
+    7
+   ],
+   "result": "FAIL"
+  },
+  {
    "rule": "P2",
    "text": "no excess of regressions: share of repositories that are not repeats where D's patch breaks a hidden test is at most 10 points above A's",
    "D": 34.72,
@@ -1401,6 +2355,20 @@
    "D": 77.08,
    "A": 0.0,
    "result": "FAIL"
+  },
+  {
+   "rule": "X3",
+   "text": "added after development: share of repositories that are not repeats where the half-strength student's (HF) patch breaks a hidden test is at most 10 points above A's",
+   "D": 16.67,
+   "A": 2.08,
+   "result": "FAIL"
+  },
+  {
+   "rule": "X5",
+   "text": "added after development: the same for the quarter-strength student (HQ)",
+   "D": 5.56,
+   "A": 2.08,
+   "result": "PASS"
   }
  ],
  "verdict": "RECOGNITION RESULT: the gain is confined to repeats"

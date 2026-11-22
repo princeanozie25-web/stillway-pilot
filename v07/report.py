@@ -1,13 +1,14 @@
-"""Tables from graded records.   python v07/report.py GRADED_DIR OUT_PREFIX
+"""Tables from graded records.   python v07/report.py GRADED_DIR[,GRADED_DIR2,...] OUT_PREFIX
 Unit of analysis: the repository.  An arm's score on a repository is its mean first-patch success over seeds.
 Uncertainty: 10,000 bootstrap resamples of repositories, and of whole families (templates) of repositories."""
 import glob, json, os, sys
 import numpy as np
 gdir, prefix = sys.argv[1], sys.argv[2]; rng = np.random.default_rng(7)
-NAMES = {("base", "plain"): "A unchanged", ("base", "bank"): "AD unchanged + bank", ("base", "example"): "AE unchanged + nearest example", ("patches", "plain"): "B final patches", ("experience", "plain"): "C experience", ("experience_x", "bank"): "D experience + bank", ("experience_x", "example"): "E experience + nearest example",
+NAMES = {("patches@0.5", "plain"): "HB final patches, half strength", ("experience@0.5", "plain"): "HC experience, half strength", ("experience_x@0.5", "plain"): "HF half strength, no insert", ("experience_x@0.5", "bank"): "HD half strength + bank", ("experience_x@0.25", "plain"): "HQ quarter strength, no insert", ("experience_x@0.75", "plain"): "HT three-quarter strength, no insert",
+         ("base", "plain"): "A unchanged", ("base", "bank"): "AD unchanged + bank", ("base", "example"): "AE unchanged + nearest example", ("patches", "plain"): "B final patches", ("experience", "plain"): "C experience", ("experience_x", "bank"): "D experience + bank", ("experience_x", "example"): "E experience + nearest example",
          ("experience_x", "plain"): "F bank disabled", ("experience_x", "wrong"): "W wrong diagnostic", ("experience_x", "bank_v1"): "D1 bank, version 1 only"}
 runs = {}
-for f in sorted(glob.glob(os.path.join(gdir, "*.jsonl"))):
+for f in sorted(x for d in gdir.split(",") for x in glob.glob(os.path.join(d, "*.jsonl"))):
     rows = [json.loads(l) for l in open(f)]; key = (rows[0]["adapter"], rows[0]["insert_arm"]); runs.setdefault(NAMES.get(key, "/".join(key)), {})[rows[0]["seed"]] = {r["task"]: r for r in rows}
 def norm_group(g):
     """Group names as the holder of a set wrote them -> G1 renamed repeats, G2 changed preconditions, G3 lookalikes, G4 absent mechanisms; EX exact repeats (training repositories, which carry no group)."""
@@ -35,7 +36,9 @@ for a in arms:
 P += ["", "## Every seed", "", "| Arm | Seed | " + " | ".join(g for g, _ in GROUPS) + " |", "|---|---|" + "---|" * len(GROUPS)]
 for a in arms:
     for s in sorted(runs[a]): P.append(f"| {a} | {s} | " + " | ".join(f"{sum(runs[a][s][t]['outcome']['first_patch_correct'] for t in tasks if f(lab[t]))}/{sum(f(lab[t]) for t in tasks)}" for g, f in GROUPS) + " |")
-CONTRASTS = [("D experience + bank", "A unchanged"), ("C experience", "A unchanged"), ("B final patches", "A unchanged"), ("D experience + bank", "B final patches"), ("C experience", "B final patches"), ("D experience + bank", "F bank disabled"), ("D experience + bank", "E experience + nearest example"), ("E experience + nearest example", "F bank disabled"), ("W wrong diagnostic", "F bank disabled"), ("D experience + bank", "D1 bank, version 1 only"), ("D experience + bank", "W wrong diagnostic"), ("F bank disabled", "A unchanged"), ("AD unchanged + bank", "A unchanged"), ("AE unchanged + nearest example", "A unchanged")]
+CONTRASTS = [("D experience + bank", "A unchanged"), ("C experience", "A unchanged"), ("B final patches", "A unchanged"), ("D experience + bank", "B final patches"), ("C experience", "B final patches"), ("D experience + bank", "F bank disabled"), ("D experience + bank", "E experience + nearest example"), ("E experience + nearest example", "F bank disabled"), ("W wrong diagnostic", "F bank disabled"), ("D experience + bank", "D1 bank, version 1 only"), ("D experience + bank", "W wrong diagnostic"), ("F bank disabled", "A unchanged"), ("AD unchanged + bank", "A unchanged"), ("AE unchanged + nearest example", "A unchanged"),
+             ("HF half strength, no insert", "A unchanged"), ("HC experience, half strength", "A unchanged"), ("HB final patches, half strength", "A unchanged"), ("HD half strength + bank", "A unchanged"), ("HF half strength, no insert", "HB final patches, half strength"),
+             ("HC experience, half strength", "HB final patches, half strength"), ("HF half strength, no insert", "HD half strength + bank"), ("HF half strength, no insert", "F bank disabled"), ("HQ quarter strength, no insert", "A unchanged"), ("HT three-quarter strength, no insert", "A unchanged")]
 P += ["", "## Paired differences per repository (percentage points; 95% interval by resampling repositories, then by resampling whole families)", "", "| Contrast | Group | Difference | Repositories | Families | Better / same / worse |", "|---|---|---|---|---|---|"]
 for x, y in CONTRASTS:
     if x not in runs or y not in runs: continue
@@ -80,18 +83,24 @@ RULES = [rule("P1", "experience helps on unfamiliar repositories: D minus A at l
          rule("S2", "the bank adds to the same student: D minus F at least +5 points on repositories that are not repeats, and better on more repositories than worse", C("D experience + bank", "F bank disabled"), lambda c: c["difference"] >= 5 and c["better"] > c["worse"]),
          rule("S3", "the bank beats ordinary retrieval: D minus E at least +5 points on repositories that are not repeats, and better on more than worse", C("D experience + bank", "E experience + nearest example"), lambda c: c["difference"] >= 5 and c["better"] > c["worse"]),
          rule("S4", "the content of the diagnostic matters: D minus W (wrong diagnostic) at least +5 points on repositories that are not repeats, and better on more than worse", C("D experience + bank", "W wrong diagnostic"), lambda c: c["difference"] >= 5 and c["better"] > c["worse"])]
+RULES += [rule("X1", "added after development: the half-strength student helps on unfamiliar repositories: HF minus A at least +10 points on repositories that are not repeats, interval above 0", C("HF half strength, no insert", "A unchanged"), big(10)),
+          rule("X4", "added after development, picked from the dose curve: HQ (quarter strength) minus A at least +10 points on repositories that are not repeats, interval above 0", C("HQ quarter strength, no insert", "A unchanged"), big(10)),
+          rule("X2", "added after development: at half strength, experience beats final patches: HF minus HB at least +5 points on repositories that are not repeats, interval above 0", C("HF half strength, no insert", "HB final patches, half strength"), big(5))]
 if "D experience + bank" in runs and "A unchanged" in runs:
     rg = lambda a, g: 100 * float(np.mean([score(a, t, lambda r: len(r["outcome"]["regressions"]) > 0) for t in tasks if dict(GROUPS)[g](lab[t])])) if any(dict(GROUPS)[g](lab[t]) for t in tasks) else None
-    for name, g, text in [("P2", NR, "no excess of regressions: share of repositories that are not repeats where D's patch breaks a hidden test is at most 10 points above A's"), ("S5", "G3", "the old fix is not carried onto lookalikes: share of lookalikes where D's patch breaks a hidden test is at most 10 points above A's")]:
-        d, a = (rg("D experience + bank", g), rg("A unchanged", g)) if g in dict(GROUPS) else (None, None)
+    for name, g, text in [("P2", NR, "no excess of regressions: share of repositories that are not repeats where D's patch breaks a hidden test is at most 10 points above A's"), ("S5", "G3", "the old fix is not carried onto lookalikes: share of lookalikes where D's patch breaks a hidden test is at most 10 points above A's"),
+                          ("X3", NR, "added after development: share of repositories that are not repeats where the half-strength student's (HF) patch breaks a hidden test is at most 10 points above A's"),
+                          ("X5", NR, "added after development: the same for the quarter-strength student (HQ)")]:
+        arm = "HF half strength, no insert" if name == "X3" else "HQ quarter strength, no insert" if name == "X5" else "D experience + bank"
+        d, a = (rg(arm, g), rg("A unchanged", g)) if g in dict(GROUPS) and arm in runs else (None, None)
         RULES.append({"rule": name, "text": text, "D": None if d is None else round(d, 2), "A": None if a is None else round(a, 2), "result": "not computable" if d is None else "PASS" if d <= a + 10 else "FAIL"})
 res = {r["rule"]: r["result"] for r in RULES}
 verdict = ("PASS: experience helps on unfamiliar repositories" + ("" if res.get("P2") == "PASS" else ", WITH an excess of regressions (P2 fails)") if res.get("P1") == "PASS" else
            "RECOGNITION RESULT: the gain is confined to repeats" if res.get("R1") == "PASS" else "NULL: no gain on unfamiliar repositories or on repeats" if res.get("P1") == "FAIL" else "not computable")
 J["rules"] = RULES; J["verdict"] = verdict
 P += ["", "## Frozen rules (docs/v07_protocol.md)", "", "| Rule | What it says | Measured | Result |", "|---|---|---|---|"]
-for r in RULES: P.append(f"| {r['rule']} | {r['text']} | " + (f"{r['difference']:+.1f} ({r['ci_repositories'][0]:+.1f} to {r['ci_repositories'][1]:+.1f}); better {r['better_worse'][0]}, worse {r['better_worse'][1]}" if "difference" in r else f"D {r['D']}%, A {r['A']}%" if r.get("D") is not None else "") + f" | **{r['result']}** |")
-P += ["", f"**Verdict by the frozen rules: {verdict}**"]
+for r in RULES: P.append(f"| {r['rule']} | {r['text']} | " + (f"{r['difference']:+.1f} ({r['ci_repositories'][0]:+.1f} to {r['ci_repositories'][1]:+.1f}); better {r['better_worse'][0]}, worse {r['better_worse'][1]}" if "difference" in r else f"{'HF' if r['rule'] == 'X3' else 'HQ' if r['rule'] == 'X5' else 'D'} {r['D']}%, A {r['A']}%" if r.get("D") is not None else "") + f" | **{r['result']}** |")
+P += ["", f"**Verdict by the frozen rules: {verdict}**", "", "X1 to X5 were added after development results were seen (the reduced-strength students were found there). They are reported beside the verdict and do not change it."]
 P += ["", "## Per repository (first patch correct in how many seeds)", "", "| Repository | Group | Family | " + " | ".join(a.split(" ")[0] for a in arms) + " |", "|---|---|---|" + "---|" * len(arms)]
 for t in tasks: P.append(f"| {t} | {lab[t]['group']} | {lab[t]['template']} | " + " | ".join(f"{sum(runs[a][s][t]['outcome']['first_patch_correct'] for s in runs[a])}/{len(runs[a])}" for a in arms) + " |")
 open(prefix + "_tables.md", "w").write("\n".join(P) + "\n"); json.dump(J, open(prefix + "_summary.json", "w"), indent=1); print("\n".join(P[:P.index("## Per repository (first patch correct in how many seeds)")]))

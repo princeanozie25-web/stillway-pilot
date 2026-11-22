@@ -62,6 +62,6 @@ I suggest at least 20 repositories and 6 families per group. More families matte
 
 1. I lock the protocol, the adapters, the bank and the code by hash and send you the lock.
 2. You pack the final set and send `public/`. Hidden tests and `meta.json` stay with you.
-3. I run every arm and every seed once: `./v07/replay.sh PUBLIC HIDDEN OUT` runs and grades in one go if you run it yourself; otherwise I run `v07/run_arm.py` and send you the raw records with their hashes.
+3. I run every arm and every seed once: `./v07/replay.sh PUBLIC HIDDEN OUT` runs and grades in one go if you run it yourself; otherwise I run `v07/run_arm.py` and `v07/x_strength.py` (the same adapters at reduced strength) and send you the raw records with their hashes.
 4. You grade with `python v07/grade.py PUBLIC HIDDEN RECORDS`, which applies each first patch to a fresh savepoint and runs your hidden tests. The grader is the only script that reads hidden files.
 5. `python v07/report.py RECORDS/graded PREFIX` gives the tables and the frozen pass rule.

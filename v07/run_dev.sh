@@ -1,6 +1,6 @@
 #!/bin/zsh
 # The whole development experiment, resumable: every step skips work whose output file already exists.
-#   ./v07/run_dev.sh            (about 4 hours on an M1 Max)
+#   ./v07/run_dev.sh            (about 9 hours on an M1 Max)
 set -e
 cd "$(dirname "$0")/.."
 PY=${PY:-$HOME/Developer/voxcpm-venv/bin/python}; export PYTHONPATH=.
@@ -16,5 +16,13 @@ for seed in 1 2 3; do
   $PY v07/run_arm.py $PUB $OUT experience_x $seed plain bank example wrong bank_v1
   $PY v07/grade.py $PUB $HID $OUT
 done
-$PY v07/report.py $OUT/graded results/v07/dev
+# reduced strength (added after development): the three adapters at 0.5, the D-family adapter at 0.25 and 0.75
+X=results/v07/records/x_strength
+for seed in 1 2 3; do
+  $PY v07/x_strength.py $PUB $X experience_x $seed 0.5 plain bank; $PY v07/x_strength.py $PUB $X patches $seed 0.5 plain; $PY v07/x_strength.py $PUB $X experience $seed 0.5 plain
+  $PY v07/x_strength.py $PUB $X experience_x $seed 0.25 plain; $PY v07/x_strength.py $PUB $X experience_x $seed 0.75 plain
+done
+$PY v07/grade.py $PUB $HID $X
+$PY v07/report.py $OUT/graded,$X/graded results/v07/dev
+$PY v07/analyse_dev.py $OUT/graded results/v07/dev_extra.md; $PY v07/gate.py $OUT/graded results/v07/dev_gate.md; $PY v07/x_strength_report.py
 echo PIPELINE DONE

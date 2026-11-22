@@ -13,6 +13,12 @@ for seed in $SEEDS; do
   [ -f artifacts/v07/adapters/patches_s${seed}.safetensors ] && $PY v07/run_arm.py $PUB $OUT patches $seed plain
   [ -f artifacts/v07/adapters/experience_s${seed}.safetensors ] && $PY v07/run_arm.py $PUB $OUT experience $seed plain
   [ -f artifacts/v07/adapters/experience_x_s${seed}.safetensors ] && $PY v07/run_arm.py $PUB $OUT experience_x $seed plain bank example wrong bank_v1
+  # the same adapters at reduced strength (added after development; docs/v07_protocol.md section 8)
+  [ -f artifacts/v07/adapters/patches_s${seed}.safetensors ] && $PY v07/x_strength.py $PUB $OUT patches $seed 0.5 plain
+  [ -f artifacts/v07/adapters/experience_s${seed}.safetensors ] && $PY v07/x_strength.py $PUB $OUT experience $seed 0.5 plain
+  [ -f artifacts/v07/adapters/experience_x_s${seed}.safetensors ] && $PY v07/x_strength.py $PUB $OUT experience_x $seed 0.5 plain bank
+  [ -f artifacts/v07/adapters/experience_x_s${seed}.safetensors ] && $PY v07/x_strength.py $PUB $OUT experience_x $seed 0.25 plain
+  [ -f artifacts/v07/adapters/experience_x_s${seed}.safetensors ] && $PY v07/x_strength.py $PUB $OUT experience_x $seed 0.75 plain
 done
 $PY v07/grade.py $PUB $HID $OUT
 $PY v07/report.py $OUT/graded $OUT/replay

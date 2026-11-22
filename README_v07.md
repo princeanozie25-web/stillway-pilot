@@ -2,7 +2,7 @@
 
 A small local coding student, taught from executed bug-fixing experience, tested on whether that experience helps it fix unfamiliar repositories on the first patch. Report: `results/v07/REPORT_v07.md`. One-page memo: `docs/v07_memo.md`. Frozen protocol: `docs/v07_protocol.md`.
 
-**Status, 22 November 2026:** development is finished and everything is locked (`results/v07/LOCK_v07.json`). The final set is Codex's and has not been opened. Development verdict by the frozen rules: a recognition result (a large gain on repeats and on the same cause in a new setting; none on lookalikes or on mechanisms absent from training).
+**Status, 22 November 2026:** development is finished and everything is locked (`results/v07/LOCK_v07.json`). The final set is Codex's and has not been opened. Development verdict by the frozen rules: a recognition result (a large gain on repeats and on the same cause in a new setting; none on lookalikes or on mechanisms absent from training). Found after the plan was fixed: the same adapter at a quarter to a half of its strength does help on unfamiliar repositories; that is a separate rule on the final set.
 
 ## Before and after in one command
 
@@ -10,7 +10,9 @@ A small local coding student, taught from executed bug-fixing experience, tested
 ./v07/replay.sh
 ```
 
-Runs the unchanged student and every trained arm on the 72 development repositories, grades them against the hidden tests and writes the tables to `results/v07/replay/`. About 35 minutes per seed on an M1 Max (`SEEDS="1" ./v07/replay.sh` for one seed). On any other packed set: `./v07/replay.sh PUBLIC_DIR HIDDEN_DIR OUT_DIR`.
+Runs the unchanged student and every trained arm on the 72 development repositories, grades them against the hidden tests and writes the tables to `results/v07/replay/`. About 100 minutes per seed on an M1 Max (`SEEDS="1" ./v07/replay.sh` for one seed).
+
+Checked on 22 November with one seed on six repositories: all 16 arm runs completed, 94 of 96 episodes came out word for word as stored and all 96 graded outcomes matched. The two differences come from batching (six repositories in a batch instead of eight). On any other packed set: `./v07/replay.sh PUBLIC_DIR HIDDEN_DIR OUT_DIR`.
 
 ## What you need
 
@@ -38,6 +40,7 @@ Runs the unchanged student and every trained arm on the 72 development repositor
 | `v07/grade.py` | The grader. The only script that reads hidden files. |
 | `v07/report.py` | Tables, intervals and the frozen rules |
 | `v07/analyse_dev.py`, `gate.py`, `costs.py` | Extra tables, the familiarity gate, costs |
+| `v07/x_strength.py`, `x_strength_report.py` | Any adapter at reduced strength; the dose table |
 | `v07/pack_final.py` | Turns the final-set holder's folders into runner and grader files, checking each by execution |
 | `v07/run_dev.sh`, `run_exact.sh`, `replay.sh` | Whole development experiment; exact repeats; before and after |
 
@@ -52,7 +55,8 @@ Runs the unchanged student and every trained arm on the 72 development repositor
 | `results/v07/records/teacher_traces.jsonl` | The teacher's executed record for each training repository, failed and contradicted attempts included |
 | `results/v07/records/dev/` | Every episode of every arm and seed, ungraded; `graded/` adds the hidden outcome |
 | `results/v07/records/exact/` | The same on the 120 training repositories themselves (exact repeats, seed 1) |
-| `results/v07/dev_tables.md`, `dev_extra.md`, `dev_gate.md`, `exact_tables.md` | Tables |
+| `results/v07/records/x_strength/` | The adapters at 0.25, 0.5 and 0.75 strength on the development repositories |
+| `results/v07/dev_tables.md`, `dev_extra.md`, `dev_gate.md`, `exact_tables.md`, `x_strength.md` | Tables. `dev_tables.md` is built from the development and reduced-strength records together: `python v07/report.py results/v07/records/dev/graded,results/v07/records/x_strength/graded results/v07/dev` |
 | `results/v07/COSTS.json` | Teacher, execution and training costs, reported apart from the arms |
 
 Each episode record holds: repository id, accessible files, code hash, each proposed test with its prediction (written before execution), the observed output and whether it matched, the insert shown, the patch with its changed lines, generation and tool time, and after grading the outcome of every hidden and visible test.

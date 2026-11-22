@@ -33,6 +33,9 @@ Arms, all run on every final repository:
 | W wrong diagnostic | same adapter as D | a deliberately wrong diagnostic |
 | AD unchanged + bank | no adapter | the same diagnostic as D (added 22 November, before the lock) |
 | AE unchanged + nearest example | no adapter | the same example as E (added 22 November, before the lock) |
+| HB, HC, HF | the B, C and D-family adapters at half strength (every layer's adapter output multiplied by 0.5) | none (added 22 November after development results, before the lock; section 8) |
+| HD | the D-family adapter at half strength | the bank's diagnostic, as D |
+| HQ, HT | the D-family adapter at quarter and three-quarter strength | none (added 22 November after development results, before the lock; section 8) |
 
 B, C and the D-family adapter each have seeds 1, 2 and 3. All arms and all seeds are run once and reported.
 
@@ -66,6 +69,11 @@ Computed by `python v07/report.py GRADED_DIR PREFIX`, which prints them and writ
 | S3 | D minus E at least +5 points, better on more than worse (the bank against ordinary retrieval) |
 | S4 | D minus W at least +5 points, better on more than worse (the right diagnostic against a wrong one) |
 | S5 | The share of lookalikes where D's patch breaks a hidden test is at most 10 points above A's |
+| X1 (added after development) | HF minus A is at least +10 points on unfamiliar repositories, interval above zero |
+| X2 (added after development) | HF minus HB is at least +5 points on unfamiliar repositories, interval above zero (experience against final patches at the same strength) |
+| X3 (added after development) | The share of unfamiliar repositories where HF's patch breaks a hidden test is at most 10 points above A's |
+| X4 (added after development, picked from the dose curve) | HQ minus A is at least +10 points on unfamiliar repositories, interval above zero |
+| X5 (added after development) | The share of unfamiliar repositories where HQ's patch breaks a hidden test is at most 10 points above A's |
 
 **Verdict**
 
@@ -76,6 +84,8 @@ Computed by `python v07/report.py GRADED_DIR PREFIX`, which prints them and writ
 | Null | P1 and R1 both fail | A closeout with witnesses |
 
 S1 to S5 do not change the verdict. They say which part of the system the result belongs to.
+
+X1 to X5 do not change the verdict either. The reduced-strength students were found on development data after the primary comparison had been fixed, so they cannot take the primary's place. If P1 fails and X1 or X4 passes on the final set, the report says both in its first paragraph: the system as designed failed, and a variant found on development data passed a rule written before the final set was opened. Whether that earns the larger-model comparison is Prince's decision.
 
 ## 6. What the development data showed (72 repositories, 3 seeds)
 
@@ -90,12 +100,18 @@ Full tables: `results/v07/dev_tables.md`, `results/v07/dev_extra.md`.
 | AE unchanged + nearest example | 8.3% | 4.2% | 16.7% | 0.0% | 6.2% | 6.2% |
 | D experience + bank | 50.9% | 31.2% | 90.3% | 72.9% | 6.2% | 14.6% |
 | F bank disabled | 48.6% | 27.1% | 91.7% | 60.4% | 8.3% | 12.5% |
+| HF half strength, no insert | 41.2% | 38.2% | 47.2% | 39.6% | 45.8% | 29.2% |
+| HQ quarter strength, no insert | 32.4% | 36.1% | 25.0% | 27.1% | 33.3% | 47.9% |
+| HT three-quarter strength, no insert | 48.1% | 31.2% | 81.9% | 54.2% | 20.8% | 18.8% |
+| HC experience, half strength | 36.1% | 31.9% | 44.4% | 31.2% | 37.5% | 27.1% |
+| HB final patches, half strength | 52.8% | 29.9% | 98.6% | 50.0% | 16.7% | 22.9% |
+| HD half strength + bank | 45.4% | 31.9% | 72.2% | 52.1% | 22.9% | 20.8% |
 | E nearest example | 48.6% | 27.1% | 91.7% | 60.4% | 6.2% | 14.6% |
 | W wrong diagnostic | 48.6% | 27.8% | 90.3% | 62.5% | 6.2% | 14.6% |
 
 Exact repeats, inspected separately (the 120 training repositories themselves, seed 1, `results/v07/exact_tables.md`): A 12.5%, B 100%, C 93.3%, F 90.0%, D 86.7%.
 
-Rules on development data: P1 fails (+6.2 points, interval -10.4 to +22.9). R1 passes (+81.9). P2 fails (34.7% against 2.1%). S1 to S5 all fail. Development verdict: **recognition result**.
+Rules on development data: P1 fails (+6.2 points, interval -10.4 to +22.9). R1 passes (+81.9). P2 fails (34.7% against 2.1%). S1 to S5 all fail. Development verdict: **recognition result**. Added rules: X1 passes on development data (+13.2, interval +4.9 to +22.2; better on 17, worse on 4), X2 fails (+8.3, interval -1.4 to +18.1), X3 fails (16.7% against 2.1%), X4 passes (+11.1, interval +4.2 to +18.8; better on 9, worse on none), X5 passes (5.6% against 2.1%).
 
 ## 7. What I expect on the final set
 
@@ -105,13 +121,15 @@ Written so it can be held against me.
 - Changed preconditions: the trained students gain 25 to 50 points over the unchanged one.
 - Lookalikes and absent mechanisms: every trained student is below the unchanged one, and on lookalikes more than half of D's patches break a hidden test.
 - S2 and S4 fail: the bank adds less than 5 points, and a wrong diagnostic costs less than 5.
+- X1: a positive difference, smaller than on development data, because HF was the best of four half-strength arms and was picked after seeing them. My guess is +5 to +10 points, failing narrowly. X2 and X3 fail. X4: the same caution applies, more strongly, since quarter strength was picked from the curve: positive, about +5, failing. X5 passes. What I do expect to hold is the shape: unfamiliar success highest at quarter or half strength and lower at both ends, and regressions rising with strength.
 
 ## 8. Decisions already taken on development data
 
 1. **Sleep promotion is not tested.** The condition set in advance was D minus F of at least +5 points on unfamiliar repositories. Measured: +4.2 (interval -2.1 to +10.4; better on 10, worse on 5), and it comes from one seed of three (-1, +1, +6 repositories). There is no transferred procedure to promote.
 2. **A contradiction gate was considered and rejected** (hand the patch to the unchanged student when a prediction is contradicted): 75% of the bank arm's episodes contain a contradiction and 39.5% of those are still fixed, twice the unchanged student's rate.
 3. **A familiarity gate was built and does nothing** (`v07/gate.py`, `results/v07/dev_gate.md`): the trained student answers only when the repository resembles a training repository, with the threshold set from training data alone. 71 of 72 development repositories pass the gate, absent mechanisms included. It is not an arm on the final set.
-4. The prompt was changed twice on 12 training repositories before any development repository was run (`docs/v07_dev_plan.md`).
+4. **The adapters at reduced strength** (`v07/x_strength.py`, `results/v07/x_strength.md`). Tried once at 0.5 as a check on whether the losses on lookalikes and absent mechanisms are a matter of dose. They are: at half strength the D-family adapter with no insert fixes 38.2% of unfamiliar repositories (unchanged 25.0%, full strength 27.1%), and lookalikes rise to 45.8% instead of falling to 8.3%. It gives up half the gain on repeats (47% against 92%). The final-patch and experience adapters were then run at 0.5 as controls (unfamiliar: 29.9% and 31.9%), and the D-family adapter at 0.25 and 0.75 for the dose curve (36.1% and 31.2%). Quarter strength is better than the unchanged student on 14 development repositories and worse on none, with almost no added regressions. 0.5 was the first value tried, before any curve existed; 0.25 was picked from the curve. All six reduced-strength arms are run on the final set, with rules X1 to X5.
+5. The prompt was changed twice on 12 training repositories before any development repository was run (`docs/v07_dev_plan.md`).
 
 ## 9. Known mismatches between arms
 
@@ -124,6 +142,6 @@ Written so it can be held against me.
 
 1. I send the lock. Codex publishes group counts and confirms the unit of analysis.
 2. Codex packs the set (`python v07/pack_final.py SOURCE OUT`) and sends `OUT/public` only.
-3. I check the lock (`python v07/check_lock.py`), then run every arm and seed once (`v07/run_arm.py`), hash the raw records and commit them before grading.
+3. I check the lock (`python v07/check_lock.py`), then run every arm and seed once (`v07/run_arm.py`, and `v07/x_strength.py` for the reduced-strength arms), hash the raw records and commit them before grading.
 4. Codex grades (`python v07/grade.py PUBLIC HIDDEN RECORDS`) and runs `python v07/report.py RECORDS/graded PREFIX`. The grader is the only script that reads hidden files.
 5. Or, in one command on a machine that holds both halves: `./v07/replay.sh PUBLIC HIDDEN OUT`.
