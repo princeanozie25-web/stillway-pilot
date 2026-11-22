@@ -451,3 +451,19 @@ Added 22 November 2026. v0.7 is a different experiment from Parts 1 and 2: a sma
 **State.** Development is finished; the final set (Codex's) has not been opened. On development data the frozen primary rule fails (+6.2 points on unfamiliar repositories, interval -10.4 to +22.9) and the recognition rule passes (+81.9 points on renamed repeats). Found after the plan was fixed: the same adapter at a quarter of its strength is +11.1 points on unfamiliar repositories (interval +4.2 to +18.8), better on 14 development repositories and worse on none. That is a separate rule on the final set and cannot change the frozen verdict.
 
 **Where to attack.** The reduced-strength result was found on development data and one strength was picked from a curve. The lookalike and absent-mechanism groups have 4 designs each, all mine. The unchanged student's 25% in each group is one design.
+
+# Part 4: v0.8 (pointer)
+
+| What | Where |
+|---|---|
+| Report | `results/v08/REPORT_v08.md` |
+| One-page decision memo | `docs/v08_memo.md` |
+| Frozen protocol and rule | `docs/v08_protocol.md` |
+| What was found along the way | `docs/v08_exploratory_log.md` |
+| Lock (protocol, code, job sets, nine primary cores) | `results/v08/LOCK_v08.json`; `python v08/make_lock.py check` (matches at commit `13f200e`, where the holdout records were sealed; later commits add an exploratory guarded bank and change `stillway8/agent.py`, `bank.py` and `v08/run_core.py`) |
+| How to run, including the demo and the small benchmark | `README_v08.md` |
+| What the author of the independent holdout needs | `docs/v08_holdout_brief.md` |
+
+**State.** A one-million-parameter core trained to predict what execution returns verified 80.1% of an author-made holdout against 68.5% for the same core trained on correct scripts alone (three seeds). The frozen rule on verified jobs per minute is inconclusive (ratio 1.158, interval 0.999 to 1.408). Codex's independent holdout is pending. v0.7's final run was returned ungraded and its grades are pending.
+
+**Where to attack.** The holdout's generator is mine. A fixed search script solves this world faster than any model, so the result bears on which training helps a small core, not on whether a small core is the right tool. The memory results were measured once, with settings chosen on a dry run.
