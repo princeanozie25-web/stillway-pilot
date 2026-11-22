@@ -66,3 +66,16 @@ Fable, 22 November 2026. Things seen while building, in the order they were seen
 - **Seen on:** 72 development jobs, one run per arm (`results/v08/prompt_tables.md`).
 - **What:** verified jobs with the milestone-2 prompt 16, a one-sentence instruction 11, Codex's contract 15, mine 12. Mine caused 133 reverts. Only the milestone-2 prompt, which says in the job's own words when to ask, produced correct ASKs (4 of 11).
 - **Consequence:** the existing wording stays; the three texts are kept for a later comparison on fresh jobs with more than one run per arm.
+
+## E12. On Codex's set the project gain follows prediction and the table gain follows failure records
+
+- **Seen on:** Codex's revision-2 holdout, after the frozen report (`results/v08/codex_hold_rev2_core_tables.md`, `_obs3_tables.md`, `_expl_tables.md`).
+- **What:** against the baseline, in verified share: exec +18.8 project, +7.3 table; prediction only +15.4, +1.3; failure records only (seed 1) +0.8, +6.9; shuffled outcomes −5.6, +7.3. The baseline lost table jobs with several differences (80%) and later rules (77%); every arm trained on failure records was at 100% there, whether or not its outcomes were true.
+- **Caution:** read off the tables after grading; one seed for the failure-only arm; my own holdout had table jobs at 99% to 100% for every arm and could not show it. It corrects E7's summary: failure records add accuracy on table jobs here, prediction on project jobs.
+
+## E13. On Codex's set the guard acts as a wider search, not as a brake
+
+- **Seen on:** Codex's revision-2 holdout, memory arms, one run (`results/v08/codex_hold_rev2_extra.md`).
+- **What:** the plain bank verified 207 of 220 and the guarded bank 214. All 6 wrong jobs of the plain bank were handed on by the bank and lost by the core; none was a wrong reuse. The guard turned 5 of them and 2 abstentions into verified jobs by trying every promoted change, at 43 operations per job against 15.
+- **Caution:** the set has no job where two repairs pass the visible checks, so this says nothing about the trap result (E9). See Q3 of `docs/followup_queue.md`.
+

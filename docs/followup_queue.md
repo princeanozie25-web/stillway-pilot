@@ -19,6 +19,19 @@ Kept on branch `v0.8`. Ideas that came out of finished runs and need their own p
 - **What to compare.** Unchanged student; final-patch adapter and experience adapter at the same strengths (a quarter and a half at least), with matched training tokens this time (the bank-family adapter used in v0.7 saw 19% fewer). Three seeds each.
 - **What it needs.** Fresh design families from an independent author, since both the development families and Codex's 96 repositories are spent; the strength and the rule fixed before those are opened; intervals over whole families as the primary reading.
 
+## Added by Fable when Codex's revision-2 grades returned, 22 November 2026
+
+### Q3. Trap jobs from an independent author, for the bank
+
+- **Where it comes from.** Codex's revision-2 holdout confirmed the bank's gain on independent jobs (the same core from 74.1% to 94.1% verified) but contains no job where two repairs pass the visible checks, so the bank's wrong reuse (28 of 30 on my trap set) was neither confirmed nor contradicted.
+- **The question.** On independently written jobs, is the plain bank wrong where the checks under-determine the repair, and does the guard cost more than it saves?
+- **What to run.** About 40 project jobs where two one-line changes pass the visible checks and only the hidden test tells them apart, mixed with 40 ordinary ones; the plain and the guarded bank, once each. About 5 minutes of machine time, nothing to train. It is the first step of Q1 and uses the bank as it stands.
+
+### Q4. The frozen rule on a third set with more task families
+
+- **Where it comes from.** The rate rule gave inconclusive on my holdout (interval from 0.999) and a win on Codex's (from 1.005), with 21 task families each time.
+- **What it needs.** More families than one-line faults in eight slots can supply, so a wider fault table and a new generator, and therefore new training. Not cheap; listed so that the thin margin is not forgotten.
+
 ## Deferred earlier in v0.8 (recorded in the report and the exploratory log)
 
 | Item | Why it waits |
@@ -26,6 +39,6 @@ Kept on branch `v0.8`. Ideas that came out of finished runs and need their own p
 | Build the small core's training set as paired examples that encode the operating contract, the reuse clause included | Changes pretraining; needs fresh final jobs (`docs/v08_operating_contracts.md`) |
 | The three wordings of the runner's instructions on fresh jobs, more than one run per arm, and on a runner large enough to follow prose | One small development comparison could not separate them |
 | Three latent passes given the same number of examples as direct action | Three times the compute, about an hour of GPU |
-| Prediction-only training as the default recipe | A lead found after the primary result; to be judged on Codex's revision-2 holdout, where it was named before the run |
+| Prediction-only training as the default recipe | **Judged, 22 November:** on Codex's revision-2 holdout, where it was named before the run, it passed the frozen rule against the baseline (1.343 times the rate, interval 1.097 to 1.739; +8.9 points). It verified 4.5 points fewer jobs than the execution-aware core and 30% of its answers were wrong against 15%, so it is the faster option, not the default. Nothing further queued. |
 | 20% random audits while the v0.6 bank hunts an exception | Supported on one fresh family; to be carried into the next v0.6 protocol |
 | Propose, Probe, Compose from Harness² (two candidate scripts, keep the one whose checks pass) | Doubles executions; kept out so it could not be confused with the effects measured in v0.8 |

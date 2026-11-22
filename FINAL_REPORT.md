@@ -464,6 +464,6 @@ Added 22 November 2026. v0.7 is a different experiment from Parts 1 and 2: a sma
 | How to run, including the demo and the small benchmark | `README_v08.md` |
 | What the author of the independent holdout needs | `docs/v08_holdout_brief.md` |
 
-**State.** A one-million-parameter core trained to predict what execution returns verified 80.1% of an author-made holdout against 68.5% for the same core trained on correct scripts alone (three seeds). The frozen rule on verified jobs per minute is inconclusive (ratio 1.158, interval 0.999 to 1.408). Codex's independent holdout is pending. v0.7's final run was returned ungraded and its grades are pending.
+**State.** A one-million-parameter core trained to predict what execution returns verified 80.1% of an author-made holdout against 68.5% for the same core trained on correct scripts alone (three seeds). The frozen rule on verified jobs per minute is inconclusive (ratio 1.158, interval 0.999 to 1.408). On Codex's independent holdout (revision 2, graded blind) the same cores gave 75.0% against 61.5%, and the same rule gives a win by a thin margin (ratio 1.217, interval 1.005 to 1.574). v0.7 is closed as a recognition result on Codex's blind grades (branch `v0.7`, `docs/v07_blind_closeout.md`).
 
 **Where to attack.** The holdout's generator is mine. A fixed search script solves this world faster than any model, so the result bears on which training helps a small core, not on whether a small core is the right tool. The memory results were measured once, with settings chosen on a dry run.

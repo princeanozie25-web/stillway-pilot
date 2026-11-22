@@ -4,13 +4,13 @@ Fable, for Prince Anozie, 22 November 2026. Branch `v0.8`. One-page memo: `docs/
 
 **The question.** Does learning from actual executions, from the first training step, help a small model choose, check and reuse scripts cheaply enough to matter?
 
-**The short answer.** It helps the model get more jobs right. On this evidence it does not make a small model the cheap way to do these jobs.
+**The short answer.** It helps the model get more jobs right, and on Codex's independent holdout it passes the rule written beforehand for jobs per minute. On this evidence it still does not make a small model the cheap way to do these jobs.
 
-- A one-million-parameter core trained to predict what execution returns verified **80.1%** of fresh jobs against **68.5%** for the same core trained on goals, observations and correct scripts alone (three seeds each, same compute). A control that predicts shuffled outcomes scored 68.3%, so the gain comes from the real outcomes.
-- The frozen rule asked for 10% more verified jobs per minute. Measured: **16% more**, with an interval from 0.999 to 1.408 times the baseline. The interval touches 1, so the verdict by the rule written beforehand is **inconclusive**. With 67,494 training jobs instead of 372,802 the picture is the same (78.9% against 71.1%; also inconclusive).
-- Exploratory lead: a core trained only to predict observations, with no failure records, was the fastest (27% more verified jobs per minute than the baseline, interval 10% to 50%) at 75.5% verified.
-- A fixed search script of about 20 lines, with no model, verified 100% of the same jobs five times faster. The learnt core only costs less per verified job when one operation costs more than about 24 ms.
-- A bank of tested procedures, promoted from one day's verified experience and run as scripts, doubled verified project jobs the next day (36% to 74%) at no overnight cost. Overnight weight updates changed the next day's verified jobs by between −1 and +4 per 100 and each lost 6 to 11 jobs the core used to get right. The bank was wrong on 28 of 30 jobs where the visible checks could not tell two repairs apart, unless it was made to ask.
+- **Graded blind by Codex on 220 jobs Codex wrote (added last, section 6.6):** the execution-aware core verified **75.0%** against **61.5%** for the baseline (three seeds each) and **1.22 times** its verified jobs per minute, interval 1.005 to 1.574. By the frozen rule that is a **WIN**, by a thin margin. The shuffled-outcome control scored 61.8%. The limited-experience regime and the prediction-only core, both named before the run, pass the same rule.
+- On my own holdout the same cores gave **80.1%** against **68.5%** and 1.16 times the rate, interval 0.999 to 1.408: **inconclusive** by the same rule. The two holdouts agree on the size of the effect and fall either side of the line. With 67,494 training jobs instead of 372,802 the picture on my holdout is the same (78.9% against 71.1%; also inconclusive).
+- A core trained only to predict observations, with no failure records, was the fastest core on both holdouts (1.27 and 1.34 times the baseline's rate). It answers more often and is wrong more often than the execution-aware core.
+- A fixed search script of about 20 lines, with no model, verified 100% of both holdouts five times faster. The learnt core only costs less per verified job when one operation costs more than about 24 ms (32 ms on Codex's set).
+- A bank of tested procedures, promoted from one day's verified experience and run as scripts, doubled verified project jobs the next day (36% to 74%) at no overnight cost, and on Codex's jobs raised the same core from 74.1% to 94.1%. Overnight weight updates changed the next day's verified jobs by between −1 and +4 per 100 and each lost 6 to 11 jobs the core used to get right. The bank was wrong on 28 of 30 of my jobs where the visible checks could not tell two repairs apart, unless it was made to ask; Codex's set had no such jobs.
 
 ## Status of every result
 
@@ -20,7 +20,7 @@ Fable, for Prince Anozie, 22 November 2026. Branch `v0.8`. One-page memo: `docs/
 | v0.6 round 2 addendum by the holder's groups | **Frozen run, labels released** |
 | M2: single operations against composed scripts, Qwen 1.5B, 48 jobs | **Measured once**, development jobs, small sample |
 | M3: exec against base on the author-made holdout, three seeds | **Frozen** (protocol and nine cores locked before the run) |
-| M3 on Codex's independently authored holdout, revision 2 (220 jobs; the set for final inference) | **Run once and returned ungraded** (22 arm files, 4,840 records, sealed at commit `d219e97`); grades pending. Revision 1 was run and returned earlier (`a64d249`) and is not used. |
+| M3 on Codex's independently authored holdout, revision 2 (220 jobs; the set for final inference) | **Frozen, graded blind by Codex**: run once, sealed at `d219e97` before grading, grades received and committed as received at `f40318c`, report run once (section 6.6). Revision 1 was run and returned earlier (`a64d249`) and is not used. |
 | v0.7 blind closeout | **Closed**: recognition result by the frozen rules (branch `v0.7`, `docs/v07_blind_closeout.md`) |
 | Operating contracts for the instruction-following runner | **Development comparison**, 72 jobs, one run; the existing wording stays |
 | M3 limited-experience regime, three seeds | **Pre-specified secondary** |
@@ -350,15 +350,96 @@ The default seed was chosen so that the core solves both project sessions. Over 
 
 ### 6.4 Codex's independent holdout: run and returned (added later the same day)
 
-Codex's 220 jobs arrived after this report was first written. The public file's digest matched its commitment. A plan naming every arm and the scoring was committed before anything ran (`docs/v08_codex_holdout_plan.md`); 19 checkpoints, the bank, the code and the public file were locked; each arm and seed ran once on an idle machine; 22 raw files (4,840 records) were sealed with hashes, lock check and failure log at commit `a64d249` and returned (`results/v08/codex_hold/RETURN.md`). I do not hold the hidden half. No sandbox crash or timeout; 316 of 4,840 job runs ended at a limit. **Nothing in this report uses those records.** Codex then replaced the set: revision 2 (220 new jobs, none shared with revision 1) is the one for final inference. The same 22 runs were made on it once under a second lock that agrees with the first on every checkpoint, the bank and the code, and the records were sealed and returned at commit `d219e97` (`results/v08/codex_hold_rev2/RETURN.md`). When its grades return, `v08/report.py` is run once and the result is added here.
+Codex's 220 jobs arrived after this report was first written. The public file's digest matched its commitment. A plan naming every arm and the scoring was committed before anything ran (`docs/v08_codex_holdout_plan.md`); 19 checkpoints, the bank, the code and the public file were locked; each arm and seed ran once on an idle machine; 22 raw files (4,840 records) were sealed with hashes, lock check and failure log at commit `a64d249` and returned (`results/v08/codex_hold/RETURN.md`). I do not hold the hidden half. No sandbox crash or timeout; 316 of 4,840 job runs ended at a limit. **Nothing in this report uses those records.** Codex then replaced the set: revision 2 (220 new jobs, none shared with revision 1) is the one for final inference. The same 22 runs were made on it once under a second lock that agrees with the first on every checkpoint, the bank and the code, and the records were sealed and returned at commit `d219e97` (`results/v08/codex_hold_rev2/RETURN.md`). Its grades have returned: section 6.6.
 
 ### 6.5 Operating contracts for the instruction-following runner (development jobs only)
 
 Prince and Codex asked for the runner's instructions to be drafted and tested. Four wordings were compared on 72 development jobs with the pinned Qwen model in script mode: the milestone-2 prompt as it was, a one-sentence instruction, Codex's contract and mine. Verified jobs: 16, 11, 15, 12. By the rule fixed beforehand the existing wording stays. The guided arms cannot be told apart at this sample size; the bare instruction said DONE wrongly most often (31 against 19 to 23); only the existing prompt produced correct ASKs (4 of 11). The small core cannot read a prompt at all: for it, a contract has to be built into its training records, and `docs/v08_operating_contracts.md` sets out clause by clause what is already there and what is not.
 
+### 6.6 Codex's independent holdout, revision 2: graded (added when the grades returned)
+
+**What came back.** `Stillway_v08_rev2_blind_grades.zip` (SHA-256 `e5aeef76…5b55ee0e73`): 22 graded files, a hash list and Codex's own tables. Every graded record equals my sealed record field for field, with the grade and Codex's labels added (4,840 of 4,840). I committed the grades as received (`f40318c`) before computing anything, then ran `v08/report.py` once per folder as the plan of `docs/v08_codex_holdout_plan.md` says. My tables and Codex's agree to every digit. The lock still matches. I have never held the hidden half.
+
+Codex graded on Linux, with the project tests run in a temporary directory in place of the macOS sandbox; timings are the ones in my sealed records.
+
+**The primary cores** (220 jobs, three seeds each; `results/v08/codex_hold_rev2_core_tables.md`):
+
+| | Verified % | project / table | Answered % | Error among answers % | Verified jobs per minute | Operations per job |
+|---|---|---|---|---|---|---|
+| base | 61.5 | 35.0 / 92.7 | 78.6 | 34.9 | 137.5 | 9.9 |
+| **exec** | **75.0** | **53.8 / 100.0** | 75.8 | **15.4** | **167.4** | 10.5 |
+| shuf (control) | 61.8 | 29.4 / 100.0 | 72.0 | 24.6 | 123.4 | 12.0 |
+| search script, no model | 100.0 | 100.0 / 100.0 | 89.1 | 0.0 | 905.4 | 28.1 |
+
+**The frozen rule, exec against base, every job:**
+
+| | Rate ratio (95% interval over task families) | Verified share, points | Each seed: ratio / points |
+|---|---|---|---|
+| All jobs | **1.217 (1.005 to 1.574)** | **+13.5 (+5.9 to +22.4)** | 1.161 / +10.9; 1.346 / +16.4; 1.154 / +13.2 |
+| Project | 1.520 (1.045 to 2.490) | +18.8 (+7.5 to +30.1) | |
+| Table | 1.118 (0.991 to 1.346) | +7.3 (+0.0 to +16.3) | |
+
+**Verdict: WIN.** The ratio is at least 1.10, its interval is above 1.00, and neither domain is lower.
+
+How much weight it bears:
+
+- **The margin is thin.** The lower end of the interval is 1.005. On my own holdout it was 0.999 and the verdict was inconclusive. These are the same effect measured twice (1.16 and 1.22 times the rate; +11.6 and +13.5 points), not a weak result followed by a strong one.
+- **The verified share is the solid part.** Every seed, both holdouts, intervals clear of zero.
+- **The interval rests on 21 task families** (10 project, 13 table, two shared names).
+- **The control behaves as on my holdout.** shuf against base: rate 0.897 (0.759 to 1.048), +0.3 points. exec against shuf: 1.357 (1.094 to 1.738), +13.2 points (+4.2 to +22.7).
+
+**The other comparisons named before the run** (same rule, same set):
+
+| Comparison | Verified % | Rate ratio | Verified share, points | Verdict by the rule |
+|---|---|---|---|---|
+| Limited experience (67,494 training jobs): exec against base | 74.2 against 62.6 | 1.176 (1.030 to 1.404) | +11.7 (+5.6 to +18.5) | **WIN** |
+| Prediction only against base (the exploratory lead, named as the second question) | 70.5 against 61.5 | 1.343 (1.097 to 1.739) | +8.9 (+1.8 to +17.6); table +1.3 (−2.6 to +7.2) | **WIN** |
+| Primary without the 20 `later` jobs (second, labelled figure; 600 job runs per arm) | 77.5 against 63.8 | 1.230 (1.016 to 1.603) | +13.7 (+5.8 to +22.9) | WIN |
+| Limited experience without `later` | 76.7 against 65.7 | 1.146 (1.024 to 1.316) | +11.0 (+5.3 to +17.5) | WIN |
+| Prediction only without `later` | 72.5 against 63.8 | 1.328 (1.071 to 1.737) | +8.7 (+1.4 to +17.8) | WIN |
+
+Tables: `results/v08/codex_hold_rev2_{lim,obs3,expl,mem}_tables.md` and the `_nolater` versions.
+
+**Prediction only against execution-aware** (not a pre-named rule; descriptive): 70.5% against 75.0% verified, −4.5 points (−9.3 to −0.7); rate 1.103 times (1.016 to 1.186). It uses fewer operations (8.7 against 10.5 per job) and answers more often (85.6% against 75.8%), and nearly twice as many of its answers are wrong (29.7% against 15.4%). The same trade appeared on my holdout.
+
+**Where the gain comes from, by domain** (seed 1 arms beside the three-seed ones; descriptive):
+
+| Arm | Trained with true outcomes to predict | Trained on failure records | Project, points against base | Table, points against base |
+|---|---|---|---|---|
+| exec | yes | yes | +18.8 | +7.3 |
+| prediction only | yes | no | +15.4 | +1.3 |
+| failure records only (seed 1) | no | yes | +0.8 | +6.9 |
+| shuf | shuffled | yes | −5.6 | +7.3 |
+
+On Codex's set the project gain follows prediction of true outcomes, and the table gain follows the failure records, with or without true outcomes. On my holdout table jobs were at 99% to 100% for every arm, so the second half could not be seen there.
+
+**By group, project jobs** (verified %): familiar 32.5 base, 60.8 exec; altered precondition 23.3, 46.7; transitions never trained 5.3, 25.3; mechanisms never trained (`later`) 0, 0; unanswerable 88.9, 100. Project jobs were harder for every core on Codex's set than on mine (exec 53.8% against 62.5%).
+
+**The memory arms, measured once** (exec seed 1; `results/v08/codex_hold_rev2_extra.md`):
+
+| | Verified of 220 | Wrong | Asked on an answerable job | Operations per job | Verified jobs per minute |
+|---|---|---|---|---|---|
+| exec seed 1 alone | 163 (74.1%) | 40 | 12 | 10.6 | 166.2 |
+| + bank | 207 (94.1%) | 6 | 6 | 14.5 | 460.2 |
+| + guarded bank | 214 (97.3%) | 1 | 4 | 43.1 | 496.7 |
+
+- The bank was promoted from my day 1, before Codex's jobs existed. It repaired all 10 project jobs with mechanisms no core was trained on, where every core scored 0.
+- **No wrong reuse was seen here, and none could have been.** All 6 wrong jobs with the plain bank are jobs the bank handed on and the core then got wrong. Codex's set has no jobs where two repairs pass the visible checks, so the trap result of section 5.2 was neither confirmed nor contradicted.
+- The guarded bank's extra 7 jobs come from trying every promoted change, which is a wider search, at three times the operations.
+
+**Against the search script.** It verified 220 of 220 at 905 jobs per minute. On project jobs the execution-aware core costs less per verified job only above 32 ms per operation, the prediction-only core above 22 ms, the core with the plain bank above 4 ms, and the guarded bank never.
+
+**What changes in the conclusions.**
+
+- The claim for execution-aware training moves from "more jobs right" to "more jobs right and, by the frozen rule on an independent set, more per minute", with the thin margin stated beside it.
+- Prediction only is no longer an exploratory lead: it passed as a named question on jobs it had no part in choosing.
+- The bank result holds on independently written jobs. Its known weakness was not tested there.
+- Nothing changes about the search script: in this world it is still the cheap way.
+
 ## 7. Limits
 
-- **The holdout is author-made.** I wrote its generator. Codex's independently authored holdout is the stronger test and has not arrived.
+- **Two holdouts, one generator design.** I wrote the generator of the first. Codex wrote the jobs of the second independently, to the brief I supplied, so both live in the same world of one-line faults.
+- **The win on Codex's set is by a hair** (lower end of the interval 1.005, 21 families). A third set could land either side.
 - **A generated world.** Faults are one line from a fixed table; a job is well posed by construction; numbers stop at 63. Nothing here shows that the result carries to real repositories or real ledgers.
 - **Visible checks decide too much.** Where they pin the repair down, a search script wins; where they do not, everything that trusts them is wrong. The interesting region, expensive checks that under-determine, is only touched by the trap set.
 - **Timing depends on my runner.** A process per script costs about 45 ms. A runner that kept a process alive would change every jobs-per-minute figure, though not the verified shares.
@@ -377,5 +458,6 @@ Prince and Codex asked for the runner's instructions to be drafted and tested. F
 | Data provenance | `data/v08/MANIFEST.json`; job sets under `data/v08/` |
 | One-command smoke demo | `python v08/demo.py --smoke` |
 | Per-task outcomes and costs | `results/v08/hold/core/*.graded.jsonl`, `results/v08/m2/`, `results/v08/m4/day2/` |
+| Codex's holdout, graded | `results/v08/codex_hold_rev2/` (sealed records, Codex's graded files and tables), `results/v08/codex_hold_rev2_*_tables.md`, `codex_hold_rev2_extra.md` |
 | Tables | `results/v08/hold_core_tables.md`, `m2_tables.md`, `m4_tables.md`, `m4_audit_mix_*.md`, `hold_op_price.md` |
 | Decision memo | `docs/v08_memo.md` |

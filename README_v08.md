@@ -2,7 +2,7 @@
 
 A local script runner, a one-million-parameter core trained from random initialisation on executed experience, and a memory bank of tested procedures. Report: `results/v08/REPORT_v08.md`. One-page memo: `docs/v08_memo.md`. Frozen protocol: `docs/v08_protocol.md`. What was found along the way: `docs/v08_exploratory_log.md`.
 
-**Status, 22 November 2026.** On the author-made holdout the execution-aware core verifies 80.1% of jobs against 68.5% for the baseline (three seeds); the frozen rule on verified jobs per minute is inconclusive (1.158 times, interval 0.999 to 1.408). Codex's independent holdout is pending. Pinned at tag `v0.8-report`.
+**Status, 22 November 2026.** On the author-made holdout the execution-aware core verifies 80.1% of jobs against 68.5% for the baseline (three seeds); the frozen rule on verified jobs per minute is inconclusive (1.158 times, interval 0.999 to 1.408). On Codex's independent holdout, graded blind, it verifies 75.0% against 61.5% and the same rule gives a win by a thin margin (1.217 times, interval 1.005 to 1.574): `results/v08/REPORT_v08.md`, section 6.6. The report as first written is at tag `v0.8-report`; the graded result at tag `v0.8-holdout-graded`.
 
 ## One-command checks
 
