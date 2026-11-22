@@ -17,7 +17,7 @@ if sys.argv[1] == "prepare":
             g = D.train_group(dom, i); j = D.make(dom, "train", i, g, srcs); i += 1
             if j is None: continue
             p, h = j; rec = {"i": i - 1, "dom": dom}
-            for name, noise in (("clean", 0.0), ("noisy", 0.3)):
+            for name, noise in (("clean", 0.0), ("noisy", 0.3)):  # (identical records are stored twice here; the loader ignores a slipped record equal to the careful one)
                 s = Session(p, fast=True); steps, end = E.teach(s, p, h, random.Random(f"{D.MASTER}-{dom}-{i - 1}"), noise); s.close(); t, k = E.encode(p, steps, end); rec[name] = [" ".join(t), "".join(map(str, k))]
             P.append(p); H.append(h); R.append(rec)
     for name, rows in (("public", P), ("hidden", H), ("records", R)): open(f"data/v08/overfit/{name}.jsonl", "w").writelines(json.dumps(x, sort_keys=True) + "\n" for x in rows)

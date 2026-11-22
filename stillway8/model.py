@@ -79,7 +79,7 @@ def train(model, X, K, tokens, batch=64, lr=2e-3, seed=0, mode="base", device="c
     lens = (X != 0).sum(1); order = torch.argsort(lens, stable=True); N = X.shape[0]; W = min(window, N); used = 0; step = 0
     while used < tokens:
         for gr in opt.param_groups: gr["lr"] = lr * min(1.0, (step + 1) / warmup) * (0.5 * (1 + math.cos(math.pi * min(1.0, used / tokens))) * 0.95 + 0.05)
-        s0 = int(torch.randint(0, N - W + 1, (1,), generator=g)); i = order[s0 + torch.randint(0, W, (batch,), generator=g)]; L = int(lens[i].max()); x = X[i, :L].to(device); k = K[i, 1:L].to(device); y = x[:, 1:].clone()
+        s0 = int(torch.randint(0, N - W + 1, (1,), generator=g)); i = order[s0 + torch.randint(0, W, (batch,), generator=g)]; L = int(lens[i].max()); x = X[i, :L].to(device).long(); k = K[i, 1:L].to(device).long(); y = x[:, 1:].clone()
         act, obs = k == 1, k == 2
         if mode == "shuf":
             v = y[obs]; y[obs] = v[torch.randperm(v.numel(), generator=g).to(device)]

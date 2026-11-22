@@ -61,12 +61,19 @@
    "source_projects": 338
   }
  },
+ "experience_dataset": {
+  "experiences": 80,
+  "memory_candidates": 59,
+  "sha256": "8d92e62364082c958c15e64533493ed037249e1040a6bb048171a9e8b3119844",
+  "verified": 80,
+  "with_a_failure_and_recovery": 35
+ },
  "generators": {
   "stillway8/dataset.py": "93a64f64396297925972a07a60435f294f737dc893540dd496c0050c1b478151",
   "stillway8/expert.py": "d317c5e61466ff72f60168de495ebaea4ef4719b46f5354cd5f458d6d952f419",
   "stillway8/opsrt.py": "8300e4351abf4bace33dc515f65c17952731adba2b3fe1d6a4e10b9c15040f04",
   "stillway8/world.py": "9e059c04031eb8d05bccb8cb3c18f7debfb02a720063478aaea056b497cc1c51",
-  "v08/build_data.py": "f3444f0d9a61f06f1d1afe49d0fc025855c511c23b9cfce3c3cca8d67a4dfb21"
+  "v08/build_data.py": "f933b007134c8d97c0a5eebcb95ad91556dec1a3ba00f279076492f5ac6edd91"
  },
  "held_out_mechanisms": [
   "cmp:ge>lt",
@@ -97,24 +104,24 @@
  ],
  "master_seed": 20261122,
  "pretrain": {
-  "clean_ops": 602671,
-  "clean_s": 1012.0,
-  "clean_tokens": 6763048,
-  "clean_wrong_scripts": 0,
-  "jobs": 67494,
+  "clean_ops": 17153,
+  "clean_s": 8.7,
+  "clean_tokens": 192352,
+  "jobs": 1129,
   "noise": 0.3,
-  "noisy_ops": 658166,
-  "noisy_s": 1110.2,
-  "noisy_tokens": 7410633,
-  "noisy_wrong_scripts": 17204,
-  "records_sha256": "232cf3bf108332fcf153ed1b8ba5795e66f524a85fea2f52dae926ecdb10fe48",
+  "records_sha256": "30925a64ff1dcc01c00d4ede3d9bb23ab7363cf35b3b391f07b31fe4ff2839a0",
   "requested": {
-   "proj": 48000,
-   "tab": 24000
+   "proj": 800,
+   "tab": 400
   },
-  "skipped": 4506,
-  "wall_seconds": 284.4,
-  "workers": 8
+  "skipped": 71,
+  "slip_extra_s": 2.4,
+  "slip_ops": 4471,
+  "slip_records": 311,
+  "slip_tokens": 51641,
+  "slip_wrong_scripts": 325,
+  "wall_seconds": 8.8,
+  "workers": 2
  },
  "splits_percent_of_source_hash": {
   "day1": [

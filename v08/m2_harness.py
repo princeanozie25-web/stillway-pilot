@@ -74,7 +74,7 @@ def episode(student, mode, p):
             t = time.time(); texts, n_in, n_out = student.generate([student.tok.apply_chat_template(msgs, tokenize=False, add_generation_prompt=True)], LIMITS["new_tokens"], max_prompt_tokens=6000)
             model_s += time.time() - t; tin += n_in[0]; tout += n_out[0]; reply = texts[0].strip(); msgs.append({"role": "assistant", "content": reply})
             bare = re.sub(r"```(?:python)?", "", reply).strip()
-            if bare in ("DONE", "ASK"): end = bare; break
+            if bare.upper().rstrip(".") in ("DONE", "ASK"): end = bare.upper().rstrip("."); break
             if mode == "single":
                 line = one_call(reply)
                 if line is None: invalid += 1; steps.append({"script": [], "reply": reply[:300], "obs": ["BAD"], "s": 0, "error": "not one operation call"}); msgs.append({"role": "user", "content": "BAD: reply with exactly one operation call, or DONE, or ASK."}); continue

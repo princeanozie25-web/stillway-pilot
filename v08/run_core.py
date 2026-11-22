@@ -8,7 +8,9 @@ import torch
 from stillway8 import agent, expert as E
 
 ap = argparse.ArgumentParser(); ap.add_argument("ckpt"); ap.add_argument("public"); ap.add_argument("out"); ap.add_argument("--passes", type=int, default=0); ap.add_argument("--limit", type=int, default=0); ap.add_argument("--hidden", default=""); ap.add_argument("--bank", default=""); ap.add_argument("--predict", action="store_true")
+ap.add_argument("--jobs", default="")
 a = ap.parse_args(); torch.set_num_threads(1); jobs = [json.loads(l) for l in open(a.public)]; jobs = jobs[:a.limit] if a.limit else jobs
+if a.jobs: want = set(json.load(open(a.jobs))); jobs = [j for j in jobs if j["id"] in want]
 done = {json.loads(l)["id"] for l in open(a.out)} if os.path.exists(a.out) else set(); os.makedirs(os.path.dirname(a.out) or ".", exist_ok=True)
 if a.ckpt == "teacher":
     from stillway8.runner import Session

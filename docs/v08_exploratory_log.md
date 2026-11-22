@@ -1,0 +1,29 @@
+# v0.8 exploratory log
+
+Fable, 22 November 2026. Things seen while building, in the order they were seen. **Nothing here is a frozen result.** Each entry says what was looked at, on which data, and what was changed because of it. Frozen comparisons are in `docs/v08_protocol.md` and the report.
+
+## E1. The first task design did not let the evidence decide the repair
+
+- **Seen on:** the first development pilot (baseline core, 40 million tokens, development set, format of commit `f33fbd7`).
+- **What:** a failed check reported only its first disagreeing field, and a fault was required to be the only one-line change that satisfied *all* failing checks, while the careful procedure probes the data of the first failing check only. Counting the one-line changes consistent with what a runner could actually see: exactly one in 68 of 130 development fault jobs (52%), two or more in the rest.
+- **Changed (commit `522cc68`):** a failed check lists every field it asserts with expected and observed values, and a fault must be the only one-line change that satisfies the first failing check. After the change: exactly one consistent repair in 130 of 130. All job sets and records were rebuilt; the holdout brief became revision 2.
+- **Why it matters:** without this, a share of every arm's errors would have been unavoidable guesses, and recovery after a failed check would have looked more valuable than it is.
+
+## E2. With 67,000 training jobs the baseline memorises; the execution-aware core does not
+
+- **Seen on:** development set, one seed, 80 million tokens each, 67,494 training jobs (about twelve passes), final format.
+- **What:** training loss on actions fell to about 0.005 for the baseline while it verified 43.5% of development project jobs (familiar faults 38%, held-out transitions 5%). The execution-aware core, same budget, verified 60.0% (familiar 68%, held-out transitions 23%); tables 95.3% against 100%. Difference on projects +16.5 points (family-clustered interval +3.9 to +26.0).
+- **Caution:** one seed. The timing columns of that comparison are not usable (the second evaluation ran beside a data build).
+- **Changed:** the training set was enlarged to about 570,000 distinct jobs so that each is read about once at the same compute. Both regimes are carried into the protocol: abundant experience as the primary comparison (the baseline at its best), limited experience (the first 48,000 project and 24,000 table jobs) as a second, separately reported comparison.
+
+## E3. In this world a fixed search script is faster than any stepwise procedure
+
+- **Seen on:** fixture set (80 jobs), no model involved.
+- **What:** one script that tries every one-line change until both visible checks pass verifies 80 of 80 in 0.10 s per project job using 49 operations; the teacher's careful stepwise procedure verifies 80 of 80 in 0.35 s using 11 operations in 7 scripts. Wall time here is dominated by starting a sandboxed process per script (about 45 ms), not by the operations inside it.
+- **Consequence:** verified jobs per minute rewards fewer scripts; operations per job is reported beside it everywhere, and the search script is kept as a no-model reference in every table. It cannot be right where visible checks under-determine the repair (see the traps of milestone 4).
+
+## E4. The interim dips of v0.6 round two are all in one level, and they are over-extension
+
+- **Seen on:** the locked raw output of Codex's second hidden family, after the holder released the group labels.
+- **What:** every policy-seed-budget cell below the old rule after recognition is one where the bank was using its `amend` level. With every audit sent next to known exceptions, an unaudited case next to them sees more audited exceptions than audited agreements and is flipped: on the 200-case local amendments the learner changed 470 to 751 answers from the table at 128 to 256 audits.
+- **Consequence:** this is the mechanism the audit-mixing test of milestone 4 addresses (`v08/m4_audit_mix.py`).

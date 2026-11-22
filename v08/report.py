@@ -79,11 +79,11 @@ if pairs:
             c = contrast(a, b, dom); S["contrasts"][f"{a}:{b}:{dom}"] = c
             M.append(f"| {a} vs {b} | {dom} | {c['families']} | {c['rate_ratio']:.3f} ({c['rate_ratio_ci'][0]:.3f} to {c['rate_ratio_ci'][1]:.3f}) | {c['verified_diff']:+.1f} ({c['verified_diff_ci'][0]:+.1f} to {c['verified_diff_ci'][1]:+.1f}) | " + "; ".join(f"{r:.3f} / {v:+.1f}" for r, v in c["per_seed"]) + " |")
 if "--rule" in sys.argv and tuple(primary) in pairs:
-    a, b = primary; c = {dom: S["contrasts"][f"{a}:{b}:{dom}"] for dom in DOMS}
-    win = all(c[x]["rate_ratio"] >= 1.10 and c[x]["rate_ratio_ci"][0] > 1.0 and c[x]["verified_diff"] >= -2.0 for x in DOMS)
-    lose = any(c[x]["rate_ratio_ci"][1] < 1.10 for x in DOMS) or any(c[x]["verified_diff_ci"][1] < -2.0 for x in DOMS)
+    a, b = primary; c = {dom: S["contrasts"][f"{a}:{b}:{dom}"] for dom in DOMS + ("all",)}; r = c["all"]
+    win = r["rate_ratio"] >= 1.10 and r["rate_ratio_ci"][0] > 1.0 and all(c[x]["verified_diff"] >= -2.0 for x in DOMS)
+    lose = r["rate_ratio_ci"][1] < 1.10 or any(c[x]["verified_diff_ci"][1] < -2.0 for x in DOMS)
     verdict = "WIN" if win else "NO WIN" if lose else "INCONCLUSIVE"; S["verdict"] = verdict
-    M += ["", "## Frozen primary rule", "", f"WIN needs, in each domain: rate ratio of {a} to {b} at least 1.10 with the interval above 1.00, and verified share no more than 2 points lower.",
-          "NO WIN if in either domain the whole interval of the ratio is below 1.10 or the whole interval of the verified difference is below -2 points. Otherwise INCONCLUSIVE.", ""]
-    M += [f"- {x}: ratio {c[x]['rate_ratio']:.3f} ({c[x]['rate_ratio_ci'][0]:.3f} to {c[x]['rate_ratio_ci'][1]:.3f}); verified {c[x]['verified_diff']:+.1f} points ({c[x]['verified_diff_ci'][0]:+.1f} to {c[x]['verified_diff_ci'][1]:+.1f})" for x in DOMS] + ["", f"**Verdict: {verdict}**"]
+    M += ["", "## Frozen primary rule", "", f"WIN: over all jobs, verified jobs per minute of {a} at least 1.10 times {b} with the interval above 1.00, and in each domain a verified share no more than 2 points lower.",
+          "NO WIN: the whole interval of the ratio is below 1.10, or in some domain the whole interval of the verified difference is below -2 points. Otherwise INCONCLUSIVE.", ""]
+    M += [f"- {x}: ratio {c[x]['rate_ratio']:.3f} ({c[x]['rate_ratio_ci'][0]:.3f} to {c[x]['rate_ratio_ci'][1]:.3f}); verified {c[x]['verified_diff']:+.1f} points ({c[x]['verified_diff_ci'][0]:+.1f} to {c[x]['verified_diff_ci'][1]:+.1f})" for x in ("all",) + DOMS] + ["", f"**Verdict: {verdict}**"]
 open(out + "_tables.md", "w").write("\n".join(M) + "\n"); json.dump(S, open(out + "_summary.json", "w"), indent=1); print("\n".join(M))

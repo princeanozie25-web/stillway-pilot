@@ -1,10 +1,12 @@
-"""Build the v0.8 data.   python v08/build_data.py eval | pretrain N_PROJ N_TAB [WORKERS]
+"""Build the v0.8 data.   python v08/build_data.py eval | experiences | pretrain N_PROJ N_TAB [WORKERS]
 
 eval      writes data/v08/<split>/public.jsonl and hidden.jsonl for dev, hold and fixture; every job is worked by the
           teacher through the runner and its final state graded (must verify), and the untouched job graded (must not,
           unless leaving it alone is the answer).
-pretrain  writes data/v08/pretrain/records.jsonl: for each training job the teacher's careful record and a second record
-          with slips and recoveries (noise 0.3), both from actual executions, plus what generating each cost.
+pretrain  writes data/v08/pretrain/records.jsonl: for each training job the teacher's careful record and, when the
+          teacher slipped (noise 0.3 at each repair decision), a second record with the wrong action, the failed check
+          and the recovery; all from actual executions.  The cost of the careful records (clean_*) and the extra cost of
+          the slipped ones (slip_*) are logged apart.
 Writes data/v08/MANIFEST.json with hashes of generators, splits and outputs."""
 import collections, hashlib, json, os, random, sys, time
 sys.path.insert(0, ".")
@@ -46,9 +48,11 @@ def work(arg):
         group = D.train_group(dom, i); j = D.make(dom, "train", i, group, srcs)
         if j is None: cost["skipped"] += 1; continue
         p, h = j; rec = {"i": i, "dom": dom, "group": group, "family": h["family"], "mech": h["mech"]}
-        for name, noise in (("clean", 0.0), ("noisy", NOISE)):
-            t = time.time(); s = Session(p, fast=True); steps, end = E.teach(s, p, h, random.Random(f"{D.MASTER}-{dom}-{i}"), noise); toks, kinds = E.encode(p, steps, end); ops = s.ops(); s.close()
-            cost[name + "_s"] += time.time() - t; cost[name + "_ops"] += ops; cost[name + "_tokens"] += len(toks); cost[name + "_wrong_scripts"] += sum(not x["ok"] for x in steps)
+        for name, noise in (("noisy", NOISE), ("clean", 0.0)):      # the careful record is the slipped one when the teacher did not slip
+            if name == "clean" and not slips: rec["clean"] = rec["noisy"]; rec["noisy"] = None; cost["clean_ops"] += ops; cost["clean_tokens"] += len(toks); cost["clean_s"] += dt; continue
+            t = time.time(); s = Session(p, fast=True); steps, end = E.teach(s, p, h, random.Random(f"{D.MASTER}-{dom}-{i}"), noise); toks, kinds = E.encode(p, steps, end); ops = s.ops(); s.close(); slips = sum(not x["ok"] for x in steps); dt = time.time() - t
+            if name == "noisy" and slips: cost["slip_extra_s"] += dt; cost["slip_ops"] += ops; cost["slip_tokens"] += len(toks); cost["slip_wrong_scripts"] += slips; cost["slip_records"] += 1
+            elif name == "clean": cost["clean_s"] += dt; cost["clean_ops"] += ops; cost["clean_tokens"] += len(toks)
             rec[name] = [" ".join(toks), "".join(map(str, kinds))]
         out.append(json.dumps(rec)); cost["jobs"] += 1
     return out, dict(cost)
@@ -56,7 +60,7 @@ def work(arg):
 
 def build_pretrain(n_proj, n_tab, workers):
     import multiprocessing as mp
-    t0 = time.time(); os.makedirs(f"{OUT}/pretrain", exist_ok=True); chunks = [(d, a, min(a + 500, n)) for d, n in (("proj", n_proj), ("tab", n_tab)) for a in range(0, n, 500)]; tot = collections.Counter()
+    t0 = time.time(); os.makedirs(f"{OUT}/pretrain", exist_ok=True); chunks = [(d, a, min(a + 1000, n)) for d, n in (("proj", n_proj), ("tab", n_tab)) for a in range(0, n, 1000)]; tot = collections.Counter()
     with mp.Pool(workers) as pool, open(f"{OUT}/pretrain/records.jsonl", "w") as f:
         for out, cost in pool.imap(work, chunks):
             f.writelines(l + "\n" for l in out); tot.update(cost)
@@ -65,6 +69,22 @@ def build_pretrain(n_proj, n_tab, workers):
     print(info); manifest({"pretrain": info})
 
 
+def build_experiences():
+    """Full experience records (stillway8/experience.py) for the fixture set: the teacher with slips, through the sandboxed
+    loop, graded.  Failures and recoveries are kept.  The small core's own experiences, with its predictions, are written
+    by milestone 4 (results/v08/m4/day1_experiences.jsonl)."""
+    from stillway8 import agent, experience as X
+    pub = [json.loads(l) for l in open(f"{OUT}/fixture/public.jsonl")]; hid = {h["id"]: h for h in map(json.loads, open(f"{OUT}/fixture/hidden.jsonl"))}; os.makedirs(f"{OUT}/experience", exist_ok=True); n = collections.Counter()
+    with open(f"{OUT}/experience/teacher_fixture.jsonl", "w") as f:
+        for p in pub:
+            s = Session(p, fast=True); steps, end = E.teach(s, p, hid[p["id"]], random.Random(f"{D.MASTER}-x-{p['id']}"), 0.5); s.close(); q = [" ; ".join(x["script"]).split() + ["EXEC"] for x in steps] + [[end]]
+            r = agent.episode(None, p, propose=lambda toks: q.pop(0)); v = grade(p, hid[p["id"]], agent.final_files(p, r), r["end"]); e = X.build(p, r, v, "teacher with slips"); e["group"] = hid[p["id"]]["group"]
+            for st, src in zip(e["steps"], steps): st["slip"] = not src["ok"]
+            f.write(json.dumps(e, sort_keys=True) + "\n"); n[v["outcome"]] += 1; n["with_a_failure_and_recovery"] += any(not x["ok"] for x in steps); n["memory_candidates"] += e["memory_candidate"] is not None
+    info = {"experiences": len(pub), **n, "sha256": sha(f"{OUT}/experience/teacher_fixture.jsonl")}; print(info); manifest({"experience_dataset": info})
+
+
 if __name__ == "__main__":
-    if sys.argv[1] == "eval": build_eval()
+    if sys.argv[1] == "experiences": build_experiences()
+    elif sys.argv[1] == "eval": build_eval()
     else: build_pretrain(int(sys.argv[2]), int(sys.argv[3]), int(sys.argv[4]) if len(sys.argv) > 4 else 6)
