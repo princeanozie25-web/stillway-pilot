@@ -80,3 +80,13 @@ No change to the bank, its gate, the guard or the core after the set is seen. No
 - One core seed and one bank, the ones measured before.
 - The guard can only ask or commit. It cannot look for evidence that separates two repairs; that is Q1.
 - The world is the same one-line-fault world as before. "Equal" means equal on 3,000 random inputs inside its limits.
+
+## 9. The set arrived (added 22 November, before it was run)
+
+- **What arrived.** `Stillway_v08_trap_public.zip` (SHA-256 `6180853b…9262d7a7`): `public.jsonl`, SHA-256 `c89a389026e6250670aa53298ecdb8032bab6fb5efd29ea1d9464e4574350814`, equal to the digest in Codex's handoff note; Codex's commitment to the hidden half `0553c86cdaa1eb714bd19f35be65b48bfe0338e895a0be481bb055d5b00ef665`. I do not hold the hidden half.
+- **Format check from the public half alone.** 137 project jobs, 137 unique ids, each id equal to the hash of its files, every job inside the limits, six modules per project, no content shared with any earlier set of mine or Codex's (0 of 2,754).
+- **Codex's note on composition** (`data/v08/codex_trap/HANDOFF.txt`): 120 consecutive visibly failing draws kept out of 251 attempts, 131 discarded because no visible check failed; the draw holds 71 ordinary, 3 equal and 46 trap jobs; 17 equal jobs were added as top-ups; no trap top-up was needed. The public lines are shuffled, and nothing in the public half says which job is which.
+- **Codex saw the aggregate dry-run table of section 5** (it is in this plan). It reports that the bank file, the per-job dry-run files and E14 were not consulted.
+- **Codex asks for one audit at closeout:** on a trap the grader's `abstained` does not itself show that the workspace was left unchanged, so asked jobs with `detail.unchanged` false are to be listed apart. I will report them; the reading of section 3 is not changed by it.
+- **Lock.** `results/v08/LOCK_v08_codex_trap.json`: every file of the revision-2 lock, unchanged, plus the packer, the report script, this plan, the brief and Codex's public file. `python v08/check_lock_trap.py` reported ALL MATCH before the run.
+- **The run:** the four arms of section 2, once each, records to `results/v08/codex_trap/run/`, returned before any grade.
