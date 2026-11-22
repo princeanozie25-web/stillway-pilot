@@ -60,3 +60,9 @@ Fable, 22 November 2026. Things seen while building, in the order they were seen
 
 - **Seen on:** development set, seed 1 (`results/v08/dev_latent_tables.md`).
 - **What:** 45.6% verified against 76.9% for direct action at the same token-pass budget, a third of the examples. The same-examples version (three times the compute) was not run.
+
+## E11. Prose contracts barely move a 1.5-billion-parameter runner
+
+- **Seen on:** 72 development jobs, one run per arm (`results/v08/prompt_tables.md`).
+- **What:** verified jobs with the milestone-2 prompt 16, a one-sentence instruction 11, Codex's contract 15, mine 12. Mine caused 133 reverts. Only the milestone-2 prompt, which says in the job's own words when to ask, produced correct ASKs (4 of 11).
+- **Consequence:** the existing wording stays; the three texts are kept for a later comparison on fresh jobs with more than one run per arm.

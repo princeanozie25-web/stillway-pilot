@@ -20,7 +20,8 @@ Fable, for Prince Anozie, 22 November 2026. Branch `v0.8`. One-page memo: `docs/
 | v0.6 round 2 addendum by the holder's groups | **Frozen run, labels released** |
 | M2: single operations against composed scripts, Qwen 1.5B, 48 jobs | **Measured once**, development jobs, small sample |
 | M3: exec against base on the author-made holdout, three seeds | **Frozen** (protocol and nine cores locked before the run) |
-| M3 on Codex's independently authored holdout | **Pending** (brief sent; no jobs received yet) |
+| M3 on Codex's independently authored holdout (220 jobs) | **Run once and returned ungraded** (22 arm files, 4,840 records, sealed at commit `a64d249`); grades pending |
+| Operating contracts for the instruction-following runner | **Development comparison**, 72 jobs, one run; the existing wording stays |
 | M3 limited-experience regime, three seeds | **Pre-specified secondary** |
 | M3 arms that separate prediction from failure records | **Exploratory**: prediction-only three seeds (two added after the first looked good), failure-only one seed |
 | M4 audit mixing | **Frozen selection rule**, one run on a fresh family |
@@ -345,6 +346,14 @@ Qwen2.5-Coder-1.5B-Instruct (1.5 billion parameters, 3.1 GB) through the same op
 `python v08/demo.py --smoke` (about 10 s; transcript in `results/v08/demo_smoke.txt`). A goal goes in; the core proposes a script and writes the effect it predicts; the script runs in the sandbox; the observed effect and the changed files are shown; at the end the diff, the independent verdict, the experience written and what the bank now holds. Session 2 is the same project with the fault moved: the bank's stored procedure is tried first, execution shows it does not apply, the workspace is restored, and the core works the job itself. `python v08/demo.py` steps through any fixture job with a prompt before each execution; `--workspace DIR` takes your own job folder.
 
 The default seed was chosen so that the core solves both project sessions. Over 40 seeds it solved session 1 in 16 and session 2 in 7; the docstring says so.
+
+### 6.4 Codex's independent holdout: run and returned (added later the same day)
+
+Codex's 220 jobs arrived after this report was first written. The public file's digest matched its commitment. A plan naming every arm and the scoring was committed before anything ran (`docs/v08_codex_holdout_plan.md`); 19 checkpoints, the bank, the code and the public file were locked; each arm and seed ran once on an idle machine; 22 raw files (4,840 records) were sealed with hashes, lock check and failure log at commit `a64d249` and returned (`results/v08/codex_hold/RETURN.md`). I do not hold the hidden half. No sandbox crash or timeout; 316 of 4,840 job runs ended at a limit. **Nothing in this report uses those records.** When grades return, `v08/report.py` is run once and the result is added here.
+
+### 6.5 Operating contracts for the instruction-following runner (development jobs only)
+
+Prince and Codex asked for the runner's instructions to be drafted and tested. Four wordings were compared on 72 development jobs with the pinned Qwen model in script mode: the milestone-2 prompt as it was, a one-sentence instruction, Codex's contract and mine. Verified jobs: 16, 11, 15, 12. By the rule fixed beforehand the existing wording stays. The guided arms cannot be told apart at this sample size; the bare instruction said DONE wrongly most often (31 against 19 to 23); only the existing prompt produced correct ASKs (4 of 11). The small core cannot read a prompt at all: for it, a contract has to be built into its training records, and `docs/v08_operating_contracts.md` sets out clause by clause what is already there and what is not.
 
 ## 7. Limits
 
