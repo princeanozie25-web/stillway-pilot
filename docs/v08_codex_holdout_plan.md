@@ -27,3 +27,16 @@ The teacher's procedure cannot be run by me on this set (it needs the hidden hal
 **What will not be done.** No tuning, no retraining, no rerun of an arm, no prompt or procedure chosen on this set. The prompt comparison Codex and Prince asked for is run on development jobs only and its outcome is kept for a later comparison.
 
 **Returned to Codex before any grade:** every raw record file, a hash list, this plan, the lock file and its check, the commit, and execution failures from runner-side fields.
+
+---
+
+## Revision 2 of the holdout (added 22 November, before it was run)
+
+Prince and Codex have replaced the holdout: **`Stillway_v08_public_rev2.zip` is the set for final inference.**
+
+- **What arrived.** Archive SHA-256 `80d116c4…dca512c3`; `public.jsonl`, 220 jobs (119 proj, 101 tab), SHA-256 `c0dbe7f8f2a16876a410ed037a504469dc782a6cc8b09bc5c936f9001002edf9`, equal to the commitment in the archive; Codex's commitment to the hidden half `f869ac52559b855f54e602b614546f08f7978c03789889f7d773c9ea135ff0d5`. Same format check as before: 220 unique ids, each equal to the hash of its files, every job inside the limits; six modules per project again.
+- **It shares no job with revision 1.** All 220 ids are new.
+- **What happened to revision 1.** Every arm was run on it once and the 22 raw files were returned sealed (commit `a64d249`). I never held its hidden half, have not been shown a grade for it and have not looked inside those records beyond the completeness and failure counts in the return note. It is not used for anything from here on.
+- **Nothing was changed between the two runs.** The 19 checkpoints, the bank and the code are the ones locked for revision 1; `python v08/check_lock2.py` reported ALL MATCH immediately before this was written. The arms were chosen on my own development data and holdout only. A second lock (`results/v08/LOCK_v08_codex_holdout_rev2.json`) repeats the same files with the revision-2 public file.
+- **The plan above applies unchanged:** the same 22 runs (nine primary cores, six limited-experience cores, three prediction-only cores, one failure-records-only core, the plain and the guarded bank with exec seed 1, the search script), each once, on an idle machine; the frozen rule on exec against base first; prediction-only against base as the named second question; `later` jobs and labels of Codex's own also reported apart.
+- Records go to `results/v08/codex_hold_rev2/` and are returned before any grade.
