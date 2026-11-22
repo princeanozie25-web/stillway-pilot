@@ -27,3 +27,10 @@ Fable, 22 November 2026. Things seen while building, in the order they were seen
 - **Seen on:** the locked raw output of Codex's second hidden family, after the holder released the group labels.
 - **What:** every policy-seed-budget cell below the old rule after recognition is one where the bank was using its `amend` level. With every audit sent next to known exceptions, an unaudited case next to them sees more audited exceptions than audited agreements and is flipped: on the 200-case local amendments the learner changed 470 to 751 answers from the table at 128 to 256 audits.
 - **Consequence:** this is the mechanism the audit-mixing test of milestone 4 addresses (`v08/m4_audit_mix.py`).
+
+## E5. Dropping a voided record left a visible check failing
+
+- **Seen on:** the dry run of milestone 4 with a pilot core (`results/v08/pilot/m4dry`), on the later table rule "amounts differ, note void: drop the record".
+- **What:** after the correct `DROP`, the statement still listed the key, so the visible check "every difference is resolved" failed even though the ledger was right. The rule is never a fault in pretraining, so no training record, development job or holdout job was affected; only day-1 and day-2 jobs of milestone 4.
+- **Changed:** `DROP` now also marks a key the statement still lists as settled. Day 1 and day 2 were rebuilt; day 2 was redrawn as well (the draw used in the dry run is kept as `day2dry`).
+- **Also seen there:** for the other later table rule (statement-only, note pending) the right final state is "nothing changed", so any run that changes nothing is verified by the independent grader, even one whose own visible check still fails. That rule is therefore a weak test of transfer and is reported apart from the drop rule.

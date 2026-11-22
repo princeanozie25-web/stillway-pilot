@@ -108,7 +108,11 @@ class Ops:
     def KEEP(self, k):
         def f(rows, r): r["st"] = "kept"; return rows
         return self._edit(k, f)
-    def DROP(self, k): return self._edit(k, lambda rows, r: [x for x in rows if x is not r])
+    def DROP(self, k):
+        out = self._edit(k, lambda rows, r: [x for x in rows if x is not r])
+        if out == "OK" and k in {r["key"] for r in self._table("statement.csv")}:      # a dropped record that the statement still lists is settled, not a new difference
+            self._save("ignored.csv", ["key"], self._table("ignored.csv") + [{"key": k}])
+        return out
     def ADD(self, k, g):
         st = {r["key"]: r["amt"] for r in self._table("statement.csv")}; rows = self._table("ledger.csv")
         if k not in st or any(r["key"] == k for r in rows) or not re.fullmatch(r"g[0-2]", g): return "BAD"

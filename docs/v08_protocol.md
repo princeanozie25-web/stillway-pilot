@@ -82,9 +82,11 @@ The selected core is the exec core of seed 1, abundant regime (if the frozen rul
 - **Day 1** (234 jobs from day-1 sources): later mechanisms mixed with ordinary work. The frozen core works every job with its predictions recorded; the grader's verdict is attached; jobs it did not verify are then worked by the teacher (cost logged apart). All are kept as experiences.
 - **The night**, from day-1 experiences only:
   - *Bank version 1*: a procedure is promoted when at least two verified experiences propose it. The gate (when to try which procedure) is learnt from the same log, separately from the procedures: an entry is tried while its logged success rate times the cost of the fallback exceeds its own cost. Two gates are built, one pricing only seconds (`v1`) and one pricing an operation at 0.5 s (`v1_priced`).
-  - *Weight updates*, all from the same checkpoint with the same 3,000,000-token budget, learning rate 0.0005: **naive** (day-1 records only), **replay** (day-1 records mixed one to one with 3,000 pretraining records: ordinary rehearsal), **sleep** (as replay plus dreams: four fresh variations per later-mechanism job, drawn from day-1 sources and verified by execution before use; then a validation gate: promoted only if earlier skills on the development set are no more than 2 points below the frozen core and later skills on 60 fresh jobs are above it; otherwise rolled back). The sleep arm is this repository's adaptation of the Sleep framework's dreaming, curated rehearsal and promotion check (see `docs/v04_sleep_correspondence.md`); the original's parameter expansion and distillation are not reproduced.
+  - *Weight updates*, all from the same checkpoint with the same 3,000,000-token budget, learning rate 0.0002: **naive** (day-1 records only), **replay** (day-1 records mixed one to one with 20,000 pretraining records: ordinary rehearsal), **sleep** (as replay plus dreams: four fresh variations per later-mechanism job, drawn from day-1 sources and verified by execution before use; then a validation gate: promoted only if earlier skills on the development set are no more than 2 points below the frozen core and later skills on 60 fresh jobs are above it; otherwise rolled back). The sleep arm is this repository's adaptation of the Sleep framework's dreaming, curated rehearsal and promotion check (see `docs/v04_sleep_correspondence.md`); the original's parameter expansion and distillation are not reproduced.
 - **Day 2** (280 jobs from day-2 sources, drawn afresh after the pipeline was debugged on another draw): retention (earlier skills), transfer (later mechanisms), traps (a later-slot change also satisfies the visible checks; the real fault is elsewhere). Arms: frozen core; core + bank; update only (naive, replay, sleep); update + bank.
 - **Reported:** verified share, answered share and error among answers, requests for evidence, verified jobs per minute, operations; harm and gain against the frozen core on the retention set; what the bank did (finished, wrong, failed, declined, operations wasted); break-even jobs for the night's compute. No pass or fail rule: this milestone is a measurement, labelled exploratory where a choice was made on its own dry run.
+
+Settings chosen on a dry run with a pilot core and another draw of day 2 (`results/v08/pilot/m4dry*`, three settings tried): learning rate 0.0002, rehearsal pool 20,000, one rehearsal record per new record. Under them, on the dry run, ordinary replay stayed within 2 points on earlier skills (-1.6) and gained 10 on later ones; the sleep update gained 22 on later skills and lost 4.4 on earlier ones, so it failed its promotion check and was rolled back. No setting tried made it pass.
 
 The audit-mixing test of this milestone was run earlier under its own rule, written in `v08/m4_audit_mix.py` before its final family was drawn.
 
@@ -92,6 +94,26 @@ The audit-mixing test of this milestone was run earlier under its own rule, writ
 
 Direct action against three shared-weight passes of the same five layers (`passes=3`: the output of a pass plus the input embedding is fed through the layers again), exec arm, abundant regime, seed 1. Two versions of the three-pass core: the same 80,000,000 token-pass budget (so a third of the examples) and the same examples (three times the compute). Scored on the development set, difficult (proj) and routine (tab) apart, under the same runner limits, so the direct core has the same time allowance for retries. Reference: the pinned Qwen2.5-Coder-1.5B-Instruct through the same operations on 48 development jobs (milestone 2's script mode).
 
-## 10. Development record (development split only)
+## 10. What each primary core was trained on (disclosure)
 
-See `docs/v08_exploratory_log.md` for what was found and changed before this lock, and `results/v08/dev_*_tables.md` for the tables.
+Three cores were trained at a time on one GPU, so the seconds are wall time under that sharing.
+
+| Arm | Seed | Jobs | Records | of which with a failure and recovery | Optimiser steps | Examples drawn | Token positions processed | Action targets in the data | Observation targets in the data | Training s |
+|---|---|---|---|---|---|---|---|---|---|---|
+| base | 1 | 372,802 | 372,802 | 0 | 11,904 | 761,856 | 80,006,144 | 11,247,720 | 19,968,568 | 1181 |
+| base | 2 | 372,802 | 372,802 | 0 | 11,879 | 760,256 | 80,001,472 | 11,247,720 | 19,968,568 | 1118 |
+| base | 3 | 372,802 | 372,802 | 0 | 11,835 | 757,440 | 80,006,464 | 11,247,720 | 19,968,568 | 1164 |
+| exec | 1 | 372,802 | 467,312 | 94,510 | 10,445 | 668,480 | 80,015,296 | 14,731,009 | 29,075,141 | 1136 |
+| exec | 2 | 372,802 | 467,312 | 94,510 | 10,522 | 673,408 | 80,006,016 | 14,731,009 | 29,075,141 | 1081 |
+| exec | 3 | 372,802 | 467,312 | 94,510 | 10,533 | 674,112 | 80,003,200 | 14,731,009 | 29,075,141 | 955 |
+| shuf | 1 | 372,802 | 467,312 | 94,510 | 10,442 | 668,288 | 80,008,128 | 14,731,009 | 29,075,141 | 961 |
+| shuf | 2 | 372,802 | 467,312 | 94,510 | 10,549 | 675,136 | 80,011,136 | 14,731,009 | 29,075,141 | 962 |
+| shuf | 3 | 372,802 | 467,312 | 94,510 | 10,503 | 672,192 | 80,005,120 | 14,731,009 | 29,075,141 | 1207 |
+
+Token positions are equal by construction. The exec and shuf records are longer on average, so those arms take fewer optimiser steps and draw fewer examples for the same compute. Generating the records the teacher slipped on (used only by exec and shuf) cost about 37% more teacher seconds and 35% more operations than the careful records alone (`data/v08/MANIFEST.json`; logged for 181 of the 400 parts, the first 219 having been written before cost logging per part was added).
+
+## 11. Development record (development split only)
+
+- Overfit test (`v08/overfit.py`): each arm trained on 400 training jobs alone and run on those jobs through the sandbox: base 400 of 400, exec 400 of 400. Passed.
+- Pilots and what they changed: `docs/v08_exploratory_log.md`.
+- One look at the primary cores before this lock: the three seed-1 cores on the development set (`results/v08/pilot/dev_s1`): verified project jobs base 40.0%, exec 58.2%, shuf 43.5%; tables 96.7%, 98.0%, 99.3%. Nothing was changed after it. Seeds 2 and 3 had not been run on anything when this was locked.
