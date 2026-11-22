@@ -1,0 +1,482 @@
+{
+ "locked_at": "2026-11-22T04:47:09+0000",
+ "git_head": "859a8a7dbcdedc5e9305fe635630a1cf0951ddd8",
+ "student": {
+  "repo": "Qwen/Qwen2.5-Coder-1.5B-Instruct",
+  "revision": "2e1fd397ee46e1388853d2af2c993145b0f1098a",
+  "model_sha256": "c1b9b30e907950516ba3c646bdf570d8084c25a6410a0cdca80cf04b11bc13a8",
+  "licence": "Apache-2.0",
+  "precision": "32-bit floats, no quantisation"
+ },
+ "adapters": {
+  "experience_s1.safetensors": {
+   "sha256": "caa25ec82711551d8d37c659a06694bb3ada3276416b8cddfae3531381f9564c",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "experience",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 472382,
+    "examples_seen": 475,
+    "passes_started": 2,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 1063.1,
+    "seed": 1,
+    "sha256": "caa25ec82711551d8d37c659a06694bb3ada3276416b8cddfae3531381f9564c",
+    "loss_first10": [
+     0.9761,
+     1.1056,
+     0.7888,
+     1.2079,
+     0.9565,
+     0.3885,
+     0.6569,
+     0.7048,
+     1.316,
+     0.778
+    ],
+    "loss_last10": [
+     0.0031,
+     0.0004,
+     0.01,
+     0.0002,
+     0.0149,
+     0.0044,
+     0.0006,
+     0.0002,
+     0.0003,
+     0.0181
+    ]
+   }
+  },
+  "experience_s2.safetensors": {
+   "sha256": "af206593e677db84a38c947075298e91c7401a1e8871e346185ea6394617a86a",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "experience",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 479057,
+    "examples_seen": 482,
+    "passes_started": 2,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 1049.8,
+    "seed": 2,
+    "sha256": "af206593e677db84a38c947075298e91c7401a1e8871e346185ea6394617a86a",
+    "loss_first10": [
+     1.3117,
+     1.4686,
+     0.8642,
+     0.8735,
+     0.8331,
+     0.9535,
+     0.8592,
+     0.4472,
+     1.223,
+     0.8259
+    ],
+    "loss_last10": [
+     0.0002,
+     0.0001,
+     0.0177,
+     0.0005,
+     0.0025,
+     0.0002,
+     0.0139,
+     0.0001,
+     0.0082,
+     0.0001
+    ]
+   }
+  },
+  "experience_s3.safetensors": {
+   "sha256": "6047f4b8ad01ee9dafc77792dd23c8b2567772d631d9260fbedc23f8a1a344fc",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "experience",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 477174,
+    "examples_seen": 481,
+    "passes_started": 2,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 1055.4,
+    "seed": 3,
+    "sha256": "6047f4b8ad01ee9dafc77792dd23c8b2567772d631d9260fbedc23f8a1a344fc",
+    "loss_first10": [
+     1.0858,
+     0.7739,
+     0.9458,
+     0.6896,
+     1.2572,
+     0.9797,
+     0.8076,
+     0.8268,
+     0.8974,
+     0.4957
+    ],
+    "loss_last10": [
+     0.0001,
+     0.0248,
+     0.0553,
+     0.0243,
+     0.0004,
+     0.0038,
+     0.1073,
+     0.0087,
+     0.0001,
+     0.0704
+    ]
+   }
+  },
+  "experience_x_s1.safetensors": {
+   "sha256": "f39fda56f39af6eca08c362ecd9a71a28a070dfdcbf8be0ae4fcfef5aa33f726",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "experience_x",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 384753,
+    "examples_seen": 335,
+    "passes_started": 1,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 877.1,
+    "seed": 1,
+    "sha256": "f39fda56f39af6eca08c362ecd9a71a28a070dfdcbf8be0ae4fcfef5aa33f726",
+    "loss_first10": [
+     0.7685,
+     1.1386,
+     0.8677,
+     1.2742,
+     0.5114,
+     0.9917,
+     1.0022,
+     1.0178,
+     0.7129,
+     0.3321
+    ],
+    "loss_last10": [
+     0.1037,
+     0.0362,
+     0.0017,
+     0.0019,
+     0.2216,
+     0.2315,
+     0.042,
+     0.2329,
+     0.0015,
+     0.0868
+    ]
+   }
+  },
+  "experience_x_s2.safetensors": {
+   "sha256": "3b1de36a4f3e0b92918b23ad88e05ed8cbe8817e83809da2f98b2f9028c07a70",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "experience_x",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 383776,
+    "examples_seen": 334,
+    "passes_started": 1,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 861.7,
+    "seed": 2,
+    "sha256": "3b1de36a4f3e0b92918b23ad88e05ed8cbe8817e83809da2f98b2f9028c07a70",
+    "loss_first10": [
+     1.3538,
+     1.3223,
+     1.444,
+     0.3559,
+     0.9833,
+     0.5825,
+     0.8972,
+     1.2779,
+     0.3216,
+     0.6414
+    ],
+    "loss_last10": [
+     0.0093,
+     0.0346,
+     0.004,
+     0.0734,
+     0.0023,
+     0.1562,
+     0.1549,
+     0.0077,
+     0.0003,
+     0.0927
+    ]
+   }
+  },
+  "experience_x_s3.safetensors": {
+   "sha256": "ed1dac05a968f3cfddecf72240596f9914a2cff3037f442a9471762af34ac500",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "experience_x",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 381249,
+    "examples_seen": 332,
+    "passes_started": 1,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 871.7,
+    "seed": 3,
+    "sha256": "ed1dac05a968f3cfddecf72240596f9914a2cff3037f442a9471762af34ac500",
+    "loss_first10": [
+     1.3422,
+     0.9185,
+     1.0932,
+     0.5421,
+     1.2179,
+     0.4108,
+     0.6091,
+     0.7625,
+     0.8682,
+     0.8684
+    ],
+    "loss_last10": [
+     0.0081,
+     0.01,
+     0.0052,
+     0.016,
+     0.0003,
+     0.0059,
+     0.1152,
+     0.0002,
+     0.0815,
+     0.0926
+    ]
+   }
+  },
+  "patches_s1.safetensors": {
+   "sha256": "85bb9c93610e10d310b7942f975423535b00ab456d4ba429645c55cb37da12f5",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "patches",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 472427,
+    "examples_seen": 482,
+    "passes_started": 5,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 1042.5,
+    "seed": 1,
+    "sha256": "85bb9c93610e10d310b7942f975423535b00ab456d4ba429645c55cb37da12f5",
+    "loss_first10": [
+     0.1555,
+     0.2516,
+     0.1538,
+     0.0885,
+     0.0493,
+     0.0631,
+     0.0229,
+     0.0291,
+     0.1247,
+     0.0889
+    ],
+    "loss_last10": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "patches_s2.safetensors": {
+   "sha256": "a5a07aefe73e7d40bfdb7ad5a50418ffa14d6a1e77313801ac63eb5211f4bdbc",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "patches",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 478955,
+    "examples_seen": 488,
+    "passes_started": 5,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 1046.1,
+    "seed": 2,
+    "sha256": "a5a07aefe73e7d40bfdb7ad5a50418ffa14d6a1e77313801ac63eb5211f4bdbc",
+    "loss_first10": [
+     0.1558,
+     0.2816,
+     0.0501,
+     0.1139,
+     0.0555,
+     0.1898,
+     0.0432,
+     0.0436,
+     0.021,
+     0.1353
+    ],
+    "loss_last10": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  },
+  "patches_s3.safetensors": {
+   "sha256": "9be243f36f6b3fef14de816be58be8d5b3a5d41cd0d772076c389084b84808b2",
+   "bytes": 73900488,
+   "training": {
+    "dataset": "patches",
+    "updates": 300,
+    "token_budget_per_update": 2048,
+    "training_tokens": 474387,
+    "examples_seen": 484,
+    "passes_started": 5,
+    "learning_rate": 0.0002,
+    "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen",
+    "seconds": 1034.5,
+    "seed": 3,
+    "sha256": "9be243f36f6b3fef14de816be58be8d5b3a5d41cd0d772076c389084b84808b2",
+    "loss_first10": [
+     0.0797,
+     0.0861,
+     0.1587,
+     0.0319,
+     0.0949,
+     0.0264,
+     0.0494,
+     0.0746,
+     0.0352,
+     0.0127
+    ],
+    "loss_last10": [
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0,
+     0.0
+    ]
+   }
+  }
+ },
+ "bank": {
+  "sha256": "09be8bef173ee0dfc1111b98a7c89b6500f33a2dbc46804c4a53a9610dda0d31",
+  "bytes": 13010
+ },
+ "code": {
+  "stillway7/bank.py": "ea4e1f61b38b481d6c1e5658e2fbb7e3640d231f6761626b56779d093f919ed9",
+  "stillway7/episode.py": "6be611a29956fcccb9f873ecccb86a2f4eac45e1a2942e79e1af328d1ebb055c",
+  "stillway7/procedures.py": "ebc3376e90b722d366aedd6f3839040ec87ea7c1a7b81c6e4884eb3db0afb83d",
+  "stillway7/sandbox.py": "b1376043783c19e65a5bca9dcc1e6f8153a6674fd1304fef5b83adc79d23429f",
+  "stillway7/student.py": "ac0b71abbf5aba09d89edad091209ca8fe23abad02a4a1f80430f2f538933eb4",
+  "stillway7/tasks.py": "30e000e6afef800d6b2d2cee593d9825e6abe02b20b5c140c21d12ad4462e8f4",
+  "stillway7/templates_dev.py": "3c464856a284d699ec79f6654934381a4a591225f51d586062206db238c6d619",
+  "stillway7/templates_train.py": "c41093b6b21db08e4fd4a9dbccf564908ac1c6611f5ee8bf87919accad622472",
+  "v07/analyse_dev.py": "6d0e0fd571ae3f7ea45ca0b52ec3f6444cef67a68017e72746a870003bee88d7",
+  "v07/build_bank.py": "79a806ee05f37e6f1f97d40c9ca593be99b7d9c4ae9c948dc893db06849c47db",
+  "v07/build_tasks.py": "8122b8f11bcd69e127414be3940db112948dbb3d2bdb197e81e395bbce6be300",
+  "v07/build_training.py": "0d62a195aa66f2dcdad6818d8cecb5dcefcaa8e4ae6e3cc6479af285eeba5050",
+  "v07/check_lock.py": "0d63d266a2f433bda5ad1d30fd5e33629b05e4eaf24aa99d4def3663c6359ce7",
+  "v07/collect_base.py": "042772f74e309ebd2be9434683796ceff9f906d7f7d0f1f445c8f226291263f1",
+  "v07/costs.py": "11102b26a3fc6f41fafffb1221d3ad62d8df7567e79826ee5a73904b60d688e6",
+  "v07/export_teacher_records.py": "433bd4c8b53acb6d7f45a0dfefb1e5e00c21533ea7681a3b92121c3678063f71",
+  "v07/fetch_model.py": "08fd39c1e405f2f246ec07c6cb85fae789552856fd990417c3a1921bdbb8ef1a",
+  "v07/gate.py": "f535a6b706c6e65983f309a1e3294a9e12db9f2e7ee0941dcc93fb5798046eee",
+  "v07/grade.py": "06bca5970c6fe17752bea00ac0a3c53e9d9973a13f950c4732a71736b015f3aa",
+  "v07/make_lock.py": "2cd717fb22b04382ebcdc7d6e3a6f24ba0d3a620a5e610ef00d8c551d59c0b29",
+  "v07/pack_final.py": "e79ad76285c9ad7d4020bf431ce34c752783b8df301e7ac90bd9a7906d0cc12e",
+  "v07/replay.sh": "97d808295e6fd1b60400434b34d2eb70c41c9bcaa30dce4cf50c1bfefae73ad6",
+  "v07/report.py": "8507abd69c10641d962e32de75a42dc117380f8af66d7beef0e55422775cbe2d",
+  "v07/run_arm.py": "4129ccd24f3fd3c8d5a4a9b9f4d94fc7f738f8d7c5d21169992fcf9ee45c4e1b",
+  "v07/run_dev.sh": "907b05c8f0172b4c07f65e00c9cbd8a7c66c1cc5f87ab5ba67504ba615565f75",
+  "v07/run_exact.sh": "66cb8d1c9196429ef0f183845107575f066a75b70fc04a710f511574b404a96d",
+  "v07/show_records.py": "eea678e680b88a9c5840c584945be66d9a13dff9ee2fe6af80d1ce2d134c9709",
+  "v07/smoke_model.py": "7eb090ee06ab0e351dc4a6e54c6dbe2e8b35eb08dc69688cc7bff925893b2a2e",
+  "v07/train_adapter.py": "c54c8851a410c0056e3d564909d2d8743c8649be2568c0c4365a36656c5c4eae",
+  "v07/x_strength.py": "f559fc140e0a4c15a3e4e71973043dc65fe31c4cff0000c35fbd7639457dd65b",
+  "v07/x_strength_report.py": "dac3f59f44dc1d644bd7c312ab141165bd88f50c0bc4dce099c9c44fd579a556"
+ },
+ "documents": {
+  "docs/v07_protocol.md": "d7998a9ac5c44dd16dfb9a68737322446b43b3fe93a9bb9f16b5d24435a9b76d",
+  "docs/v07_dev_plan.md": "c2b89e4989e7a3a37e3adf98ac12754ac2d8a7ce9fefd3e860b4557118e4cf4c",
+  "docs/v07_final_set_brief.md": "9e49713c46ba639697afc9a456b8de05ce60589fba6a3830de33567db43c18f6"
+ },
+ "data": {
+  "training_sets": {
+   "experience.jsonl": "ed23cfc5f2a15550825972a6f59167677955f061d03df0040ca556b574a97435",
+   "experience_x.jsonl": "d7543b659b1cfef5b311ea8899a663c8a167d41475891a4d97be654bda90daa8",
+   "patches.jsonl": "47889501de567e5a7f61f1d55b6b18252ae81d19f002332eb502c3fd54ce7467"
+  },
+  "training_repositories": {
+   "files": 120,
+   "sha256": "26e1f1168d9b7fe2a8269599d65b2ffe17f89d17d0538ba51e50577ec083a180"
+  },
+  "development_public": {
+   "files": 72,
+   "sha256": "caa7e65337fd1f6bf2d5b949d1e5a9b161d787b5a5fb47bf6257fbd2c6740643"
+  },
+  "development_hidden": {
+   "files": 72,
+   "sha256": "1387a73c83b7fac3326682edb6abca910decebdf863c367a0deb692b726f069c"
+  }
+ },
+ "episode": {
+  "limits": {
+   "tests": 2,
+   "patches": 1,
+   "test_new_tokens": 160,
+   "patch_new_tokens": 320,
+   "prompt_tokens": 3072,
+   "insert_tokens": 400,
+   "test_seconds": 5.0,
+   "observed_chars": 400
+  },
+  "system_text_sha256": "656ade3575837efb402116645c72779a8375adad849889c348e4dabd00e22674",
+  "ask_test_sha256": "e863ddc3b426b68428b832da176b85b54ab33c13ab37b6984ec3fbbab55548e6",
+  "ask_patch_sha256": "ef586716155e8628fb9bf57cf76d4a8f9c0723449699cefa7a856662b39022c1"
+ },
+ "gate": {
+  "sha256": "24749076b70dd43120afa4c7f854ac5de036d4ed15c9028acce586d01fe3a5ce"
+ },
+ "development_records": {
+  "files": 24,
+  "sha256": "59d04f7445211a6e1c3804569ccd5b760a9f0e09df622a91e8f1e4695d90c897"
+ },
+ "development_records_graded": {
+  "files": 24,
+  "sha256": "26f187f311de19261aa99737b2b8da0e5a2d2ba6ed3c3a5155bd64888196443a"
+ },
+ "reduced_strength_records": {
+  "files": 18,
+  "sha256": "16ef371523786136854941a339abefeed563e63cb291c4a66f68a85a302c10ad"
+ },
+ "reduced_strength_records_graded": {
+  "files": 18,
+  "sha256": "46c554bd9e736549276a00f92b1a7de6969ce125609e2fd8b14b84b510de5365"
+ },
+ "exact_repeat_records": {
+  "files": 5,
+  "sha256": "1d8b552cdd33a2597cba043b4d5ba9b57e4b8512d404fc4b885fb114e8634c87"
+ },
+ "note": "locked before any final repository was seen"
+}
