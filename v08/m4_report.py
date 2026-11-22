@@ -6,9 +6,9 @@ m4_summary.json."""
 import collections, glob, json, os, re
 import numpy as np
 
-D = "results/v08/m4/day2"; R = {}
+O = os.environ.get("M4_OUT", "results/v08/m4"); D = f"{O}/day2"; R = {}
 for f in sorted(glob.glob(f"{D}/*.graded.jsonl")): R[os.path.basename(f)[:-len("_s0.graded.jsonl")]] = {r["id"]: r for r in map(json.loads, open(f))}
-ORDER = [a for a in ("core", "core+bank", "core+bank_priced", "naive", "replay", "replay+bank", "sleep", "sleep+bank", "teacher", "search") if a in R]; night = json.load(open("results/v08/m4/night.json")); day1 = json.load(open("results/v08/m4/day1.json"))
+ORDER = [a for a in ("core", "core+bank", "core+bank_priced", "naive", "replay", "replay+bank", "sleep", "sleep+bank", "teacher", "search") if a in R]; night = json.load(open(f"{O}/night.json")); day1 = json.load(open(f"{O}/day1.json"))
 SETS = {"retention": lambda r: r["group"] in ("familiar", "newmech", "valid", "unans", "scattered", "stale"), "transfer": lambda r: r["group"] == "later", "trap": lambda r: r["group"] == "trap", "whole day": lambda r: True}
 ok = lambda r: r["outcome"] == "verified"
 
@@ -51,6 +51,6 @@ for a in ORDER:
     if a not in over: continue
     s = st(list(R[a].values())); save = base["s_per_job"] - s["s_per_job"]; be = over[a] / save if save > 1e-6 else None; S["break_even"][a] = {"overnight_s": over[a], "s_per_job": s["s_per_job"], "core_s_per_job": base["s_per_job"], "jobs_to_recover": be, "extra_verified_per_100": s["verified_pct"] - base["verified_pct"]}
     M.append(f"| {a} | {over[a]:.1f} | {base['s_per_job']:.3f} | {s['s_per_job']:.3f} | {'never' if be is None else f'{be:.0f}'} | {s['verified_pct'] - base['verified_pct']:+.1f} |")
-M += ["", "## Overnight validation and promotion", "", f"Held-back day-1 jobs (later mechanisms) and the fixture set (earlier skills), verified %: " + "; ".join(f"{k}: new {v['new']}, old {v['old']}" for k, v in night["validation"].items()) + ".",
+M += ["", "## Overnight validation and promotion", "", f"Fresh later-mechanism jobs from day-1 sources (new) and the development set (old, earlier skills), verified %: " + "; ".join(f"{k}: new {v['new']}, old {v['old']}" for k, v in night["validation"].items()) + ".",
       f"Sleep update promoted: **{night['sleep_promoted']}** ({night['promotion_rule']}). Dreams generated and verified by execution: {c['dreams']} ({c['dream_ops']} operations). Day-1 records used: {c['day_records']}."]
-open("results/v08/m4_tables.md", "w").write("\n".join(M) + "\n"); json.dump(S, open("results/v08/m4_summary.json", "w"), indent=1); print("\n".join(M))
+open(f"{O}_tables.md", "w").write("\n".join(M) + "\n"); json.dump(S, open(f"{O}_summary.json", "w"), indent=1); print("\n".join(M))

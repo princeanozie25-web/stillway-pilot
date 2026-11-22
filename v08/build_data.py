@@ -43,7 +43,9 @@ def build_eval():
 
 
 def work(arg):
-    dom, lo, hi = arg; srcs = D.sources(dom, "train"); out = []; cost = collections.Counter()
+    dom, lo, hi = arg; part = f"{OUT}/pretrain/parts/{dom}_{lo // 1000:06d}.jsonl"
+    if os.path.exists(part): return part, {"reused_chunks": 1}
+    srcs = D.sources(dom, "train"); out = []; cost = collections.Counter()
     for i in range(lo, hi):
         group = D.train_group(dom, i); j = D.make(dom, "train", i, group, srcs)
         if j is None: cost["skipped"] += 1; continue
@@ -55,17 +57,24 @@ def work(arg):
             elif name == "clean": cost["clean_s"] += dt; cost["clean_ops"] += ops; cost["clean_tokens"] += len(toks)
             rec[name] = [" ".join(toks), "".join(map(str, kinds))]
         out.append(json.dumps(rec)); cost["jobs"] += 1
-    return out, dict(cost)
+    with open(part + ".tmp", "w") as f: f.writelines(l + "\n" for l in out)
+    json.dump(dict(cost), open(part + ".cost", "w")); os.replace(part + ".tmp", part); return part, dict(cost)
 
 
 def build_pretrain(n_proj, n_tab, workers):
+    """Resumable: every 1,000 indices are one part file; a rerun builds only the missing parts, then joins them in order."""
     import multiprocessing as mp
-    t0 = time.time(); os.makedirs(f"{OUT}/pretrain", exist_ok=True); chunks = [(d, a, min(a + 1000, n)) for d, n in (("proj", n_proj), ("tab", n_tab)) for a in range(0, n, 1000)]; tot = collections.Counter()
-    with mp.Pool(workers) as pool, open(f"{OUT}/pretrain/records.jsonl", "w") as f:
-        for out, cost in pool.imap(work, chunks):
-            f.writelines(l + "\n" for l in out); tot.update(cost)
-    info = {"requested": {"proj": n_proj, "tab": n_tab}, "noise": NOISE, "wall_seconds": round(time.time() - t0, 1), "workers": workers, **{k: (round(v, 1) if isinstance(v, float) else v) for k, v in sorted(tot.items())},
-            "records_sha256": sha(f"{OUT}/pretrain/records.jsonl")}
+    t0 = time.time(); os.makedirs(f"{OUT}/pretrain/parts", exist_ok=True); chunks = [(d, a, min(a + 1000, n)) for d, n in (("proj", n_proj), ("tab", n_tab)) for a in range(0, n, 1000)]; tot = collections.Counter(); jobs = 0
+    from concurrent.futures import ProcessPoolExecutor             # a dead worker raises here, so an outer loop can simply run the build again
+    with ProcessPoolExecutor(workers) as pool: parts = [p for p, cost in pool.map(work, chunks)]
+    with open(f"{OUT}/pretrain/records.jsonl", "w") as f:
+        for p in parts:
+            for line in open(p): f.write(line); jobs += 1
+    known = collections.Counter()
+    for p in parts:
+        if os.path.exists(p + ".cost"): known.update(json.load(open(p + ".cost")))
+    info = {"requested": {"proj": n_proj, "tab": n_tab}, "jobs_in_file": jobs, "noise": NOISE, "wall_seconds_this_run": round(time.time() - t0, 1), "workers": workers, "parts": len(parts), "parts_with_logged_cost": sum(os.path.exists(p + ".cost") for p in parts),
+            "cost_of_parts_with_log": {k: (round(v, 1) if isinstance(v, float) else v) for k, v in sorted(known.items())}, "records_sha256": sha(f"{OUT}/pretrain/records.jsonl")}
     print(info); manifest({"pretrain": info})
 
 

@@ -91,14 +91,14 @@ def train_group(dom, i):
 
 
 EVAL = {"proj": [("familiar", 60), ("altered", 30), ("newmech", 40), ("valid", 20), ("unans", 20)], "tab": [("familiar", 50), ("scattered", 40), ("stale", 20), ("valid", 20), ("unans", 20)]}
-def eval_set(split, spec=EVAL, scale=1.0):
+def eval_set(split, spec=EVAL, scale=1.0, start=0):
     """A fixed evaluation set: [(public, hidden)], drawn group by group from the split's own source projects."""
     jobs = []
     for dom in ("proj", "tab"):
         srcs = sources(dom, split); fam = []
         for group, n in spec[dom]:
-            n = max(1, int(round(n * scale))); got, i = 0, 0
-            while got < n and i < n * 60:
+            n = max(1, int(round(n * scale))); got, i = 0, start      # `start` shifts the draws: a second, disjoint set from the same sources
+            while got < n and i < start + n * 60:
                 i += 1
                 if group == "altered":
                     if not fam: break

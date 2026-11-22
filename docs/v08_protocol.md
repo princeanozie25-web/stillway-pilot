@@ -39,8 +39,8 @@ Evaluation sets of 320 jobs: proj familiar 60, altered precondition 30 (same pro
 - **Compute is matched by token positions processed** (padding inside a batch and passes included): 80,000,000 per run. Batch 64, AdamW, learning rate 0.002 with 200 warm-up steps and cosine decay to 5%, weight decay 0.01, gradient clipping 1.0. Batches are drawn from windows of records of similar length. Optimiser steps, examples drawn and tokens are logged per run in the checkpoint's `.json`.
 - **Selection rule:** the checkpoint after the last step. No early stopping, no choosing among checkpoints.
 - **Two regimes of experience**, both three paired seeds:
-  - *abundant* (primary): every training job, each read about once;
-  - *limited* (secondary): the first 48,000 proj and 24,000 tab training jobs, read about twelve times.
+  - *abundant* (primary): all 372,802 training jobs (279,877 proj, 92,925 tab), each read about one and a half times at this budget;
+  - *limited* (secondary): the first 48,000 proj and 24,000 tab training indices (67,494 jobs), read about eight to twelve times.
 - Data-generation cost is logged apart (`MANIFEST.json`: seconds and operations for the careful records, and the extra for the slipped ones, which only exec and shuf use).
 
 ## 5. The inference runner and its limits
@@ -74,6 +74,24 @@ The 10% threshold and the 2-point margin are the brief's suggestion, adopted unc
 
 The holdout here is **author-made**: I wrote its generator. It is fresh in the sense that no model has been run on it and its source projects and books are disjoint from every other split. Codex's independently authored holdout (`docs/v08_holdout_brief.md`) is scored by the same rule when it arrives and is the stronger test.
 
-## 8. Development record (development split only)
+## 8. Milestone 4 (memory), fixed before its day 2 is run
+
+The selected core is the exec core of seed 1, abundant regime (if the frozen rule names base the winner, the base core of seed 1). `v08/m4_memory.py`, `v08/m4_day2.sh`.
+
+- **Later mechanisms** (never a fault in pretraining): proj settings `col` and `by`; tab rules amount difference + `void` and statement-only + `pending`.
+- **Day 1** (234 jobs from day-1 sources): later mechanisms mixed with ordinary work. The frozen core works every job with its predictions recorded; the grader's verdict is attached; jobs it did not verify are then worked by the teacher (cost logged apart). All are kept as experiences.
+- **The night**, from day-1 experiences only:
+  - *Bank version 1*: a procedure is promoted when at least two verified experiences propose it. The gate (when to try which procedure) is learnt from the same log, separately from the procedures: an entry is tried while its logged success rate times the cost of the fallback exceeds its own cost. Two gates are built, one pricing only seconds (`v1`) and one pricing an operation at 0.5 s (`v1_priced`).
+  - *Weight updates*, all from the same checkpoint with the same 3,000,000-token budget, learning rate 0.0005: **naive** (day-1 records only), **replay** (day-1 records mixed one to one with 3,000 pretraining records: ordinary rehearsal), **sleep** (as replay plus dreams: four fresh variations per later-mechanism job, drawn from day-1 sources and verified by execution before use; then a validation gate: promoted only if earlier skills on the development set are no more than 2 points below the frozen core and later skills on 60 fresh jobs are above it; otherwise rolled back). The sleep arm is this repository's adaptation of the Sleep framework's dreaming, curated rehearsal and promotion check (see `docs/v04_sleep_correspondence.md`); the original's parameter expansion and distillation are not reproduced.
+- **Day 2** (280 jobs from day-2 sources, drawn afresh after the pipeline was debugged on another draw): retention (earlier skills), transfer (later mechanisms), traps (a later-slot change also satisfies the visible checks; the real fault is elsewhere). Arms: frozen core; core + bank; update only (naive, replay, sleep); update + bank.
+- **Reported:** verified share, answered share and error among answers, requests for evidence, verified jobs per minute, operations; harm and gain against the frozen core on the retention set; what the bank did (finished, wrong, failed, declined, operations wasted); break-even jobs for the night's compute. No pass or fail rule: this milestone is a measurement, labelled exploratory where a choice was made on its own dry run.
+
+The audit-mixing test of this milestone was run earlier under its own rule, written in `v08/m4_audit_mix.py` before its final family was drawn.
+
+## 9. Milestone 5 (latent updates), fixed before it is trained
+
+Direct action against three shared-weight passes of the same five layers (`passes=3`: the output of a pass plus the input embedding is fed through the layers again), exec arm, abundant regime, seed 1. Two versions of the three-pass core: the same 80,000,000 token-pass budget (so a third of the examples) and the same examples (three times the compute). Scored on the development set, difficult (proj) and routine (tab) apart, under the same runner limits, so the direct core has the same time allowance for retries. Reference: the pinned Qwen2.5-Coder-1.5B-Instruct through the same operations on 48 development jobs (milestone 2's script mode).
+
+## 10. Development record (development split only)
 
 See `docs/v08_exploratory_log.md` for what was found and changed before this lock, and `results/v08/dev_*_tables.md` for the tables.

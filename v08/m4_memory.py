@@ -15,7 +15,7 @@ from stillway8 import agent, bank as BK, dataset as D, experience as X, expert a
 from stillway8.grade import grade
 from stillway8.runner import Session
 
-OUT = "results/v08/m4"; PY = sys.executable; TOKENS = 3e6; os.makedirs(OUT, exist_ok=True)
+OUT = os.environ.get("M4_OUT", "results/v08/m4"); PY = sys.executable; TOKENS = 3e6; os.makedirs(OUT, exist_ok=True)
 DAY1 = {"proj": [("later", 60), ("familiar", 40), ("valid", 10), ("unans", 10)], "tab": [("later", 40), ("familiar", 30), ("scattered", 20), ("stale", 8), ("valid", 8), ("unans", 8)]}
 DAY2 = {"proj": [("familiar", 40), ("newmech", 20), ("valid", 10), ("unans", 10), ("later", 50), ("trap", 30)], "tab": [("familiar", 30), ("scattered", 20), ("stale", 10), ("valid", 10), ("unans", 10), ("later", 40)]}
 sha = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest(); load = lambda p: [json.loads(l) for l in open(p)]
@@ -29,8 +29,8 @@ def teacher_record(p, h, noise=0.3, tag=""):
 
 def sets():
     info = {}
-    for split, spec in (("day1", DAY1), ("day2", DAY2)):
-        jobs = D.eval_set(split, spec=spec); os.makedirs(f"data/v08/{split}", exist_ok=True)
+    for name, split, spec, start in (("day1", "day1", DAY1, 0), ("day2dry", "day2", DAY2, 0), ("day2", "day2", DAY2, 50000)):       # day2dry was used to debug the pipeline with a pilot core; day2 is a fresh draw
+        jobs = D.eval_set(split, spec=spec, start=start); split = name; os.makedirs(f"data/v08/{split}", exist_ok=True)
         for p, h in jobs:
             s = Session(p, fast=True); steps, end = E.teach(s, p, h); g = grade(p, h, s.files(), end); s.close(); assert g["outcome"] == "verified", (p["id"], g); h["teacher"] = {"scripts": len(steps) + 1, "ops": sum(len(x["script"]) for x in steps), "end": end}
         dump(f"data/v08/{split}/public.jsonl", [p for p, _ in jobs]); dump(f"data/v08/{split}/hidden.jsonl", [h for _, h in jobs]); c = collections.Counter(f"{p['dom']}/{h['group']}" for p, h in jobs)
@@ -61,29 +61,34 @@ def night(ckpt, mode):
         gate = BK.learn_gate(bank, ver, lambda pr: c_core + pr * o_core, lambda e, pr: (T_OP + pr) * (2 + 3 * (len(BK.VARIANTS[e["slot"]]) - 1) / 2), price); snaps[name] = {"version": name, "bank": bank, "gate": gate}
         json.dump(snaps[name], open(f"{OUT}/bank_{name}.json", "w"), indent=1, sort_keys=True)
     json.dump({"version": "v0", "bank": {"entries": []}, "gate": {"by_first_observation": {}}}, open(f"{OUT}/bank_v0.json", "w")); cost["bank_and_gate_s"] = round(time.time() - t, 2)
-    # 2. the overnight corpora.  A quarter of day 1 is held back to validate the update.
-    ids = sorted(pub); rng = random.Random(D.MASTER); rng.shuffle(ids); val = set(ids[:len(ids) // 4]); train = [i for i in ids if i not in val]; t = time.time()
+    # 2. the overnight corpora
+    train = sorted(pub); t = time.time(); vj = []
+    for dom in ("proj", "tab"):                                # fresh later-mechanism jobs from day-1 sources, kept out of the corpus, to validate an update
+        srcs = D.sources(dom, "day1"); i = 200000
+        while sum(j[0]["dom"] == dom for j in vj) < 30:
+            i += 1; j = D.make(dom, "day1", i, "later", srcs)
+            if j is not None and j[0]["id"] not in pub: vj.append(j)
     day = [teacher_record(pub[i], hid[i])[0] for i in train]; cost["day_records"] = len(day)
     rehearsal = [json.loads(l) for _, l in zip(range(3000), open("data/v08/pretrain/records.jsonl"))]; dreams = []; d_ops = 0
     for dom in ("proj", "tab"):                                # dreams: fresh variations of the later mechanisms on day-1 sources, each verified by execution before it is used
         srcs = D.sources(dom, "day1"); want = 4 * sum(1 for i in train if hid[i]["group"] == "later" and pub[i]["dom"] == dom); i = 100000
         while sum(d["dom"] == dom for d in dreams) < want:
             i += 1; j = D.make(dom, "day1", i, "later", srcs)
-            if j is None or j[0]["id"] in pub: continue
+            if j is None or j[0]["id"] in pub or any(j[0]["id"] == v[0]["id"] for v in vj): continue
             s = Session(j[0], fast=True); steps, end = E.teach(s, j[0], j[1]); ok = grade(j[0], j[1], s.files(), end)["outcome"] == "verified"; s.close()
             if ok: rec, ops = teacher_record(j[0], j[1]); dreams.append(rec); d_ops += ops
     cost["dreams"] = len(dreams); cost["dream_ops"] = d_ops; cost["corpus_s"] = round(time.time() - t, 2)
     mix = lambda new: new * max(1, round(len(rehearsal) / max(1, len(new)))) + rehearsal
     corp = {"naive": day, "replay": mix(day), "sleep": mix(day + dreams)}
     for k, rows in corp.items(): dump(f"{OUT}/corpus_{k}.jsonl", rows)
-    dump(f"{OUT}/val_public.jsonl", [pub[i] for i in sorted(val)]); dump(f"{OUT}/val_hidden.jsonl", [hid[i] for i in sorted(val)])
+    dump(f"{OUT}/val_public.jsonl", [j[0] for j in vj]); dump(f"{OUT}/val_hidden.jsonl", [j[1] for j in vj])
     # 3. the updates, same starting checkpoint, same steps
     for k in corp:
         t = time.time(); subprocess.run([PY, "v08/train_core.py", mode, "1", f"{OUT}/core_{k}.safetensors", "--init", ckpt, "--tokens", str(TOKENS), "--lr", "5e-4", "--data", f"{OUT}/corpus_{k}.jsonl"], check=True, stdout=subprocess.DEVNULL); cost[f"train_{k}_s"] = round(time.time() - t, 1)
-    # 4. validation of each update on held-back day-1 jobs and on the fixture set (earlier skills); the sleep update is promoted or rolled back on it
+    # 4. validation of each update on fresh later-mechanism jobs and on the development set (earlier skills); the sleep update is promoted or rolled back on it
     def score(ck, tag):
         res = {}
-        for name, pubf, hidf in (("new", f"{OUT}/val_public.jsonl", f"{OUT}/val_hidden.jsonl"), ("old", "data/v08/fixture/public.jsonl", "data/v08/fixture/hidden.jsonl")):
+        for name, pubf, hidf in (("new", f"{OUT}/val_public.jsonl", f"{OUT}/val_hidden.jsonl"), ("old", "data/v08/dev/public.jsonl", "data/v08/dev/hidden.jsonl")):
             o = f"{OUT}/val_{tag}_{name}.jsonl"
             if os.path.exists(o): os.remove(o)
             subprocess.run([PY, "v08/run_core.py", ck, pubf, o], check=True, stdout=subprocess.DEVNULL); subprocess.run([PY, "v08/grade.py", pubf, hidf, o], check=True, stdout=subprocess.DEVNULL)
@@ -94,7 +99,7 @@ def night(ckpt, mode):
     cost["validation_s"] = round(time.time() - t, 1); promote = V["sleep"]["old"] >= V["frozen"]["old"] - 2.0 and V["sleep"]["new"] > V["frozen"]["new"]
     info = {"starting_checkpoint": ckpt, "starting_sha256": sha(ckpt), "update_token_budget": TOKENS, "mode": mode, "bank_entries": len(bank["entries"]), "bank_sha256": {k: sha(f"{OUT}/bank_{k}.json") for k in ("v0", "v1", "v1_priced")},
             "corpus_sha256": {k: sha(f"{OUT}/corpus_{k}.jsonl") for k in corp}, "corpus_records": {k: len(v) for k, v in corp.items()}, "checkpoints_sha256": {k: sha(f"{OUT}/core_{k}.safetensors") for k in corp}, "validation": V,
-            "sleep_promoted": bool(promote), "promotion_rule": "earlier skills no more than 2 points below the frozen core and later skills above it, on held-back jobs", "cost": cost, "night_seconds": round(time.time() - t_start, 1)}
+            "sleep_promoted": bool(promote), "promotion_rule": "earlier skills (the 320 development jobs) no more than 2 points below the frozen core, and later skills (60 fresh jobs from day-1 sources, not in the corpus) above it", "cost": cost, "night_seconds": round(time.time() - t_start, 1)}
     json.dump(info, open(f"{OUT}/night.json", "w"), indent=1); print(json.dumps(info, indent=1)[:2500])
 
 

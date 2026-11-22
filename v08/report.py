@@ -11,7 +11,7 @@ d, out = sys.argv[1], sys.argv[2]; primary = sys.argv[sys.argv.index("--primary"
 R = collections.defaultdict(dict)
 for f in sorted(glob.glob(os.path.join(d, "*.graded.jsonl"))):
     m = re.match(r"(.+)_s(\d+)\.graded\.jsonl", os.path.basename(f)); R[m.group(1)][int(m.group(2))] = {r["id"]: r for r in map(json.loads, open(f))}
-arms = sorted(R); DOMS = ("proj", "tab"); ok = lambda r: r["outcome"] == "verified"
+arms = sorted(R); ok = lambda r: r["outcome"] == "verified"; DOMS = tuple(d for d in ("proj", "tab") if any(r["dom"] == d for a in R for s in R[a] for r in R[a][s].values()))
 first = lambda r: ok(r) and r["edit_scripts"] <= 1 and not any(l == "REVERT" for s in r["steps"] for l in s["script"])
 failed_edit = lambda r: sum(any(o.startswith("FAIL") for o in s["obs"]) and any(l.split()[0] in ("PATCH", "COPY", "KEEP", "DROP", "ADD", "SKIP", "RECALC") for l in s["script"]) for s in r["steps"])
 

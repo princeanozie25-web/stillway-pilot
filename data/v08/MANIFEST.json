@@ -73,7 +73,7 @@
   "stillway8/expert.py": "d317c5e61466ff72f60168de495ebaea4ef4719b46f5354cd5f458d6d952f419",
   "stillway8/opsrt.py": "8300e4351abf4bace33dc515f65c17952731adba2b3fe1d6a4e10b9c15040f04",
   "stillway8/world.py": "9e059c04031eb8d05bccb8cb3c18f7debfb02a720063478aaea056b497cc1c51",
-  "v08/build_data.py": "f933b007134c8d97c0a5eebcb95ad91556dec1a3ba00f279076492f5ac6edd91"
+  "v08/build_data.py": "2f6af3cf525d4a356f73f15a500cc5ff415de92658fc0d99530199b07d2f9fa9"
  },
  "held_out_mechanisms": [
   "cmp:ge>lt",
@@ -104,24 +104,29 @@
  ],
  "master_seed": 20261122,
  "pretrain": {
-  "clean_ops": 17153,
-  "clean_s": 8.7,
-  "clean_tokens": 192352,
-  "jobs": 1129,
-  "noise": 0.3,
-  "records_sha256": "30925a64ff1dcc01c00d4ede3d9bb23ab7363cf35b3b391f07b31fe4ff2839a0",
-  "requested": {
-   "proj": 800,
-   "tab": 400
+  "cost_of_parts_with_log": {
+   "clean_ops": 1424994,
+   "clean_s": 2197.2,
+   "clean_tokens": 14635170,
+   "jobs": 172926,
+   "skipped": 8074,
+   "slip_extra_s": 812.9,
+   "slip_ops": 500253,
+   "slip_records": 38938,
+   "slip_tokens": 5421403,
+   "slip_wrong_scripts": 39953
   },
-  "skipped": 71,
-  "slip_extra_s": 2.4,
-  "slip_ops": 4471,
-  "slip_records": 311,
-  "slip_tokens": 51641,
-  "slip_wrong_scripts": 325,
-  "wall_seconds": 8.8,
-  "workers": 2
+  "jobs_in_file": 372802,
+  "noise": 0.3,
+  "parts": 400,
+  "parts_with_logged_cost": 181,
+  "records_sha256": "a66a1a17e9d7d4137166cccd6396ae7e56bec27fe9f40d576148c9a43338cd27",
+  "requested": {
+   "proj": 300000,
+   "tab": 100000
+  },
+  "wall_seconds_this_run": 442.9,
+  "workers": 7
  },
  "splits_percent_of_source_hash": {
   "day1": [
