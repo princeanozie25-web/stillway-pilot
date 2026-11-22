@@ -19,6 +19,9 @@ class Session:
         if procedure:
             with open(os.path.join(self.dir, ".procedure.py"), "w") as f: f.write(procedure)
 
+    def set_procedure(self, text):
+        with open(os.path.join(self.dir, ".procedure.py"), "w") as f: f.write(text)
+
     def run(self, text, mode="dsl", timeout=10.0):
         """One script.  Returns {'obs', 'ledger', 'stdout', 'error', 's'}; a crash or a timeout is an observation."""
         t0 = time.time()

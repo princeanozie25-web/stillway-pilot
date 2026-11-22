@@ -13,18 +13,22 @@ STOP = {E.TOK["EXEC"], E.TOK["DONE"], E.TOK["ASK"]}
 EDITS = ("PATCH", "REVERT", "COPY", "KEEP", "DROP", "ADD", "SKIP", "RECALC", "USE")
 
 
-def episode(model, public, limits=LIMITS, propose=None, predict=False):
+def episode(model, public, limits=LIMITS, propose=None, predict=False, procedure=None):
     """Returns a record.  `propose(tokens) -> token list` replaces the core (used for the teacher and other references)."""
     t0 = time.time(); sess = Session(public); toks = E.header(public); steps = []; end = "BUDGET"; model_s = 0.0; gen = 0; fed = 0; why = None; predict_s = 0.0
+    bank_ops = 0
     try:
-        while len(steps) < limits["calls"]:
+        if procedure:                                          # the bank goes first: one script; anything but PASS leaves the workspace as it was
+            sess.set_procedure(procedure); r = sess.run("USE"); bank_ops = sess.ops(); steps.append({"script": ["USE"], "obs": r["obs"], "s": r["s"], "error": r["error"], "bank": True, "inner": [f"{l['op']} {' '.join(l['args'])}".strip() for l in r["ledger"][:-1]]})
+            if r["obs"] == ["PASS"]: end = "DONE"
+        while len(steps) < limits["calls"] and end != "DONE":
             toks.append("ACT"); t = time.time()
             a = propose(toks) if propose else [E.VOCAB[i] for i in decode(model, E.ids(toks), STOP, limits["tokens_per_call"])]
             model_s += time.time() - t; gen += len(a); fed += len(toks)
             if a and a[-1] in ("DONE", "ASK") and len(a) == 1: end = a[0]; break
             if not a or a[-1] != "EXEC": why = "malformed script"; break
             lines = [l.strip() for l in " ".join(a[:-1]).split(";") if l.strip()]
-            if not lines or sess.ops() + len(lines) > limits["ops"]: why = "operation limit" if lines else "empty script"; break
+            if not lines or sess.ops() - bank_ops + len(lines) > limits["ops"]: why = "operation limit" if lines else "empty script"; break
             pred = None
             if predict and model is not None:                  # the effect the core expects, written down before anything runs
                 t = time.time(); pred = " ".join(E.VOCAB[i] for i in decode(model, E.ids(toks + a + ["OBS"]), {E.TOK["END"]}, 64)[:-1]).split(" | "); predict_s += time.time() - t
@@ -34,11 +38,11 @@ def episode(model, public, limits=LIMITS, propose=None, predict=False):
             toks += a + ["OBS"] + " | ".join(obs).split() + ["END"]
             if time.time() - t0 > limits["seconds"]: why = "time limit"; break
             if len(toks) > model.ctx - limits["tokens_per_call"] if model is not None else False: why = "context full"; break
-        else: why = "call limit"
+        else: why = None if end == "DONE" else "call limit"
         final = sess.files(); changed = {n: t for n, t in final.items() if public["files"].get(n) != t}; diff = sess.diff(); ops = sess.ops()
     finally: sess.close()
     exec_s = sum(s["s"] for s in steps)
-    return {"id": public["id"], "dom": public["dom"], "end": end, "why": why, "steps": steps, "changed": changed, "diff": diff, "calls": len(steps) + (end != "BUDGET"), "ops": ops,
+    return {"id": public["id"], "dom": public["dom"], "end": end, "why": why, "steps": steps, "changed": changed, "diff": diff, "calls": len(steps) + (end != "BUDGET") - (1 if procedure and end == "DONE" and len(steps) == 1 else 0), "ops": ops, "bank_ops": bank_ops,
             "edit_scripts": sum(any(l.split()[0] in EDITS for l in s["script"]) for s in steps), "failed_checks": sum(o.startswith("FAIL") for s in steps for o in s["obs"]),
             "bad_ops": sum(o in ("BAD", "ERR") for s in steps for o in s["obs"]), "tokens_out": gen, "tokens_in": fed, "model_s": round(model_s, 4), "exec_s": round(exec_s, 4), "wall_s": round(time.time() - t0, 4), "predict_s": round(predict_s, 4),
             "final_hash": hashlib.sha256(json.dumps(final, sort_keys=True).encode()).hexdigest()[:16]}

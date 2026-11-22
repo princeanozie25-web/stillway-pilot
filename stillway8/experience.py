@@ -32,9 +32,17 @@ def candidate(public, steps, verdict, exp_id, source):
         if not edits: return None
         _, m, slot, variant = edits[0].split(); role = next((o.split()[1] for s in steps for l, o in zip(s["script"], s["obs"]) if l == f"SHOW {m}"), None)
         return {"signature": signature(public, steps), "procedure": {"role": role, "slot": slot, "variant": variant}, "provenance": {"experience": exp_id, "verdict": "verified", "source": source, "recovered": reverted}}
-    sig = signature(public, steps); acts = [l.split()[0] for l in edits]
-    if not acts or len(sig["kinds"]) != len(sig["notes"]) or len(acts) != len(sig["kinds"]): return None
-    return {"signature": sig, "procedure": {"rules": [[k, n, a] for k, n, a in zip(sig["kinds"], sig["notes"], acts)]}, "provenance": {"experience": exp_id, "verdict": "verified", "source": source, "recovered": False}}
+    keys = {}; seen_diff = False                                # per key: [kind, note, action]
+    for st in steps:
+        for l, o in zip(st["script"], st["obs"]):
+            w = l.split()
+            if w[0] == "DIFF" and not seen_diff:
+                seen_diff = True
+                for item in (o.split("d ")[1:] if o != "none" else []): i = item.split(); keys[i[0]] = ["onlyS" if i[1] == "onlyS" else i[2], None, None]
+            elif w[0] == "FACT" and w[1] in keys: keys[w[1]][1] = o.split()[0]
+            elif w[0] in ("COPY", "KEEP", "DROP", "ADD", "SKIP") and o.startswith("OK") and w[1] in keys: keys[w[1]][2] = w[0]
+    if not keys or any(None in v for v in keys.values()): return None
+    return {"signature": signature(public, steps), "procedure": {"rules": sorted(keys.values())}, "provenance": {"experience": exp_id, "verdict": "verified", "source": source, "recovered": False}}
 
 
 def build(public, record, verdict, source):

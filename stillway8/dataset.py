@@ -45,6 +45,8 @@ def make(dom, split, i, group, srcs, pair=None):
     rng = _rng(dom, split, i, group); src = srcs[rng.randrange(len(srcs))] if pair is None else pair["src"]
     if dom == "proj":
         if group in ("valid", "unans"): out = W.proj_job(rng, src, group)
+        elif group == "trap":                                  # a trained fault where changing a later slot also satisfies the visible checks
+            b = proj_bug(rng, src, ["func", "dir", "cmp", "thr", "dedupe"], False); out = W.proj_job(rng, src, "trap", *b, tries=300, also=LATER_SLOTS) if b else None
         else:
             later = group.startswith("later"); b = proj_bug(rng, src, LATER_SLOTS if later else TRAIN_SLOTS, None if later else group == "newmech")
             if b is None: return None

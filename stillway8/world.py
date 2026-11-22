@@ -98,11 +98,12 @@ def proj_source(rng):
     return {"cfg": cfg, "bases": bases, "decoys": decoys}
 
 
-def proj_job(rng, src, kind, slot=None, wrong=None, tries=400):
-    """One job from a source project.  kind: valid | bug | unans.  Returns (public, hidden) or None if no data makes the
-    job well posed (exactly one one-line change makes the failing visible checks pass)."""
+def proj_job(rng, src, kind, slot=None, wrong=None, tries=400, also=()):
+    """One job from a source project.  kind: valid | bug | unans | trap.  Returns (public, hidden) or None if no data makes
+    the job well posed (exactly one one-line change makes the failing visible checks pass).  A trap is a fault for which
+    a second one-line change, in one of the slots `also`, passes every visible check too and is wrong."""
     true = src["cfg"]; cur = dict(true)
-    if kind == "bug": cur[slot] = wrong
+    if kind in ("bug", "trap"): cur[slot] = wrong
     for _ in range(tries):
         data = [rand_rows(rng, true, src["bases"]) for _ in range(2)]; asserted = [sorted(rng.sample(FIELDS, rng.randint(1, 4)), key=FIELDS.index) for _ in range(2)]
         want = [stages(true, d)["report"] for d in data]
@@ -118,6 +119,9 @@ def proj_job(rng, src, kind, slot=None, wrong=None, tries=400):
         if kind == "valid" and failing: continue
         if kind == "bug" and (not failing or fixes != [(slot, true[slot])]): continue
         if kind == "unans" and (not failing or fixes): continue
+        if kind == "trap":
+            lure = [(s, v) for s, v in fixes if s in also and passes(dict(cur, **{s: v}), [0, 1])]
+            if not failing or (slot, true[slot]) not in fixes or not lure: continue
         if max(max(r["val"], r["qty"]) for d in data for r in d) > 9: continue
         break
     else: return None
@@ -133,6 +137,7 @@ def proj_job(rng, src, kind, slot=None, wrong=None, tries=400):
     hidden = {"kind": kind, "slot": slot, "wrong": wrong, "right": true[slot] if slot else None, "true": true, "names": name,
               "tests": [{"csv": csv_text(d), "expect": stages(true, d)["report"]} for d in data + hid_data],
               "role": SLOT_ROLE.get(slot), "reported": [next(f for f in expect[i] if got[i][f] != expect[i][f]) for i in failing]}
+    if kind == "trap": hidden["lure"] = [list(x) for x in lure]
     public = {"dom": "proj", "goal": goal, "entry": name["report"], "mods": sorted(n[:-3] for n in files if n.endswith(".py")), "files": files}
     return public, hidden
 
