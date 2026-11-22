@@ -1,0 +1,43 @@
+{
+ "locked_at": "2026-11-22T06:18:48+0000",
+ "family": "codex_hidden2",
+ "input_file": "family_codex2.json",
+ "input_sha256": "8912ea1a44c785803b9b200fd0ca29cfd5a4b4167576e76056046f167b01aa6a",
+ "freeze_commit": "6cc1613b192e89e03eaffafe5cce2cd207cb3c95",
+ "git_head_at_lock": "6cc1613b192e89e03eaffafe5cce2cd207cb3c95",
+ "tracked_files_changed_since_freeze": "",
+ "code_sha256": {
+  "v06/family2.py": "2becacdca4d8c900efc0b3e03154e63e601010c51619c1f337160363b581913c",
+  "v06/report2.py": "e775b8566af991e25f33df170570934381828ccd997dbdd1a6125f356207c2c0",
+  "v05/blind.py": "f9ce895cbd2ffe445f9d32074850b38c58ad3c54d857697987351dc6ec3369cd",
+  "v06/family.py": "e3057806a811e31a91d999f1839b4dc9a0b31d4ae300907601177b63c2812ba8"
+ },
+ "code_sha256_at_freeze": {
+  "v06/family2.py": "2becacdca4d8c900efc0b3e03154e63e601010c51619c1f337160363b581913c",
+  "v06/report2.py": "e775b8566af991e25f33df170570934381828ccd997dbdd1a6125f356207c2c0",
+  "v05/blind.py": "f9ce895cbd2ffe445f9d32074850b38c58ad3c54d857697987351dc6ec3369cd",
+  "v06/family.py": "e3057806a811e31a91d999f1839b4dc9a0b31d4ae300907601177b63c2812ba8"
+ },
+ "commands": [
+  "python -I v06/family2.py /absolute/path/to/family_codex2.json --shard 0 --of 1 --seeds 3",
+  "python v06/report2.py codex_hidden2"
+ ],
+ "outputs_sha256": {
+  "results/v06r2/codex_hidden2_shard0.json": "072fbe12a5bc5a879771a07607d5a6bef4a70d787455fa72b33f0fcec5e6f4cc",
+  "results/v06r2/codex_hidden2_tables.md": "829a1c0b68cbf560807ea655001a9c76ce4595950d2056db013b1b2bb2f4b95c",
+  "results/v06r2/codex_hidden2_rules.json": "f2a1f708e0b033cf20052695e2d405fda91e604458ddbafcd53430f16f48a990",
+  "logs/v06r2_codex2_run.log": "8020191d7333f2abb2402cbcad369f99541a6936a6687945e69bfb64ac3dde70",
+  "results/v06r2/codex_hidden2_per_policy.md": "c8988c0c5a46fb6852c833514eca05d31f45eacc5b820dada9b1055174ae38b4"
+ },
+ "rule_verdicts": {
+  "M1. A repeat is found exactly within 16 audits, with no cautious error": true,
+  "M2a. An amended copy never collapses: from 16 audits on, at least as right as its original table, less 2 points (on 80% of amended copies)": true,
+  "M2b. An amended copy is learned exactly with fewer audits than from scratch": true,
+  "M2c. Cautious errors on amended copies stay at or below 1%": true,
+  "M3. On policies far from every past one the bank does no harm: audits to 99% within one doubling of scratch, and from 16 audits on never more than 3 points below scratch": true,
+  "M4. On policies far from every past one the bank helps: fewer audits to 99% than scratch": false,
+  "M5. The bank's cautious errors are no higher than scratch's on far policies": true
+ },
+ "note": "locked before the private labels of the new policies were requested or seen",
+ "code_identical_to_freeze": true
+}
