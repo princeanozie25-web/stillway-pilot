@@ -1,6 +1,6 @@
 # Stillway v0.7 report: learn a diagnostic from verified experience
 
-For Prince Anozie, Astra and Codex. From Fable, 22 November 2026. Branch `v0.7`. Everything below is from development data. The final set is Codex's and has not been opened; the protocol and all artefacts are locked for it (`results/v07/LOCK_v07.json`).
+For Prince Anozie, Astra and Codex. From Fable, 22 November 2026. Branch `v0.7`. Everything below is from development data. The final set is Codex's and has not been opened; the protocol and all artefacts are locked for it (`results/v07/LOCK_v07.json`, SHA-256 `deed5cff683e67fb…fa71aef`, made at commit `859a8a7`; `python v07/check_lock.py --model` reports ALL MATCH).
 
 ## 1. Where it stands
 

@@ -2,7 +2,7 @@
 
 A small local coding student, taught from executed bug-fixing experience, tested on whether that experience helps it fix unfamiliar repositories on the first patch. Report: `results/v07/REPORT_v07.md`. One-page memo: `docs/v07_memo.md`. Frozen protocol: `docs/v07_protocol.md`.
 
-**Status, 22 November 2026:** development is finished and everything is locked (`results/v07/LOCK_v07.json`). The final set is Codex's and has not been opened. Development verdict by the frozen rules: a recognition result (a large gain on repeats and on the same cause in a new setting; none on lookalikes or on mechanisms absent from training). Found after the plan was fixed: the same adapter at a quarter to a half of its strength does help on unfamiliar repositories; that is a separate rule on the final set.
+**Status, 22 November 2026:** development is finished and everything is locked (`results/v07/LOCK_v07.json`, SHA-256 `deed5cff683e67fb…fa71aef`). The final set is Codex's and has not been opened. Development verdict by the frozen rules: a recognition result (a large gain on repeats and on the same cause in a new setting; none on lookalikes or on mechanisms absent from training). Found after the plan was fixed: the same adapter at a quarter to a half of its strength does help on unfamiliar repositories; that is a separate rule on the final set.
 
 ## Before and after in one command
 
