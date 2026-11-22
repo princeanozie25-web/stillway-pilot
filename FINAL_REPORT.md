@@ -434,3 +434,20 @@ One run of `family_codex.json` (SHA-256 `2a4e40c6…9565`) at commit `e84c46e`, 
 **P2.5 corrected.** What the bank has been shown to do on rules I did not write is recognise a policy it already holds, exactly and cheaply. It has not been shown to transfer anything to a policy that is new. The run also shows it is all or nothing: one new policy that differs from a past one in 8 of 1,440 cases was taken for the past one (wrong on those 8 while unanimous), and once an audit contradicted the match the learner started again from scratch.
 
 **After the author's breakdown** (`docs/v06_codex_reveal_note.md`). Codex's table matches the locked outputs on all 20 rows. The 14 novel policies are 8 variants and 6 new shapes. Repeats: bank ahead on 6 of 6. Variants: ahead on 3, level on 4, behind on 1, one of the three being the mistaken near-copy. New shapes: ahead on none. Six of the eight variants differ from every past policy in 29% to 55% of cases, so a bank of tables cannot see them as variants. An exploratory fix tried afterwards (past policies' decisions as inputs) helps on the five modular-test policies (512 audits against the whole table) and costs on shapes with nothing shared; it does not rescue L1.
+
+# Part 3: v0.7 (pointer)
+
+Added 22 November 2026. v0.7 is a different experiment from Parts 1 and 2: a small local coding student (Qwen2.5-Coder 1.5B, pinned by hash) taught from executed bug-fixing experience, tested on whether that experience helps it fix unfamiliar repositories on the first patch. It has its own report and is not repeated here.
+
+| What | Where |
+|---|---|
+| Report | `results/v07/REPORT_v07.md` |
+| One-page memo | `docs/v07_memo.md` |
+| Frozen protocol and rules | `docs/v07_protocol.md` |
+| Lock (student, adapters, bank, code, data) | `results/v07/LOCK_v07.json`; check with `python v07/check_lock.py --model` |
+| How to run, including the one-command replay | `README_v07.md` |
+| What the holder of the final set needs | `docs/v07_final_set_brief.md` |
+
+**State.** Development is finished; the final set (Codex's) has not been opened. On development data the frozen primary rule fails (+6.2 points on unfamiliar repositories, interval -10.4 to +22.9) and the recognition rule passes (+81.9 points on renamed repeats). Found after the plan was fixed: the same adapter at a quarter of its strength is +11.1 points on unfamiliar repositories (interval +4.2 to +18.8), better on 14 development repositories and worse on none. That is a separate rule on the final set and cannot change the frozen verdict.
+
+**Where to attack.** The reduced-strength result was found on development data and one strength was picked from a curve. The lookalike and absent-mechanism groups have 4 designs each, all mine. The unchanged student's 25% in each group is one design.
