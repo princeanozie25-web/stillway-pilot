@@ -16,11 +16,12 @@ Fable, for Prince Anozie, 22 November 2026. Branch `v0.8`. One-page memo: `docs/
 
 | Result | Status |
 |---|---|
-| v0.7 final run: 42 raw files, 4,032 records, returned to Codex ungraded | **Done; grades pending** |
+| v0.7 final run: 42 raw files, 4,032 records, returned to Codex ungraded | **Done and graded by Codex** (see the closeout row below) |
 | v0.6 round 2 addendum by the holder's groups | **Frozen run, labels released** |
 | M2: single operations against composed scripts, Qwen 1.5B, 48 jobs | **Measured once**, development jobs, small sample |
 | M3: exec against base on the author-made holdout, three seeds | **Frozen** (protocol and nine cores locked before the run) |
-| M3 on Codex's independently authored holdout (220 jobs) | **Run once and returned ungraded** (22 arm files, 4,840 records, sealed at commit `a64d249`); grades pending |
+| M3 on Codex's independently authored holdout, revision 2 (220 jobs; the set for final inference) | **Run once and returned ungraded** (22 arm files, 4,840 records, sealed at commit `d219e97`); grades pending. Revision 1 was run and returned earlier (`a64d249`) and is not used. |
+| v0.7 blind closeout | **Closed**: recognition result by the frozen rules (branch `v0.7`, `docs/v07_blind_closeout.md`) |
 | Operating contracts for the instruction-following runner | **Development comparison**, 72 jobs, one run; the existing wording stays |
 | M3 limited-experience regime, three seeds | **Pre-specified secondary** |
 | M3 arms that separate prediction from failure records | **Exploratory**: prediction-only three seeds (two added after the first looked good), failure-only one seed |
@@ -349,7 +350,7 @@ The default seed was chosen so that the core solves both project sessions. Over 
 
 ### 6.4 Codex's independent holdout: run and returned (added later the same day)
 
-Codex's 220 jobs arrived after this report was first written. The public file's digest matched its commitment. A plan naming every arm and the scoring was committed before anything ran (`docs/v08_codex_holdout_plan.md`); 19 checkpoints, the bank, the code and the public file were locked; each arm and seed ran once on an idle machine; 22 raw files (4,840 records) were sealed with hashes, lock check and failure log at commit `a64d249` and returned (`results/v08/codex_hold/RETURN.md`). I do not hold the hidden half. No sandbox crash or timeout; 316 of 4,840 job runs ended at a limit. **Nothing in this report uses those records.** When grades return, `v08/report.py` is run once and the result is added here.
+Codex's 220 jobs arrived after this report was first written. The public file's digest matched its commitment. A plan naming every arm and the scoring was committed before anything ran (`docs/v08_codex_holdout_plan.md`); 19 checkpoints, the bank, the code and the public file were locked; each arm and seed ran once on an idle machine; 22 raw files (4,840 records) were sealed with hashes, lock check and failure log at commit `a64d249` and returned (`results/v08/codex_hold/RETURN.md`). I do not hold the hidden half. No sandbox crash or timeout; 316 of 4,840 job runs ended at a limit. **Nothing in this report uses those records.** Codex then replaced the set: revision 2 (220 new jobs, none shared with revision 1) is the one for final inference. The same 22 runs were made on it once under a second lock that agrees with the first on every checkpoint, the bank and the code, and the records were sealed and returned at commit `d219e97` (`results/v08/codex_hold_rev2/RETURN.md`). When its grades return, `v08/report.py` is run once and the result is added here.
 
 ### 6.5 Operating contracts for the instruction-following runner (development jobs only)
 

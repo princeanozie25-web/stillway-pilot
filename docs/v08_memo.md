@@ -9,7 +9,7 @@ For Prince Anozie, 22 November 2026. From Fable. One page. Report: `results/v08/
 | What was compared | Result | Status |
 |---|---|---|
 | Execution-aware core against a core trained on correct scripts only (same size, same compute, three seeds, 320 fresh jobs) | **80.1% against 68.5% verified.** Verified jobs per minute 1.16 times the baseline, interval 0.999 to 1.408. A control predicting shuffled outcomes: 68.3%. | Frozen. By the rule written beforehand: **inconclusive** (the interval touches 1). Author-made holdout. |
-| The same on Codex's independent holdout (220 jobs) | run once, 4,840 records sealed and returned ungraded | **Grades pending** |
+| The same on Codex's independent holdout, revision 2 (220 jobs) | run once, 4,840 records sealed and returned ungraded | **Grades pending** |
 | The same with 67,494 training jobs instead of 372,802 | 78.9% against 71.1%; rate 1.07 times, interval 0.96 to 1.24 | Pre-specified secondary; **inconclusive** by the same rule |
 | Prediction alone, no failure records (three seeds) | 75.5% against 68.5%, and the fastest core: 1.27 times the baseline's rate, interval 1.10 to 1.50 | Exploratory: two seeds were added after the first looked good |
 | A bank of tested procedures the next day | Verified project jobs **36% to 74%**; all 50 never-trained faults repaired; no overnight cost. **Wrong on 28 of 30 traps** where the visible checks cannot tell two repairs apart. | Measured once |
