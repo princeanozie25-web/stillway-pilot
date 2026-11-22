@@ -4,8 +4,11 @@ The gate decides BEFORE the episode which student answers: the trained one if th
 repository (TF-IDF similarity to the nearest training repository at or above the threshold), otherwise the unchanged one.
 One episode is run either way, so the inference budget is the same as every other arm.
 Threshold rule (training repositories only): for each training repository take its similarity to the nearest repository of
-the SAME design under another naming scheme, and to the nearest repository of ANY OTHER design; the threshold is the value
-that best separates the two sets (highest balanced accuracy; midpoint of the widest tied interval)."""
+the SAME design and to the nearest repository of ANY OTHER design, in both cases looking only at repositories under a
+DIFFERENT naming scheme (a new repository never shares a naming scheme with training); the threshold is the value that best
+separates the two sets (highest balanced accuracy; midpoint of the widest tied interval).
+First version of the rule (commit d5e4ca2) let the other-design neighbour share the naming scheme; shared names then
+outweighed design (balanced accuracy 0.50), so the rule was corrected here, still before any development score was computed."""
 import glob, json, os, sys
 import numpy as np
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -15,10 +18,10 @@ def sims(repo): return (R.M @ R.vec.transform([BK.query_text(repo)]).T).toarray(
 if len(sys.argv) == 1:
     same, other = [], []
     for i, t in enumerate(R.tasks):
-        s = sims(t["repo"]); same.append(max(s[j] for j, u in enumerate(R.tasks) if j != i and u["template"] == t["template"])); other.append(max(s[j] for j, u in enumerate(R.tasks) if u["template"] != t["template"]))
+        s = sims(t["repo"]); same.append(max(s[j] for j, u in enumerate(R.tasks) if u["skin"] != t["skin"] and u["template"] == t["template"])); other.append(max(s[j] for j, u in enumerate(R.tasks) if u["template"] != t["template"] and u["skin"] != t["skin"]))
     same, other = np.array(same), np.array(other); cand = np.unique(np.concatenate([same, other])); mids = (cand[:-1] + cand[1:]) / 2; acc = np.array([((same >= c).mean() + (other < c).mean()) / 2 for c in mids]); best = np.flatnonzero(acc == acc.max())
     tau = float((mids[best[0]] + mids[best[-1]]) / 2)
-    json.dump({"threshold": round(tau, 4), "rule": "best balanced accuracy between same-design and other-design nearest similarities, training repositories only", "balanced_accuracy_on_training": round(float(acc.max()), 4),
+    json.dump({"threshold": round(tau, 4), "rule": "best balanced accuracy between same-design and other-design nearest similarities under a different naming scheme, training repositories only", "balanced_accuracy_on_training": round(float(acc.max()), 4),
                "same_design_similarity": {"min": round(float(same.min()), 3), "median": round(float(np.median(same)), 3)}, "other_design_similarity": {"median": round(float(np.median(other)), 3), "max": round(float(other.max()), 3)}}, open(GATE, "w"), indent=1)
     print(open(GATE).read()); sys.exit()
 gdir, out = sys.argv[1], sys.argv[2]; tau = json.load(open(GATE))["threshold"]; runs = {}
