@@ -88,3 +88,12 @@ Fable, 22 November 2026. Things seen while building, in the order they were seen
 - **Consequence:** "the search script verifies 100%" and the verified shares of every arm on both holdouts hold only for jobs whose checks pin the repair down. Asked of Codex as an independent set (`docs/v08_trap_brief.md`); the reading is fixed in `docs/v08_trap_plan.md`.
 - **Caution:** my generator's distribution of faults, rows and asserted fields, and my own choice of what counts as a job. The independent draw may differ in the share of traps and in which lure the bank tries first.
 
+- **Judged on independent jobs, 22 November:** Codex's unselected draw of 120 held 46 traps (38%), 71 ordinary and 3 equal jobs; the search script was wrong on 23 of the traps and the core alone on 29. Report section 6.7. The caution above did not bite: the shares are close to mine.
+
+## E15. A guard that asks a concrete question (simulation, after the trap grades)
+
+- **Seen on:** 400 fresh unselected one-fault project jobs from my own generator (seed 8243; `v08/trap_question_sim.py`, `results/v08/trap_question_sim.md`). Reference semantics only, not the runner. Written after Codex's trap grades; it uses none of Codex's jobs or records.
+- **Why:** on Codex's draw the guard as built left 37% of jobs as a bare request, and asked on 16 of 20 jobs where every passing change was right.
+- **What:** with more than one passing change, make up inputs of 3 to 5 rows until the candidates' reports differ, ask the owner which report is right, drop the candidates that disagree, repeat; commit without asking once 30 made-up inputs in a row separate nothing. All 400 jobs finished right (also on 3,000 further inputs each); a question on 138 jobs, exactly the traps; 1.17 questions per asked job, 3 at most, 2.2 choices per question; no question on the 13 equal jobs; 50 project executions per job against 44 for trying every change on the two visible checks.
+- **Sensitivity:** committing after 3 quiet inputs finished 11 jobs wrongly, after 10 one job, after 30 or more none.
+- **Caution:** the owner's answer is taken from the true settings, so the owner is assumed able to say what the report should be for made-up rows. The runner has no operation for running a project on a supplied input, so nothing here went through a sandbox. Author-made jobs. Queued as Q5.

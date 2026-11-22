@@ -9,8 +9,9 @@ Fable, for Prince Anozie, 22 November 2026. Branch `v0.8`. One-page memo: `docs/
 - **Graded blind by Codex on 220 jobs Codex wrote (added last, section 6.6):** the execution-aware core verified **75.0%** against **61.5%** for the baseline (three seeds each) and **1.22 times** its verified jobs per minute, interval 1.005 to 1.574. By the frozen rule that is a **WIN**, by a thin margin. The shuffled-outcome control scored 61.8%. The limited-experience regime and the prediction-only core, both named before the run, pass the same rule.
 - On my own holdout the same cores gave **80.1%** against **68.5%** and 1.16 times the rate, interval 0.999 to 1.408: **inconclusive** by the same rule. The two holdouts agree on the size of the effect and fall either side of the line. With 67,494 training jobs instead of 372,802 the picture on my holdout is the same (78.9% against 71.1%; also inconclusive).
 - A core trained only to predict observations, with no failure records, was the fastest core on both holdouts (1.27 and 1.34 times the baseline's rate). It answers more often and is wrong more often than the execution-aware core.
-- A fixed search script of about 20 lines, with no model, verified 100% of both holdouts five times faster. The learnt core only costs less per verified job when one operation costs more than about 24 ms (32 ms on Codex's set).
-- A bank of tested procedures, promoted from one day's verified experience and run as scripts, doubled verified project jobs the next day (36% to 74%) at no overnight cost, and on Codex's jobs raised the same core from 74.1% to 94.1%. Overnight weight updates changed the next day's verified jobs by between −1 and +4 per 100 and each lost 6 to 11 jobs the core used to get right. The bank was wrong on 28 of 30 of my jobs where the visible checks could not tell two repairs apart, unless it was made to ask; Codex's set had no such jobs.
+- A fixed search script of about 20 lines, with no model, verified 100% of both holdouts five times faster. The learnt core only costs less per verified job when one operation costs more than about 24 ms (32 ms on Codex's set). Both holdouts held only jobs whose visible checks pin the repair down; on unselected jobs the same script was wrong on 19% and never asked (next point).
+- A bank of tested procedures, promoted from one day's verified experience and run as scripts, doubled verified project jobs the next day (36% to 74%) at no overnight cost, and on Codex's jobs raised the same core from 74.1% to 94.1%. Overnight weight updates changed the next day's verified jobs by between −1 and +4 per 100 and each lost 6 to 11 jobs the core used to get right. The bank was wrong on 28 of 30 of my jobs where the visible checks could not tell two repairs apart, unless it was made to ask; Codex's holdout had no such jobs.
+- **Trap set, written and graded blind by Codex (added last, section 6.7):** in 120 unselected one-fault jobs, 46 (38%) were traps, where another one-line change passes both visible checks and is wrong. The plain bank ended 35 of the 120 with a wrong answer, the guarded bank 6, at a price of 9 fewer verified jobs (79 to 70) and 44 jobs returned as a request. By the reading fixed beforehand: **GUARDED BANK STANDS**. The search script was wrong on 23 and the core alone on 61.
 
 ## Status of every result
 
@@ -21,13 +22,14 @@ Fable, for Prince Anozie, 22 November 2026. Branch `v0.8`. One-page memo: `docs/
 | M2: single operations against composed scripts, Qwen 1.5B, 48 jobs | **Measured once**, development jobs, small sample |
 | M3: exec against base on the author-made holdout, three seeds | **Frozen** (protocol and nine cores locked before the run) |
 | M3 on Codex's independently authored holdout, revision 2 (220 jobs; the set for final inference) | **Frozen, graded blind by Codex**: run once, sealed at `d219e97` before grading, grades received and committed as received at `f40318c`, report run once (section 6.6). Revision 1 was run and returned earlier (`a64d249`) and is not used. |
+| Trap set: 137 one-fault project jobs written by Codex, 120 of them an unselected draw | **Frozen reading, graded blind by Codex**: plan and reading fixed before the set existed (`docs/v08_trap_plan.md`), run once, sealed at `1a8f2cf` before grading, grades committed as received at `6e255d6`, report run once (section 6.7). One core seed, one bank. |
 | v0.7 blind closeout | **Closed**: recognition result by the frozen rules (branch `v0.7`, `docs/v07_blind_closeout.md`) |
 | Operating contracts for the instruction-following runner | **Development comparison**, 72 jobs, one run; the existing wording stays |
 | M3 limited-experience regime, three seeds | **Pre-specified secondary** |
 | M3 arms that separate prediction from failure records | **Exploratory**: prediction-only three seeds (two added after the first looked good), failure-only one seed |
 | M4 audit mixing | **Frozen selection rule**, one run on a fresh family |
 | M4 bank, overnight updates, day 2 | **Measurement**, settings chosen on a dry run with a pilot core; day 2 redrawn before the real run |
-| M4 guarded bank | **Exploratory**, added after seeing the trap result |
+| M4 guarded bank | **Exploratory** on my jobs, added after seeing the trap result there; then tested unchanged on Codex's trap set (row above) |
 | M5 latent updates | **Exploratory**, one seed, development set |
 
 ---
@@ -436,12 +438,97 @@ On Codex's set the project gain follows prediction of true outcomes, and the tab
 - The bank result holds on independently written jobs. Its known weakness was not tested there.
 - Nothing changes about the search script: in this world it is still the cheap way.
 
+### 6.7 Codex's trap set: jobs whose visible checks may not pin the repair down (added after the grades came back)
+
+Both holdouts refused any job where a second one-line change passed the visible checks, so wrong reuse could not show there. Codex wrote a third set to the brief `docs/v08_trap_brief.md`: 120 consecutive one-fault project jobs kept without that filter (131 further draws had no failing visible check and were not jobs), plus 17 added jobs of the rare "equal" class. The classes were assigned by execution in `v08/pack_traps.py`. The plan, the four arms and the reading were fixed before the set existed (`docs/v08_trap_plan.md`); the set was run once, sealed and graded by Codex. My tables equal Codex's in every cell.
+
+| Class | In the draw of 120 | Meaning |
+|---|---|---|
+| Ordinary | 71 (59%) | the repair is the only one-line change that passes both visible checks |
+| Trap | 46 (38%) | another one-line change passes both and behaves differently on other inputs |
+| Equal | 3 (2.5%), 20 with the top-ups | other changes pass and behave like the repair on every input tried |
+
+**The unselected draw, 120 jobs** (execution-aware core seed 1 in every arm that has a core; `results/v08/codex_trap_tables.md`, `codex_trap_extra.md`):
+
+| Arm | Verified | Wrong DONE | Asked, nothing changed | Wrong among its DONE endings | Operations per job | Verified jobs per minute |
+|---|---|---|---|---|---|---|
+| Core alone | 43 (36%) | 61 (51%) | 15 | 59% | 16.0 | 48 |
+| Core with the plain bank | 79 (66%) | 35 (29%) | 6 | 31% | 22.4 | 203 |
+| Core with the guarded bank | 70 (58%) | 6 (5%) | 44 (37%) | 8% | 81.8 | 257 |
+| Search script, no model | 97 (81%) | 23 (19%) | 0 | 19% | 43.5 | 564 |
+
+The core alone also ran out of limits once.
+
+**By class, all 137 jobs** (verified / wrong DONE / asked):
+
+| Arm | Trap (46) | Ordinary (71) | Equal (20) |
+|---|---|---|---|
+| Core alone | 7 / 29 / 10 | 36 / 30 / 4 | 1 / 17 / 2 |
+| Plain bank | 16 / 25 / 5 | 61 / 9 / 1 | 10 / 9 / 1 |
+| Guarded bank | 2 / 3 / 41 | 68 / 3 / 0 | 0 / 3 / 17 |
+| Search script | 23 / 23 / 0 | 71 / 0 / 0 | 20 / 0 / 0 |
+
+**The reading fixed beforehand.**
+
+| Step | Measured | Result | Threshold |
+|---|---|---|---|
+| A | Traps the plain bank itself ended with a wrong DONE | 16 of 46, 34.8% (23 to 49) | 10% or less would make the guard unnecessary |
+| B | Traps the guarded bank itself ended with a wrong DONE | 0 of 46 (0 to 8) | more than 10% would fail it |
+| B | Ordinary jobs the guarded bank itself ended by asking | 0 of 71 (0 to 5) | more than 50% would fail it |
+| C | On the draw, whole arm, guarded against plain | 29 wrong DONEs prevented (35 to 6) for 9 verified jobs forgone (79 to 70): break-even 0.31 | above 3, or nothing prevented, would make it too costly |
+
+**Verdict: GUARDED BANK STANDS.** The guard pays whenever one wrong answer costs more than a third of a lost completion.
+
+**The four predictions written before the set existed all held:** traps 38% of the draw (predicted 25% to 50%); plain bank itself wrong on 34.8% of traps (20% to 45%); this verdict with a break-even below 1 (0.31); search script wrong on 50% of traps (a third to a half, at the upper edge). My own dry run of 400 jobs had given 36%, 28.7%, 0.51 and 44%.
+
+**What the breakdowns add** (descriptive; `results/v08/codex_trap_extra.md`):
+
+- **The guarded procedure itself never ended a job wrongly** (0 of 125 jobs it ended). All 9 wrong answers in that arm came from the 12 jobs the bank declined and the core then finished.
+- **When the plain bank committed on a trap it was wrong more often than right**: 16 wrong, 13 right. Its 13 were right because the gate's first choice happened to be the repair.
+- **The guard's cost is on jobs where the plain bank was right without knowing why.** On ordinary jobs the guard gained 7 (61 to 68) because it tries every stored change. It gave up 14 verified traps and all 10 verified equal jobs.
+- **Unnecessary requests.** The guarded procedure asked on 16 of the 20 equal jobs, where any passing change was right. In an unselected draw these are 1 job in 40.
+- **Audit asked for by Codex:** 81 endings by asking across the arms; none changed a file. Codex's own audit says the same.
+- **The search script is not safe on unselected jobs.** It finished every job and was wrong on half the traps, 19% of the draw. The statement "100% at five times the speed" holds only where the visible checks pin the repair down.
+- **The core alone was wrong on 59% of its answers** in the draw. On the ordinary jobs it verified 51%, close to its 54% on the project jobs of Codex's holdout.
+- **By fault slot,** half the traps (27 of 46) are threshold and comparison faults, where a neighbouring threshold or comparison fits two small visible inputs equally well.
+
+**What the guard is, said plainly.** The stored entries cover every one-line change of all eight settings, so the guarded procedure is an exhaustive search over one-line changes that refuses to commit when more than one passes. By the definition of the classes, the search script given the same rule would finish the 71 ordinary jobs, ask on the other 49 and be wrong on none; that is a deduction, not a run. What this set establishes is the rule (count the changes that pass before committing), at 82 operations per job against 22 for the plain bank. The bank's ordering is what made reuse cheap, and the cheap form is the unsafe one.
+
+**A further step, tried in simulation only** (exploratory, author-made, after the grades; `v08/trap_question_sim.py`, `results/v08/trap_question_sim.md`, exploratory log E15). A bare request leaves 37% of the draw unfinished. A guard that makes up a small input on which the remaining candidates disagree, and asks the owner which report is right for it, was simulated on 400 fresh jobs from my own generator (249 ordinary, 13 equal, 138 trap), on the reference semantics, not through the runner:
+
+| | The guard as built | The questioning guard (commits after 30 made-up inputs fail to separate what is left) |
+|---|---|---|
+| Finished right | 249 (62%) | 400 (100%) |
+| Finished wrong | 0 | 0 |
+| Left as a bare request | 151 | 0 |
+| Jobs with a question | n/a | 138 (34%): the trap jobs and no others |
+| Questions per job asked | n/a | 1.17 on average, 3 at most; 2.2 choices per question |
+| Questions on equal jobs | asks on all 13 | 0 |
+| Project executions per job | 44 | 50 |
+
+It rests on two things this version does not have: an operation that runs the project on an input the solver made up, and an owner who can say what the report should be for 3 to 5 made-up rows. With 3 made-up inputs instead of 30 it finished 11 jobs wrongly.
+
+**Disclosures.**
+
+- I do not hold the hidden half. Classes and outcomes are Codex's grading with the frozen grader; Codex reports substituting an isolated Linux Python for the macOS launcher when executing the generated modules.
+- Codex saw the aggregate table of my dry run, which is printed in the plan, and reports that the bank file, the per-job dry-run files and log entry E14 were not opened.
+- The machine was not idle during the run (macOS indexing and iCloud sync). Counts are unaffected; seconds per job may be slightly high for every arm.
+- Step C and its threshold of 3 were written after my own dry run and before Codex's set existed.
+- One core seed and one bank.
+
+**What changes in the conclusions.**
+
+- The guard is no longer exploratory: it was tested unchanged on independent jobs against a reading fixed beforehand, and stands.
+- "The search script is the cheap way" now carries a condition: where checks pin the repair down. On unselected jobs it is the fastest and finishes the most, and one answer in five is wrong.
+- Nearly two in five unselected faulty jobs in this world cannot be decided from the visible checks by any solver. The right ending there is a request, and the useful request is a concrete one.
+
 ## 7. Limits
 
 - **Two holdouts, one generator design.** I wrote the generator of the first. Codex wrote the jobs of the second independently, to the brief I supplied, so both live in the same world of one-line faults.
 - **The win on Codex's set is by a hair** (lower end of the interval 1.005, 21 families). A third set could land either side.
 - **A generated world.** Faults are one line from a fixed table; a job is well posed by construction; numbers stop at 63. Nothing here shows that the result carries to real repositories or real ledgers.
-- **Both holdouts hold only jobs whose checks pin the repair down.** In an unselected draw from my own generator 36% of faulty jobs were traps (another one-line change passes both checks and is wrong); on those the search script was wrong 44% of the time and never asked (exploratory log E14). An independent set of unselected jobs has been asked of Codex (`docs/v08_trap_brief.md`).
+- **Both holdouts hold only jobs whose checks pin the repair down.** Codex's unselected draw (section 6.7) shows what that leaves out: 38% of faulty jobs there were traps, and the search script was wrong on half of them.
+- **The trap set is one core seed, one bank, 120 unselected jobs,** in the same one-line-fault world. "Equal" means equal on 3,000 random inputs inside the world's limits. What a request costs the owner was not measured; the report gives the break-even (0.31) so another price can be applied.
 - **Visible checks decide too much.** Where they pin the repair down, a search script wins; where they do not, everything that trusts them is wrong. The interesting region, expensive checks that under-determine, is only touched by the trap set.
 - **Timing depends on my runner.** A process per script costs about 45 ms. A runner that kept a process alive would change every jobs-per-minute figure, though not the verified shares.
 - **One development look at the primary cores** (seed 1, development set) happened before the lock; nothing was changed after it.
@@ -459,6 +546,7 @@ On Codex's set the project gain follows prediction of true outcomes, and the tab
 | Data provenance | `data/v08/MANIFEST.json`; job sets under `data/v08/` |
 | One-command smoke demo | `python v08/demo.py --smoke` |
 | Per-task outcomes and costs | `results/v08/hold/core/*.graded.jsonl`, `results/v08/m2/`, `results/v08/m4/day2/` |
+| Codex's trap set, graded | `results/v08/codex_trap/` (sealed records, Codex's graded files, tables and audit note), `results/v08/codex_trap_tables.md`, `codex_trap_extra.md`; plan `docs/v08_trap_plan.md`; simulation `results/v08/trap_question_sim.md` |
 | Codex's holdout, graded | `results/v08/codex_hold_rev2/` (sealed records, Codex's graded files and tables), `results/v08/codex_hold_rev2_*_tables.md`, `codex_hold_rev2_extra.md` |
 | Tables | `results/v08/hold_core_tables.md`, `m2_tables.md`, `m4_tables.md`, `m4_audit_mix_*.md`, `hold_op_price.md` |
 | Decision memo | `docs/v08_memo.md` |
