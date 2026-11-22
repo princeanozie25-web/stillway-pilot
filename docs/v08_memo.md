@@ -38,10 +38,11 @@ For Prince Anozie, 22 November 2026. From Fable. One page. Report: `results/v08/
 - "If the rate interval clears 1.00, the claim strengthens." It cleared, at 1.005.
 - The test of the guarded bank needed jobs where two changes pass the visible checks. Codex's set has none, so that recommendation is untested on independent jobs.
 
-**The cheapest experiment that could overturn this now.** Ask Codex for about 40 project jobs where two one-line changes both pass the visible checks and only the hidden test tells them apart, mixed with 40 ordinary ones, and run the plain and the guarded bank on them once (about 5 minutes of machine time; nothing to train).
+**The cheapest experiment that could overturn this now.** Ask Codex for about 150 one-fault project jobs drawn without filtering on whether the visible checks pin the repair down, and run the core, the plain bank, the guarded bank and the search script on them once (about 5 minutes of machine time; nothing to train). Brief: `docs/v08_trap_brief.md`. Reading fixed beforehand: `docs/v08_trap_plan.md`.
 
-- If the plain bank is not wrong there, the guard is unnecessary and the cheaper bank is the recommendation.
-- If the guarded bank asks on most ordinary jobs or misses the traps, the bank recommendation falls and reuse needs the evidence test queued as Q1 in `docs/followup_queue.md`.
+- If the plain bank itself is wrong on 10% or fewer of the traps, the guard is unnecessary and the cheaper bank is the recommendation.
+- If the guarded bank misses traps, asks on most ordinary jobs, or forgoes more than three completions per wrong answer prevented, the bank recommendation falls and reuse needs the evidence test queued as Q1 in `docs/followup_queue.md`.
+- A dry run on 400 jobs drawn from my own generator found 36% of them to be traps, which both holdouts had excluded. On those the search script was wrong on 44% and the core alone on 69% (`results/v08/trap_dry_tables.md`; exploratory, author-made).
 
 **Added later the same day.** A comparison of four wordings of the runner's instructions on 72 development jobs kept the existing one (`docs/v08_operating_contracts.md`). Codex's first holdout was run and returned, then replaced by revision 2; only revision 2 is used.
 

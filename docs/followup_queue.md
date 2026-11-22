@@ -25,7 +25,7 @@ Kept on branch `v0.8`. Ideas that came out of finished runs and need their own p
 
 - **Where it comes from.** Codex's revision-2 holdout confirmed the bank's gain on independent jobs (the same core from 74.1% to 94.1% verified) but contains no job where two repairs pass the visible checks, so the bank's wrong reuse (28 of 30 on my trap set) was neither confirmed nor contradicted.
 - **The question.** On independently written jobs, is the plain bank wrong where the checks under-determine the repair, and does the guard cost more than it saves?
-- **What to run.** About 40 project jobs where two one-line changes pass the visible checks and only the hidden test tells them apart, mixed with 40 ordinary ones; the plain and the guarded bank, once each. About 5 minutes of machine time, nothing to train. It is the first step of Q1 and uses the bank as it stands.
+- **What to run.** Widened while preparing it: an unselected draw of 120 one-fault project jobs from Codex, topped up to 40 traps and 20 jobs with several equally right repairs; the core alone, the plain bank, the guarded bank and the search script, once each. Brief: `docs/v08_trap_brief.md`. Plan and reading fixed beforehand: `docs/v08_trap_plan.md`. Packer and report: `v08/pack_traps.py`, `v08/trap_report.py`. **Status: brief written and sent to Prince for Codex, 22 November; waiting for the set.**
 
 ### Q4. The frozen rule on a third set with more task families
 

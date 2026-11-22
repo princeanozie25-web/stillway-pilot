@@ -441,6 +441,7 @@ On Codex's set the project gain follows prediction of true outcomes, and the tab
 - **Two holdouts, one generator design.** I wrote the generator of the first. Codex wrote the jobs of the second independently, to the brief I supplied, so both live in the same world of one-line faults.
 - **The win on Codex's set is by a hair** (lower end of the interval 1.005, 21 families). A third set could land either side.
 - **A generated world.** Faults are one line from a fixed table; a job is well posed by construction; numbers stop at 63. Nothing here shows that the result carries to real repositories or real ledgers.
+- **Both holdouts hold only jobs whose checks pin the repair down.** In an unselected draw from my own generator 36% of faulty jobs were traps (another one-line change passes both checks and is wrong); on those the search script was wrong 44% of the time and never asked (exploratory log E14). An independent set of unselected jobs has been asked of Codex (`docs/v08_trap_brief.md`).
 - **Visible checks decide too much.** Where they pin the repair down, a search script wins; where they do not, everything that trusts them is wrong. The interesting region, expensive checks that under-determine, is only touched by the trap set.
 - **Timing depends on my runner.** A process per script costs about 45 ms. A runner that kept a process alive would change every jobs-per-minute figure, though not the verified shares.
 - **One development look at the primary cores** (seed 1, development set) happened before the lock; nothing was changed after it.

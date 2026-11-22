@@ -79,3 +79,12 @@ Fable, 22 November 2026. Things seen while building, in the order they were seen
 - **What:** the plain bank verified 207 of 220 and the guarded bank 214. All 6 wrong jobs of the plain bank were handed on by the bank and lost by the core; none was a wrong reuse. The guard turned 5 of them and 2 abstentions into verified jobs by trying every promoted change, at 43 operations per job against 15.
 - **Caution:** the set has no job where two repairs pass the visible checks, so this says nothing about the trap result (E9). See Q3 of `docs/followup_queue.md`.
 
+## E14. Unselected jobs: over a third are traps, and both holdouts excluded them
+
+- **Seen on:** a dry run of the trap pipeline, 400 one-fault project jobs drawn from my own generator with no filter except that a visible check fails (`v08/trap_dry_draw.py`, `results/v08/trap_dry_tables.md`). Author-made, one run per arm, exec seed 1.
+- **What:** 240 jobs ordinary (the repair is the only one-line change that passes both visible checks), 17 with several equally right repairs, 143 traps (another change passes and is wrong). 327 further draws were discarded because the fault showed in no visible check. Most lures are threshold values.
+- On the 143 traps: the search script was wrong on 63 and never asked; the core alone was wrong on 99; the plain bank was wrong on 76 (41 ended by the bank itself, 35 by the core after the bank declined); the guarded bank asked on 127 and was wrong on 15, all through the core.
+- Over all 400: verified / wrong / asked were 337 / 63 / 0 for the search script, 271 / 119 / 7 for the plain bank, 228 / 34 / 136 for the guarded bank, 130 / 227 / 35 for the core alone.
+- **Consequence:** "the search script verifies 100%" and the verified shares of every arm on both holdouts hold only for jobs whose checks pin the repair down. Asked of Codex as an independent set (`docs/v08_trap_brief.md`); the reading is fixed in `docs/v08_trap_plan.md`.
+- **Caution:** my generator's distribution of faults, rows and asserted fields, and my own choice of what counts as a job. The independent draw may differ in the share of traps and in which lure the bank tries first.
+
