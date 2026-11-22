@@ -1,0 +1,47 @@
+"""One job with the small core, through the runner.  The same loop serves every arm of every experiment.
+
+The core is asked for one script at a time (tokens up to EXEC), the runner executes it in the sandbox, the observations
+are appended, and so on until the core says DONE or ASK or a limit is reached.  Nothing here sees a hidden file; the
+record it returns holds only what a grader needs later (the final files) and what was spent."""
+import hashlib, json, time
+from stillway8 import expert as E
+from stillway8.model import decode
+from stillway8.runner import Session
+
+LIMITS = {"calls": 16, "ops": 48, "seconds": 20.0, "tokens_per_call": 40}
+STOP = {E.TOK["EXEC"], E.TOK["DONE"], E.TOK["ASK"]}
+EDITS = ("PATCH", "REVERT", "COPY", "KEEP", "DROP", "ADD", "SKIP", "RECALC", "USE")
+
+
+def episode(model, public, limits=LIMITS, propose=None, predict=False):
+    """Returns a record.  `propose(tokens) -> token list` replaces the core (used for the teacher and other references)."""
+    t0 = time.time(); sess = Session(public); toks = E.header(public); steps = []; end = "BUDGET"; model_s = 0.0; gen = 0; fed = 0; why = None; predict_s = 0.0
+    try:
+        while len(steps) < limits["calls"]:
+            toks.append("ACT"); t = time.time()
+            a = propose(toks) if propose else [E.VOCAB[i] for i in decode(model, E.ids(toks), STOP, limits["tokens_per_call"])]
+            model_s += time.time() - t; gen += len(a); fed += len(toks)
+            if a and a[-1] in ("DONE", "ASK") and len(a) == 1: end = a[0]; break
+            if not a or a[-1] != "EXEC": why = "malformed script"; break
+            lines = [l.strip() for l in " ".join(a[:-1]).split(";") if l.strip()]
+            if not lines or sess.ops() + len(lines) > limits["ops"]: why = "operation limit" if lines else "empty script"; break
+            pred = None
+            if predict and model is not None:                  # the effect the core expects, written down before anything runs
+                t = time.time(); pred = " ".join(E.VOCAB[i] for i in decode(model, E.ids(toks + a + ["OBS"]), {E.TOK["END"]}, 64)[:-1]).split(" | "); predict_s += time.time() - t
+            before = sess.files() if predict else None
+            r = sess.run("\n".join(lines)); obs = r["obs"]; steps.append({"script": lines, "obs": obs, "s": r["s"], "error": r["error"]})
+            if predict: now = sess.files(); steps[-1].update(predicted=pred, changed_files=sorted(n for n in now if now[n] != before.get(n)))
+            toks += a + ["OBS"] + " | ".join(obs).split() + ["END"]
+            if time.time() - t0 > limits["seconds"]: why = "time limit"; break
+            if len(toks) > model.ctx - limits["tokens_per_call"] if model is not None else False: why = "context full"; break
+        else: why = "call limit"
+        final = sess.files(); changed = {n: t for n, t in final.items() if public["files"].get(n) != t}; diff = sess.diff(); ops = sess.ops()
+    finally: sess.close()
+    exec_s = sum(s["s"] for s in steps)
+    return {"id": public["id"], "dom": public["dom"], "end": end, "why": why, "steps": steps, "changed": changed, "diff": diff, "calls": len(steps) + (end != "BUDGET"), "ops": ops,
+            "edit_scripts": sum(any(l.split()[0] in EDITS for l in s["script"]) for s in steps), "failed_checks": sum(o.startswith("FAIL") for s in steps for o in s["obs"]),
+            "bad_ops": sum(o in ("BAD", "ERR") for s in steps for o in s["obs"]), "tokens_out": gen, "tokens_in": fed, "model_s": round(model_s, 4), "exec_s": round(exec_s, 4), "wall_s": round(time.time() - t0, 4), "predict_s": round(predict_s, 4),
+            "final_hash": hashlib.sha256(json.dumps(final, sort_keys=True).encode()).hexdigest()[:16]}
+
+
+def final_files(public, record): return {**public["files"], **record["changed"]}

@@ -1,0 +1,142 @@
+{
+ "experience": "x-tab-fixture-7a068270c5bf-8cbfb5aa",
+ "job": "tab-fixture-7a068270c5bf",
+ "source": "teacher",
+ "goal": "tab GOAL reconcile",
+ "initial": {
+  "files": {
+   "ignored.csv": "key\n",
+   "job.json": "{\"dom\": \"tab\", \"goal\": \"reconcile\"}\n",
+   "ledger.csv": "key,grp,amt,st\nk1,g0,6,open\nk2,g2,4,open\nk4,g1,7,open\nk6,g2,6,open\n",
+   "notes.csv": "key,note\nk0,dupstmt\nk6,stmt_newer\nk7,dupstmt\n",
+   "statement.csv": "key,amt\nk0,7\nk1,6\nk2,4\nk4,7\nk6,4\nk7,4\n",
+   "summary.csv": "grp,total\ng0,6\ng1,7\ng2,10\n"
+  },
+  "sha256": "7a068270c5bf979d796a433fecd05a79293854534442c4689060cb979b69f9de"
+ },
+ "steps": [
+  {
+   "script": [
+    "DIFF",
+    "CHECK c0"
+   ],
+   "obs": [
+    "d k0 onlyS n7 d k6 g2 amt n6 n4 d k7 onlyS n4",
+    "PASS"
+   ],
+   "s": 0.0475,
+   "error": null
+  },
+  {
+   "script": [
+    "FACT k0",
+    "FACT k6",
+    "FACT k7"
+   ],
+   "obs": [
+    "dupstmt",
+    "stmt_newer",
+    "dupstmt"
+   ],
+   "s": 0.0419,
+   "error": null
+  },
+  {
+   "script": [
+    "SKIP k0",
+    "COPY k6",
+    "SKIP k7",
+    "RECALC g2",
+    "CHECK c0",
+    "CHECK c1"
+   ],
+   "obs": [
+    "OK",
+    "OK",
+    "OK",
+    "OK n8",
+    "PASS",
+    "PASS"
+   ],
+   "s": 0.0452,
+   "error": null
+  }
+ ],
+ "end": "DONE",
+ "why": null,
+ "diff": {
+  "ignored.csv": [
+   "+k0",
+   "+k7"
+  ],
+  "ledger.csv": [
+   "-k6,g2,6,open",
+   "+k6,g2,4,open"
+  ],
+  "summary.csv": [
+   "-g2,10",
+   "+g2,8"
+  ]
+ },
+ "final_sha256_16": "6b32d2edec287094",
+ "verdict": {
+  "outcome": "verified",
+  "detail": {
+   "ledger": true,
+   "summary": true,
+   "unchanged": false
+  }
+ },
+ "compute": {
+  "calls": 4,
+  "ops": 11,
+  "tokens_in": 159,
+  "tokens_out": 33,
+  "model_s": 0.0,
+  "exec_s": 0.1346,
+  "wall_s": 0.1364,
+  "predict_s": 0.0,
+  "failed_checks": 0,
+  "edit_scripts": 1
+ },
+ "memory_candidate": {
+  "signature": {
+   "dom": "tab",
+   "kinds": [
+    "onlyS",
+    "amt",
+    "onlyS"
+   ],
+   "notes": [
+    "dupstmt",
+    "stmt_newer",
+    "dupstmt"
+   ]
+  },
+  "procedure": {
+   "rules": [
+    [
+     "onlyS",
+     "dupstmt",
+     "SKIP"
+    ],
+    [
+     "amt",
+     "stmt_newer",
+     "COPY"
+    ],
+    [
+     "onlyS",
+     "dupstmt",
+     "SKIP"
+    ]
+   ]
+  },
+  "provenance": {
+   "experience": "x-tab-fixture-7a068270c5bf-8cbfb5aa",
+   "verdict": "verified",
+   "source": "teacher",
+   "recovered": false
+  }
+ }
+}

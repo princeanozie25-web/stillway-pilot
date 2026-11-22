@@ -1,0 +1,79 @@
+{
+ "experience": "x-tab-fixture-a7accdadfe21-a16f1aed",
+ "job": "tab-fixture-a7accdadfe21",
+ "source": "constructed: accept every difference",
+ "goal": "tab GOAL reconcile",
+ "initial": {
+  "files": {
+   "ignored.csv": "key\n",
+   "job.json": "{\"dom\": \"tab\", \"goal\": \"reconcile\"}\n",
+   "ledger.csv": "key,grp,amt,st\nk0,g1,9,open\nk1,g1,9,open\nk7,g2,2,open\n",
+   "notes.csv": "key,note\nk1,stmt_newer\n",
+   "statement.csv": "key,amt\nk0,9\nk1,8\nk7,2\n",
+   "summary.csv": "grp,total\ng0,0\ng1,18\ng2,2\n"
+  },
+  "sha256": "a7accdadfe21ab9fce5677e8448411a666ad1dd7ec1af160c6628b39699109d2"
+ },
+ "steps": [
+  {
+   "script": [
+    "DIFF"
+   ],
+   "obs": [
+    "d k1 g1 amt n9 n8"
+   ],
+   "s": 0.0432,
+   "error": null
+  },
+  {
+   "script": [
+    "KEEP k1",
+    "RECALC g0",
+    "RECALC g1",
+    "RECALC g2",
+    "CHECK c0",
+    "CHECK c1"
+   ],
+   "obs": [
+    "OK",
+    "OK n0",
+    "OK n18",
+    "OK n2",
+    "PASS",
+    "PASS"
+   ],
+   "s": 0.0449,
+   "error": null
+  }
+ ],
+ "end": "DONE",
+ "why": null,
+ "diff": {
+  "ledger.csv": [
+   "-k1,g1,9,open",
+   "+k1,g1,9,kept"
+  ]
+ },
+ "final_sha256_16": "1d19633c7ca51f4a",
+ "verdict": {
+  "outcome": "wrong",
+  "detail": {
+   "ledger": false,
+   "summary": false,
+   "unchanged": false
+  }
+ },
+ "compute": {
+  "calls": 3,
+  "ops": 7,
+  "tokens_in": 72,
+  "tokens_out": 21,
+  "model_s": 0.0,
+  "exec_s": 0.0881,
+  "wall_s": 0.0898,
+  "predict_s": 0.0,
+  "failed_checks": 0,
+  "edit_scripts": 1
+ },
+ "memory_candidate": null
+}
