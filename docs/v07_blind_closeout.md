@@ -22,7 +22,7 @@ First patch correct, % of repositories:
 | Mechanisms never trained (24) | 33.3 | 12.5 | 6.9 | 1.4 |
 | **All that are not repeats (72)** | **25.0** | 31.5 | 18.5 | **16.2** |
 
-- Every secondary rule fails. Executed experience was worse than final patches on non-repeats (−13.0 points, −19.4 to −6.9). The bank made the experience-trained student worse (−6.5, −12.0 to −1.4). A deliberately wrong diagnostic cost nothing (−1.9).
+- Every secondary rule fails. Executed experience was worse than final patches on non-repeats (−13.0 points, −19.4 to −6.9). The bank made the experience-trained student worse (−6.5, −12.0 to −1.4). A deliberately wrong diagnostic did no worse than the right one (right minus wrong: −1.9 points, −6.0 to +2.3).
 - On lookalikes the experience + bank student broke a hidden test in 87.5% of repositories; the unchanged student in 4.2%.
 
 ## The reduced-strength rules, separately
