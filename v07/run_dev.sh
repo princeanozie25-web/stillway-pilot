@@ -5,7 +5,7 @@ set -e
 cd "$(dirname "$0")/.."
 PY=${PY:-$HOME/Developer/voxcpm-venv/bin/python}; export PYTHONPATH=.
 U=${U:-300}; T=${T:-2048}; PUB=data/v07/dev/public; HID=data/v07/dev/hidden; OUT=results/v07/records/dev
-$PY v07/run_arm.py $PUB $OUT base 0 plain
+$PY v07/run_arm.py $PUB $OUT base 0 plain bank example
 $PY v07/grade.py $PUB $HID $OUT
 for seed in 1 2 3; do
   for ds in patches experience experience_x; do

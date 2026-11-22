@@ -10,6 +10,7 @@ name, seed = sys.argv[1], int(sys.argv[2]); U = int(sys.argv[3]) if len(sys.argv
 rows = [json.loads(l) for l in open(f"data/v07/training/{name}.jsonl")]; rng = random.Random(seed); torch.manual_seed(seed)
 s = Student(); s.add_adapter(r=16, alpha=32, seed=seed); params = s.adapter_params()
 for p in params: p.requires_grad_(True)
+s.model.gradient_checkpointing_enable()          # same gradients, a third of the memory (checked: v07 development notes)
 opt = torch.optim.AdamW(params, lr=LR, weight_decay=0.0); s.model.train(); queue = []; log = []; t0 = time.time(); tokens = 0; seen = 0; passes = 0
 def batch():
     global queue, passes
@@ -24,5 +25,5 @@ for u in range(U):
     tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
     if u % 20 == 0 or u == U - 1: print(name, seed, "update", u, "loss", log[-1], "examples", seen, "tokens", tokens, round(time.time() - t0), "s", flush=True)
 os.makedirs("artifacts/v07/adapters", exist_ok=True); path = f"artifacts/v07/adapters/{name}_s{seed}.safetensors"
-meta = {"dataset": name, "updates": U, "token_budget_per_update": T, "training_tokens": tokens, "examples_seen": seen, "passes_started": passes, "learning_rate": LR, "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW; base frozen", "seconds": round(time.time() - t0, 1)}
+meta = {"dataset": name, "updates": U, "token_budget_per_update": T, "training_tokens": tokens, "examples_seen": seen, "passes_started": passes, "learning_rate": LR, "method": "low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen", "seconds": round(time.time() - t0, 1)}
 h = s.save_adapter(path, meta); json.dump(dict(meta, seed=seed, sha256=h, loss_first10=log[:10], loss_last10=log[-10:], loss_curve=log), open(path.replace(".safetensors", ".json"), "w")); print("saved", path, h[:16], meta)

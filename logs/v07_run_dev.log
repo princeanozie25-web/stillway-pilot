@@ -1,0 +1,1037 @@
+W1121 20:28:04.209000 46853 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<03:04,  1.83it/s]Loading weights:  57%|█████▋    | 191/338 [00:00<00:00, 392.51it/s]Loading weights:  96%|█████████▌| 325/338 [00:00<00:00, 603.26it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 447.04it/s]
+exists results/v07/records/dev/base_s0__plain.jsonl
+W1121 20:28:09.936000 46869 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  38%|███▊      | 127/338 [00:00<00:00, 1269.59it/s]Loading weights:  77%|███████▋  | 261/338 [00:00<00:00, 1310.56it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 1348.10it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+patches 1 update 0 loss 0.1555 examples 2 tokens 1941 4 s
+patches 1 update 20 loss 0.001 examples 33 tokens 32487 72 s
+patches 1 update 40 loss 0.0001 examples 63 tokens 62336 139 s
+patches 1 update 60 loss 0.0 examples 96 tokens 94917 211 s
+patches 1 update 80 loss 0.0001 examples 132 tokens 129346 286 s
+patches 1 update 100 loss 0.0 examples 166 tokens 162029 358 s
+patches 1 update 120 loss 0.0 examples 198 tokens 193793 429 s
+patches 1 update 140 loss 0.0 examples 231 tokens 226292 501 s
+patches 1 update 160 loss 0.0 examples 265 tokens 258672 573 s
+patches 1 update 180 loss 0.0 examples 298 tokens 290734 642 s
+patches 1 update 200 loss 0.0 examples 327 tokens 320312 708 s
+patches 1 update 220 loss 0.0 examples 358 tokens 350708 774 s
+patches 1 update 240 loss 0.0 examples 389 tokens 381415 841 s
+patches 1 update 260 loss 0.0 examples 420 tokens 411521 907 s
+patches 1 update 280 loss 0.0 examples 449 tokens 440770 972 s
+patches 1 update 299 loss 0.0 examples 482 tokens 472427 1042 s
+saved artifacts/v07/adapters/patches_s1.safetensors 85bb9c93610e10d3 {'dataset': 'patches', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 472427, 'examples_seen': 482, 'passes_started': 5, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 1042.5}
+W1121 20:45:39.715000 47550 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:03,  1.11it/s]Loading weights:  52%|█████▏    | 177/338 [00:01<00:00, 242.04it/s]Loading weights:  83%|████████▎ | 281/338 [00:01<00:00, 232.04it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 198.55it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+experience 1 update 0 loss 0.9761 examples 2 tokens 1967 4 s
+experience 1 update 20 loss 0.49 examples 34 tokens 33742 74 s
+experience 1 update 40 loss 0.1241 examples 66 tokens 65804 146 s
+experience 1 update 60 loss 0.6039 examples 98 tokens 98450 220 s
+experience 1 update 80 loss 0.0906 examples 137 tokens 135205 299 s
+experience 1 update 100 loss 0.0693 examples 167 tokens 164519 365 s
+experience 1 update 120 loss 0.014 examples 198 tokens 195157 434 s
+experience 1 update 140 loss 0.0385 examples 233 tokens 229254 510 s
+experience 1 update 160 loss 0.1091 examples 265 tokens 260916 581 s
+experience 1 update 180 loss 0.0511 examples 296 tokens 292400 652 s
+experience 1 update 200 loss 0.009 examples 327 tokens 324269 723 s
+experience 1 update 220 loss 0.0049 examples 355 tokens 352933 789 s
+experience 1 update 240 loss 0.0011 examples 384 tokens 382290 858 s
+experience 1 update 260 loss 0.0032 examples 413 tokens 411735 927 s
+experience 1 update 280 loss 0.0029 examples 446 tokens 443699 999 s
+experience 1 update 299 loss 0.0181 examples 475 tokens 472382 1063 s
+saved artifacts/v07/adapters/experience_s1.safetensors caa25ec82711551d {'dataset': 'experience', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 472382, 'examples_seen': 475, 'passes_started': 2, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 1063.1}
+W1121 21:03:32.372000 48219 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:03,  1.11it/s]Loading weights:  54%|█████▍    | 183/338 [00:01<00:00, 246.00it/s]Loading weights:  83%|████████▎ | 279/338 [00:01<00:00, 238.60it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 200.33it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+experience_x 1 update 0 loss 0.7685 examples 1 tokens 1215 3 s
+experience_x 1 update 20 loss 0.8182 examples 21 tokens 24518 56 s
+experience_x 1 update 40 loss 0.8715 examples 42 tokens 48917 111 s
+experience_x 1 update 60 loss 0.4314 examples 63 tokens 73276 167 s
+experience_x 1 update 80 loss 0.3836 examples 83 tokens 97202 222 s
+experience_x 1 update 100 loss 0.1586 examples 107 tokens 124783 284 s
+experience_x 1 update 120 loss 0.178 examples 136 tokens 155003 351 s
+experience_x 1 update 140 loss 0.0265 examples 160 tokens 182012 413 s
+experience_x 1 update 160 loss 0.0007 examples 184 tokens 209040 475 s
+experience_x 1 update 180 loss 0.0137 examples 206 tokens 234519 533 s
+experience_x 1 update 200 loss 0.0263 examples 230 tokens 261568 595 s
+experience_x 1 update 220 loss 0.0001 examples 250 tokens 285586 650 s
+experience_x 1 update 240 loss 0.226 examples 271 tokens 308484 702 s
+experience_x 1 update 260 loss 0.0787 examples 292 tokens 333928 761 s
+experience_x 1 update 280 loss 0.0011 examples 315 tokens 360871 823 s
+experience_x 1 update 299 loss 0.0868 examples 335 tokens 384753 877 s
+saved artifacts/v07/adapters/experience_x_s1.safetensors f39fda56f39af6ec {'dataset': 'experience_x', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 384753, 'examples_seen': 335, 'passes_started': 1, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 877.1}
+W1121 21:18:18.650000 48615 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:02,  1.12it/s]Loading weights:  54%|█████▍    | 183/338 [00:01<00:00, 244.93it/s]Loading weights:  81%|████████  | 274/338 [00:01<00:00, 241.11it/s]Loading weights:  99%|█████████▉| 334/338 [00:01<00:00, 232.12it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 200.73it/s]
+patches_s1__plain step 1 8/72 15 s
+patches_s1__plain step 1 16/72 25 s
+patches_s1__plain step 1 24/72 41 s
+patches_s1__plain step 1 32/72 53 s
+patches_s1__plain step 1 40/72 68 s
+patches_s1__plain step 1 48/72 78 s
+patches_s1__plain step 1 56/72 91 s
+patches_s1__plain step 1 64/72 108 s
+patches_s1__plain step 1 72/72 121 s
+patches_s1__plain step 2 8/72 136 s
+patches_s1__plain step 2 16/72 149 s
+patches_s1__plain step 2 24/72 167 s
+patches_s1__plain step 2 32/72 182 s
+patches_s1__plain step 2 40/72 198 s
+patches_s1__plain step 2 48/72 211 s
+patches_s1__plain step 2 56/72 227 s
+patches_s1__plain step 2 64/72 244 s
+patches_s1__plain step 2 72/72 258 s
+patches_s1__plain step 3 8/72 272 s
+patches_s1__plain step 3 16/72 283 s
+patches_s1__plain step 3 24/72 296 s
+patches_s1__plain step 3 32/72 310 s
+patches_s1__plain step 3 40/72 324 s
+patches_s1__plain step 3 48/72 337 s
+patches_s1__plain step 3 56/72 352 s
+patches_s1__plain step 3 64/72 366 s
+patches_s1__plain step 3 72/72 380 s
+wrote results/v07/records/dev/patches_s1__plain.jsonl 380 s
+W1121 21:24:46.287000 48881 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  44%|████▍     | 150/338 [00:00<00:00, 1325.92it/s]Loading weights:  84%|████████▎ | 283/338 [00:00<00:00, 1304.74it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 1345.95it/s]
+experience_s1__plain step 1 8/72 13 s
+experience_s1__plain step 1 16/72 24 s
+experience_s1__plain step 1 24/72 38 s
+experience_s1__plain step 1 32/72 50 s
+experience_s1__plain step 1 40/72 62 s
+experience_s1__plain step 1 48/72 74 s
+experience_s1__plain step 1 56/72 87 s
+experience_s1__plain step 1 64/72 102 s
+experience_s1__plain step 1 72/72 117 s
+experience_s1__plain step 2 8/72 130 s
+experience_s1__plain step 2 16/72 143 s
+experience_s1__plain step 2 24/72 158 s
+experience_s1__plain step 2 32/72 171 s
+experience_s1__plain step 2 40/72 183 s
+experience_s1__plain step 2 48/72 195 s
+experience_s1__plain step 2 56/72 208 s
+experience_s1__plain step 2 64/72 223 s
+experience_s1__plain step 2 72/72 242 s
+experience_s1__plain step 3 8/72 258 s
+experience_s1__plain step 3 16/72 270 s
+experience_s1__plain step 3 24/72 288 s
+experience_s1__plain step 3 32/72 307 s
+experience_s1__plain step 3 40/72 322 s
+experience_s1__plain step 3 48/72 338 s
+experience_s1__plain step 3 56/72 354 s
+experience_s1__plain step 3 64/72 370 s
+experience_s1__plain step 3 72/72 383 s
+wrote results/v07/records/dev/experience_s1__plain.jsonl 383 s
+W1121 21:31:14.734000 49456 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  40%|████      | 136/338 [00:00<00:00, 1359.66it/s]Loading weights:  80%|████████  | 272/338 [00:00<00:00, 1326.89it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 1335.80it/s]
+experience_x_s1__plain step 1 8/72 12 s
+experience_x_s1__plain step 1 16/72 23 s
+experience_x_s1__plain step 1 24/72 37 s
+experience_x_s1__plain step 1 32/72 49 s
+experience_x_s1__plain step 1 40/72 62 s
+experience_x_s1__plain step 1 48/72 74 s
+experience_x_s1__plain step 1 56/72 88 s
+experience_x_s1__plain step 1 64/72 102 s
+experience_x_s1__plain step 1 72/72 117 s
+experience_x_s1__plain step 2 8/72 129 s
+experience_x_s1__plain step 2 16/72 142 s
+experience_x_s1__plain step 2 24/72 155 s
+experience_x_s1__plain step 2 32/72 168 s
+experience_x_s1__plain step 2 40/72 182 s
+experience_x_s1__plain step 2 48/72 194 s
+experience_x_s1__plain step 2 56/72 209 s
+experience_x_s1__plain step 2 64/72 224 s
+experience_x_s1__plain step 2 72/72 242 s
+experience_x_s1__plain step 3 8/72 258 s
+experience_x_s1__plain step 3 16/72 270 s
+experience_x_s1__plain step 3 24/72 286 s
+experience_x_s1__plain step 3 32/72 302 s
+experience_x_s1__plain step 3 40/72 317 s
+experience_x_s1__plain step 3 48/72 334 s
+experience_x_s1__plain step 3 56/72 350 s
+experience_x_s1__plain step 3 64/72 367 s
+experience_x_s1__plain step 3 72/72 380 s
+wrote results/v07/records/dev/experience_x_s1__plain.jsonl 380 s
+experience_x_s1__bank step 1 8/72 13 s
+experience_x_s1__bank step 1 16/72 25 s
+experience_x_s1__bank step 1 24/72 40 s
+experience_x_s1__bank step 1 32/72 53 s
+experience_x_s1__bank step 1 40/72 65 s
+experience_x_s1__bank step 1 48/72 77 s
+experience_x_s1__bank step 1 56/72 91 s
+experience_x_s1__bank step 1 64/72 107 s
+experience_x_s1__bank step 1 72/72 123 s
+experience_x_s1__bank step 2 8/72 139 s
+experience_x_s1__bank step 2 16/72 152 s
+experience_x_s1__bank step 2 24/72 167 s
+experience_x_s1__bank step 2 32/72 181 s
+experience_x_s1__bank step 2 40/72 195 s
+experience_x_s1__bank step 2 48/72 208 s
+experience_x_s1__bank step 2 56/72 223 s
+experience_x_s1__bank step 2 64/72 243 s
+experience_x_s1__bank step 2 72/72 262 s
+experience_x_s1__bank step 3 8/72 279 s
+experience_x_s1__bank step 3 16/72 293 s
+experience_x_s1__bank step 3 24/72 308 s
+experience_x_s1__bank step 3 32/72 325 s
+experience_x_s1__bank step 3 40/72 342 s
+experience_x_s1__bank step 3 48/72 359 s
+experience_x_s1__bank step 3 56/72 376 s
+experience_x_s1__bank step 3 64/72 395 s
+experience_x_s1__bank step 3 72/72 411 s
+wrote results/v07/records/dev/experience_x_s1__bank.jsonl 411 s
+experience_x_s1__example step 1 8/72 15 s
+experience_x_s1__example step 1 16/72 28 s
+experience_x_s1__example step 1 24/72 43 s
+experience_x_s1__example step 1 32/72 57 s
+experience_x_s1__example step 1 40/72 70 s
+experience_x_s1__example step 1 48/72 83 s
+experience_x_s1__example step 1 56/72 97 s
+experience_x_s1__example step 1 64/72 114 s
+experience_x_s1__example step 1 72/72 131 s
+experience_x_s1__example step 2 8/72 145 s
+experience_x_s1__example step 2 16/72 159 s
+experience_x_s1__example step 2 24/72 174 s
+experience_x_s1__example step 2 32/72 189 s
+experience_x_s1__example step 2 40/72 204 s
+experience_x_s1__example step 2 48/72 218 s
+experience_x_s1__example step 2 56/72 233 s
+experience_x_s1__example step 2 64/72 252 s
+experience_x_s1__example step 2 72/72 271 s
+experience_x_s1__example step 3 8/72 289 s
+experience_x_s1__example step 3 16/72 302 s
+experience_x_s1__example step 3 24/72 318 s
+experience_x_s1__example step 3 32/72 336 s
+experience_x_s1__example step 3 40/72 352 s
+experience_x_s1__example step 3 48/72 370 s
+experience_x_s1__example step 3 56/72 387 s
+experience_x_s1__example step 3 64/72 405 s
+experience_x_s1__example step 3 72/72 420 s
+wrote results/v07/records/dev/experience_x_s1__example.jsonl 420 s
+experience_x_s1__wrong step 1 8/72 13 s
+experience_x_s1__wrong step 1 16/72 25 s
+experience_x_s1__wrong step 1 24/72 40 s
+experience_x_s1__wrong step 1 32/72 53 s
+experience_x_s1__wrong step 1 40/72 68 s
+experience_x_s1__wrong step 1 48/72 81 s
+experience_x_s1__wrong step 1 56/72 95 s
+experience_x_s1__wrong step 1 64/72 110 s
+experience_x_s1__wrong step 1 72/72 126 s
+experience_x_s1__wrong step 2 8/72 140 s
+experience_x_s1__wrong step 2 16/72 154 s
+experience_x_s1__wrong step 2 24/72 170 s
+experience_x_s1__wrong step 2 32/72 185 s
+experience_x_s1__wrong step 2 40/72 201 s
+experience_x_s1__wrong step 2 48/72 215 s
+experience_x_s1__wrong step 2 56/72 230 s
+experience_x_s1__wrong step 2 64/72 246 s
+experience_x_s1__wrong step 2 72/72 263 s
+experience_x_s1__wrong step 3 8/72 280 s
+experience_x_s1__wrong step 3 16/72 294 s
+experience_x_s1__wrong step 3 24/72 308 s
+experience_x_s1__wrong step 3 32/72 326 s
+experience_x_s1__wrong step 3 40/72 343 s
+experience_x_s1__wrong step 3 48/72 360 s
+experience_x_s1__wrong step 3 56/72 377 s
+experience_x_s1__wrong step 3 64/72 394 s
+experience_x_s1__wrong step 3 72/72 415 s
+wrote results/v07/records/dev/experience_x_s1__wrong.jsonl 415 s
+experience_x_s1__bank_v1 step 1 8/72 12 s
+experience_x_s1__bank_v1 step 1 16/72 24 s
+experience_x_s1__bank_v1 step 1 24/72 38 s
+experience_x_s1__bank_v1 step 1 32/72 51 s
+experience_x_s1__bank_v1 step 1 40/72 63 s
+experience_x_s1__bank_v1 step 1 48/72 75 s
+experience_x_s1__bank_v1 step 1 56/72 89 s
+experience_x_s1__bank_v1 step 1 64/72 106 s
+experience_x_s1__bank_v1 step 1 72/72 122 s
+experience_x_s1__bank_v1 step 2 8/72 137 s
+experience_x_s1__bank_v1 step 2 16/72 150 s
+experience_x_s1__bank_v1 step 2 24/72 164 s
+experience_x_s1__bank_v1 step 2 32/72 177 s
+experience_x_s1__bank_v1 step 2 40/72 191 s
+experience_x_s1__bank_v1 step 2 48/72 210 s
+experience_x_s1__bank_v1 step 2 56/72 224 s
+experience_x_s1__bank_v1 step 2 64/72 240 s
+experience_x_s1__bank_v1 step 2 72/72 257 s
+experience_x_s1__bank_v1 step 3 8/72 274 s
+experience_x_s1__bank_v1 step 3 16/72 287 s
+experience_x_s1__bank_v1 step 3 24/72 302 s
+experience_x_s1__bank_v1 step 3 32/72 318 s
+experience_x_s1__bank_v1 step 3 40/72 334 s
+experience_x_s1__bank_v1 step 3 48/72 351 s
+experience_x_s1__bank_v1 step 3 56/72 367 s
+experience_x_s1__bank_v1 step 3 64/72 384 s
+experience_x_s1__bank_v1 step 3 72/72 402 s
+wrote results/v07/records/dev/experience_x_s1__bank_v1.jsonl 402 s
+experience_s1__plain.jsonl first patch correct 37 of 72
+experience_x_s1__bank.jsonl first patch correct 33 of 72
+experience_x_s1__bank_v1.jsonl first patch correct 31 of 72
+experience_x_s1__example.jsonl first patch correct 38 of 72
+experience_x_s1__plain.jsonl first patch correct 35 of 72
+experience_x_s1__wrong.jsonl first patch correct 32 of 72
+W1121 22:05:42.299000 51575 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<03:07,  1.80it/s]Loading weights:  73%|███████▎  | 246/338 [00:00<00:00, 502.74it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 468.32it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+patches 2 update 0 loss 0.1558 examples 1 tokens 812 2 s
+patches 2 update 20 loss 0.0093 examples 28 tokens 28605 64 s
+patches 2 update 40 loss 0.0004 examples 63 tokens 62694 139 s
+patches 2 update 60 loss 0.0001 examples 96 tokens 95366 210 s
+patches 2 update 80 loss 0.0 examples 130 tokens 128137 282 s
+patches 2 update 100 loss 0.0 examples 164 tokens 161586 354 s
+patches 2 update 120 loss 0.0 examples 201 tokens 197024 431 s
+patches 2 update 140 loss 0.0 examples 233 tokens 227916 499 s
+patches 2 update 160 loss 0.0 examples 263 tokens 258117 565 s
+patches 2 update 180 loss 0.0 examples 293 tokens 287417 629 s
+patches 2 update 200 loss 0.0 examples 329 tokens 322080 705 s
+patches 2 update 220 loss 0.0 examples 360 tokens 352992 773 s
+patches 2 update 240 loss 0.0 examples 391 tokens 383486 839 s
+patches 2 update 260 loss 0.0 examples 422 tokens 414743 908 s
+patches 2 update 280 loss 0.0001 examples 456 tokens 447584 978 s
+patches 2 update 299 loss 0.0 examples 488 tokens 478955 1046 s
+saved artifacts/v07/adapters/patches_s2.safetensors a5a07aefe73e7d40 {'dataset': 'patches', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 478955, 'examples_seen': 488, 'passes_started': 5, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 1046.1}
+W1121 22:23:15.235000 51876 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:08,  1.09it/s]Loading weights:  54%|█████▍    | 183/338 [00:01<00:00, 245.54it/s]Loading weights:  85%|████████▌ | 288/338 [00:01<00:00, 243.80it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 200.19it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+experience 2 update 0 loss 1.3117 examples 2 tokens 1818 4 s
+experience 2 update 20 loss 0.3179 examples 38 tokens 37191 81 s
+experience 2 update 40 loss 0.3601 examples 68 tokens 67693 148 s
+experience 2 update 60 loss 0.5249 examples 100 tokens 99749 218 s
+experience 2 update 80 loss 0.9493 examples 129 tokens 128564 282 s
+experience 2 update 100 loss 0.1177 examples 165 tokens 163102 357 s
+experience 2 update 120 loss 0.0248 examples 198 tokens 195584 428 s
+experience 2 update 140 loss 0.09 examples 227 tokens 225922 494 s
+experience 2 update 160 loss 0.114 examples 257 tokens 256248 561 s
+experience 2 update 180 loss 0.0781 examples 289 tokens 287966 632 s
+experience 2 update 200 loss 0.0561 examples 323 tokens 321301 705 s
+experience 2 update 220 loss 0.0099 examples 359 tokens 356549 781 s
+experience 2 update 240 loss 0.0107 examples 391 tokens 388624 851 s
+experience 2 update 260 loss 0.0001 examples 422 tokens 418966 918 s
+experience 2 update 280 loss 0.0002 examples 453 tokens 450052 986 s
+experience 2 update 299 loss 0.0001 examples 482 tokens 479057 1050 s
+saved artifacts/v07/adapters/experience_s2.safetensors af206593e677db84 {'dataset': 'experience', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 479057, 'examples_seen': 482, 'passes_started': 2, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 1049.8}
+W1121 22:40:53.451000 52145 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:03,  1.11it/s]Loading weights:  54%|█████▍    | 183/338 [00:01<00:00, 243.84it/s]Loading weights:  81%|████████  | 273/338 [00:01<00:00, 241.13it/s]Loading weights:  99%|█████████▊| 333/338 [00:01<00:00, 230.85it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 200.39it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+experience_x 2 update 0 loss 1.3538 examples 2 tokens 2020 4 s
+experience_x 2 update 20 loss 0.2501 examples 24 tokens 28100 63 s
+experience_x 2 update 40 loss 0.0726 examples 48 tokens 55191 123 s
+experience_x 2 update 60 loss 0.0479 examples 70 tokens 81057 181 s
+experience_x 2 update 80 loss 0.4865 examples 92 tokens 105824 237 s
+experience_x 2 update 100 loss 0.1126 examples 113 tokens 130406 292 s
+experience_x 2 update 120 loss 0.0403 examples 137 tokens 156468 351 s
+experience_x 2 update 140 loss 0.0935 examples 158 tokens 181150 406 s
+experience_x 2 update 160 loss 0.0193 examples 180 tokens 205833 461 s
+experience_x 2 update 180 loss 0.0046 examples 202 tokens 231084 518 s
+experience_x 2 update 200 loss 0.0118 examples 224 tokens 257836 577 s
+experience_x 2 update 220 loss 0.3403 examples 247 tokens 284615 637 s
+experience_x 2 update 240 loss 0.0756 examples 270 tokens 310969 696 s
+experience_x 2 update 260 loss 0.0018 examples 292 tokens 335973 752 s
+experience_x 2 update 280 loss 0.0039 examples 312 tokens 359627 807 s
+experience_x 2 update 299 loss 0.0927 examples 334 tokens 383776 862 s
+saved artifacts/v07/adapters/experience_x_s2.safetensors 3b1de36a4f3e0b92 {'dataset': 'experience_x', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 383776, 'examples_seen': 334, 'passes_started': 1, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 861.7}
+W1121 22:55:23.552000 52346 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:06,  1.10it/s]Loading weights:  54%|█████▍    | 183/338 [00:01<00:00, 245.15it/s]Loading weights:  83%|████████▎ | 281/338 [00:01<00:00, 232.96it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 199.38it/s]
+patches_s2__plain step 1 8/72 13 s
+patches_s2__plain step 1 16/72 25 s
+patches_s2__plain step 1 24/72 39 s
+patches_s2__plain step 1 32/72 52 s
+patches_s2__plain step 1 40/72 65 s
+patches_s2__plain step 1 48/72 76 s
+patches_s2__plain step 1 56/72 87 s
+patches_s2__plain step 1 64/72 100 s
+patches_s2__plain step 1 72/72 115 s
+patches_s2__plain step 2 8/72 130 s
+patches_s2__plain step 2 16/72 144 s
+patches_s2__plain step 2 24/72 160 s
+patches_s2__plain step 2 32/72 178 s
+patches_s2__plain step 2 40/72 193 s
+patches_s2__plain step 2 48/72 207 s
+patches_s2__plain step 2 56/72 220 s
+patches_s2__plain step 2 64/72 235 s
+patches_s2__plain step 2 72/72 253 s
+patches_s2__plain step 3 8/72 267 s
+patches_s2__plain step 3 16/72 278 s
+patches_s2__plain step 3 24/72 291 s
+patches_s2__plain step 3 32/72 305 s
+patches_s2__plain step 3 40/72 318 s
+patches_s2__plain step 3 48/72 332 s
+patches_s2__plain step 3 56/72 345 s
+patches_s2__plain step 3 64/72 359 s
+patches_s2__plain step 3 72/72 372 s
+wrote results/v07/records/dev/patches_s2__plain.jsonl 372 s
+W1121 23:01:43.149000 52588 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  43%|████▎     | 146/338 [00:00<00:00, 1397.61it/s]Loading weights:  85%|████████▍ | 286/338 [00:00<00:00, 1319.35it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 1365.51it/s]
+experience_s2__plain step 1 8/72 12 s
+experience_s2__plain step 1 16/72 23 s
+experience_s2__plain step 1 24/72 37 s
+experience_s2__plain step 1 32/72 49 s
+experience_s2__plain step 1 40/72 59 s
+experience_s2__plain step 1 48/72 71 s
+experience_s2__plain step 1 56/72 85 s
+experience_s2__plain step 1 64/72 100 s
+experience_s2__plain step 1 72/72 115 s
+experience_s2__plain step 2 8/72 129 s
+experience_s2__plain step 2 16/72 141 s
+experience_s2__plain step 2 24/72 154 s
+experience_s2__plain step 2 32/72 167 s
+experience_s2__plain step 2 40/72 179 s
+experience_s2__plain step 2 48/72 196 s
+experience_s2__plain step 2 56/72 210 s
+experience_s2__plain step 2 64/72 226 s
+experience_s2__plain step 2 72/72 244 s
+experience_s2__plain step 3 8/72 260 s
+experience_s2__plain step 3 16/72 273 s
+experience_s2__plain step 3 24/72 286 s
+experience_s2__plain step 3 32/72 303 s
+experience_s2__plain step 3 40/72 318 s
+experience_s2__plain step 3 48/72 334 s
+experience_s2__plain step 3 56/72 350 s
+experience_s2__plain step 3 64/72 369 s
+experience_s2__plain step 3 72/72 381 s
+wrote results/v07/records/dev/experience_s2__plain.jsonl 381 s
+W1121 23:08:10.010000 52821 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:  40%|███▉      | 135/338 [00:00<00:00, 1315.53it/s]Loading weights:  79%|███████▉  | 268/338 [00:00<00:00, 1284.07it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 1340.70it/s]
+experience_x_s2__plain step 1 8/72 12 s
+experience_x_s2__plain step 1 16/72 23 s
+experience_x_s2__plain step 1 24/72 37 s
+experience_x_s2__plain step 1 32/72 49 s
+experience_x_s2__plain step 1 40/72 60 s
+experience_x_s2__plain step 1 48/72 72 s
+experience_x_s2__plain step 1 56/72 84 s
+experience_x_s2__plain step 1 64/72 98 s
+experience_x_s2__plain step 1 72/72 113 s
+experience_x_s2__plain step 2 8/72 126 s
+experience_x_s2__plain step 2 16/72 138 s
+experience_x_s2__plain step 2 24/72 152 s
+experience_x_s2__plain step 2 32/72 167 s
+experience_x_s2__plain step 2 40/72 187 s
+experience_x_s2__plain step 2 48/72 201 s
+experience_x_s2__plain step 2 56/72 215 s
+experience_x_s2__plain step 2 64/72 230 s
+experience_x_s2__plain step 2 72/72 248 s
+experience_x_s2__plain step 3 8/72 263 s
+experience_x_s2__plain step 3 16/72 276 s
+experience_x_s2__plain step 3 24/72 291 s
+experience_x_s2__plain step 3 32/72 307 s
+experience_x_s2__plain step 3 40/72 322 s
+experience_x_s2__plain step 3 48/72 338 s
+experience_x_s2__plain step 3 56/72 354 s
+experience_x_s2__plain step 3 64/72 370 s
+experience_x_s2__plain step 3 72/72 383 s
+wrote results/v07/records/dev/experience_x_s2__plain.jsonl 383 s
+experience_x_s2__bank step 1 8/72 13 s
+experience_x_s2__bank step 1 16/72 25 s
+experience_x_s2__bank step 1 24/72 40 s
+experience_x_s2__bank step 1 32/72 53 s
+experience_x_s2__bank step 1 40/72 65 s
+experience_x_s2__bank step 1 48/72 79 s
+experience_x_s2__bank step 1 56/72 93 s
+experience_x_s2__bank step 1 64/72 108 s
+experience_x_s2__bank step 1 72/72 124 s
+experience_x_s2__bank step 2 8/72 141 s
+experience_x_s2__bank step 2 16/72 157 s
+experience_x_s2__bank step 2 24/72 172 s
+experience_x_s2__bank step 2 32/72 186 s
+experience_x_s2__bank step 2 40/72 205 s
+experience_x_s2__bank step 2 48/72 230 s
+experience_x_s2__bank step 2 56/72 250 s
+experience_x_s2__bank step 2 64/72 267 s
+experience_x_s2__bank step 2 72/72 284 s
+experience_x_s2__bank step 3 8/72 301 s
+experience_x_s2__bank step 3 16/72 315 s
+experience_x_s2__bank step 3 24/72 331 s
+experience_x_s2__bank step 3 32/72 348 s
+experience_x_s2__bank step 3 40/72 364 s
+experience_x_s2__bank step 3 48/72 382 s
+experience_x_s2__bank step 3 56/72 399 s
+experience_x_s2__bank step 3 64/72 418 s
+experience_x_s2__bank step 3 72/72 434 s
+wrote results/v07/records/dev/experience_x_s2__bank.jsonl 434 s
+experience_x_s2__example step 1 8/72 13 s
+experience_x_s2__example step 1 16/72 26 s
+experience_x_s2__example step 1 24/72 41 s
+experience_x_s2__example step 1 32/72 55 s
+experience_x_s2__example step 1 40/72 68 s
+experience_x_s2__example step 1 48/72 83 s
+experience_x_s2__example step 1 56/72 97 s
+experience_x_s2__example step 1 64/72 112 s
+experience_x_s2__example step 1 72/72 129 s
+experience_x_s2__example step 2 8/72 142 s
+experience_x_s2__example step 2 16/72 158 s
+experience_x_s2__example step 2 24/72 174 s
+experience_x_s2__example step 2 32/72 188 s
+experience_x_s2__example step 2 40/72 203 s
+experience_x_s2__example step 2 48/72 219 s
+experience_x_s2__example step 2 56/72 235 s
+experience_x_s2__example step 2 64/72 256 s
+experience_x_s2__example step 2 72/72 273 s
+experience_x_s2__example step 3 8/72 290 s
+experience_x_s2__example step 3 16/72 304 s
+experience_x_s2__example step 3 24/72 322 s
+experience_x_s2__example step 3 32/72 339 s
+experience_x_s2__example step 3 40/72 356 s
+experience_x_s2__example step 3 48/72 374 s
+experience_x_s2__example step 3 56/72 391 s
+experience_x_s2__example step 3 64/72 409 s
+experience_x_s2__example step 3 72/72 423 s
+wrote results/v07/records/dev/experience_x_s2__example.jsonl 423 s
+experience_x_s2__wrong step 1 8/72 13 s
+experience_x_s2__wrong step 1 16/72 28 s
+experience_x_s2__wrong step 1 24/72 42 s
+experience_x_s2__wrong step 1 32/72 56 s
+experience_x_s2__wrong step 1 40/72 68 s
+experience_x_s2__wrong step 1 48/72 82 s
+experience_x_s2__wrong step 1 56/72 96 s
+experience_x_s2__wrong step 1 64/72 111 s
+experience_x_s2__wrong step 1 72/72 127 s
+experience_x_s2__wrong step 2 8/72 141 s
+experience_x_s2__wrong step 2 16/72 158 s
+experience_x_s2__wrong step 2 24/72 174 s
+experience_x_s2__wrong step 2 32/72 189 s
+experience_x_s2__wrong step 2 40/72 210 s
+experience_x_s2__wrong step 2 48/72 229 s
+experience_x_s2__wrong step 2 56/72 245 s
+experience_x_s2__wrong step 2 64/72 262 s
+experience_x_s2__wrong step 2 72/72 278 s
+experience_x_s2__wrong step 3 8/72 295 s
+experience_x_s2__wrong step 3 16/72 311 s
+experience_x_s2__wrong step 3 24/72 326 s
+experience_x_s2__wrong step 3 32/72 344 s
+experience_x_s2__wrong step 3 40/72 360 s
+experience_x_s2__wrong step 3 48/72 378 s
+experience_x_s2__wrong step 3 56/72 395 s
+experience_x_s2__wrong step 3 64/72 412 s
+experience_x_s2__wrong step 3 72/72 427 s
+wrote results/v07/records/dev/experience_x_s2__wrong.jsonl 427 s
+experience_x_s2__bank_v1 step 1 8/72 12 s
+experience_x_s2__bank_v1 step 1 16/72 25 s
+experience_x_s2__bank_v1 step 1 24/72 39 s
+experience_x_s2__bank_v1 step 1 32/72 52 s
+experience_x_s2__bank_v1 step 1 40/72 64 s
+experience_x_s2__bank_v1 step 1 48/72 77 s
+experience_x_s2__bank_v1 step 1 56/72 90 s
+experience_x_s2__bank_v1 step 1 64/72 106 s
+experience_x_s2__bank_v1 step 1 72/72 121 s
+experience_x_s2__bank_v1 step 2 8/72 138 s
+experience_x_s2__bank_v1 step 2 16/72 154 s
+experience_x_s2__bank_v1 step 2 24/72 170 s
+experience_x_s2__bank_v1 step 2 32/72 184 s
+experience_x_s2__bank_v1 step 2 40/72 202 s
+experience_x_s2__bank_v1 step 2 48/72 216 s
+experience_x_s2__bank_v1 step 2 56/72 236 s
+experience_x_s2__bank_v1 step 2 64/72 253 s
+experience_x_s2__bank_v1 step 2 72/72 268 s
+experience_x_s2__bank_v1 step 3 8/72 285 s
+experience_x_s2__bank_v1 step 3 16/72 298 s
+experience_x_s2__bank_v1 step 3 24/72 314 s
+experience_x_s2__bank_v1 step 3 32/72 331 s
+experience_x_s2__bank_v1 step 3 40/72 348 s
+experience_x_s2__bank_v1 step 3 48/72 365 s
+experience_x_s2__bank_v1 step 3 56/72 381 s
+experience_x_s2__bank_v1 step 3 64/72 398 s
+experience_x_s2__bank_v1 step 3 72/72 413 s
+wrote results/v07/records/dev/experience_x_s2__bank_v1.jsonl 413 s
+experience_s2__plain.jsonl first patch correct 37 of 72
+experience_x_s2__bank.jsonl first patch correct 35 of 72
+experience_x_s2__bank_v1.jsonl first patch correct 34 of 72
+experience_x_s2__example.jsonl first patch correct 33 of 72
+experience_x_s2__plain.jsonl first patch correct 34 of 72
+experience_x_s2__wrong.jsonl first patch correct 36 of 72
+patches_s2__plain.jsonl first patch correct 37 of 72
+W1121 23:44:00.004000 55257 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:10,  1.09it/s]Loading weights:  54%|█████▍    | 183/338 [00:01<00:00, 243.05it/s]Loading weights:  84%|████████▎ | 283/338 [00:01<00:00, 233.69it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 198.40it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+patches 3 update 0 loss 0.0797 examples 2 tokens 2001 4 s
+patches 3 update 20 loss 0.0038 examples 33 tokens 33657 74 s
+patches 3 update 40 loss 0.0002 examples 68 tokens 66398 146 s
+patches 3 update 60 loss 0.0001 examples 102 tokens 99236 219 s
+patches 3 update 80 loss 0.0 examples 129 tokens 126385 279 s
+patches 3 update 100 loss 0.0 examples 163 tokens 158942 350 s
+patches 3 update 120 loss 0.0 examples 196 tokens 191249 420 s
+patches 3 update 140 loss 0.0 examples 231 tokens 225383 495 s
+patches 3 update 160 loss 0.0 examples 261 tokens 255460 561 s
+patches 3 update 180 loss 0.0 examples 291 tokens 285644 626 s
+patches 3 update 200 loss 0.0 examples 322 tokens 316174 692 s
+patches 3 update 220 loss 0.0 examples 357 tokens 350037 765 s
+patches 3 update 240 loss 0.0 examples 388 tokens 380992 832 s
+patches 3 update 260 loss 0.0 examples 422 tokens 413830 903 s
+patches 3 update 280 loss 0.0 examples 452 tokens 444008 970 s
+patches 3 update 299 loss 0.0 examples 484 tokens 474387 1034 s
+saved artifacts/v07/adapters/patches_s3.safetensors 9be243f36f6b3fef {'dataset': 'patches', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 474387, 'examples_seen': 484, 'passes_started': 5, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 1034.5}
+W1122 00:01:22.522000 55528 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:06,  1.10it/s]Loading weights:  54%|█████▍    | 183/338 [00:01<00:00, 240.28it/s]Loading weights:  80%|████████  | 271/338 [00:01<00:00, 237.46it/s]Loading weights:  98%|█████████▊| 330/338 [00:01<00:00, 227.49it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 199.05it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+experience 3 update 0 loss 1.0858 examples 2 tokens 2030 5 s
+experience 3 update 20 loss 0.2829 examples 34 tokens 34157 76 s
+experience 3 update 40 loss 0.0816 examples 62 tokens 62435 139 s
+experience 3 update 60 loss 0.0326 examples 97 tokens 96385 213 s
+experience 3 update 80 loss 0.2001 examples 130 tokens 129345 285 s
+experience 3 update 100 loss 0.2593 examples 160 tokens 159658 352 s
+experience 3 update 120 loss 0.011 examples 191 tokens 190670 422 s
+experience 3 update 140 loss 0.0516 examples 226 tokens 225251 497 s
+experience 3 update 160 loss 0.0204 examples 261 tokens 258985 573 s
+experience 3 update 180 loss 0.0016 examples 293 tokens 291155 644 s
+experience 3 update 200 loss 0.007 examples 327 tokens 324373 718 s
+experience 3 update 220 loss 0.0223 examples 353 tokens 350986 777 s
+experience 3 update 240 loss 0.0024 examples 382 tokens 380131 842 s
+experience 3 update 260 loss 0.0001 examples 417 tokens 414314 918 s
+experience 3 update 280 loss 0.0002 examples 451 tokens 447072 990 s
+experience 3 update 299 loss 0.0704 examples 481 tokens 477174 1055 s
+saved artifacts/v07/adapters/experience_s3.safetensors 6047f4b8ad01ee9d {'dataset': 'experience', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 477174, 'examples_seen': 481, 'passes_started': 2, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 1055.4}
+W1122 00:19:06.914000 57858 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<05:06,  1.10it/s]Loading weights:  54%|█████▍    | 183/338 [00:01<00:00, 241.20it/s]Loading weights:  81%|████████  | 273/338 [00:01<00:00, 238.21it/s]Loading weights:  99%|█████████▊| 333/338 [00:01<00:00, 228.65it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 198.29it/s]
+[transformers] `use_cache=True` is incompatible with gradient checkpointing. Setting `use_cache=False`.
+/Users/princ/Desktop/stillway-pilot/v07/train_adapter.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /Users/runner/work/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:821.)
+  tokens += sum(r["tokens"] for r in b); seen += len(b); log.append(round(float(loss), 4))
+experience_x 3 update 0 loss 1.3422 examples 1 tokens 1086 3 s
+experience_x 3 update 20 loss 0.1195 examples 22 tokens 26688 62 s
+experience_x 3 update 40 loss 0.7763 examples 43 tokens 50911 117 s
+experience_x 3 update 60 loss 0.2261 examples 65 tokens 76616 175 s
+experience_x 3 update 80 loss 0.2656 examples 88 tokens 102656 235 s
+experience_x 3 update 100 loss 0.0117 examples 110 tokens 127661 292 s
+experience_x 3 update 120 loss 0.0031 examples 133 tokens 154897 353 s
+experience_x 3 update 140 loss 0.219 examples 157 tokens 181969 415 s
+experience_x 3 update 160 loss 0.096 examples 179 tokens 206882 471 s
+experience_x 3 update 180 loss 0.1922 examples 202 tokens 232255 530 s
+experience_x 3 update 200 loss 0.0001 examples 224 tokens 257087 587 s
+experience_x 3 update 220 loss 0.0332 examples 244 tokens 280805 641 s
+experience_x 3 update 240 loss 0.002 examples 267 tokens 306143 700 s
+experience_x 3 update 260 loss 0.0002 examples 287 tokens 330170 755 s
+experience_x 3 update 280 loss 0.0001 examples 310 tokens 356073 814 s
+experience_x 3 update 299 loss 0.0926 examples 332 tokens 381249 872 s
+saved artifacts/v07/adapters/experience_x_s3.safetensors ed1dac05a968f3cf {'dataset': 'experience_x', 'updates': 300, 'token_budget_per_update': 2048, 'training_tokens': 381249, 'examples_seen': 332, 'passes_started': 1, 'learning_rate': 0.0002, 'method': 'low-rank adapters (rank 16) on all attention and MLP projections; AdamW, cosine decay, 10 warm-up updates, gradient clipping at 1.0; gradient checkpointing; base frozen', 'seconds': 871.7}
+W1122 00:33:47.256000 58509 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<04:10,  1.35it/s]Loading weights:  44%|████▍     | 149/338 [00:00<00:00, 239.75it/s]Loading weights:  70%|██████▉   | 236/338 [00:01<00:00, 240.75it/s]Loading weights:  87%|████████▋ | 295/338 [00:01<00:00, 228.72it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 202.79it/s]
+patches_s3__plain step 1 8/72 15 s
+patches_s3__plain step 1 16/72 28 s
+patches_s3__plain step 1 24/72 43 s
+patches_s3__plain step 1 32/72 57 s
+patches_s3__plain step 1 40/72 71 s
+patches_s3__plain step 1 48/72 85 s
+patches_s3__plain step 1 56/72 97 s
+patches_s3__plain step 1 64/72 114 s
+patches_s3__plain step 1 72/72 127 s
+patches_s3__plain step 2 8/72 143 s
+patches_s3__plain step 2 16/72 156 s
+patches_s3__plain step 2 24/72 172 s
+patches_s3__plain step 2 32/72 190 s
+patches_s3__plain step 2 40/72 208 s
+patches_s3__plain step 2 48/72 224 s
+patches_s3__plain step 2 56/72 238 s
+patches_s3__plain step 2 64/72 257 s
+patches_s3__plain step 2 72/72 272 s
+patches_s3__plain step 3 8/72 286 s
+patches_s3__plain step 3 16/72 298 s
+patches_s3__plain step 3 24/72 311 s
+patches_s3__plain step 3 32/72 325 s
+patches_s3__plain step 3 40/72 339 s
+patches_s3__plain step 3 48/72 353 s
+patches_s3__plain step 3 56/72 367 s
+patches_s3__plain step 3 64/72 381 s
+patches_s3__plain step 3 72/72 394 s
+wrote results/v07/records/dev/patches_s3__plain.jsonl 394 s
+W1122 00:40:30.858000 58996 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<03:27,  1.62it/s]Loading weights: 100%|██████████| 338/338 [00:00<00:00, 478.38it/s]
+experience_s3__plain step 1 8/72 12 s
+experience_s3__plain step 1 16/72 24 s
+experience_s3__plain step 1 24/72 38 s
+experience_s3__plain step 1 32/72 51 s
+experience_s3__plain step 1 40/72 62 s
+experience_s3__plain step 1 48/72 74 s
+experience_s3__plain step 1 56/72 87 s
+experience_s3__plain step 1 64/72 104 s
+experience_s3__plain step 1 72/72 119 s
+experience_s3__plain step 2 8/72 132 s
+experience_s3__plain step 2 16/72 146 s
+experience_s3__plain step 2 24/72 161 s
+experience_s3__plain step 2 32/72 174 s
+experience_s3__plain step 2 40/72 187 s
+experience_s3__plain step 2 48/72 201 s
+experience_s3__plain step 2 56/72 216 s
+experience_s3__plain step 2 64/72 232 s
+experience_s3__plain step 2 72/72 251 s
+experience_s3__plain step 3 8/72 268 s
+experience_s3__plain step 3 16/72 280 s
+experience_s3__plain step 3 24/72 295 s
+experience_s3__plain step 3 32/72 311 s
+experience_s3__plain step 3 40/72 327 s
+experience_s3__plain step 3 48/72 343 s
+experience_s3__plain step 3 56/72 359 s
+experience_s3__plain step 3 64/72 376 s
+experience_s3__plain step 3 72/72 388 s
+wrote results/v07/records/dev/experience_s3__plain.jsonl 388 s
+W1122 00:47:05.791000 59691 torch/distributed/elastic/multiprocessing/redirects.py:35] NOTE: Redirects are currently not supported in MacOs.
+Loading weights:   0%|          | 0/338 [00:00<?, ?it/s]Loading weights:   0%|          | 1/338 [00:00<03:21,  1.67it/s]Loading weights:  40%|████      | 136/338 [00:00<00:00, 256.65it/s]Loading weights:  62%|██████▏   | 208/338 [00:01<00:00, 248.92it/s]Loading weights:  77%|███████▋  | 259/338 [00:01<00:00, 245.62it/s]Loading weights:  88%|████████▊ | 299/338 [00:01<00:00, 242.24it/s]Loading weights:  99%|█████████▊| 333/338 [00:01<00:00, 232.45it/s]Loading weights: 100%|██████████| 338/338 [00:01<00:00, 216.64it/s]
+experience_x_s3__plain step 1 8/72 13 s
+experience_x_s3__plain step 1 16/72 24 s
+experience_x_s3__plain step 1 24/72 38 s
+experience_x_s3__plain step 1 32/72 50 s
+experience_x_s3__plain step 1 40/72 62 s
+experience_x_s3__plain step 1 48/72 75 s
+experience_x_s3__plain step 1 56/72 88 s
+experience_x_s3__plain step 1 64/72 102 s
+experience_x_s3__plain step 1 72/72 117 s
+experience_x_s3__plain step 2 8/72 132 s
+experience_x_s3__plain step 2 16/72 146 s
+experience_x_s3__plain step 2 24/72 159 s
+experience_x_s3__plain step 2 32/72 173 s
+experience_x_s3__plain step 2 40/72 190 s
+experience_x_s3__plain step 2 48/72 205 s
+experience_x_s3__plain step 2 56/72 219 s
+experience_x_s3__plain step 2 64/72 236 s
+experience_x_s3__plain step 2 72/72 252 s
+experience_x_s3__plain step 3 8/72 268 s
+experience_x_s3__plain step 3 16/72 283 s
+experience_x_s3__plain step 3 24/72 298 s
+experience_x_s3__plain step 3 32/72 314 s
+experience_x_s3__plain step 3 40/72 329 s
+experience_x_s3__plain step 3 48/72 346 s
+experience_x_s3__plain step 3 56/72 362 s
+experience_x_s3__plain step 3 64/72 379 s
+experience_x_s3__plain step 3 72/72 397 s
+wrote results/v07/records/dev/experience_x_s3__plain.jsonl 397 s
+experience_x_s3__bank step 1 8/72 13 s
+experience_x_s3__bank step 1 16/72 30 s
+experience_x_s3__bank step 1 24/72 44 s
+experience_x_s3__bank step 1 32/72 57 s
+experience_x_s3__bank step 1 40/72 72 s
+experience_x_s3__bank step 1 48/72 86 s
+experience_x_s3__bank step 1 56/72 100 s
+experience_x_s3__bank step 1 64/72 114 s
+experience_x_s3__bank step 1 72/72 130 s
+experience_x_s3__bank step 2 8/72 144 s
+experience_x_s3__bank step 2 16/72 162 s
+experience_x_s3__bank step 2 24/72 176 s
+experience_x_s3__bank step 2 32/72 191 s
+experience_x_s3__bank step 2 40/72 213 s
+experience_x_s3__bank step 2 48/72 229 s
+experience_x_s3__bank step 2 56/72 244 s
+experience_x_s3__bank step 2 64/72 261 s
+experience_x_s3__bank step 2 72/72 279 s
+experience_x_s3__bank step 3 8/72 298 s
+experience_x_s3__bank step 3 16/72 313 s
+experience_x_s3__bank step 3 24/72 332 s
+experience_x_s3__bank step 3 32/72 350 s
+experience_x_s3__bank step 3 40/72 368 s
+experience_x_s3__bank step 3 48/72 386 s
+experience_x_s3__bank step 3 56/72 404 s
+experience_x_s3__bank step 3 64/72 423 s
+experience_x_s3__bank step 3 72/72 437 s
+wrote results/v07/records/dev/experience_x_s3__bank.jsonl 437 s
+experience_x_s3__example step 1 8/72 14 s
+experience_x_s3__example step 1 16/72 29 s
+experience_x_s3__example step 1 24/72 45 s
+experience_x_s3__example step 1 32/72 59 s
+experience_x_s3__example step 1 40/72 74 s
+experience_x_s3__example step 1 48/72 88 s
+experience_x_s3__example step 1 56/72 102 s
+experience_x_s3__example step 1 64/72 118 s
+experience_x_s3__example step 1 72/72 137 s
+experience_x_s3__example step 2 8/72 153 s
+experience_x_s3__example step 2 16/72 168 s
+experience_x_s3__example step 2 24/72 184 s
+experience_x_s3__example step 2 32/72 199 s
+experience_x_s3__example step 2 40/72 218 s
+experience_x_s3__example step 2 48/72 233 s
+experience_x_s3__example step 2 56/72 249 s
+experience_x_s3__example step 2 64/72 267 s
+experience_x_s3__example step 2 72/72 285 s
+experience_x_s3__example step 3 8/72 303 s
+experience_x_s3__example step 3 16/72 318 s
+experience_x_s3__example step 3 24/72 337 s
+experience_x_s3__example step 3 32/72 356 s
+experience_x_s3__example step 3 40/72 373 s
+experience_x_s3__example step 3 48/72 391 s
+experience_x_s3__example step 3 56/72 409 s
+experience_x_s3__example step 3 64/72 427 s
+experience_x_s3__example step 3 72/72 446 s
+wrote results/v07/records/dev/experience_x_s3__example.jsonl 446 s
+experience_x_s3__wrong step 1 8/72 13 s
+experience_x_s3__wrong step 1 16/72 26 s
+experience_x_s3__wrong step 1 24/72 40 s
+experience_x_s3__wrong step 1 32/72 53 s
+experience_x_s3__wrong step 1 40/72 68 s
+experience_x_s3__wrong step 1 48/72 81 s
+experience_x_s3__wrong step 1 56/72 95 s
+experience_x_s3__wrong step 1 64/72 110 s
+experience_x_s3__wrong step 1 72/72 126 s
+experience_x_s3__wrong step 2 8/72 140 s
+experience_x_s3__wrong step 2 16/72 155 s
+experience_x_s3__wrong step 2 24/72 170 s
+experience_x_s3__wrong step 2 32/72 185 s
+experience_x_s3__wrong step 2 40/72 202 s
+experience_x_s3__wrong step 2 48/72 217 s
+experience_x_s3__wrong step 2 56/72 232 s
+experience_x_s3__wrong step 2 64/72 249 s
+experience_x_s3__wrong step 2 72/72 266 s
+experience_x_s3__wrong step 3 8/72 284 s
+experience_x_s3__wrong step 3 16/72 300 s
+experience_x_s3__wrong step 3 24/72 316 s
+experience_x_s3__wrong step 3 32/72 334 s
+experience_x_s3__wrong step 3 40/72 352 s
+experience_x_s3__wrong step 3 48/72 370 s
+experience_x_s3__wrong step 3 56/72 388 s
+experience_x_s3__wrong step 3 64/72 406 s
+experience_x_s3__wrong step 3 72/72 420 s
+wrote results/v07/records/dev/experience_x_s3__wrong.jsonl 420 s
+experience_x_s3__bank_v1 step 1 8/72 14 s
+experience_x_s3__bank_v1 step 1 16/72 30 s
+experience_x_s3__bank_v1 step 1 24/72 44 s
+experience_x_s3__bank_v1 step 1 32/72 57 s
+experience_x_s3__bank_v1 step 1 40/72 69 s
+experience_x_s3__bank_v1 step 1 48/72 82 s
+experience_x_s3__bank_v1 step 1 56/72 95 s
+experience_x_s3__bank_v1 step 1 64/72 109 s
+experience_x_s3__bank_v1 step 1 72/72 125 s
+experience_x_s3__bank_v1 step 2 8/72 139 s
+experience_x_s3__bank_v1 step 2 16/72 156 s
+experience_x_s3__bank_v1 step 2 24/72 170 s
+experience_x_s3__bank_v1 step 2 32/72 184 s
+experience_x_s3__bank_v1 step 2 40/72 198 s
+experience_x_s3__bank_v1 step 2 48/72 212 s
+experience_x_s3__bank_v1 step 2 56/72 227 s
+experience_x_s3__bank_v1 step 2 64/72 243 s
+experience_x_s3__bank_v1 step 2 72/72 260 s
+experience_x_s3__bank_v1 step 3 8/72 278 s
+experience_x_s3__bank_v1 step 3 16/72 293 s
+experience_x_s3__bank_v1 step 3 24/72 308 s
+experience_x_s3__bank_v1 step 3 32/72 325 s
+experience_x_s3__bank_v1 step 3 40/72 342 s
+experience_x_s3__bank_v1 step 3 48/72 359 s
+experience_x_s3__bank_v1 step 3 56/72 377 s
+experience_x_s3__bank_v1 step 3 64/72 394 s
+experience_x_s3__bank_v1 step 3 72/72 411 s
+wrote results/v07/records/dev/experience_x_s3__bank_v1.jsonl 411 s
+experience_s3__plain.jsonl first patch correct 31 of 72
+experience_x_s3__bank.jsonl first patch correct 42 of 72
+experience_x_s3__bank_v1.jsonl first patch correct 41 of 72
+experience_x_s3__example.jsonl first patch correct 34 of 72
+experience_x_s3__plain.jsonl first patch correct 36 of 72
+experience_x_s3__wrong.jsonl first patch correct 37 of 72
+patches_s3__plain.jsonl first patch correct 32 of 72
+# v0.7 results: dev
+
+72 repositories. Arms and seeds: A unchanged (1 seed); B final patches (3 seeds); C experience (3 seeds); D experience + bank (3 seeds); D1 bank, version 1 only (3 seeds); E experience + nearest example (3 seeds); F bank disabled (3 seeds); W wrong diagnostic (3 seeds).
+
+## First submitted patch passes hidden grading (% of repositories; mean over seeds)
+
+| Arm | all (n=72) | not repeats (G2+G3+G4) (n=48) | G1 (n=24) | G2 (n=16) | G3 (n=16) | G4 (n=16) |
+|---|---|---|---|---|---|---|
+| A unchanged | 19.4 | 25.0 | 8.3 | 25.0 | 25.0 | 25.0 |
+| B final patches | 46.8 | 20.1 | 100.0 | 50.0 | 8.3 | 2.1 |
+| C experience | 48.6 | 25.0 | 95.8 | 62.5 | 6.2 | 6.2 |
+| D experience + bank | 50.9 | 31.2 | 90.3 | 72.9 | 6.2 | 14.6 |
+| D1 bank, version 1 only | 49.1 | 28.5 | 90.3 | 66.7 | 10.4 | 8.3 |
+| E experience + nearest example | 48.6 | 27.1 | 91.7 | 60.4 | 6.2 | 14.6 |
+| F bank disabled | 48.6 | 27.1 | 91.7 | 60.4 | 8.3 | 12.5 |
+| W wrong diagnostic | 48.6 | 27.8 | 90.3 | 62.5 | 6.2 | 14.6 |
+
+## Every seed
+
+| Arm | Seed | all | not repeats (G2+G3+G4) | G1 | G2 | G3 | G4 |
+|---|---|---|---|---|---|---|---|
+| A unchanged | 0 | 14/72 | 12/48 | 2/24 | 4/16 | 4/16 | 4/16 |
+| B final patches | 1 | 32/72 | 8/48 | 24/24 | 8/16 | 0/16 | 0/16 |
+| B final patches | 2 | 37/72 | 13/48 | 24/24 | 8/16 | 4/16 | 1/16 |
+| B final patches | 3 | 32/72 | 8/48 | 24/24 | 8/16 | 0/16 | 0/16 |
+| C experience | 1 | 37/72 | 14/48 | 23/24 | 11/16 | 1/16 | 2/16 |
+| C experience | 2 | 37/72 | 13/48 | 24/24 | 12/16 | 1/16 | 0/16 |
+| C experience | 3 | 31/72 | 9/48 | 22/24 | 7/16 | 1/16 | 1/16 |
+| D experience + bank | 1 | 33/72 | 13/48 | 20/24 | 11/16 | 0/16 | 2/16 |
+| D experience + bank | 2 | 35/72 | 13/48 | 22/24 | 12/16 | 1/16 | 0/16 |
+| D experience + bank | 3 | 42/72 | 19/48 | 23/24 | 12/16 | 2/16 | 5/16 |
+| D1 bank, version 1 only | 1 | 31/72 | 11/48 | 20/24 | 9/16 | 1/16 | 1/16 |
+| D1 bank, version 1 only | 2 | 34/72 | 12/48 | 22/24 | 12/16 | 0/16 | 0/16 |
+| D1 bank, version 1 only | 3 | 41/72 | 18/48 | 23/24 | 11/16 | 4/16 | 3/16 |
+| E experience + nearest example | 1 | 38/72 | 16/48 | 22/24 | 12/16 | 1/16 | 3/16 |
+| E experience + nearest example | 2 | 33/72 | 11/48 | 22/24 | 10/16 | 0/16 | 1/16 |
+| E experience + nearest example | 3 | 34/72 | 12/48 | 22/24 | 7/16 | 2/16 | 3/16 |
+| F bank disabled | 1 | 35/72 | 14/48 | 21/24 | 11/16 | 1/16 | 2/16 |
+| F bank disabled | 2 | 34/72 | 12/48 | 22/24 | 11/16 | 0/16 | 1/16 |
+| F bank disabled | 3 | 36/72 | 13/48 | 23/24 | 7/16 | 3/16 | 3/16 |
+| W wrong diagnostic | 1 | 32/72 | 11/48 | 21/24 | 9/16 | 0/16 | 2/16 |
+| W wrong diagnostic | 2 | 36/72 | 14/48 | 22/24 | 12/16 | 0/16 | 2/16 |
+| W wrong diagnostic | 3 | 37/72 | 15/48 | 22/24 | 9/16 | 3/16 | 3/16 |
+
+## Paired differences per repository (percentage points; 95% interval by resampling repositories, then by resampling whole families)
+
+| Contrast | Group | Difference | Repositories | Families | Better / same / worse |
+|---|---|---|---|---|---|
+| D experience + bank minus A unchanged | all | +31.5 | +16.7 to +45.8 | +5.6 to +58.3 | 36 / 28 / 8 |
+| D experience + bank minus A unchanged | not repeats (G2+G3+G4) | +6.2 | -10.4 to +22.9 | -27.8 to +36.8 | 14 / 26 / 8 |
+| D experience + bank minus A unchanged | G1 | +81.9 | +68.1 to +93.1 | +62.5 to +97.2 | 22 / 2 / 0 |
+| D experience + bank minus A unchanged | G2 | +47.9 | +25.0 to +70.8 | +0.0 to +95.8 | 8 / 8 / 0 |
+| D experience + bank minus A unchanged | G3 | -18.8 | -41.7 to +2.1 | -68.8 to +12.5 | 1 / 11 / 4 |
+| D experience + bank minus A unchanged | G4 | -10.4 | -39.6 to +16.7 | -72.9 to +37.5 | 5 / 7 / 4 |
+| C experience minus A unchanged | all | +29.2 | +13.9 to +44.0 | +2.7 to +55.4 | 35 / 27 / 10 |
+| C experience minus A unchanged | not repeats (G2+G3+G4) | -0.0 | -16.7 to +16.0 | -34.0 to +29.9 | 13 / 25 / 10 |
+| C experience minus A unchanged | G1 | +87.5 | +75.0 to +97.2 | +69.4 to +100.0 | 22 / 2 / 0 |
+| C experience minus A unchanged | G2 | +37.5 | +12.5 to +62.5 | -8.3 to +83.3 | 9 / 5 / 2 |
+| C experience minus A unchanged | G3 | -18.8 | -43.8 to +4.2 | -75.0 to +18.8 | 2 / 10 / 4 |
+| C experience minus A unchanged | G4 | -18.8 | -43.8 to +4.2 | -75.0 to +18.8 | 2 / 10 / 4 |
+| B final patches minus A unchanged | all | +27.3 | +13.9 to +40.7 | +4.3 to +54.5 | 26 / 38 / 8 |
+| B final patches minus A unchanged | not repeats (G2+G3+G4) | -4.9 | -16.7 to +7.6 | -28.5 to +19.4 | 4 / 36 / 8 |
+| B final patches minus A unchanged | G1 | +91.7 | +79.2 to +100.0 | +75.0 to +100.0 | 22 / 2 / 0 |
+| B final patches minus A unchanged | G2 | +25.0 | +6.2 to +50.0 | +0.0 to +75.0 | 4 / 12 / 0 |
+| B final patches minus A unchanged | G3 | -16.7 | -33.3 to -4.2 | -50.0 to +0.0 | 0 / 12 / 4 |
+| B final patches minus A unchanged | G4 | -22.9 | -43.8 to -6.2 | -68.8 to +0.0 | 0 / 12 / 4 |
+| D experience + bank minus B final patches | all | +4.2 | -2.8 to +11.6 | -6.9 to +17.1 | 10 / 53 / 9 |
+| D experience + bank minus B final patches | not repeats (G2+G3+G4) | +11.1 | +2.8 to +20.8 | -3.5 to +29.2 | 10 / 34 / 4 |
+| D experience + bank minus B final patches | G1 | -9.7 | -18.1 to -2.8 | -22.2 to +0.0 | 0 / 19 / 5 |
+| D experience + bank minus B final patches | G2 | +22.9 | +6.2 to +43.8 | +0.0 to +68.8 | 4 / 12 / 0 |
+| D experience + bank minus B final patches | G3 | -2.1 | -12.5 to +10.4 | -18.8 to +12.5 | 1 / 12 / 3 |
+| D experience + bank minus B final patches | G4 | +12.5 | +0.0 to +25.0 | -4.2 to +37.5 | 5 / 10 / 1 |
+| C experience minus B final patches | all | +1.9 | -5.1 to +9.3 | -9.4 to +16.2 | 9 / 49 / 14 |
+| C experience minus B final patches | not repeats (G2+G3+G4) | +4.9 | -5.6 to +16.0 | -12.5 to +25.7 | 9 / 28 / 11 |
+| C experience minus B final patches | G1 | -4.2 | -8.3 to +0.0 | -9.8 to +0.0 | 0 / 21 / 3 |
+| C experience minus B final patches | G2 | +12.5 | -12.5 to +41.7 | -29.2 to +68.8 | 5 / 5 / 6 |
+| C experience minus B final patches | G3 | -2.1 | -12.5 to +10.4 | -25.0 to +18.8 | 2 / 10 / 4 |
+| C experience minus B final patches | G4 | +4.2 | -4.2 to +14.6 | -6.2 to +18.8 | 2 / 13 / 1 |
+| D experience + bank minus F bank disabled | all | +2.3 | -2.3 to +6.9 | -2.0 to +6.8 | 11 / 54 / 7 |
+| D experience + bank minus F bank disabled | not repeats (G2+G3+G4) | +4.2 | -2.1 to +10.4 | -0.7 to +9.7 | 10 / 33 / 5 |
+| D experience + bank minus F bank disabled | G1 | -1.4 | -6.9 to +2.8 | -8.3 to +4.2 | 1 / 21 / 2 |
+| D experience + bank minus F bank disabled | G2 | +12.5 | +4.2 to +20.8 | +4.2 to +20.8 | 6 / 10 / 0 |
+| D experience + bank minus F bank disabled | G3 | -2.1 | -14.6 to +10.4 | -6.2 to +0.0 | 1 / 13 / 2 |
+| D experience + bank minus F bank disabled | G4 | +2.1 | -10.4 to +14.6 | -6.2 to +12.5 | 3 / 10 / 3 |
+| D experience + bank minus E experience + nearest example | all | +2.3 | -1.9 to +6.5 | -2.8 to +7.7 | 11 / 54 / 7 |
+| D experience + bank minus E experience + nearest example | not repeats (G2+G3+G4) | +4.2 | -1.4 to +9.7 | -2.8 to +11.1 | 10 / 33 / 5 |
+| D experience + bank minus E experience + nearest example | G1 | -1.4 | -5.6 to +2.8 | -8.3 to +4.2 | 1 / 21 / 2 |
+| D experience + bank minus E experience + nearest example | G2 | +12.5 | +4.2 to +20.8 | +0.0 to +25.0 | 6 / 10 / 0 |
+| D experience + bank minus E experience + nearest example | G3 | +0.0 | -8.3 to +8.3 | -6.2 to +6.2 | 2 / 12 / 2 |
+| D experience + bank minus E experience + nearest example | G4 | +0.0 | -10.4 to +12.5 | -12.5 to +12.5 | 2 / 11 / 3 |
+| E experience + nearest example minus F bank disabled | all | +0.0 | -3.7 to +3.7 | -3.2 to +3.4 | 8 / 56 / 8 |
+| E experience + nearest example minus F bank disabled | not repeats (G2+G3+G4) | +0.0 | -4.9 to +4.9 | -4.2 to +4.9 | 7 / 34 / 7 |
+| E experience + nearest example minus F bank disabled | G1 | +0.0 | -4.2 to +4.2 | -4.2 to +4.2 | 1 / 22 / 1 |
+| E experience + nearest example minus F bank disabled | G2 | +0.0 | -10.4 to +10.4 | -8.3 to +10.4 | 3 / 10 / 3 |
+| E experience + nearest example minus F bank disabled | G3 | -2.1 | -8.3 to +4.2 | -6.2 to +0.0 | 1 / 13 / 2 |
+| E experience + nearest example minus F bank disabled | G4 | +2.1 | -6.2 to +10.4 | -6.2 to +12.5 | 3 / 11 / 2 |
+| W wrong diagnostic minus F bank disabled | all | +0.0 | -4.2 to +4.2 | -3.1 to +3.2 | 9 / 53 / 10 |
+| W wrong diagnostic minus F bank disabled | not repeats (G2+G3+G4) | +0.7 | -5.6 to +6.9 | -3.5 to +4.9 | 9 / 30 / 9 |
+| W wrong diagnostic minus F bank disabled | G1 | -1.4 | -4.2 to +0.0 | -4.2 to +0.0 | 0 / 23 / 1 |
+| W wrong diagnostic minus F bank disabled | G2 | +2.1 | -6.2 to +10.4 | +0.0 to +6.2 | 3 / 11 / 2 |
+| W wrong diagnostic minus F bank disabled | G3 | -2.1 | -10.4 to +6.2 | -12.5 to +6.2 | 2 / 11 / 3 |
+| W wrong diagnostic minus F bank disabled | G4 | +2.1 | -10.4 to +16.7 | -6.2 to +12.5 | 4 / 8 / 4 |
+| D experience + bank minus D1 bank, version 1 only | all | +1.9 | -0.9 to +5.1 | -1.9 to +6.1 | 6 / 63 / 3 |
+| D experience + bank minus D1 bank, version 1 only | not repeats (G2+G3+G4) | +2.8 | -1.4 to +7.6 | -2.8 to +9.0 | 6 / 39 / 3 |
+| D experience + bank minus D1 bank, version 1 only | G1 | +0.0 | +0.0 to +0.0 | +0.0 to +0.0 | 0 / 24 / 0 |
+| D experience + bank minus D1 bank, version 1 only | G2 | +6.2 | +0.0 to +12.5 | +0.0 to +18.8 | 3 / 13 / 0 |
+| D experience + bank minus D1 bank, version 1 only | G3 | -4.2 | -12.5 to +4.2 | -12.5 to +0.0 | 1 / 12 / 3 |
+| D experience + bank minus D1 bank, version 1 only | G4 | +6.2 | +0.0 to +16.7 | +0.0 to +18.8 | 2 / 14 / 0 |
+
+## Regressions, tests and cost (all repositories; mean over seeds)
+
+| Arm | Repositories with a hidden test broken by the patch | Patch applied | Tests well formed | Predictions that matched execution | Visible tests pass but hidden fail | Seconds of generation per repository | New tokens per repository | Generation seconds per correct fix |
+|---|---|---|---|---|---|---|---|---|
+| A unchanged | 5.6% | 84.7% | 98.6% | 11.8% | 0.0% | 5.1 | 303 | 26.2 |
+| B final patches | 14.8% | 99.1% | 86.3% | 7.4% | 1.4% | 5.2 | 219 | 11.1 |
+| C experience | 23.6% | 98.1% | 100.0% | 44.7% | 2.8% | 5.2 | 252 | 10.6 |
+| D experience + bank | 23.6% | 100.0% | 99.8% | 35.0% | 1.4% | 5.7 | 253 | 11.2 |
+| D1 bank, version 1 only | 23.6% | 99.5% | 100.0% | 37.0% | 3.2% | 5.5 | 252 | 11.1 |
+| E experience + nearest example | 22.2% | 97.7% | 100.0% | 40.3% | 3.7% | 5.8 | 252 | 12.0 |
+| F bank disabled | 24.1% | 99.5% | 100.0% | 39.6% | 2.3% | 5.2 | 253 | 10.7 |
+| W wrong diagnostic | 20.8% | 99.1% | 100.0% | 34.3% | 2.3% | 5.6 | 251 | 11.6 |
+
+## Regressions by group (% of repositories where the patch broke a hidden test that passed before)
+
+| Arm | all | not repeats (G2+G3+G4) | G1 | G2 | G3 | G4 |
+|---|---|---|---|---|---|---|
+| A unchanged | 5.6 | 2.1 | 12.5 | 6.2 | 0.0 | 0.0 |
+| B final patches | 14.8 | 22.2 | 0.0 | 39.6 | 16.7 | 10.4 |
+| C experience | 23.6 | 35.4 | 0.0 | 18.8 | 70.8 | 16.7 |
+| D experience + bank | 23.6 | 34.7 | 1.4 | 10.4 | 77.1 | 16.7 |
+| D1 bank, version 1 only | 23.6 | 34.7 | 1.4 | 18.8 | 70.8 | 14.6 |
+| E experience + nearest example | 22.2 | 32.6 | 1.4 | 16.7 | 64.6 | 16.7 |
+| F bank disabled | 24.1 | 35.4 | 1.4 | 22.9 | 60.4 | 22.9 |
+| W wrong diagnostic | 20.8 | 30.6 | 1.4 | 18.8 | 56.2 | 16.7 |
+
+## Repositories where the trained fix does not belong (26): share where the submitted patch fails exactly as the trained fix does
+
+| Arm | Lookalikes (G3) | Other groups |
+|---|---|---|
+| A unchanged | 25.0% | 0.0% |
+| B final patches | 18.7% | 33.3% |
+| C experience | 37.5% | 0.0% |
+| D experience + bank | 58.3% | 6.7% |
+| D1 bank, version 1 only | 50.0% | 13.3% |
+| E experience + nearest example | 29.2% | 3.3% |
+| F bank disabled | 39.6% | 3.3% |
+| W wrong diagnostic | 37.5% | 3.3% |
+
+## After a contradiction: episodes in which at least one test did not come out as predicted
+
+| Arm | Episodes with a contradiction | First patch correct after a contradiction | First patch correct with no contradiction |
+|---|---|---|---|
+| A unchanged | 65 of 72 | 18.5% | 28.6% |
+| B final patches | 205 of 216 | 46.8% | 45.5% |
+| C experience | 151 of 216 | 35.1% | 80.0% |
+| D experience + bank | 162 of 216 | 39.5% | 85.2% |
+| D1 bank, version 1 only | 161 of 216 | 37.9% | 81.8% |
+| E experience + nearest example | 161 of 216 | 40.4% | 72.7% |
+| F bank disabled | 158 of 216 | 36.1% | 82.8% |
+| W wrong diagnostic | 168 of 216 | 36.9% | 89.6% |
+
+## D experience + bank: correctness by repeated use, status and diagnostic
+
+| Split | Value | Episodes | First patch correct |
+|---|---|---|---|
+| by diagnostic | S1 | 81 | 35.8% |
+| by diagnostic | S2 | 69 | 59.4% |
+| by diagnostic | S3 | 66 | 60.6% |
+| by status at the patch | reopened | 162 | 39.5% |
+| by status at the patch | supported | 54 | 85.2% |
+| by use | use 1-5 | 45 | 55.6% |
+| by use | use 16+ | 81 | 49.4% |
+| by use | use 6-15 | 90 | 50.0% |
+
+## D1 bank, version 1 only: correctness by repeated use, status and diagnostic
+
+| Split | Value | Episodes | First patch correct |
+|---|---|---|---|
+| by diagnostic | S1 | 81 | 34.6% |
+| by diagnostic | S2 | 69 | 55.1% |
+| by diagnostic | S3 | 66 | 60.6% |
+| by status at the patch | reopened | 161 | 37.9% |
+| by status at the patch | supported | 55 | 81.8% |
+| by use | use 1-5 | 45 | 53.3% |
+| by use | use 16+ | 81 | 49.4% |
+| by use | use 6-15 | 90 | 46.7% |
+
+## W wrong diagnostic: correctness by repeated use, status and diagnostic
+
+| Split | Value | Episodes | First patch correct |
+|---|---|---|---|
+| by diagnostic | S1 | 66 | 57.6% |
+| by diagnostic | S2 | 81 | 35.8% |
+| by diagnostic | S3 | 69 | 55.1% |
+| by status at the patch | reopened | 168 | 36.9% |
+| by status at the patch | supported | 48 | 89.6% |
+| by use | use 1-5 | 45 | 51.1% |
+| by use | use 16+ | 81 | 46.9% |
+| by use | use 6-15 | 90 | 48.9% |
+
+PIPELINE DONE

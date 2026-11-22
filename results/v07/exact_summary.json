@@ -1,0 +1,279 @@
+{
+ "arms": {
+  "A unchanged": {
+   "all": 12.5,
+   "EX": 12.5,
+   "regression_share": 4.17,
+   "generation_seconds_per_correct_fix": 40.21
+  },
+  "B final patches": {
+   "all": 100.0,
+   "EX": 100.0,
+   "regression_share": 0.0,
+   "generation_seconds_per_correct_fix": 4.56
+  },
+  "C experience": {
+   "all": 93.33,
+   "EX": 93.33,
+   "regression_share": 0.0,
+   "generation_seconds_per_correct_fix": 5.43
+  },
+  "D experience + bank": {
+   "all": 86.67,
+   "EX": 86.67,
+   "regression_share": 4.17,
+   "generation_seconds_per_correct_fix": 6.35
+  },
+  "F bank disabled": {
+   "all": 90.0,
+   "EX": 90.0,
+   "regression_share": 0.83,
+   "generation_seconds_per_correct_fix": 5.6
+  }
+ },
+ "contrasts": {
+  "D experience + bank minus A unchanged | all": {
+   "difference": 74.17,
+   "ci_repositories": [
+    66.67,
+    81.67
+   ],
+   "ci_families": [
+    51.67,
+    93.33
+   ],
+   "better": 89,
+   "same": 31,
+   "worse": 0
+  },
+  "D experience + bank minus A unchanged | EX": {
+   "difference": 74.17,
+   "ci_repositories": [
+    65.83,
+    81.67
+   ],
+   "ci_families": [
+    50.83,
+    93.33
+   ],
+   "better": 89,
+   "same": 31,
+   "worse": 0
+  },
+  "C experience minus A unchanged | all": {
+   "difference": 80.83,
+   "ci_repositories": [
+    73.33,
+    87.5
+   ],
+   "ci_families": [
+    60.0,
+    97.5
+   ],
+   "better": 97,
+   "same": 23,
+   "worse": 0
+  },
+  "C experience minus A unchanged | EX": {
+   "difference": 80.83,
+   "ci_repositories": [
+    73.33,
+    87.5
+   ],
+   "ci_families": [
+    60.0,
+    97.5
+   ],
+   "better": 97,
+   "same": 23,
+   "worse": 0
+  },
+  "B final patches minus A unchanged | all": {
+   "difference": 87.5,
+   "ci_repositories": [
+    81.67,
+    93.33
+   ],
+   "ci_families": [
+    69.17,
+    99.17
+   ],
+   "better": 105,
+   "same": 15,
+   "worse": 0
+  },
+  "B final patches minus A unchanged | EX": {
+   "difference": 87.5,
+   "ci_repositories": [
+    81.67,
+    93.33
+   ],
+   "ci_families": [
+    70.81,
+    99.17
+   ],
+   "better": 105,
+   "same": 15,
+   "worse": 0
+  },
+  "D experience + bank minus B final patches | all": {
+   "difference": -13.33,
+   "ci_repositories": [
+    -20.0,
+    -7.5
+   ],
+   "ci_families": [
+    -33.33,
+    0.0
+   ],
+   "better": 0,
+   "same": 104,
+   "worse": 16
+  },
+  "D experience + bank minus B final patches | EX": {
+   "difference": -13.33,
+   "ci_repositories": [
+    -20.0,
+    -7.5
+   ],
+   "ci_families": [
+    -31.71,
+    0.0
+   ],
+   "better": 0,
+   "same": 104,
+   "worse": 16
+  },
+  "C experience minus B final patches | all": {
+   "difference": -6.67,
+   "ci_repositories": [
+    -11.67,
+    -2.5
+   ],
+   "ci_families": [
+    -20.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 112,
+   "worse": 8
+  },
+  "C experience minus B final patches | EX": {
+   "difference": -6.67,
+   "ci_repositories": [
+    -11.67,
+    -2.5
+   ],
+   "ci_families": [
+    -20.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 112,
+   "worse": 8
+  },
+  "D experience + bank minus F bank disabled | all": {
+   "difference": -3.33,
+   "ci_repositories": [
+    -8.33,
+    0.83
+   ],
+   "ci_families": [
+    -15.0,
+    5.0
+   ],
+   "better": 2,
+   "same": 112,
+   "worse": 6
+  },
+  "D experience + bank minus F bank disabled | EX": {
+   "difference": -3.33,
+   "ci_repositories": [
+    -8.33,
+    0.83
+   ],
+   "ci_families": [
+    -15.0,
+    5.0
+   ],
+   "better": 2,
+   "same": 112,
+   "worse": 6
+  },
+  "F bank disabled minus A unchanged | all": {
+   "difference": 77.5,
+   "ci_repositories": [
+    70.0,
+    85.0
+   ],
+   "ci_families": [
+    55.0,
+    95.0
+   ],
+   "better": 93,
+   "same": 27,
+   "worse": 0
+  },
+  "F bank disabled minus A unchanged | EX": {
+   "difference": 77.5,
+   "ci_repositories": [
+    70.0,
+    85.0
+   ],
+   "ci_families": [
+    55.0,
+    95.83
+   ],
+   "better": 93,
+   "same": 27,
+   "worse": 0
+  }
+ },
+ "rules": [
+  {
+   "rule": "P1",
+   "text": "experience helps on unfamiliar repositories: D minus A at least +10 points on repositories that are not repeats, interval (repositories) above 0",
+   "result": "not computable (an arm or group is missing)"
+  },
+  {
+   "rule": "R1",
+   "text": "recognition: D minus A at least +10 points on renamed repeats, interval above 0",
+   "result": "not computable (an arm or group is missing)"
+  },
+  {
+   "rule": "S1",
+   "text": "verified experience beats final patches: C minus B at least +5 points on repositories that are not repeats, interval above 0",
+   "result": "not computable (an arm or group is missing)"
+  },
+  {
+   "rule": "S2",
+   "text": "the bank adds to the same student: D minus F at least +5 points on repositories that are not repeats, and better on more repositories than worse",
+   "result": "not computable (an arm or group is missing)"
+  },
+  {
+   "rule": "S3",
+   "text": "the bank beats ordinary retrieval: D minus E at least +5 points on repositories that are not repeats, and better on more than worse",
+   "result": "not computable (an arm or group is missing)"
+  },
+  {
+   "rule": "S4",
+   "text": "the content of the diagnostic matters: D minus W (wrong diagnostic) at least +5 points on repositories that are not repeats, and better on more than worse",
+   "result": "not computable (an arm or group is missing)"
+  },
+  {
+   "rule": "P2",
+   "text": "no excess of regressions: share of repositories that are not repeats where D's patch breaks a hidden test is at most 10 points above A's",
+   "D": null,
+   "A": null,
+   "result": "not computable"
+  },
+  {
+   "rule": "S5",
+   "text": "the old fix is not carried onto lookalikes: share of lookalikes where D's patch breaks a hidden test is at most 10 points above A's",
+   "D": null,
+   "A": null,
+   "result": "not computable"
+  }
+ ],
+ "verdict": "not computable"
+}

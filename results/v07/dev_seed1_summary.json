@@ -1,0 +1,926 @@
+{
+ "arms": {
+  "A unchanged": {
+   "all": 19.44,
+   "not repeats (G2+G3+G4)": 25.0,
+   "G1": 8.33,
+   "G2": 25.0,
+   "G3": 25.0,
+   "G4": 25.0,
+   "regression_share": 5.56,
+   "generation_seconds_per_correct_fix": 26.15
+  },
+  "B final patches": {
+   "all": 44.44,
+   "not repeats (G2+G3+G4)": 16.67,
+   "G1": 100.0,
+   "G2": 50.0,
+   "G3": 0.0,
+   "G4": 0.0,
+   "regression_share": 8.33,
+   "generation_seconds_per_correct_fix": 11.54
+  },
+  "C experience": {
+   "all": 51.39,
+   "not repeats (G2+G3+G4)": 29.17,
+   "G1": 95.83,
+   "G2": 68.75,
+   "G3": 6.25,
+   "G4": 12.5,
+   "regression_share": 27.78,
+   "generation_seconds_per_correct_fix": 10.09
+  },
+  "D experience + bank": {
+   "all": 45.83,
+   "not repeats (G2+G3+G4)": 27.08,
+   "G1": 83.33,
+   "G2": 68.75,
+   "G3": 0.0,
+   "G4": 12.5,
+   "regression_share": 29.17,
+   "generation_seconds_per_correct_fix": 12.14
+  },
+  "D1 bank, version 1 only": {
+   "all": 43.06,
+   "not repeats (G2+G3+G4)": 22.92,
+   "G1": 83.33,
+   "G2": 56.25,
+   "G3": 6.25,
+   "G4": 6.25,
+   "regression_share": 27.78,
+   "generation_seconds_per_correct_fix": 12.44
+  },
+  "E experience + nearest example": {
+   "all": 52.78,
+   "not repeats (G2+G3+G4)": 33.33,
+   "G1": 91.67,
+   "G2": 75.0,
+   "G3": 6.25,
+   "G4": 18.75,
+   "regression_share": 25.0,
+   "generation_seconds_per_correct_fix": 10.78
+  },
+  "F bank disabled": {
+   "all": 48.61,
+   "not repeats (G2+G3+G4)": 29.17,
+   "G1": 87.5,
+   "G2": 68.75,
+   "G3": 6.25,
+   "G4": 12.5,
+   "regression_share": 23.61,
+   "generation_seconds_per_correct_fix": 10.61
+  },
+  "W wrong diagnostic": {
+   "all": 44.44,
+   "not repeats (G2+G3+G4)": 22.92,
+   "G1": 87.5,
+   "G2": 56.25,
+   "G3": 0.0,
+   "G4": 12.5,
+   "regression_share": 26.39,
+   "generation_seconds_per_correct_fix": 12.62
+  }
+ },
+ "contrasts": {
+  "D experience + bank minus A unchanged | all": {
+   "difference": 26.39,
+   "ci_repositories": [
+    11.11,
+    41.67
+   ],
+   "ci_families": [
+    0.0,
+    54.29
+   ],
+   "better": 27,
+   "same": 37,
+   "worse": 8
+  },
+  "D experience + bank minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": 2.08,
+   "ci_repositories": [
+    -14.58,
+    18.75
+   ],
+   "ci_families": [
+    -31.3,
+    31.25
+   ],
+   "better": 9,
+   "same": 31,
+   "worse": 8
+  },
+  "D experience + bank minus A unchanged | G1": {
+   "difference": 75.0,
+   "ci_repositories": [
+    58.33,
+    91.67
+   ],
+   "ci_families": [
+    50.0,
+    100.0
+   ],
+   "better": 18,
+   "same": 6,
+   "worse": 0
+  },
+  "D experience + bank minus A unchanged | G2": {
+   "difference": 43.75,
+   "ci_repositories": [
+    18.75,
+    68.75
+   ],
+   "ci_families": [
+    0.0,
+    87.5
+   ],
+   "better": 7,
+   "same": 9,
+   "worse": 0
+  },
+  "D experience + bank minus A unchanged | G3": {
+   "difference": -25.0,
+   "ci_repositories": [
+    -50.0,
+    -6.25
+   ],
+   "ci_families": [
+    -75.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 12,
+   "worse": 4
+  },
+  "D experience + bank minus A unchanged | G4": {
+   "difference": -12.5,
+   "ci_repositories": [
+    -43.75,
+    18.75
+   ],
+   "ci_families": [
+    -75.0,
+    37.5
+   ],
+   "better": 2,
+   "same": 10,
+   "worse": 4
+  },
+  "C experience minus A unchanged | all": {
+   "difference": 31.94,
+   "ci_repositories": [
+    15.28,
+    48.61
+   ],
+   "ci_families": [
+    4.76,
+    60.29
+   ],
+   "better": 33,
+   "same": 29,
+   "worse": 10
+  },
+  "C experience minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": 4.17,
+   "ci_repositories": [
+    -14.58,
+    22.92
+   ],
+   "ci_families": [
+    -33.33,
+    39.58
+   ],
+   "better": 12,
+   "same": 26,
+   "worse": 10
+  },
+  "C experience minus A unchanged | G1": {
+   "difference": 87.5,
+   "ci_repositories": [
+    75.0,
+    100.0
+   ],
+   "ci_families": [
+    70.83,
+    100.0
+   ],
+   "better": 21,
+   "same": 3,
+   "worse": 0
+  },
+  "C experience minus A unchanged | G2": {
+   "difference": 43.75,
+   "ci_repositories": [
+    6.25,
+    75.0
+   ],
+   "ci_families": [
+    -12.5,
+    100.0
+   ],
+   "better": 9,
+   "same": 5,
+   "worse": 2
+  },
+  "C experience minus A unchanged | G3": {
+   "difference": -18.75,
+   "ci_repositories": [
+    -43.75,
+    6.25
+   ],
+   "ci_families": [
+    -75.0,
+    18.75
+   ],
+   "better": 1,
+   "same": 11,
+   "worse": 4
+  },
+  "C experience minus A unchanged | G4": {
+   "difference": -12.5,
+   "ci_repositories": [
+    -43.75,
+    18.75
+   ],
+   "ci_families": [
+    -75.0,
+    37.5
+   ],
+   "better": 2,
+   "same": 10,
+   "worse": 4
+  },
+  "B final patches minus A unchanged | all": {
+   "difference": 25.0,
+   "ci_repositories": [
+    11.11,
+    38.89
+   ],
+   "ci_families": [
+    0.0,
+    53.12
+   ],
+   "better": 26,
+   "same": 38,
+   "worse": 8
+  },
+  "B final patches minus A unchanged | not repeats (G2+G3+G4)": {
+   "difference": -8.33,
+   "ci_repositories": [
+    -22.92,
+    6.25
+   ],
+   "ci_families": [
+    -33.33,
+    16.67
+   ],
+   "better": 4,
+   "same": 36,
+   "worse": 8
+  },
+  "B final patches minus A unchanged | G1": {
+   "difference": 91.67,
+   "ci_repositories": [
+    79.17,
+    100.0
+   ],
+   "ci_families": [
+    75.0,
+    100.0
+   ],
+   "better": 22,
+   "same": 2,
+   "worse": 0
+  },
+  "B final patches minus A unchanged | G2": {
+   "difference": 25.0,
+   "ci_repositories": [
+    6.25,
+    50.0
+   ],
+   "ci_families": [
+    0.0,
+    75.0
+   ],
+   "better": 4,
+   "same": 12,
+   "worse": 0
+  },
+  "B final patches minus A unchanged | G3": {
+   "difference": -25.0,
+   "ci_repositories": [
+    -50.0,
+    -6.25
+   ],
+   "ci_families": [
+    -75.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 12,
+   "worse": 4
+  },
+  "B final patches minus A unchanged | G4": {
+   "difference": -25.0,
+   "ci_repositories": [
+    -50.0,
+    -6.25
+   ],
+   "ci_families": [
+    -75.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 12,
+   "worse": 4
+  },
+  "D experience + bank minus B final patches | all": {
+   "difference": 1.39,
+   "ci_repositories": [
+    -6.94,
+    9.72
+   ],
+   "ci_families": [
+    -11.76,
+    13.42
+   ],
+   "better": 5,
+   "same": 63,
+   "worse": 4
+  },
+  "D experience + bank minus B final patches | not repeats (G2+G3+G4)": {
+   "difference": 10.42,
+   "ci_repositories": [
+    2.08,
+    20.83
+   ],
+   "ci_families": [
+    0.0,
+    25.0
+   ],
+   "better": 5,
+   "same": 43,
+   "worse": 0
+  },
+  "D experience + bank minus B final patches | G1": {
+   "difference": -16.67,
+   "ci_repositories": [
+    -33.33,
+    -4.17
+   ],
+   "ci_families": [
+    -41.67,
+    0.0
+   ],
+   "better": 0,
+   "same": 20,
+   "worse": 4
+  },
+  "D experience + bank minus B final patches | G2": {
+   "difference": 18.75,
+   "ci_repositories": [
+    0.0,
+    37.5
+   ],
+   "ci_families": [
+    0.0,
+    56.25
+   ],
+   "better": 3,
+   "same": 13,
+   "worse": 0
+  },
+  "D experience + bank minus B final patches | G3": {
+   "difference": 0.0,
+   "ci_repositories": [
+    0.0,
+    0.0
+   ],
+   "ci_families": [
+    0.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 16,
+   "worse": 0
+  },
+  "D experience + bank minus B final patches | G4": {
+   "difference": 12.5,
+   "ci_repositories": [
+    0.0,
+    31.25
+   ],
+   "ci_families": [
+    0.0,
+    37.5
+   ],
+   "better": 2,
+   "same": 14,
+   "worse": 0
+  },
+  "C experience minus B final patches | all": {
+   "difference": 6.94,
+   "ci_repositories": [
+    -1.39,
+    15.28
+   ],
+   "ci_families": [
+    -5.71,
+    21.05
+   ],
+   "better": 8,
+   "same": 61,
+   "worse": 3
+  },
+  "C experience minus B final patches | not repeats (G2+G3+G4)": {
+   "difference": 12.5,
+   "ci_repositories": [
+    0.0,
+    25.0
+   ],
+   "ci_families": [
+    -6.25,
+    33.33
+   ],
+   "better": 8,
+   "same": 38,
+   "worse": 2
+  },
+  "C experience minus B final patches | G1": {
+   "difference": -4.17,
+   "ci_repositories": [
+    -12.5,
+    0.0
+   ],
+   "ci_families": [
+    -12.5,
+    0.0
+   ],
+   "better": 0,
+   "same": 23,
+   "worse": 1
+  },
+  "C experience minus B final patches | G2": {
+   "difference": 18.75,
+   "ci_repositories": [
+    -12.5,
+    50.0
+   ],
+   "ci_families": [
+    -31.25,
+    75.0
+   ],
+   "better": 5,
+   "same": 9,
+   "worse": 2
+  },
+  "C experience minus B final patches | G3": {
+   "difference": 6.25,
+   "ci_repositories": [
+    0.0,
+    18.75
+   ],
+   "ci_families": [
+    0.0,
+    18.75
+   ],
+   "better": 1,
+   "same": 15,
+   "worse": 0
+  },
+  "C experience minus B final patches | G4": {
+   "difference": 12.5,
+   "ci_repositories": [
+    0.0,
+    31.25
+   ],
+   "ci_families": [
+    0.0,
+    37.5
+   ],
+   "better": 2,
+   "same": 14,
+   "worse": 0
+  },
+  "D experience + bank minus F bank disabled | all": {
+   "difference": -2.78,
+   "ci_repositories": [
+    -11.11,
+    4.17
+   ],
+   "ci_families": [
+    -11.11,
+    4.41
+   ],
+   "better": 3,
+   "same": 64,
+   "worse": 5
+  },
+  "D experience + bank minus F bank disabled | not repeats (G2+G3+G4)": {
+   "difference": -2.08,
+   "ci_repositories": [
+    -10.42,
+    6.25
+   ],
+   "ci_families": [
+    -8.33,
+    4.17
+   ],
+   "better": 2,
+   "same": 43,
+   "worse": 3
+  },
+  "D experience + bank minus F bank disabled | G1": {
+   "difference": -4.17,
+   "ci_repositories": [
+    -20.83,
+    8.33
+   ],
+   "ci_families": [
+    -25.0,
+    12.5
+   ],
+   "better": 1,
+   "same": 21,
+   "worse": 2
+  },
+  "D experience + bank minus F bank disabled | G2": {
+   "difference": 0.0,
+   "ci_repositories": [
+    0.0,
+    0.0
+   ],
+   "ci_families": [
+    0.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 16,
+   "worse": 0
+  },
+  "D experience + bank minus F bank disabled | G3": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -18.75,
+    0.0
+   ],
+   "ci_families": [
+    -18.75,
+    0.0
+   ],
+   "better": 0,
+   "same": 15,
+   "worse": 1
+  },
+  "D experience + bank minus F bank disabled | G4": {
+   "difference": 0.0,
+   "ci_repositories": [
+    -25.0,
+    25.0
+   ],
+   "ci_families": [
+    -18.75,
+    18.75
+   ],
+   "better": 2,
+   "same": 12,
+   "worse": 2
+  },
+  "D experience + bank minus E experience + nearest example | all": {
+   "difference": -6.94,
+   "ci_repositories": [
+    -13.89,
+    0.0
+   ],
+   "ci_families": [
+    -13.89,
+    -1.35
+   ],
+   "better": 1,
+   "same": 65,
+   "worse": 6
+  },
+  "D experience + bank minus E experience + nearest example | not repeats (G2+G3+G4)": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -16.67,
+    2.08
+   ],
+   "ci_families": [
+    -12.5,
+    0.0
+   ],
+   "better": 1,
+   "same": 43,
+   "worse": 4
+  },
+  "D experience + bank minus E experience + nearest example | G1": {
+   "difference": -8.33,
+   "ci_repositories": [
+    -20.83,
+    0.0
+   ],
+   "ci_families": [
+    -25.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 22,
+   "worse": 2
+  },
+  "D experience + bank minus E experience + nearest example | G2": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -18.75,
+    0.0
+   ],
+   "ci_families": [
+    -18.75,
+    0.0
+   ],
+   "better": 0,
+   "same": 15,
+   "worse": 1
+  },
+  "D experience + bank minus E experience + nearest example | G3": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -18.75,
+    0.0
+   ],
+   "ci_families": [
+    -18.75,
+    0.0
+   ],
+   "better": 0,
+   "same": 15,
+   "worse": 1
+  },
+  "D experience + bank minus E experience + nearest example | G4": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -25.0,
+    12.5
+   ],
+   "ci_families": [
+    -18.75,
+    0.0
+   ],
+   "better": 1,
+   "same": 13,
+   "worse": 2
+  },
+  "E experience + nearest example minus F bank disabled | all": {
+   "difference": 4.17,
+   "ci_repositories": [
+    -1.39,
+    9.72
+   ],
+   "ci_families": [
+    -1.43,
+    10.0
+   ],
+   "better": 4,
+   "same": 67,
+   "worse": 1
+  },
+  "E experience + nearest example minus F bank disabled | not repeats (G2+G3+G4)": {
+   "difference": 4.17,
+   "ci_repositories": [
+    -4.17,
+    12.5
+   ],
+   "ci_families": [
+    -4.17,
+    12.5
+   ],
+   "better": 3,
+   "same": 44,
+   "worse": 1
+  },
+  "E experience + nearest example minus F bank disabled | G1": {
+   "difference": 4.17,
+   "ci_repositories": [
+    0.0,
+    12.5
+   ],
+   "ci_families": [
+    0.0,
+    12.5
+   ],
+   "better": 1,
+   "same": 23,
+   "worse": 0
+  },
+  "E experience + nearest example minus F bank disabled | G2": {
+   "difference": 6.25,
+   "ci_repositories": [
+    0.0,
+    18.75
+   ],
+   "ci_families": [
+    0.0,
+    18.75
+   ],
+   "better": 1,
+   "same": 15,
+   "worse": 0
+  },
+  "E experience + nearest example minus F bank disabled | G3": {
+   "difference": 0.0,
+   "ci_repositories": [
+    0.0,
+    0.0
+   ],
+   "ci_families": [
+    0.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 16,
+   "worse": 0
+  },
+  "E experience + nearest example minus F bank disabled | G4": {
+   "difference": 6.25,
+   "ci_repositories": [
+    -12.5,
+    25.0
+   ],
+   "ci_families": [
+    -12.5,
+    25.0
+   ],
+   "better": 2,
+   "same": 13,
+   "worse": 1
+  },
+  "W wrong diagnostic minus F bank disabled | all": {
+   "difference": -4.17,
+   "ci_repositories": [
+    -9.72,
+    1.39
+   ],
+   "ci_families": [
+    -11.43,
+    2.63
+   ],
+   "better": 1,
+   "same": 67,
+   "worse": 4
+  },
+  "W wrong diagnostic minus F bank disabled | not repeats (G2+G3+G4)": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -14.58,
+    2.08
+   ],
+   "ci_families": [
+    -16.67,
+    2.08
+   ],
+   "better": 1,
+   "same": 43,
+   "worse": 4
+  },
+  "W wrong diagnostic minus F bank disabled | G1": {
+   "difference": 0.0,
+   "ci_repositories": [
+    0.0,
+    0.0
+   ],
+   "ci_families": [
+    0.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 24,
+   "worse": 0
+  },
+  "W wrong diagnostic minus F bank disabled | G2": {
+   "difference": -12.5,
+   "ci_repositories": [
+    -31.25,
+    0.0
+   ],
+   "ci_families": [
+    -37.5,
+    0.0
+   ],
+   "better": 0,
+   "same": 14,
+   "worse": 2
+  },
+  "W wrong diagnostic minus F bank disabled | G3": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -18.75,
+    0.0
+   ],
+   "ci_families": [
+    -18.75,
+    0.0
+   ],
+   "better": 0,
+   "same": 15,
+   "worse": 1
+  },
+  "W wrong diagnostic minus F bank disabled | G4": {
+   "difference": 0.0,
+   "ci_repositories": [
+    -18.75,
+    18.75
+   ],
+   "ci_families": [
+    -18.75,
+    18.75
+   ],
+   "better": 1,
+   "same": 14,
+   "worse": 1
+  },
+  "D experience + bank minus D1 bank, version 1 only | all": {
+   "difference": 2.78,
+   "ci_repositories": [
+    -2.78,
+    8.33
+   ],
+   "ci_families": [
+    -2.94,
+    10.0
+   ],
+   "better": 3,
+   "same": 68,
+   "worse": 1
+  },
+  "D experience + bank minus D1 bank, version 1 only | not repeats (G2+G3+G4)": {
+   "difference": 4.17,
+   "ci_repositories": [
+    -4.17,
+    12.5
+   ],
+   "ci_families": [
+    -4.17,
+    14.58
+   ],
+   "better": 3,
+   "same": 44,
+   "worse": 1
+  },
+  "D experience + bank minus D1 bank, version 1 only | G1": {
+   "difference": 0.0,
+   "ci_repositories": [
+    0.0,
+    0.0
+   ],
+   "ci_families": [
+    0.0,
+    0.0
+   ],
+   "better": 0,
+   "same": 24,
+   "worse": 0
+  },
+  "D experience + bank minus D1 bank, version 1 only | G2": {
+   "difference": 12.5,
+   "ci_repositories": [
+    0.0,
+    31.25
+   ],
+   "ci_families": [
+    0.0,
+    37.5
+   ],
+   "better": 2,
+   "same": 14,
+   "worse": 0
+  },
+  "D experience + bank minus D1 bank, version 1 only | G3": {
+   "difference": -6.25,
+   "ci_repositories": [
+    -18.75,
+    0.0
+   ],
+   "ci_families": [
+    -18.75,
+    0.0
+   ],
+   "better": 0,
+   "same": 15,
+   "worse": 1
+  },
+  "D experience + bank minus D1 bank, version 1 only | G4": {
+   "difference": 6.25,
+   "ci_repositories": [
+    0.0,
+    18.75
+   ],
+   "ci_families": [
+    0.0,
+    18.75
+   ],
+   "better": 1,
+   "same": 15,
+   "worse": 0
+  }
+ }
+}

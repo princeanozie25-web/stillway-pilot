@@ -1,0 +1,107 @@
+{
+ "teacher_authoring": {
+  "training_templates": 12,
+  "development_templates": 12,
+  "lines_training_templates": 1149,
+  "lines_development_templates": 911,
+  "lines_diagnostic_wording_and_naive_tests": 73,
+  "author": "Fable (a much larger model than the student); not counted in any arm's budget",
+  "used_by": {
+   "B final patches": "the reference fix of each training repository",
+   "C, D, E, F, W": "the reference fix, two teacher tests per repository with predictions, the naive (contradicted) tests",
+   "D, W only": "the diagnostic wording in the bank"
+  }
+ },
+ "teacher_execution": {
+  "build_and_verify_all_192_repositories_seconds": 195.6,
+  "teacher_test_runs_on_training_repositories": 300,
+  "prior_fix_executions_that_failed": 30
+ },
+ "students_own_attempts_on_training_repositories": {
+  "episodes": 120,
+  "first_patch_correct": 15,
+  "generation_seconds": 602.0,
+  "tool_seconds": 14.8,
+  "used_by": "B only: half of its training prompts carry the unchanged student's own two tests on that repository"
+ },
+ "adapter_training": {
+  "experience_s1": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 472382,
+   "examples_seen": 475,
+   "passes_started": 2,
+   "seconds": 1063.1
+  },
+  "experience_s2": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 479057,
+   "examples_seen": 482,
+   "passes_started": 2,
+   "seconds": 1049.8
+  },
+  "experience_s3": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 477174,
+   "examples_seen": 481,
+   "passes_started": 2,
+   "seconds": 1055.4
+  },
+  "experience_x_s1": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 384753,
+   "examples_seen": 335,
+   "passes_started": 1,
+   "seconds": 877.1
+  },
+  "experience_x_s2": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 383776,
+   "examples_seen": 334,
+   "passes_started": 1,
+   "seconds": 861.7
+  },
+  "experience_x_s3": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 381249,
+   "examples_seen": 332,
+   "passes_started": 1,
+   "seconds": 871.7
+  },
+  "patches_s1": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 472427,
+   "examples_seen": 482,
+   "passes_started": 5,
+   "seconds": 1042.5
+  },
+  "patches_s2": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 478955,
+   "examples_seen": 488,
+   "passes_started": 5,
+   "seconds": 1046.1
+  },
+  "patches_s3": {
+   "updates": 300,
+   "token_budget_per_update": 2048,
+   "training_tokens": 474387,
+   "examples_seen": 484,
+   "passes_started": 5,
+   "seconds": 1034.5
+  }
+ },
+ "bank": {
+  "bytes": 13010,
+  "diagnostics": 3,
+  "versions_kept": 6,
+  "training_records_behind_it": 120
+ }
+}
