@@ -11,7 +11,7 @@ For Prince Anozie, 22 November 2026. From Fable. One page. Report: `results/v08/
 | Execution-aware core against a core trained on correct scripts only (same size, same compute, three seeds, 320 fresh jobs) | **80.1% against 68.5% verified.** Verified jobs per minute 1.16 times the baseline, interval 0.999 to 1.408. A control predicting shuffled outcomes: 68.3%. | Frozen. By the rule written beforehand: **inconclusive** (the interval touches 1). Author-made holdout. |
 | The same on Codex's independent holdout | not yet run | **Pending** |
 | The same with 67,494 training jobs instead of 372,802 | 78.9% against 71.1%; rate 1.07 times, interval 0.96 to 1.24 | Pre-specified secondary; **inconclusive** by the same rule |
-| Prediction alone, no failure records (one seed) | 79.1% against 70.9%, and the fastest core: 1.24 times the baseline's rate | Exploratory |
+| Prediction alone, no failure records (three seeds) | 75.5% against 68.5%, and the fastest core: 1.27 times the baseline's rate, interval 1.10 to 1.50 | Exploratory: two seeds were added after the first looked good |
 | A bank of tested procedures the next day | Verified project jobs **36% to 74%**; all 50 never-trained faults repaired; no overnight cost. **Wrong on 28 of 30 traps** where the visible checks cannot tell two repairs apart. | Measured once |
 | Overnight weight updates (replay; sleep-inspired) | −1 to +4 verified jobs per 100; 6 to 11 earlier jobs lost; the sleep-inspired update failed its own promotion check and was rolled back | Measured once |
 | A guarded bank that asks when two repairs both pass | 0 wrong on the traps (asked 30 times), nothing lost elsewhere, four times the operations | Exploratory |
@@ -27,15 +27,17 @@ For Prince Anozie, 22 November 2026. From Fable. One page. Report: `results/v08/
 
 **Recommendation.**
 
-- **Keep execution-aware training as the default for the small core**, and claim only what was shown: more verified jobs, not a rate win. Let Codex's holdout decide the rate claim.
+- **Keep execution-aware training as the default for the small core**, and claim only what was shown: more verified jobs, not a rate win. Let Codex's holdout decide the rate claim, and run the prediction-only core beside it there: on my holdout it is the one that clears the rate threshold, and it needs no failure records.
 - **Put the next effort into the bank with a guard, not into overnight weight updates.** Promotion from verified experience and reuse as scripts gave the large effect at no overnight cost. Sleep-style updates should stay behind a promotion check; here the check rightly refused them.
 - **Do not grow the core yet.** Its errors are in working out the repair from the rows, and a larger core does not address the two findings that limit usefulness here: cheap checks make search win, and weak checks make reuse unsafe.
 - **Carry the audit-mixing rule into the v0.6 bank** (20% random audits while hunting an exception) the next time that line is opened.
 
-**The cheapest experiment that could overturn this.** Run the nine locked cores once on Codex's independent holdout (about 15 minutes of machine time after the jobs arrive; brief and packer are on the branch).
+**The cheapest experiment that could overturn this.** Run the nine locked cores and the three prediction-only cores once on Codex's independent holdout (about 20 minutes of machine time after the jobs arrive; brief and packer are on the branch).
 
 - If the execution-aware core's verified share is within 2 points of the baseline there, the first recommendation falls and execution-aware training is not worth its extra data.
 - If the rate interval clears 1.00, the claim strengthens from "more right" to "more per minute".
 - To test the second recommendation at the same sitting, ask Codex to include jobs where two one-line changes satisfy the visible checks: if the guarded bank's requests for evidence there are mostly unnecessary, or it misses them, the bank recommendation falls too.
+
+**Pinned state.** Tag `v0.8-report` on branch `v0.8`; the holdout records were sealed at commit `13f200e` before grading. v0.7's raw outputs are with Codex (branch `v0.7`, `cea985b`); its grades and Codex's v0.8 holdout are the two things outstanding.
 
 **Costs, kept visible.** Core: 1,067,136 parameters, 4.3 MB, 230 MB resident at inference, about 19 minutes of shared laptop GPU to train. Training data: 372,802 jobs worked by the teacher, about 79 CPU-minutes, 29 more for the failure records. Bank: 13.7 kB. Everything ran on one M1 Max laptop, offline, in a sandbox.

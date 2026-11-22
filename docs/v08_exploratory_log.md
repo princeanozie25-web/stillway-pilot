@@ -40,11 +40,11 @@ Fable, 22 November 2026. Things seen while building, in the order they were seen
 - **Seen on:** the holdout, three seeds per arm, both regimes (frozen and pre-specified runs).
 - **What:** with 67,494 training jobs the baseline verified 71.1% of the holdout; with 372,802 it verified 68.5%. The execution-aware core scored 78.9% and 80.1%. More experience did not rescue the baseline, and less did not sink it. E2 rested on one seed on the development set; its explanation ("the baseline memorises") is withdrawn. What E2 got right is the direction of the difference between the arms.
 
-## E7. Prediction alone carries the gain (one seed)
+## E7. Prediction alone gives the rate gain; failure records add accuracy and cost speed
 
-- **Seen on:** the holdout, seed 1, after the primary result (`results/v08/hold_expl_tables.md`).
-- **What:** a core that predicts observations on the careful records, with no failure records, verified 62.9% of project jobs (base 47.1%, exec 64.1%) and had the highest rate of any core (206 verified jobs per minute against 167 for base and 186 for exec). A core that reads the failure records without predicting scored 51.8%.
-- **Caution:** one seed, and a decomposition chosen after the fact.
+- **Seen on:** the holdout, after the primary result (`results/v08/hold_expl_tables.md`, `results/v08/hold_obs3_tables.md`). Seed 1 first; seeds 2 and 3 of the prediction-only core were trained because seed 1 looked good.
+- **What:** a core that predicts observations on the careful records, with no failure records, verified 75.5% of the holdout over three seeds (base 68.5%, exec 80.1%) at 198.8 verified jobs per minute (base 156.8, exec 181.6). Against base: rate ratio 1.268 (1.102 to 1.497), +7.0 points (+2.0 to +11.5). Against exec: rate ratio 1.095 (1.017 to 1.164), −4.6 points (−8.5 to −1.6). A core that reads the failure records without predicting (one seed) scored 51.8% on project jobs against 47.1% for base.
+- **Caution:** a decomposition chosen after the fact, on a holdout already opened, with seeds added on sight of the first. It is a lead for the independent holdout, where the three prediction-only cores should be run beside the nine locked ones.
 
 ## E8. The core's predictions do not flag its own failures
 

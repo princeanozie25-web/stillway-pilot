@@ -7,8 +7,9 @@ Fable, for Prince Anozie, 22 November 2026. Branch `v0.8`. One-page memo: `docs/
 **The short answer.** It helps the model get more jobs right. On this evidence it does not make a small model the cheap way to do these jobs.
 
 - A one-million-parameter core trained to predict what execution returns verified **80.1%** of fresh jobs against **68.5%** for the same core trained on goals, observations and correct scripts alone (three seeds each, same compute). A control that predicts shuffled outcomes scored 68.3%, so the gain comes from the real outcomes.
-- The frozen rule asked for 10% more verified jobs per minute. Measured: **16% more**, with an interval from 0.999 to 1.408 times the baseline. The interval touches 1, so the verdict by the rule written beforehand is **inconclusive**.
-- A fixed 20-line search script with no model verified 100% of the same jobs five times faster. The learnt core only costs less per verified job when one operation costs more than about 24 ms.
+- The frozen rule asked for 10% more verified jobs per minute. Measured: **16% more**, with an interval from 0.999 to 1.408 times the baseline. The interval touches 1, so the verdict by the rule written beforehand is **inconclusive**. With 67,494 training jobs instead of 372,802 the picture is the same (78.9% against 71.1%; also inconclusive).
+- Exploratory lead: a core trained only to predict observations, with no failure records, was the fastest (27% more verified jobs per minute than the baseline, interval 10% to 50%) at 75.5% verified.
+- A fixed search script of about 20 lines, with no model, verified 100% of the same jobs five times faster. The learnt core only costs less per verified job when one operation costs more than about 24 ms.
 - A bank of tested procedures, promoted from one day's verified experience and run as scripts, doubled verified project jobs the next day (36% to 74%) at no overnight cost. Overnight weight updates changed the next day's verified jobs by between −1 and +4 per 100 and each lost 6 to 11 jobs the core used to get right. The bank was wrong on 28 of 30 jobs where the visible checks could not tell two repairs apart, unless it was made to ask.
 
 ## Status of every result
@@ -21,7 +22,7 @@ Fable, for Prince Anozie, 22 November 2026. Branch `v0.8`. One-page memo: `docs/
 | M3: exec against base on the author-made holdout, three seeds | **Frozen** (protocol and nine cores locked before the run) |
 | M3 on Codex's independently authored holdout | **Pending** (brief sent; no jobs received yet) |
 | M3 limited-experience regime, three seeds | **Pre-specified secondary** |
-| M3 arms that separate prediction from failure records | **Exploratory**, one seed |
+| M3 arms that separate prediction from failure records | **Exploratory**: prediction-only three seeds (two added after the first looked good), failure-only one seed |
 | M4 audit mixing | **Frozen selection rule**, one run on a fresh family |
 | M4 bank, overnight updates, day 2 | **Measurement**, settings chosen on a dry run with a pilot core; day 2 redrawn before the real run |
 | M4 guarded bank | **Exploratory**, added after seeing the trap result |
@@ -200,22 +201,28 @@ The same comparison with five and a half times less experience: the first 67,494
 - **Verdict by the same rule: INCONCLUSIVE.** The verified share is higher in every seed; the rate ratio is 1.07 with an interval that includes 1.
 - The amount of experience made little difference to either arm. A single-seed development pilot had suggested that the baseline memorises with 67,000 jobs and would recover with more; on the holdout with three seeds its score is the same or slightly higher with less data (71.1% against 68.5%). That reading is withdrawn in the exploratory log.
 
-### 4.5 Prediction or failure records? (exploratory, one seed)
+### 4.5 Prediction or failure records? (exploratory, after the primary result)
 
-The exec arm differs from base in two ways at once: it predicts observations, and it reads records with failures and recoveries. Two more cores, seed 1, abundant regime, same budget, run on the holdout after the primary result:
+The exec arm differs from base in two ways at once: it predicts observations, and it reads records with failures and recoveries. Two more kinds of core separate them, abundant regime, same budget, same holdout: **obsonly** (careful records only, predicts observations; three seeds, the second and third added after the first looked interesting) and **reconly** (failure records, no prediction; one seed).
 
-| Holdout, seed 1 | base | obsonly: careful records, predicts observations | reconly: failure records, no prediction | exec: both | shuf |
+| Holdout, three seeds pooled unless marked | base | obsonly | exec | reconly (seed 1 only) | shuf |
 |---|---|---|---|---|---|
-| Verified, project jobs | 47.1% | 62.9% | 51.8% | 64.1% | 44.7% |
-| Verified, all jobs | 70.9% | 79.1% | 74.4% | 80.9% | 70.6% |
-| First-attempt success, all jobs | 70.3% | 79.1% | 69.4% | 76.6% | 65.3% |
-| Verified jobs per minute | 166.9 | **206.1** | 164.4 | 186.1 | 149.9 |
-| Operations per job | 9.3 | 8.6 | 10.6 | 10.3 | 11.4 |
-| Failed edits per solved job | 0.52 | 0.25 | 0.90 | 0.70 | 1.31 |
+| Verified, all jobs | 68.5% | 75.5% | **80.1%** | 74.4% | 68.3% |
+| Verified, project jobs | 42.0% | 56.1% | 62.5% | 51.8% | 40.8% |
+| First-attempt success | 68.2% | 75.5% | 75.9% | 69.4% | 61.9% |
+| Error among answers | 28.2% | 25.4% | 14.1% | 19.8% | 20.4% |
+| **Verified jobs per minute** | 156.8 | **198.8** | 181.6 | 164.4 | 140.9 |
+| Operations per job | 9.6 | 8.6 | 10.4 | 10.6 | 11.6 |
+| Failed edits per solved job | 0.74 | 0.31 | 0.73 | 0.90 | 1.44 |
 
-- **Prediction carries the gain.** Predicting observations on the careful records alone: +15.9 points on project jobs against base (+6.4 to +25.6) and a rate ratio of 1.24 over all jobs (1.06 to 1.51). Failure records without prediction: +4.7 points (−5.2 to +14.5), rate ratio 0.99.
-- The prediction-only core is also the fastest: it does not retry, and its first attempts are the most accurate.
-- One seed each, chosen after the fact as a decomposition. If it holds, the cheaper recipe is the better one: no slipped records need generating (about a quarter less teacher work).
+| Contrast (all jobs, three seeds) | Rate ratio (interval) | Verified share, points (interval) | Each seed: ratio / points |
+|---|---|---|---|
+| obsonly against base | 1.268 (1.102 to 1.497) | +7.0 (+2.0 to +11.5) | 1.235 / +8.1; 1.322 / +10.0; 1.248 / +2.8 |
+| obsonly against exec | 1.095 (1.017 to 1.164) | −4.6 (−8.5 to −1.6) | |
+
+- **Prediction alone gives the rate gain.** The prediction-only core never retries (its first attempt is its only attempt), so it is the fastest core, and its first attempts are as accurate as the exec core's. Against base it would have met the frozen rule (ratio above 1.10, interval above 1.00, table jobs 1.1 points lower). It was not the frozen comparison, and its second and third seeds were added because the first looked good, so this is a lead, not a result.
+- **Failure records buy accuracy and cost speed.** The exec core recovers after a failed edit and ends 4.6 points higher, at 9% fewer verified jobs per minute. Failure records without prediction (one seed) add about 5 points on project jobs with an interval that includes zero.
+- If the lead holds on an independent holdout, the cheaper recipe is also the faster one: no slipped records to generate (about a quarter less teacher work).
 
 ### 4.6 What a verified job costs
 
@@ -348,12 +355,13 @@ The default seed was chosen so that the core solves both project sessions. Over 
 - **One development look at the primary cores** (seed 1, development set) happened before the lock; nothing was changed after it.
 - **Milestone 4's settings were chosen on a dry run** that used a pilot core and another draw of day 2. The real day 2 was drawn afresh. The guarded bank came after the result.
 - **Family-clustered intervals rest on 8 project families**, which is why they are wide.
+- **The lock** matched when the holdout records were sealed (commit `13f200e`). Three locked files were changed afterwards (`stillway8/agent.py`, `stillway8/bank.py`, `v08/run_core.py`) to add the guarded bank and a job-list option; the loop the core runs in is otherwise the same, and the secondary holdout runs used it.
 
 ## 8. Deliverables
 
 | | Where |
 |---|---|
-| Pinned commit | branch `v0.8` (the final commit is named in the memo) |
+| Pinned commit | tag `v0.8-report` on branch `v0.8` |
 | Environment manifest | `results/v08/ENVIRONMENT.json` |
 | Checkpoints and hashes | `artifacts/v08/*.safetensors` (+ `.json` training logs), `results/v08/LOCK_v08.json`, `results/v08/CHECKPOINTS.sha256` |
 | Data provenance | `data/v08/MANIFEST.json`; job sets under `data/v08/` |
