@@ -9,6 +9,7 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 | core | 80 | 58.8 | 89 | 42.3 | 11 | 84 | 7.80 | 14.9 |
 | core+bank | 80 | 83.8 | 91 | 16.4 | 9 | 239 | 3.51 | 21.3 |
 | core+bank_priced | 80 | 68.8 | 89 | 31.0 | 11 | 128 | 5.58 | 22.2 |
+| core+bank_guard | 80 | 88.8 | 91 | 11.0 | 9 | 237 | 2.67 | 69.4 |
 | naive | 80 | 46.2 | 88 | 55.7 | 10 | 69 | 7.58 | 14.8 |
 | replay | 80 | 55.0 | 91 | 47.9 | 8 | 81 | 7.70 | 14.8 |
 | replay+bank | 80 | 83.8 | 91 | 16.4 | 8 | 242 | 3.46 | 21.2 |
@@ -24,6 +25,7 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 | core | 50 | 0.0 | 82 | 100.0 | 16 | 0 | 8.98 | 19.4 |
 | core+bank | 50 | 100.0 | 100 | 0.0 | 0 | 793 | 1.00 | 14.0 |
 | core+bank_priced | 50 | 100.0 | 100 | 0.0 | 0 | 796 | 1.00 | 12.3 |
+| core+bank_guard | 50 | 100.0 | 100 | 0.0 | 0 | 480 | 1.00 | 83.6 |
 | naive | 50 | 22.0 | 92 | 76.1 | 8 | 28 | 8.22 | 17.9 |
 | replay | 50 | 4.0 | 80 | 95.0 | 16 | 5 | 8.74 | 19.0 |
 | replay+bank | 50 | 100.0 | 100 | 0.0 | 0 | 788 | 1.00 | 14.0 |
@@ -39,6 +41,7 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 | core | 30 | 33.3 | 80 | 58.3 | 17 | 46 | 7.93 | 15.6 |
 | core+bank | 30 | 6.7 | 100 | 93.3 | 0 | 53 | 1.00 | 14.7 |
 | core+bank_priced | 30 | 6.7 | 100 | 93.3 | 0 | 53 | 1.00 | 12.3 |
+| core+bank_guard | 30 | 0.0 | 0 | 0.0 | 100 | 0 | 1.00 | 86.4 |
 | naive | 30 | 23.3 | 90 | 74.1 | 7 | 35 | 7.23 | 14.8 |
 | replay | 30 | 56.7 | 97 | 41.4 | 3 | 91 | 6.93 | 13.5 |
 | replay+bank | 30 | 6.7 | 100 | 93.3 | 0 | 53 | 1.00 | 14.7 |
@@ -54,6 +57,7 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 | core | 160 | 35.6 | 85 | 62.5 | 14 | 47 | 8.19 | 16.4 |
 | core+bank | 160 | 74.4 | 96 | 26.1 | 4 | 312 | 2.26 | 17.8 |
 | core+bank_priced | 160 | 66.9 | 94 | 33.1 | 6 | 202 | 3.29 | 17.2 |
+| core+bank_guard | 160 | 75.6 | 77 | 6.5 | 23 | 257 | 1.84 | 77.0 |
 | naive | 160 | 34.4 | 89 | 65.7 | 9 | 49 | 7.71 | 15.8 |
 | replay | 160 | 39.4 | 89 | 59.9 | 9 | 55 | 7.88 | 15.9 |
 | replay+bank | 160 | 74.4 | 96 | 26.1 | 4 | 314 | 2.23 | 17.7 |
@@ -69,6 +73,7 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 | core | 80 | 98.8 | 88 | 1.4 | 12 | 531 | 3.54 | 6.4 |
 | core+bank | 80 | 100.0 | 88 | 0.0 | 12 | 946 | 1.75 | 8.0 |
 | core+bank_priced | 80 | 100.0 | 88 | 0.0 | 12 | 943 | 1.75 | 8.0 |
+| core+bank_guard | 80 | 100.0 | 88 | 0.0 | 12 | 778 | 1.75 | 8.0 |
 | naive | 80 | 97.5 | 88 | 2.9 | 12 | 523 | 3.56 | 6.4 |
 | replay | 80 | 97.5 | 88 | 2.9 | 12 | 524 | 3.55 | 6.4 |
 | replay+bank | 80 | 100.0 | 88 | 0.0 | 12 | 936 | 1.75 | 8.0 |
@@ -84,6 +89,7 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 | core | 40 | 100.0 | 100 | 0.0 | 0 | 458 | 4.00 | 6.8 |
 | core+bank | 40 | 100.0 | 100 | 0.0 | 0 | 600 | 2.80 | 9.2 |
 | core+bank_priced | 40 | 100.0 | 100 | 0.0 | 0 | 598 | 2.80 | 9.2 |
+| core+bank_guard | 40 | 100.0 | 100 | 0.0 | 0 | 470 | 2.80 | 9.2 |
 | naive | 40 | 100.0 | 100 | 0.0 | 0 | 461 | 4.00 | 6.8 |
 | replay | 40 | 100.0 | 100 | 0.0 | 0 | 457 | 4.00 | 6.8 |
 | replay+bank | 40 | 100.0 | 100 | 0.0 | 0 | 595 | 2.80 | 9.2 |
@@ -99,6 +105,7 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 | core | 120 | 99.2 | 92 | 0.9 | 8 | 504 | 3.69 | 6.5 |
 | core+bank | 120 | 100.0 | 92 | 0.0 | 8 | 794 | 2.10 | 8.4 |
 | core+bank_priced | 120 | 100.0 | 92 | 0.0 | 8 | 791 | 2.10 | 8.4 |
+| core+bank_guard | 120 | 100.0 | 92 | 0.0 | 8 | 638 | 2.10 | 8.4 |
 | naive | 120 | 98.3 | 92 | 1.8 | 8 | 500 | 3.71 | 6.5 |
 | replay | 120 | 98.3 | 92 | 1.8 | 8 | 500 | 3.70 | 6.5 |
 | replay+bank | 120 | 100.0 | 92 | 0.0 | 8 | 786 | 2.10 | 8.4 |
@@ -113,6 +120,7 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 |---|---|---|---|
 | core+bank | 0 | 21 | 160 |
 | core+bank_priced | 0 | 9 | 160 |
+| core+bank_guard | 0 | 25 | 160 |
 | naive | 11 | 0 | 160 |
 | replay | 6 | 2 | 160 |
 | replay+bank | 1 | 22 | 160 |
@@ -131,6 +139,10 @@ Starting core: `artifacts/v08/core_exec_s1.safetensors`. Day 1: 234 jobs, 162 ve
 | core+bank_priced | transfer | 90 | 72 | 0 | 0 | 18 | 0.00 |
 | core+bank_priced | trap | 30 | 30 | 28 | 0 | 0 | 0.00 |
 | core+bank_priced | whole day | 280 | 201 | 28 | 33 | 46 | 1.79 |
+| core+bank_guard | retention | 160 | 124 | 0 | 8 | 28 | 4.17 |
+| core+bank_guard | transfer | 90 | 72 | 0 | 0 | 18 | 0.00 |
+| core+bank_guard | trap | 30 | 0 | 0 | 0 | 0 (+30 asked) | 0.00 |
+| core+bank_guard | whole day | 280 | 196 | 0 | 8 | 46 (+30 asked) | 2.39 |
 | replay+bank | retention | 160 | 117 | 0 | 15 | 28 | 1.99 |
 | replay+bank | transfer | 90 | 72 | 0 | 0 | 18 | 0.00 |
 | replay+bank | trap | 30 | 30 | 28 | 0 | 0 | 0.00 |
@@ -149,6 +161,7 @@ Jobs to recover the night = overnight seconds / seconds saved per job. Where the
 |---|---|---|---|---|---|
 | core+bank | 0.0 | 0.309 | 0.114 | 0 | +22.5 |
 | core+bank_priced | 0.0 | 0.309 | 0.146 | 0 | +18.2 |
+| core+bank_guard | 0.0 | 0.309 | 0.141 | 0 | +23.2 |
 | naive | 40.8 | 0.309 | 0.292 | 2304 | -1.1 |
 | replay | 58.1 | 0.309 | 0.297 | 4553 | +1.8 |
 | replay+bank | 58.1 | 0.309 | 0.114 | 297 | +22.5 |

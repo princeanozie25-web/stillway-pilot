@@ -8,7 +8,7 @@ import numpy as np
 
 O = os.environ.get("M4_OUT", "results/v08/m4"); D = f"{O}/day2"; R = {}
 for f in sorted(glob.glob(f"{D}/*.graded.jsonl")): R[os.path.basename(f)[:-len("_s0.graded.jsonl")]] = {r["id"]: r for r in map(json.loads, open(f))}
-ORDER = [a for a in ("core", "core+bank", "core+bank_priced", "naive", "replay", "replay+bank", "sleep", "sleep+bank", "teacher", "search") if a in R]; night = json.load(open(f"{O}/night.json")); day1 = json.load(open(f"{O}/day1.json"))
+ORDER = [a for a in ("core", "core+bank", "core+bank_priced", "core+bank_guard", "naive", "replay", "replay+bank", "sleep", "sleep+bank", "teacher", "search") if a in R]; night = json.load(open(f"{O}/night.json")); day1 = json.load(open(f"{O}/day1.json"))
 SETS = {"retention": lambda r: r["group"] in ("familiar", "newmech", "valid", "unans", "scattered", "stale"), "transfer": lambda r: r["group"] == "later", "trap": lambda r: r["group"] == "trap", "whole day": lambda r: True}
 ok = lambda r: r["outcome"] == "verified"
 
@@ -40,8 +40,8 @@ if bank_arms:
             rs = [r for r in R[a].values() if f(r)]; use = [r["steps"][0] for r in rs if r["steps"] and r["steps"][0].get("bank")]; res = collections.Counter(u["obs"][0] for u in use)
             passed = [r for r in rs if r["steps"] and r["steps"][0].get("bank") and r["steps"][0]["obs"] == ["PASS"]]; wrong = sum(not ok(r) for r in passed); waste = sum(len(u.get("inner", [])) for u in use if u["obs"] == ["FAIL"]) / max(1, len(rs))
             S["bank"][f"{a}/{name}"] = {"jobs": len(rs), "pass": res["PASS"], "pass_wrong": wrong, "fail": res["FAIL"], "decline": res["DECLINE"], "wasted_ops_per_job": waste}
-            M.append(f"| {a} | {name} | {len(rs)} | {res['PASS']} | {wrong} | {res['FAIL']} | {res['DECLINE']} | {waste:.2f} |")
-c = night["cost"]; over = {"core+bank": c["bank_and_gate_s"], "core+bank_priced": c["bank_and_gate_s"], "naive": c["corpus_s"] + c["train_naive_s"], "replay": c["corpus_s"] + c["train_replay_s"], "sleep": c["corpus_s"] + c["train_sleep_s"] + c["validation_s"]}
+            M.append(f"| {a} | {name} | {len(rs)} | {res['PASS']} | {wrong} | {res['FAIL']} | {res['DECLINE']}{' (+' + str(res['ASK']) + ' asked)' if res['ASK'] else ''} | {waste:.2f} |")
+c = night["cost"]; over = {"core+bank": c["bank_and_gate_s"], "core+bank_priced": c["bank_and_gate_s"], "core+bank_guard": c["bank_and_gate_s"], "naive": c["corpus_s"] + c["train_naive_s"], "replay": c["corpus_s"] + c["train_replay_s"], "sleep": c["corpus_s"] + c["train_sleep_s"] + c["validation_s"]}
 over["replay+bank"] = over["replay"] + c["bank_and_gate_s"]; over["sleep+bank"] = over["sleep"] + c["bank_and_gate_s"]
 M += ["", "## Break-even", "", "Overnight cost in seconds on this machine (bank: promotion and gate; update: corpus, training and, for sleep, validation), against what the arm changes on the whole of day 2 relative to the frozen core.",
       "Jobs to recover the night = overnight seconds / seconds saved per job. Where the arm is slower per job it never recovers the cost in time; what it buys is the extra verified jobs.", "",

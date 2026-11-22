@@ -1,0 +1,147 @@
+
+==============================================================================
+SESSION 1: a report total is wrong
+GOAL   proj GOAL c0 ENTRY m6 MODS m0 m1 m3 m4 m5 m6 m7
+STATE  11 files: checks.json data_c0.csv data_c1.csv job.json m0.py m1.py m3.py m4.py m5.py m6.py m7.py
+MEMORY 0 entries in the bank
+
+  proposed script 1: CHECK c0 ; CHECK c1
+    predicted effect: PASS | PASS
+    observed effect:  FAIL total exp n1 got n5 | FAIL count exp n1 got n1 groups exp n1 got n1 total exp n1 got n4 first exp ke got ke      [prediction differed]
+
+  proposed script 2: DEPS m6
+    predicted effect: m0 m1 m5
+    observed effect:  m0 m3 m5      [prediction differed]
+
+  proposed script 3: SHOW m0 ; SHOW m3 ; SHOW m5
+    predicted effect: role agg col val func count | role order by key dir desc | role filter thr n7 cmp gt
+    observed effect:  role agg col qty func sum | role filter thr n5 cmp lt | role order by key dir desc      [prediction differed]
+
+  proposed script 4: PROBE m3 c0
+    predicted effect: r ke n4 n1 r ke n4 n1 r ke n4 n1
+    observed effect:  r kc n2 n5      [prediction differed]
+
+  proposed script 5: PATCH m0 func count ; CHECK c0 ; CHECK c1
+    predicted effect: OK | PASS | PASS
+    observed effect:  OK | PASS | PASS      [prediction matched]   changed: m0.py
+
+  ended: DONE    diff: {"m0.py": ["-    return sum(xs)", "+    return len(xs)"]}
+  independent verdict: verified
+  experience x-proj-demo-session1-b5a81c74 appended to demo/v08/memory/experiences.jsonl
+  candidate memory entry: {"signature": {"dom": "proj", "reported": ["total"]}, "procedure": {"role": "agg", "slot": "func", "variant": "count"}, "provenance": {"experience": "x-proj-demo-session1-b5a81c74", "verdict": "verified", "source": "demo", "recovered": false}}
+  the bank now holds 1 entries (demo/v08/memory/bank.json):
+    - proj: try agg.func (seen after reports of total)   support 1, from x-proj-demo-session1-b5a81c74
+
+==============================================================================
+SESSION 2: the same project next day, with an altered precondition (the fault has moved)
+GOAL   proj GOAL c0 ENTRY m1 MODS m0 m1 m2 m3 m5 m6 m7
+STATE  11 files: checks.json data_c0.csv data_c1.csv job.json m0.py m1.py m2.py m3.py m5.py m6.py m7.py
+MEMORY 1 entries in the bank
+
+  the bank's procedure goes first (18 operations): CHECK c0 ; CHECK c1 ; SHOW m1 ; DEPS m1 ; SHOW m5 ; DEPS m5 ; PATCH m5 func sum ; CHECK c0 ; REVERT ; PATCH m5 func mean ; CHECK c0 ; REVERT ; PATCH m5 func max ; CHECK c0 ...
+    result: FAIL   (nothing was changed; the core takes over)
+
+  proposed script 2: CHECK c0 ; CHECK c1
+    predicted effect: PASS | PASS
+    observed effect:  FAIL total exp n4 got n5 | PASS      [prediction differed]
+
+  proposed script 3: DEPS m1
+    predicted effect: m0 m2 m6
+    observed effect:  m5 m6 m7      [prediction differed]
+
+  proposed script 4: SHOW m5 ; SHOW m6 ; SHOW m7
+    predicted effect: role order by val dir asc | role filter thr n5 cmp le | role agg col val func mean
+    observed effect:  role agg col qty func count | role filter thr n5 cmp lt | role order by key dir desc      [prediction differed]
+
+  proposed script 5: PROBE m6 c0
+    predicted effect: r kd n1 n5 r kd n4 n5
+    observed effect:  r ke n1 n8 r kc n1 n3 r kd n3 n1 r ke n3 n7 r ke n1 n8      [prediction differed]
+
+  proposed script 6: DEPS m6
+    predicted effect: m3
+    observed effect:  m0      [prediction differed]
+
+  proposed script 7: SHOW m0 ; DEPS m0
+    predicted effect: role clean norm both dedupe off | m2
+    observed effect:  role clean norm none dedupe off | m2      [prediction differed]
+
+  proposed script 8: PROBE m2 c0
+    predicted effect: r ke n1 n3 r ke n1 n1 r ke n3 n1 r ke n3 n8 r ke n1 n8
+    observed effect:  r ke n1 n8 r kc n1 n3 r kd n3 n1 r ke n3 n7 r ke n1 n8      [prediction differed]
+
+  proposed script 9: PATCH m0 dedupe on ; CHECK c0 ; CHECK c1
+    predicted effect: OK | PASS | PASS
+    observed effect:  OK | PASS | PASS      [prediction matched]   changed: m0.py
+
+  ended: DONE    diff: {"m0.py": ["-        if sig is None: continue", "+        if sig in seen: continue"]}
+  independent verdict: verified
+  experience x-proj-demo-session2-bd3c4cb7 appended to demo/v08/memory/experiences.jsonl
+  candidate memory entry: {"signature": {"dom": "proj", "reported": []}, "procedure": {"role": "clean", "slot": "dedupe", "variant": "on"}, "provenance": {"experience": "x-proj-demo-session2-bd3c4cb7", "verdict": "verified", "source": "demo", "recovered": false}}
+  the bank now holds 2 entries (demo/v08/memory/bank.json):
+    - proj: try agg.func (seen after reports of total)   support 1, from x-proj-demo-session1-b5a81c74
+    - proj: try clean.dedupe (seen after reports of )   support 1, from x-proj-demo-session2-bd3c4cb7
+
+==============================================================================
+SESSION 1 (tables): reconcile a ledger
+GOAL   tab GOAL reconcile
+STATE  6 files: ignored.csv job.json ledger.csv notes.csv statement.csv summary.csv
+MEMORY 2 entries in the bank
+
+  the bank's procedure goes first (4 operations): DIFF ; CHECK c0 ; FACT k0 ; FACT k1
+    result: DECLINE   (nothing was changed; the core takes over)
+
+  proposed script 2: DIFF ; CHECK c0
+    predicted effect: d k0 onlyS n8 | PASS
+    observed effect:  d k0 onlyS n8 d k1 g1 amt n5 n9 | FAIL g2 exp n4 got n6      [prediction differed]
+
+  proposed script 3: FACT k0 ; FACT k1
+    predicted effect: dupstmt | stmt_newer
+    observed effect:  dupstmt | stmt_newer      [prediction matched]
+
+  proposed script 4: SKIP k0 ; COPY k1 ; RECALC g1 ; RECALC g2 ; CHECK c0 ; CHECK c1
+    predicted effect: OK | OK | OK n8 | OK n8 | PASS | PASS
+    observed effect:  OK | OK | OK n23 | OK n4 | PASS | PASS      [prediction differed]   changed: ignored.csv, ledger.csv, summary.csv
+
+  ended: DONE    diff: {"ignored.csv": ["+k0"], "ledger.csv": ["-k1,g1,5,open", "+k1,g1,9,open"], "summary.csv": ["-g1,19", "-g2,6", "+g1,23", "+g2,4"]}
+  independent verdict: verified
+  experience x-tab-demo-session1-ea688792 appended to demo/v08/memory/experiences.jsonl
+  candidate memory entry: {"signature": {"dom": "tab", "kinds": [], "notes": ["dupstmt", "stmt_newer"]}, "procedure": {"rules": [["amt", "stmt_newer", "COPY"], ["onlyS", "dupstmt", "SKIP"]]}, "provenance": {"experience": "x-tab-demo-session1-ea688792", "verdict": "verified", "source": "demo", "recovered": false}}
+  the bank now holds 4 entries (demo/v08/memory/bank.json):
+    - proj: try agg.func (seen after reports of total)   support 1, from x-proj-demo-session1-b5a81c74
+    - proj: try clean.dedupe (seen after reports of )   support 1, from x-proj-demo-session2-bd3c4cb7
+    - tab: amt with note stmt_newer -> COPY   support 1, from x-tab-demo-session1-ea688792
+    - tab: onlyS with note dupstmt -> SKIP   support 1, from x-tab-demo-session1-ea688792
+
+==============================================================================
+SESSION 2 (tables): a similar difference, but the note says the ledger is the newer one
+GOAL   tab GOAL reconcile
+STATE  6 files: ignored.csv job.json ledger.csv notes.csv statement.csv summary.csv
+MEMORY 4 entries in the bank
+
+  the bank's procedure goes first (4 operations): DIFF ; CHECK c0 ; FACT k1 ; FACT k3
+    result: DECLINE   (nothing was changed; the core takes over)
+
+  proposed script 2: DIFF ; CHECK c0
+    predicted effect: d k0 onlyS n8 | PASS
+    observed effect:  d k1 g1 amt n1 n5 d k3 onlyS n1 | PASS      [prediction differed]
+
+  proposed script 3: FACT k1 ; FACT k3
+    predicted effect: stmt_newer | dupstmt
+    observed effect:  ledger_newer | dupstmt      [prediction differed]
+
+  proposed script 4: KEEP k1 ; SKIP k3 ; CHECK c0 ; CHECK c1
+    predicted effect: OK | OK | PASS | PASS
+    observed effect:  OK | OK | PASS | PASS      [prediction matched]   changed: ignored.csv, ledger.csv
+
+  ended: DONE    diff: {"ignored.csv": ["+k3"], "ledger.csv": ["-k1,g1,1,open", "+k1,g1,1,kept"]}
+  independent verdict: verified
+  experience x-tab-demo-session2-6913c7ad appended to demo/v08/memory/experiences.jsonl
+  candidate memory entry: {"signature": {"dom": "tab", "kinds": [], "notes": ["ledger_newer", "dupstmt"]}, "procedure": {"rules": [["amt", "ledger_newer", "KEEP"], ["onlyS", "dupstmt", "SKIP"]]}, "provenance": {"experience": "x-tab-demo-session2-6913c7ad", "verdict": "verified", "source": "demo", "recovered": false}}
+  the bank now holds 5 entries (demo/v08/memory/bank.json):
+    - proj: try agg.func (seen after reports of total)   support 1, from x-proj-demo-session1-b5a81c74
+    - proj: try clean.dedupe (seen after reports of )   support 1, from x-proj-demo-session2-bd3c4cb7
+    - tab: amt with note ledger_newer -> KEEP   support 1, from x-tab-demo-session2-6913c7ad
+    - tab: amt with note stmt_newer -> COPY   support 1, from x-tab-demo-session1-ea688792
+    - tab: onlyS with note dupstmt -> SKIP   support 2, from x-tab-demo-session1-ea688792
+
+SMOKE DEMO FINISHED

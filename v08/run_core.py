@@ -7,7 +7,7 @@ sys.path.insert(0, ".")
 import torch
 from stillway8 import agent, expert as E
 
-ap = argparse.ArgumentParser(); ap.add_argument("ckpt"); ap.add_argument("public"); ap.add_argument("out"); ap.add_argument("--passes", type=int, default=0); ap.add_argument("--limit", type=int, default=0); ap.add_argument("--hidden", default=""); ap.add_argument("--bank", default=""); ap.add_argument("--predict", action="store_true")
+ap = argparse.ArgumentParser(); ap.add_argument("ckpt"); ap.add_argument("public"); ap.add_argument("out"); ap.add_argument("--passes", type=int, default=0); ap.add_argument("--limit", type=int, default=0); ap.add_argument("--hidden", default=""); ap.add_argument("--bank", default=""); ap.add_argument("--predict", action="store_true"); ap.add_argument("--guard", action="store_true")
 ap.add_argument("--jobs", default="")
 a = ap.parse_args(); torch.set_num_threads(1); jobs = [json.loads(l) for l in open(a.public)]; jobs = jobs[:a.limit] if a.limit else jobs
 if a.jobs: want = set(json.load(open(a.jobs))); jobs = [j for j in jobs if j["id"] in want]
@@ -23,7 +23,7 @@ else:
 proc = lambda p: None
 if a.bank:                                                     # a bank snapshot {bank, gate}: its compiled procedure goes first on every job
     from stillway8 import bank as BK
-    snap = json.load(open(a.bank)); proc = lambda p: BK.compile(snap["bank"], snap["gate"], p["dom"], p.get("entry"))
+    snap = json.load(open(a.bank)); proc = lambda p: BK.compile(snap["bank"], snap["gate"], p["dom"], p.get("entry"), guard=a.guard)
 t0 = time.time()
 with open(a.out, "a") as f:
     for n, p in enumerate(jobs):

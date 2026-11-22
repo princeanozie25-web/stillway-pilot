@@ -9,14 +9,17 @@ Options: --ckpt FILE (default artifacts/v08/demo_core.safetensors), --memory DIR
 
 Session 1 works a job and writes the experience and any memory entry.  Session 2 takes the same project with one
 precondition altered (the fault moved to another line): the bank offers yesterday's procedure first, execution shows it
-no longer applies, the workspace is put back, and the core works the job itself.  Everything runs in the sandbox."""
+no longer applies, the workspace is put back, and the core works the job itself.  Everything runs in the sandbox.
+
+The default seed (20) was picked so that the core solves both project sessions.  It often does not: over seeds 1 to 40
+the core verified session 1 in 16 and session 2 in 7 (try --seed 1).  The table sessions verified in all 40."""
 import argparse, json, os, sys
 sys.path.insert(0, ".")
 from stillway8 import agent, bank as BK, dataset as D, experience as X, expert as E, world as W
 from stillway8.model import decode, load
 from stillway8.runner import Session
 
-ap = argparse.ArgumentParser(); ap.add_argument("--smoke", action="store_true"); ap.add_argument("--workspace", default=""); ap.add_argument("--new", default=""); ap.add_argument("--seed", type=int, default=7); ap.add_argument("--yes", action="store_true")
+ap = argparse.ArgumentParser(); ap.add_argument("--smoke", action="store_true"); ap.add_argument("--workspace", default=""); ap.add_argument("--new", default=""); ap.add_argument("--seed", type=int, default=20); ap.add_argument("--yes", action="store_true")
 ap.add_argument("--ckpt", default="artifacts/v08/demo_core.safetensors"); ap.add_argument("--memory", default="demo/v08/memory"); a = ap.parse_args(); auto = a.yes or a.smoke
 os.makedirs(a.memory, exist_ok=True); EXP = f"{a.memory}/experiences.jsonl"; BANK = f"{a.memory}/bank.json"
 if a.smoke:
@@ -78,12 +81,15 @@ def from_dir(d):
 
 if a.smoke:
     import random
-    srcs = D.sources("proj", "fixture"); rng = random.Random(a.seed); src = srcs[3]; cfg = src["cfg"]
+    srcs = D.sources("proj", "fixture"); rng = random.Random(a.seed); src = srcs[a.seed % len(srcs)]; cfg = src["cfg"]
+    def sig(job):                                            # what the first look shows: the fields that disagree in the two visible checks
+        if job is None: return None
+        t = Session(job[0], fast=True); o = t.run("CHECK c0\nCHECK c1")["obs"]; t.close(); return sorted({f for x in o for f in E.mismatches(x)})
     w1 = next(v for v in W.SLOTS["agg"]["func"] if v != cfg["func"]); j1 = None
-    while j1 is None or j1[1]["reported"] != ["total"]: j1 = W.proj_job(rng, src, "bug", "func", w1)
+    while sig(j1) != ["total"]: j1 = W.proj_job(rng, src, "bug", "func", w1)
     p1, h1 = j1; p1["id"] = h1["id"] = "proj-demo-session1"; work(p1, h1, "SESSION 1: a report total is wrong")
     j2 = None                                                  # the same project; now the fault is upstream and the same field is reported
-    while j2 is None or j2[1]["reported"][0] != "total":
+    while sig(j2) != ["total"]:
         s2 = rng.choice(["cmp", "thr", "dedupe"]); cands = D.wrongs(s2, cfg[s2]); j2 = W.proj_job(rng, src, "bug", s2, rng.choice(cands), tries=80)
     p2, h2 = j2; p2["id"] = h2["id"] = "proj-demo-session2"; e2 = work(p2, h2, "SESSION 2: the same project next day, with an altered precondition (the fault has moved)")
     tb = D.sources("tab", "fixture")[2]; t = W.tab_job(rng, tb, [("amt", "stmt_newer"), ("onlyS", "dupstmt")], True); t[0]["id"] = t[1]["id"] = "tab-demo-session1"; work(t[0], t[1], "SESSION 1 (tables): reconcile a ledger")

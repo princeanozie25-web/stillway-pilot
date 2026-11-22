@@ -65,8 +65,10 @@ def learn_gate(bank, experiences, cost_core, cost_try, price=0.0):
     return {"price_seconds_per_operation": price, "by_first_observation": gate, "tab": "try the rules whenever every difference is covered"}
 
 
-def compile(bank, gate, dom, entry_module=None):
-    """The bank as one script for USE.  Sets `result`: PASS (the job is done), or FAIL / DECLINE (nothing changed)."""
+def compile(bank, gate, dom, entry_module=None, guard=False):
+    """The bank as one script for USE.  Sets `result`: PASS (the job is done), or FAIL / DECLINE (nothing changed).
+    guard=True (proj): try every setting of every promoted entry before committing; if more than one one-line change
+    satisfies both visible checks the evidence does not decide, nothing is changed and the result is ASK."""
     if dom == "tab":
         rules = {f"{e['kind']} {e['note']}": e["action"] for e in bank["entries"] if e["dom"] == "tab" and not e.get("leave")}; leave = any(e.get("leave") and e["dom"] == "tab" for e in bank["entries"])
         return f'''RULES = {rules!r}; LEAVE = {leave!r}
@@ -88,6 +90,32 @@ else:
         result = "PASS" if check("c0") == "PASS" and check("c1") == "PASS" else "FAIL"
 '''
     table = {sig: [(o["role"], o["slot"], VARIANTS[o["slot"]]) for o in order] for sig, order in gate["by_first_observation"].items()}; leave = any(e.get("leave") and e["dom"] == "proj" for e in bank["entries"])
+    if guard:
+        every = [(e["role"], e["slot"], VARIANTS[e["slot"]]) for e in bank["entries"] if e["dom"] == "proj" and not e.get("leave")]
+        return f'''ALL = {every!r}; GATE = {table!r}; LEAVE = {leave!r}
+c = [check("c0"), check("c1")]; result = "DECLINE"
+def mm(x): w = x.split(); return [w[i] for i in range(1, len(w) - 3, 5) if w[i + 2] != w[i + 4]] if w[0] == "FAIL" else []
+sig = "+".join(sorted({{f for x in c for f in mm(x)}}))
+if not sig: result = "PASS" if LEAVE else "DECLINE"
+elif GATE.get(sig):
+    mods, todo, seen, found = {{}}, [{entry_module!r}], set(), []
+    def find(role):
+        while role not in mods and todo:
+            m = todo.pop(0)
+            if m in seen or m == "none": continue
+            seen.add(m); s = show(m).split(); mods[s[1]] = (m, dict(zip(s[2::2], s[3::2]))); todo.extend(deps(m).split())
+        return mods.get(role)
+    for role, slot, variants in ALL:
+        t = find(role)
+        if not t: continue
+        for v in variants:
+            if v == t[1].get(slot): continue
+            patch(t[0], slot, v)
+            if check("c0") == "PASS" and check("c1") == "PASS": found.append((t[0], slot, v))
+            revert()
+    if len(found) == 1: patch(*found[0]); result = "PASS"
+    else: result = "ASK" if found else "FAIL"
+'''
     return f'''GATE = {table!r}; LEAVE = {leave!r}
 c = [check("c0"), check("c1")]; result = "DECLINE"
 def mm(x): w = x.split(); return [w[i] for i in range(1, len(w) - 3, 5) if w[i + 2] != w[i + 4]] if w[0] == "FAIL" else []

@@ -33,6 +33,17 @@
    "scripts": 5.575,
    "ops": 22.2
   },
+  "proj/retention/core+bank_guard": {
+   "jobs": 80,
+   "verified_pct": 88.75,
+   "answered_pct": 91.25,
+   "error_among_answers_pct": 10.95890410958904,
+   "asked_pct": 8.75,
+   "jobs_per_min": 237.08815672306324,
+   "s_per_job": 0.2246,
+   "scripts": 2.675,
+   "ops": 69.375
+  },
   "proj/retention/naive": {
    "jobs": 80,
    "verified_pct": 46.25,
@@ -142,6 +153,17 @@
    "s_per_job": 0.07539,
    "scripts": 1.0,
    "ops": 12.28
+  },
+  "proj/transfer/core+bank_guard": {
+   "jobs": 50,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 479.96160307175427,
+   "s_per_job": 0.12500999999999998,
+   "scripts": 1.0,
+   "ops": 83.6
   },
   "proj/transfer/naive": {
    "jobs": 50,
@@ -253,6 +275,17 @@
    "scripts": 1.0,
    "ops": 12.333333333333334
   },
+  "proj/trap/core+bank_guard": {
+   "jobs": 30,
+   "verified_pct": 0.0,
+   "answered_pct": 0.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 100.0,
+   "jobs_per_min": 0.0,
+   "s_per_job": 0.13375,
+   "scripts": 1.0,
+   "ops": 86.4
+  },
   "proj/trap/naive": {
    "jobs": 30,
    "verified_pct": 23.333333333333332,
@@ -363,6 +396,17 @@
    "scripts": 3.2875,
    "ops": 17.25
   },
+  "proj/whole day/core+bank_guard": {
+   "jobs": 160,
+   "verified_pct": 75.625,
+   "answered_pct": 76.875,
+   "error_among_answers_pct": 6.504065040650406,
+   "asked_pct": 23.125,
+   "jobs_per_min": 257.16411037511955,
+   "s_per_job": 0.17644375,
+   "scripts": 1.8375,
+   "ops": 77.0125
+  },
   "proj/whole day/naive": {
    "jobs": 160,
    "verified_pct": 34.375,
@@ -470,6 +514,17 @@
    "asked_pct": 12.5,
    "jobs_per_min": 942.932914252038,
    "s_per_job": 0.06363125,
+   "scripts": 1.75,
+   "ops": 7.9875
+  },
+  "tab/retention/core+bank_guard": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 777.5419953671455,
+   "s_per_job": 0.07716625,
    "scripts": 1.75,
    "ops": 7.9875
   },
@@ -583,6 +638,17 @@
    "scripts": 2.8,
    "ops": 9.15
   },
+  "tab/transfer/core+bank_guard": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 470.2286486804208,
+   "s_per_job": 0.1275975,
+   "scripts": 2.8,
+   "ops": 9.15
+  },
   "tab/transfer/naive": {
    "jobs": 40,
    "verified_pct": 100.0,
@@ -690,6 +756,17 @@
    "asked_pct": 8.333333333333334,
    "jobs_per_min": 790.8698469886533,
    "s_per_job": 0.07586583333333333,
+   "scripts": 2.1,
+   "ops": 8.375
+  },
+  "tab/whole day/core+bank_guard": {
+   "jobs": 120,
+   "verified_pct": 100.0,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 638.4563544142162,
+   "s_per_job": 0.09397666666666667,
    "scripts": 2.1,
    "ops": 8.375
   },
@@ -836,6 +913,38 @@
    "decline": 46,
    "wasted_ops_per_job": 1.7892857142857144
   },
+  "core+bank_guard/retention": {
+   "jobs": 160,
+   "pass": 124,
+   "pass_wrong": 0,
+   "fail": 8,
+   "decline": 28,
+   "wasted_ops_per_job": 4.175
+  },
+  "core+bank_guard/transfer": {
+   "jobs": 90,
+   "pass": 72,
+   "pass_wrong": 0,
+   "fail": 0,
+   "decline": 18,
+   "wasted_ops_per_job": 0.0
+  },
+  "core+bank_guard/trap": {
+   "jobs": 30,
+   "pass": 0,
+   "pass_wrong": 0,
+   "fail": 0,
+   "decline": 0,
+   "wasted_ops_per_job": 0.0
+  },
+  "core+bank_guard/whole day": {
+   "jobs": 280,
+   "pass": 196,
+   "pass_wrong": 0,
+   "fail": 8,
+   "decline": 46,
+   "wasted_ops_per_job": 2.3857142857142857
+  },
   "replay+bank/retention": {
    "jobs": 160,
    "pass": 117,
@@ -912,6 +1021,11 @@
    "gain": 9,
    "jobs": 160
   },
+  "core+bank_guard": {
+   "harm": 0,
+   "gain": 25,
+   "jobs": 160
+  },
   "naive": {
    "harm": 11,
    "gain": 0,
@@ -952,6 +1066,13 @@
    "core_s_per_job": 0.3093717857142857,
    "jobs_to_recover": 0.0,
    "extra_verified_per_100": 18.214285714285715
+  },
+  "core+bank_guard": {
+   "overnight_s": 0.0,
+   "s_per_job": 0.1411007142857143,
+   "core_s_per_job": 0.3093717857142857,
+   "jobs_to_recover": 0.0,
+   "extra_verified_per_100": 23.214285714285715
   },
   "naive": {
    "overnight_s": 40.769999999999996,

@@ -28,7 +28,8 @@ def episode(model, public, limits=LIMITS, propose=None, predict=False, procedure
         if procedure:                                          # the bank goes first: one script; anything but PASS leaves the workspace as it was
             sess.set_procedure(procedure); r = sess.run("USE"); bank_ops = sess.ops(); steps.append({"script": ["USE"], "obs": r["obs"], "s": r["s"], "error": r["error"], "bank": True, "inner": [f"{l['op']} {' '.join(l['args'])}".strip() for l in r["ledger"][:-1]]})
             if r["obs"] == ["PASS"]: end = "DONE"
-        while len(steps) < limits["calls"] and end != "DONE":
+            if r["obs"] == ["ASK"]: end = "ASK"                  # a guarded bank found more than one change that satisfies the checks: it asks, and changes nothing
+        while len(steps) < limits["calls"] and end not in ("DONE", "ASK"):
             toks.append("ACT"); t = time.time()
             a = propose(toks) if propose else ask(STOP, limits["tokens_per_call"], keep=False)
             model_s += time.time() - t; gen += len(a); fed += len(toks)
@@ -45,11 +46,11 @@ def episode(model, public, limits=LIMITS, propose=None, predict=False, procedure
             toks += a + ["OBS"] + " | ".join(obs).split() + ["END"]
             if time.time() - t0 > limits["seconds"]: why = "time limit"; break
             if len(toks) > model.ctx - limits["tokens_per_call"] if model is not None else False: why = "context full"; break
-        else: why = None if end == "DONE" else "call limit"
+        else: why = None if end in ("DONE", "ASK") else "call limit"
         final = sess.files(); changed = {n: t for n, t in final.items() if public["files"].get(n) != t}; diff = sess.diff(); ops = sess.ops()
     finally: sess.close()
     exec_s = sum(s["s"] for s in steps)
-    return {"id": public["id"], "dom": public["dom"], "end": end, "why": why, "steps": steps, "changed": changed, "diff": diff, "calls": len(steps) + (end != "BUDGET") - (1 if procedure and end == "DONE" and len(steps) == 1 else 0), "ops": ops, "bank_ops": bank_ops,
+    return {"id": public["id"], "dom": public["dom"], "end": end, "why": why, "steps": steps, "changed": changed, "diff": diff, "calls": len(steps) + (end != "BUDGET") - (1 if procedure and end in ("DONE", "ASK") and len(steps) == 1 else 0), "ops": ops, "bank_ops": bank_ops,
             "edit_scripts": sum(any(l.split()[0] in EDITS for l in s["script"]) for s in steps), "failed_checks": sum(o.startswith("FAIL") for s in steps for o in s["obs"]),
             "bad_ops": sum(o in ("BAD", "ERR") for s in steps for o in s["obs"]), "tokens_out": gen, "tokens_in": fed, "model_s": round(model_s, 4), "exec_s": round(exec_s, 4), "wall_s": round(time.time() - t0, 4), "predict_s": round(predict_s, 4),
             "final_hash": hashlib.sha256(json.dumps(final, sort_keys=True).encode()).hexdigest()[:16]}
