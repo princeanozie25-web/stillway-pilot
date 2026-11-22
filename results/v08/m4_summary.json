@@ -1,0 +1,992 @@
+{
+ "sets": {
+  "proj/retention/core": {
+   "jobs": 80,
+   "verified_pct": 58.75,
+   "answered_pct": 88.75,
+   "error_among_answers_pct": 42.25352112676056,
+   "asked_pct": 11.25,
+   "jobs_per_min": 84.03236139875143,
+   "s_per_job": 0.41948125,
+   "scripts": 7.8,
+   "ops": 14.875
+  },
+  "proj/retention/core+bank": {
+   "jobs": 80,
+   "verified_pct": 83.75,
+   "answered_pct": 91.25,
+   "error_among_answers_pct": 16.438356164383563,
+   "asked_pct": 8.75,
+   "jobs_per_min": 238.5020646447387,
+   "s_per_job": 0.21069,
+   "scripts": 3.5125,
+   "ops": 21.325
+  },
+  "proj/retention/core+bank_priced": {
+   "jobs": 80,
+   "verified_pct": 68.75,
+   "answered_pct": 88.75,
+   "error_among_answers_pct": 30.985915492957748,
+   "asked_pct": 11.25,
+   "jobs_per_min": 127.8603919502197,
+   "s_per_job": 0.3226175,
+   "scripts": 5.575,
+   "ops": 22.2
+  },
+  "proj/retention/naive": {
+   "jobs": 80,
+   "verified_pct": 46.25,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 55.714285714285715,
+   "asked_pct": 10.0,
+   "jobs_per_min": 68.74916773248522,
+   "s_per_job": 0.40364125,
+   "scripts": 7.575,
+   "ops": 14.7875
+  },
+  "proj/retention/replay": {
+   "jobs": 80,
+   "verified_pct": 55.0,
+   "answered_pct": 91.25,
+   "error_among_answers_pct": 47.945205479452056,
+   "asked_pct": 7.5,
+   "jobs_per_min": 80.55632687560455,
+   "s_per_job": 0.40965125,
+   "scripts": 7.7,
+   "ops": 14.7875
+  },
+  "proj/retention/replay+bank": {
+   "jobs": 80,
+   "verified_pct": 83.75,
+   "answered_pct": 91.25,
+   "error_among_answers_pct": 16.438356164383563,
+   "asked_pct": 7.5,
+   "jobs_per_min": 241.8176021559062,
+   "s_per_job": 0.20780125,
+   "scripts": 3.4625,
+   "ops": 21.175
+  },
+  "proj/retention/sleep": {
+   "jobs": 80,
+   "verified_pct": 50.0,
+   "answered_pct": 92.5,
+   "error_among_answers_pct": 54.054054054054056,
+   "asked_pct": 7.5,
+   "jobs_per_min": 73.18322640450808,
+   "s_per_job": 0.40993,
+   "scripts": 7.675,
+   "ops": 14.925
+  },
+  "proj/retention/sleep+bank": {
+   "jobs": 80,
+   "verified_pct": 85.0,
+   "answered_pct": 92.5,
+   "error_among_answers_pct": 16.216216216216218,
+   "asked_pct": 7.5,
+   "jobs_per_min": 243.8951489972203,
+   "s_per_job": 0.20910625,
+   "scripts": 3.4875,
+   "ops": 21.2125
+  },
+  "proj/retention/teacher": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 188.83735202823118,
+   "s_per_job": 0.31773375000000004,
+   "scripts": 6.9125,
+   "ops": 10.8375
+  },
+  "proj/retention/search": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 674.564694970277,
+   "s_per_job": 0.08894625,
+   "scripts": 1.0,
+   "ops": 47.825
+  },
+  "proj/transfer/core": {
+   "jobs": 50,
+   "verified_pct": 0.0,
+   "answered_pct": 82.0,
+   "error_among_answers_pct": 100.0,
+   "asked_pct": 16.0,
+   "jobs_per_min": 0.0,
+   "s_per_job": 0.517542,
+   "scripts": 8.98,
+   "ops": 19.4
+  },
+  "proj/transfer/core+bank": {
+   "jobs": 50,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 793.2101213611485,
+   "s_per_job": 0.075642,
+   "scripts": 1.0,
+   "ops": 14.04
+  },
+  "proj/transfer/core+bank_priced": {
+   "jobs": 50,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 795.8615200955035,
+   "s_per_job": 0.07539,
+   "scripts": 1.0,
+   "ops": 12.28
+  },
+  "proj/transfer/naive": {
+   "jobs": 50,
+   "verified_pct": 22.0,
+   "answered_pct": 92.0,
+   "error_among_answers_pct": 76.08695652173913,
+   "asked_pct": 8.0,
+   "jobs_per_min": 28.352098699669654,
+   "s_per_job": 0.465574,
+   "scripts": 8.22,
+   "ops": 17.94
+  },
+  "proj/transfer/replay": {
+   "jobs": 50,
+   "verified_pct": 4.0,
+   "answered_pct": 80.0,
+   "error_among_answers_pct": 95.0,
+   "asked_pct": 16.0,
+   "jobs_per_min": 4.824915865529595,
+   "s_per_job": 0.49741799999999997,
+   "scripts": 8.74,
+   "ops": 19.02
+  },
+  "proj/transfer/replay+bank": {
+   "jobs": 50,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 787.5255945818238,
+   "s_per_job": 0.076188,
+   "scripts": 1.0,
+   "ops": 14.04
+  },
+  "proj/transfer/sleep": {
+   "jobs": 50,
+   "verified_pct": 38.0,
+   "answered_pct": 94.0,
+   "error_among_answers_pct": 59.57446808510638,
+   "asked_pct": 6.0,
+   "jobs_per_min": 51.38213434174528,
+   "s_per_job": 0.443734,
+   "scripts": 7.9,
+   "ops": 16.66
+  },
+  "proj/transfer/sleep+bank": {
+   "jobs": 50,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 787.8771962076844,
+   "s_per_job": 0.076154,
+   "scripts": 1.0,
+   "ops": 14.04
+  },
+  "proj/transfer/teacher": {
+   "jobs": 50,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 210.0855048004538,
+   "s_per_job": 0.285598,
+   "scripts": 6.0,
+   "ops": 10.0
+  },
+  "proj/transfer/search": {
+   "jobs": 50,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 686.9075422448138,
+   "s_per_job": 0.087348,
+   "scripts": 1.0,
+   "ops": 47.38
+  },
+  "proj/trap/core": {
+   "jobs": 30,
+   "verified_pct": 33.333333333333336,
+   "answered_pct": 80.0,
+   "error_among_answers_pct": 58.333333333333336,
+   "asked_pct": 16.666666666666668,
+   "jobs_per_min": 46.06384448846101,
+   "s_per_job": 0.43417999999999995,
+   "scripts": 7.933333333333334,
+   "ops": 15.6
+  },
+  "proj/trap/core+bank": {
+   "jobs": 30,
+   "verified_pct": 6.666666666666667,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 93.33333333333333,
+   "asked_pct": 0.0,
+   "jobs_per_min": 52.93806246691371,
+   "s_per_job": 0.07556,
+   "scripts": 1.0,
+   "ops": 14.733333333333333
+  },
+  "proj/trap/core+bank_priced": {
+   "jobs": 30,
+   "verified_pct": 6.666666666666667,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 93.33333333333333,
+   "asked_pct": 0.0,
+   "jobs_per_min": 52.93572720455247,
+   "s_per_job": 0.07556333333333334,
+   "scripts": 1.0,
+   "ops": 12.333333333333334
+  },
+  "proj/trap/naive": {
+   "jobs": 30,
+   "verified_pct": 23.333333333333332,
+   "answered_pct": 90.0,
+   "error_among_answers_pct": 74.07407407407408,
+   "asked_pct": 6.666666666666667,
+   "jobs_per_min": 35.16409912926992,
+   "s_per_job": 0.39813333333333334,
+   "scripts": 7.233333333333333,
+   "ops": 14.766666666666667
+  },
+  "proj/trap/replay": {
+   "jobs": 30,
+   "verified_pct": 56.666666666666664,
+   "answered_pct": 96.66666666666667,
+   "error_among_answers_pct": 41.37931034482759,
+   "asked_pct": 3.3333333333333335,
+   "jobs_per_min": 90.76671175339929,
+   "s_per_job": 0.3745866666666667,
+   "scripts": 6.933333333333334,
+   "ops": 13.5
+  },
+  "proj/trap/replay+bank": {
+   "jobs": 30,
+   "verified_pct": 6.666666666666667,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 93.33333333333333,
+   "asked_pct": 0.0,
+   "jobs_per_min": 52.77741126797731,
+   "s_per_job": 0.07579,
+   "scripts": 1.0,
+   "ops": 14.733333333333333
+  },
+  "proj/trap/sleep": {
+   "jobs": 30,
+   "verified_pct": 33.333333333333336,
+   "answered_pct": 90.0,
+   "error_among_answers_pct": 62.96296296296296,
+   "asked_pct": 6.666666666666667,
+   "jobs_per_min": 51.285119622541515,
+   "s_per_job": 0.3899766666666667,
+   "scripts": 7.133333333333334,
+   "ops": 14.2
+  },
+  "proj/trap/sleep+bank": {
+   "jobs": 30,
+   "verified_pct": 6.666666666666667,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 93.33333333333333,
+   "asked_pct": 0.0,
+   "jobs_per_min": 52.2716382802631,
+   "s_per_job": 0.07652333333333333,
+   "scripts": 1.0,
+   "ops": 14.733333333333333
+  },
+  "proj/trap/teacher": {
+   "jobs": 30,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 181.06101756291872,
+   "s_per_job": 0.33138,
+   "scripts": 6.9,
+   "ops": 11.2
+  },
+  "proj/trap/search": {
+   "jobs": 30,
+   "verified_pct": 20.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 80.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 137.59889920880633,
+   "s_per_job": 0.08721,
+   "scripts": 1.0,
+   "ops": 45.46666666666667
+  },
+  "proj/whole day/core": {
+   "jobs": 160,
+   "verified_pct": 35.625,
+   "answered_pct": 85.0,
+   "error_among_answers_pct": 62.5,
+   "asked_pct": 13.75,
+   "jobs_per_min": 47.19780295607292,
+   "s_per_job": 0.45288125,
+   "scripts": 8.19375,
+   "ops": 16.425
+  },
+  "proj/whole day/core+bank": {
+   "jobs": 160,
+   "verified_pct": 74.375,
+   "answered_pct": 95.625,
+   "error_among_answers_pct": 26.143790849673202,
+   "asked_pct": 4.375,
+   "jobs_per_min": 311.7345802716544,
+   "s_per_job": 0.143150625,
+   "scripts": 2.25625,
+   "ops": 17.8125
+  },
+  "proj/whole day/core+bank_priced": {
+   "jobs": 160,
+   "verified_pct": 66.875,
+   "answered_pct": 94.375,
+   "error_among_answers_pct": 33.11258278145695,
+   "asked_pct": 5.625,
+   "jobs_per_min": 201.59644285902692,
+   "s_per_job": 0.19903625,
+   "scripts": 3.2875,
+   "ops": 17.25
+  },
+  "proj/whole day/naive": {
+   "jobs": 160,
+   "verified_pct": 34.375,
+   "answered_pct": 89.375,
+   "error_among_answers_pct": 65.73426573426573,
+   "asked_pct": 8.75,
+   "jobs_per_min": 48.878751073851355,
+   "s_per_job": 0.42196249999999996,
+   "scripts": 7.7125,
+   "ops": 15.76875
+  },
+  "proj/whole day/replay": {
+   "jobs": 160,
+   "verified_pct": 39.375,
+   "answered_pct": 88.75,
+   "error_among_answers_pct": 59.859154929577464,
+   "asked_pct": 9.375,
+   "jobs_per_min": 54.877570752868,
+   "s_per_job": 0.43050375,
+   "scripts": 7.88125,
+   "ops": 15.86875
+  },
+  "proj/whole day/replay+bank": {
+   "jobs": 160,
+   "verified_pct": 74.375,
+   "answered_pct": 95.625,
+   "error_among_answers_pct": 26.143790849673202,
+   "asked_pct": 3.75,
+   "jobs_per_min": 314.4377113866967,
+   "s_per_job": 0.14192,
+   "scripts": 2.23125,
+   "ops": 17.7375
+  },
+  "proj/whole day/sleep": {
+   "jobs": 160,
+   "verified_pct": 43.125,
+   "answered_pct": 92.5,
+   "error_among_answers_pct": 57.432432432432435,
+   "asked_pct": 6.875,
+   "jobs_per_min": 62.08721003473284,
+   "s_per_job": 0.4167525,
+   "scripts": 7.64375,
+   "ops": 15.33125
+  },
+  "proj/whole day/sleep+bank": {
+   "jobs": 160,
+   "verified_pct": 75.0,
+   "answered_pct": 96.25,
+   "error_among_answers_pct": 25.974025974025974,
+   "asked_pct": 3.75,
+   "jobs_per_min": 315.3482627376609,
+   "s_per_job": 0.14269937500000002,
+   "scripts": 2.24375,
+   "ops": 17.75625
+  },
+  "proj/whole day/teacher": {
+   "jobs": 160,
+   "verified_pct": 100.0,
+   "answered_pct": 93.75,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 6.25,
+   "jobs_per_min": 193.39242546333602,
+   "s_per_job": 0.31025,
+   "scripts": 6.625,
+   "ops": 10.64375
+  },
+  "proj/whole day/search": {
+   "jobs": 160,
+   "verified_pct": 85.0,
+   "answered_pct": 93.75,
+   "error_among_answers_pct": 16.0,
+   "asked_pct": 6.25,
+   "jobs_per_min": 578.7480318311418,
+   "s_per_job": 0.08812125,
+   "scripts": 1.0,
+   "ops": 47.24375
+  },
+  "tab/retention/core": {
+   "jobs": 80,
+   "verified_pct": 98.75,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 1.4285714285714286,
+   "asked_pct": 12.5,
+   "jobs_per_min": 531.2471980633014,
+   "s_per_job": 0.11152999999999999,
+   "scripts": 3.5375,
+   "ops": 6.3625
+  },
+  "tab/retention/core+bank": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 946.2789551503204,
+   "s_per_job": 0.06340625,
+   "scripts": 1.75,
+   "ops": 7.9875
+  },
+  "tab/retention/core+bank_priced": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 942.932914252038,
+   "s_per_job": 0.06363125,
+   "scripts": 1.75,
+   "ops": 7.9875
+  },
+  "tab/retention/naive": {
+   "jobs": 80,
+   "verified_pct": 97.5,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 2.857142857142857,
+   "asked_pct": 12.5,
+   "jobs_per_min": 522.6714317623408,
+   "s_per_job": 0.11192500000000001,
+   "scripts": 3.5625,
+   "ops": 6.4125
+  },
+  "tab/retention/replay": {
+   "jobs": 80,
+   "verified_pct": 97.5,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 2.857142857142857,
+   "asked_pct": 12.5,
+   "jobs_per_min": 524.3932501176523,
+   "s_per_job": 0.1115575,
+   "scripts": 3.55,
+   "ops": 6.3875
+  },
+  "tab/retention/replay+bank": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 935.672514619883,
+   "s_per_job": 0.064125,
+   "scripts": 1.75,
+   "ops": 7.9875
+  },
+  "tab/retention/sleep": {
+   "jobs": 80,
+   "verified_pct": 97.5,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 2.857142857142857,
+   "asked_pct": 12.5,
+   "jobs_per_min": 524.4167544429753,
+   "s_per_job": 0.11155250000000001,
+   "scripts": 3.55,
+   "ops": 6.3875
+  },
+  "tab/retention/sleep+bank": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 904.5680687471732,
+   "s_per_job": 0.06633,
+   "scripts": 1.75,
+   "ops": 7.9875
+  },
+  "tab/retention/teacher": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 608.4729863347109,
+   "s_per_job": 0.0986075,
+   "scripts": 3.5,
+   "ops": 6.3125
+  },
+  "tab/retention/search": {
+   "jobs": 80,
+   "verified_pct": 100.0,
+   "answered_pct": 87.5,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 12.5,
+   "jobs_per_min": 1413.760603204524,
+   "s_per_job": 0.04244,
+   "scripts": 1.0,
+   "ops": 6.4375
+  },
+  "tab/transfer/core": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 457.9540901024672,
+   "s_per_job": 0.1310175,
+   "scripts": 4.0,
+   "ops": 6.8
+  },
+  "tab/transfer/core+bank": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 600.0450033752531,
+   "s_per_job": 0.0999925,
+   "scripts": 2.8,
+   "ops": 9.15
+  },
+  "tab/transfer/core+bank_priced": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 597.9967110180894,
+   "s_per_job": 0.100335,
+   "scripts": 2.8,
+   "ops": 9.15
+  },
+  "tab/transfer/naive": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 461.3344097802895,
+   "s_per_job": 0.1300575,
+   "scripts": 4.0,
+   "ops": 6.8
+  },
+  "tab/transfer/replay": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 457.35193231191397,
+   "s_per_job": 0.13119,
+   "scripts": 4.0,
+   "ops": 6.8
+  },
+  "tab/transfer/replay+bank": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 595.149531319744,
+   "s_per_job": 0.10081500000000002,
+   "scripts": 2.8,
+   "ops": 9.15
+  },
+  "tab/transfer/sleep": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 463.0522863206637,
+   "s_per_job": 0.129575,
+   "scripts": 4.0,
+   "ops": 6.8
+  },
+  "tab/transfer/sleep+bank": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 581.67716917111,
+   "s_per_job": 0.10315,
+   "scripts": 2.8,
+   "ops": 9.15
+  },
+  "tab/transfer/teacher": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 507.45321915635907,
+   "s_per_job": 0.1182375,
+   "scripts": 4.0,
+   "ops": 6.8
+  },
+  "tab/transfer/search": {
+   "jobs": 40,
+   "verified_pct": 100.0,
+   "answered_pct": 100.0,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 0.0,
+   "jobs_per_min": 1429.8480786416444,
+   "s_per_job": 0.0419625,
+   "scripts": 1.0,
+   "ops": 6.8
+  },
+  "tab/whole day/core": {
+   "jobs": 120,
+   "verified_pct": 99.16666666666667,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 0.9090909090909091,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 504.1269213660851,
+   "s_per_job": 0.11802583333333333,
+   "scripts": 3.691666666666667,
+   "ops": 6.508333333333334
+  },
+  "tab/whole day/core+bank": {
+   "jobs": 120,
+   "verified_pct": 100.0,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 793.6332973258967,
+   "s_per_job": 0.07560166666666666,
+   "scripts": 2.1,
+   "ops": 8.375
+  },
+  "tab/whole day/core+bank_priced": {
+   "jobs": 120,
+   "verified_pct": 100.0,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 790.8698469886533,
+   "s_per_job": 0.07586583333333333,
+   "scripts": 2.1,
+   "ops": 8.375
+  },
+  "tab/whole day/naive": {
+   "jobs": 120,
+   "verified_pct": 98.33333333333333,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 1.8181818181818181,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 500.13068386513424,
+   "s_per_job": 0.11796916666666667,
+   "scripts": 3.7083333333333335,
+   "ops": 6.541666666666667
+  },
+  "tab/whole day/replay": {
+   "jobs": 120,
+   "verified_pct": 98.33333333333333,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 1.8181818181818181,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 499.5695798817403,
+   "s_per_job": 0.11810166666666667,
+   "scripts": 3.7,
+   "ops": 6.525
+  },
+  "tab/whole day/replay+bank": {
+   "jobs": 120,
+   "verified_pct": 100.0,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 785.8031563093446,
+   "s_per_job": 0.07635499999999999,
+   "scripts": 2.1,
+   "ops": 8.375
+  },
+  "tab/whole day/sleep": {
+   "jobs": 120,
+   "verified_pct": 98.33333333333333,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 1.8181818181818181,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 501.8713848247703,
+   "s_per_job": 0.11756000000000001,
+   "scripts": 3.7,
+   "ops": 6.525
+  },
+  "tab/whole day/sleep+bank": {
+   "jobs": 120,
+   "verified_pct": 100.0,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 763.3264068529749,
+   "s_per_job": 0.07860333333333333,
+   "scripts": 2.1,
+   "ops": 8.375
+  },
+  "tab/whole day/teacher": {
+   "jobs": 120,
+   "verified_pct": 100.0,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 570.6088872334186,
+   "s_per_job": 0.10515083333333333,
+   "scripts": 3.6666666666666665,
+   "ops": 6.475
+  },
+  "tab/whole day/search": {
+   "jobs": 120,
+   "verified_pct": 100.0,
+   "answered_pct": 91.66666666666667,
+   "error_among_answers_pct": 0.0,
+   "asked_pct": 8.333333333333334,
+   "jobs_per_min": 1419.0827206969275,
+   "s_per_job": 0.04228083333333333,
+   "scripts": 1.0,
+   "ops": 6.558333333333334
+  }
+ },
+ "bank": {
+  "core+bank/retention": {
+   "jobs": 160,
+   "pass": 117,
+   "pass_wrong": 0,
+   "fail": 15,
+   "decline": 28,
+   "wasted_ops_per_job": 1.99375
+  },
+  "core+bank/transfer": {
+   "jobs": 90,
+   "pass": 72,
+   "pass_wrong": 0,
+   "fail": 0,
+   "decline": 18,
+   "wasted_ops_per_job": 0.0
+  },
+  "core+bank/trap": {
+   "jobs": 30,
+   "pass": 30,
+   "pass_wrong": 28,
+   "fail": 0,
+   "decline": 0,
+   "wasted_ops_per_job": 0.0
+  },
+  "core+bank/whole day": {
+   "jobs": 280,
+   "pass": 219,
+   "pass_wrong": 28,
+   "fail": 15,
+   "decline": 46,
+   "wasted_ops_per_job": 1.1392857142857142
+  },
+  "core+bank_priced/retention": {
+   "jobs": 160,
+   "pass": 99,
+   "pass_wrong": 0,
+   "fail": 33,
+   "decline": 28,
+   "wasted_ops_per_job": 3.13125
+  },
+  "core+bank_priced/transfer": {
+   "jobs": 90,
+   "pass": 72,
+   "pass_wrong": 0,
+   "fail": 0,
+   "decline": 18,
+   "wasted_ops_per_job": 0.0
+  },
+  "core+bank_priced/trap": {
+   "jobs": 30,
+   "pass": 30,
+   "pass_wrong": 28,
+   "fail": 0,
+   "decline": 0,
+   "wasted_ops_per_job": 0.0
+  },
+  "core+bank_priced/whole day": {
+   "jobs": 280,
+   "pass": 201,
+   "pass_wrong": 28,
+   "fail": 33,
+   "decline": 46,
+   "wasted_ops_per_job": 1.7892857142857144
+  },
+  "replay+bank/retention": {
+   "jobs": 160,
+   "pass": 117,
+   "pass_wrong": 0,
+   "fail": 15,
+   "decline": 28,
+   "wasted_ops_per_job": 1.99375
+  },
+  "replay+bank/transfer": {
+   "jobs": 90,
+   "pass": 72,
+   "pass_wrong": 0,
+   "fail": 0,
+   "decline": 18,
+   "wasted_ops_per_job": 0.0
+  },
+  "replay+bank/trap": {
+   "jobs": 30,
+   "pass": 30,
+   "pass_wrong": 28,
+   "fail": 0,
+   "decline": 0,
+   "wasted_ops_per_job": 0.0
+  },
+  "replay+bank/whole day": {
+   "jobs": 280,
+   "pass": 219,
+   "pass_wrong": 28,
+   "fail": 15,
+   "decline": 46,
+   "wasted_ops_per_job": 1.1392857142857142
+  },
+  "sleep+bank/retention": {
+   "jobs": 160,
+   "pass": 117,
+   "pass_wrong": 0,
+   "fail": 15,
+   "decline": 28,
+   "wasted_ops_per_job": 1.99375
+  },
+  "sleep+bank/transfer": {
+   "jobs": 90,
+   "pass": 72,
+   "pass_wrong": 0,
+   "fail": 0,
+   "decline": 18,
+   "wasted_ops_per_job": 0.0
+  },
+  "sleep+bank/trap": {
+   "jobs": 30,
+   "pass": 30,
+   "pass_wrong": 28,
+   "fail": 0,
+   "decline": 0,
+   "wasted_ops_per_job": 0.0
+  },
+  "sleep+bank/whole day": {
+   "jobs": 280,
+   "pass": 219,
+   "pass_wrong": 28,
+   "fail": 15,
+   "decline": 46,
+   "wasted_ops_per_job": 1.1392857142857142
+  }
+ },
+ "harm": {
+  "core+bank": {
+   "harm": 0,
+   "gain": 21,
+   "jobs": 160
+  },
+  "core+bank_priced": {
+   "harm": 0,
+   "gain": 9,
+   "jobs": 160
+  },
+  "naive": {
+   "harm": 11,
+   "gain": 0,
+   "jobs": 160
+  },
+  "replay": {
+   "harm": 6,
+   "gain": 2,
+   "jobs": 160
+  },
+  "replay+bank": {
+   "harm": 1,
+   "gain": 22,
+   "jobs": 160
+  },
+  "sleep": {
+   "harm": 10,
+   "gain": 2,
+   "jobs": 160
+  },
+  "sleep+bank": {
+   "harm": 1,
+   "gain": 23,
+   "jobs": 160
+  }
+ },
+ "break_even": {
+  "core+bank": {
+   "overnight_s": 0.0,
+   "s_per_job": 0.11420107142857143,
+   "core_s_per_job": 0.3093717857142857,
+   "jobs_to_recover": 0.0,
+   "extra_verified_per_100": 22.500000000000007
+  },
+  "core+bank_priced": {
+   "overnight_s": 0.0,
+   "s_per_job": 0.14624892857142857,
+   "core_s_per_job": 0.3093717857142857,
+   "jobs_to_recover": 0.0,
+   "extra_verified_per_100": 18.214285714285715
+  },
+  "naive": {
+   "overnight_s": 40.769999999999996,
+   "s_per_job": 0.2916796428571429,
+   "core_s_per_job": 0.3093717857142857,
+   "jobs_to_recover": 2304.4127740320605,
+   "extra_verified_per_100": -1.0714285714285694
+  },
+  "replay": {
+   "overnight_s": 58.06999999999999,
+   "s_per_job": 0.29661714285714286,
+   "core_s_per_job": 0.3093717857142857,
+   "jobs_to_recover": 4552.851902668502,
+   "extra_verified_per_100": 1.7857142857142847
+  },
+  "replay+bank": {
+   "overnight_s": 58.06999999999999,
+   "s_per_job": 0.11382071428571429,
+   "core_s_per_job": 0.3093717857142857,
+   "jobs_to_recover": 296.9556728877914,
+   "extra_verified_per_100": 22.500000000000007
+  },
+  "sleep": {
+   "overnight_s": 191.67,
+   "s_per_job": 0.28852714285714287,
+   "core_s_per_job": 0.3093717857142857,
+   "jobs_to_recover": 9195.168337188397,
+   "extra_verified_per_100": 3.9285714285714377
+  },
+  "sleep+bank": {
+   "overnight_s": 191.67,
+   "s_per_job": 0.11522964285714285,
+   "core_s_per_job": 0.3093717857142857,
+   "jobs_to_recover": 987.2663254831696,
+   "extra_verified_per_100": 22.857142857142854
+  }
+ }
+}

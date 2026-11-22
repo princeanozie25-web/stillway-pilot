@@ -1,0 +1,70 @@
+{
+ "starting_checkpoint": "artifacts/v08/core_exec_s1.safetensors",
+ "starting_sha256": "21243190eac601875a87ad70d7c0fa350d5b3c2c6abc685d0549eea4e79c73cf",
+ "update_token_budget": 3000000.0,
+ "learning_rate": 0.0002,
+ "rehearsal_pool": 20000,
+ "rehearsal_records_per_new_record": 1,
+ "mode": "exec",
+ "bank_entries": 17,
+ "bank_sha256": {
+  "v0": "382355679e5c194c98a55062149a97e1f1e57b907c6b3996afc5e7392214674f",
+  "v1": "b07da173ecd7f9807df2b7c23878935b4f02591434a2b1c0028c304599789e21",
+  "v1_priced": "419f50421a73ccfab5b6898deb42fcd69fc169ffeabe1c3212cecef1212de910"
+ },
+ "corpus_sha256": {
+  "naive": "df71696232c86c023a75c4a0f7dbbdc339f65f1399261c6e663431d660864d9e",
+  "replay": "7b956d6067c5101724d16c4eb35bac39d990b6956f2ebcbcfb2c4d5f2cd1bd9e",
+  "sleep": "09ab5c8572cf129efe61743e3390ed187e8d9fc0219c983855f4297b148c3506"
+ },
+ "corpus_records": {
+  "naive": 234,
+  "replay": 39890,
+  "sleep": 40288
+ },
+ "checkpoints_sha256": {
+  "naive": "929177e63cb88937bbc1e485aa726ab7fb3ba9cf3ea598830ec7b2374635cbda",
+  "replay": "a6ec1dfe344bcf16a17c30b8da1f764333aa7b27fc16965f6e9132be83c55166",
+  "sleep": "4cea87a7e5c253ad8a0e5cfed60ec07809c0e705b81c9a51f1616ed1f3fa4195"
+ },
+ "validation": {
+  "frozen": {
+   "new": 50.0,
+   "new_jobs": 60,
+   "old": 76.9,
+   "old_jobs": 320
+  },
+  "naive": {
+   "new": 58.3,
+   "new_jobs": 60,
+   "old": 70.3,
+   "old_jobs": 320
+  },
+  "replay": {
+   "new": 55.0,
+   "new_jobs": 60,
+   "old": 74.1,
+   "old_jobs": 320
+  },
+  "sleep": {
+   "new": 65.0,
+   "new_jobs": 60,
+   "old": 71.2,
+   "old_jobs": 320
+  }
+ },
+ "sleep_promoted": false,
+ "promotion_rule": "earlier skills (the 320 development jobs) no more than 2 points below the frozen core, and later skills (60 fresh jobs from day-1 sources, not in the corpus) above it",
+ "cost": {
+  "bank_and_gate_s": 0.0,
+  "day_records": 234,
+  "dreams": 400,
+  "dream_ops": 7278,
+  "corpus_s": 20.27,
+  "train_naive_s": 20.5,
+  "train_replay_s": 37.8,
+  "train_sleep_s": 36.8,
+  "validation_s": 134.6
+ },
+ "night_seconds": 250.4
+}

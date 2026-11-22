@@ -1,0 +1,65 @@
+{
+ "mode": "exec",
+ "seed": 1,
+ "token_budget": 3000000,
+ "steps": 210,
+ "examples_drawn": 13440,
+ "batch": 64,
+ "ctx": 384,
+ "passes": 1,
+ "lr": 0.0002,
+ "weight_obs": 1.0,
+ "jobs": 234,
+ "limit_proj": 0,
+ "limit_tab": 0,
+ "records": 290,
+ "records_with_a_failure_and_recovery": 56,
+ "wrong_action_tokens_not_trained": 571,
+ "record_tokens": 28347,
+ "action_targets_in_data": 7853,
+ "observation_targets_in_data": 14218,
+ "records_cut_to_context": 0,
+ "tokens_processed": 3007040,
+ "train_seconds": 19.5,
+ "device": "mps",
+ "params": 1067136,
+ "mps_driver_bytes": 2856796160,
+ "final": {
+  "step": 210,
+  "tokens": 3007040,
+  "action_loss": 0.0154,
+  "obs_loss": 0.6327,
+  "s": 19.0
+ },
+ "init": "artifacts/v08/core_exec_s1.safetensors",
+ "history": [
+  {
+   "step": 1,
+   "tokens": 13696,
+   "action_loss": 0.2799,
+   "obs_loss": 0.6728,
+   "s": 0.3
+  },
+  {
+   "step": 101,
+   "tokens": 1455680,
+   "action_loss": 0.0288,
+   "obs_loss": 0.6481,
+   "s": 9.7
+  },
+  {
+   "step": 201,
+   "tokens": 2873408,
+   "action_loss": 0.018,
+   "obs_loss": 0.6195,
+   "s": 18.3
+  },
+  {
+   "step": 210,
+   "tokens": 3007040,
+   "action_loss": 0.0154,
+   "obs_loss": 0.6327,
+   "s": 19.0
+  }
+ ]
+}
