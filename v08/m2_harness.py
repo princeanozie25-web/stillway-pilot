@@ -18,7 +18,7 @@ LIMITS = {"calls": 14, "ops": 60, "seconds": 90.0, "new_tokens": 220}
 MANUAL = '''You finish small jobs in a sandbox by calling operations. Results are short lines of tokens: n7 is the number 7; a key token such as kA_ is the text "A " (capital A, trailing space) and ka is "a".
 
 PROJECT jobs. A report module runs a chain of modules: load -> clean -> filter -> agg and order -> report. One setting in one module may be wrong, or nothing is wrong, or an expected value is itself out of date.
-  check(c)           run visible check "c0" or "c1": PASS, or FAIL field exp X got Y (fields: count, groups, total, first)
+  check(c)           run visible check "c0" or "c1": PASS, or FAIL followed by every field the check asserts as: field exp X got Y (fields: count, groups, total, first)
   deps(m)            the modules that module m imports
   show(m)            its role and settings, for example: role filter thr n3 cmp gt
   probe(m, c)        what module m returns on the data of check c: rows "r key val qty", or "v n"

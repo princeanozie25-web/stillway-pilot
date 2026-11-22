@@ -15,13 +15,16 @@ from stillway8 import agent, bank as BK, dataset as D, experience as X, expert a
 from stillway8.grade import grade
 from stillway8.runner import Session
 
-OUT = "results/v08/m4"; PY = sys.executable; STEPS = 400; os.makedirs(OUT, exist_ok=True)
+OUT = "results/v08/m4"; PY = sys.executable; TOKENS = 3e6; os.makedirs(OUT, exist_ok=True)
 DAY1 = {"proj": [("later", 60), ("familiar", 40), ("valid", 10), ("unans", 10)], "tab": [("later", 40), ("familiar", 30), ("scattered", 20), ("stale", 8), ("valid", 8), ("unans", 8)]}
 DAY2 = {"proj": [("familiar", 40), ("newmech", 20), ("valid", 10), ("unans", 10), ("later", 50), ("trap", 30)], "tab": [("familiar", 30), ("scattered", 20), ("stale", 10), ("valid", 10), ("unans", 10), ("later", 40)]}
 sha = lambda p: hashlib.sha256(open(p, "rb").read()).hexdigest(); load = lambda p: [json.loads(l) for l in open(p)]
 def dump(path, rows): open(path, "w").writelines(json.dumps(x, sort_keys=True) + "\n" for x in rows)
 def teacher_record(p, h, noise=0.3, tag=""):
-    s = Session(p, fast=True); steps, end = E.teach(s, p, h, random.Random(f"{D.MASTER}-m4-{p['id']}-{tag}"), noise); ops = s.ops(); s.close(); t, k = E.encode(p, steps, end); return {"id": p["id"], "dom": p["dom"], "noisy": [" ".join(t), "".join(map(str, k))], "clean": [" ".join(t), "".join(map(str, k))]}, ops
+    rec = {"id": p["id"], "dom": p["dom"]}; ops = 0
+    for name, z in (("clean", 0.0), ("noisy", noise)):
+        s = Session(p, fast=True); steps, end = E.teach(s, p, h, random.Random(f"{D.MASTER}-m4-{p['id']}-{tag}"), z); ops += s.ops(); s.close(); t, k = E.encode(p, steps, end); rec[name] = [" ".join(t), "".join(map(str, k))]
+    return rec, ops
 
 
 def sets():
@@ -76,7 +79,7 @@ def night(ckpt, mode):
     dump(f"{OUT}/val_public.jsonl", [pub[i] for i in sorted(val)]); dump(f"{OUT}/val_hidden.jsonl", [hid[i] for i in sorted(val)])
     # 3. the updates, same starting checkpoint, same steps
     for k in corp:
-        t = time.time(); subprocess.run([PY, "v08/train_core.py", mode, "1", f"{OUT}/core_{k}.safetensors", "--init", ckpt, "--steps", str(STEPS), "--lr", "5e-4", "--data", f"{OUT}/corpus_{k}.jsonl"], check=True, stdout=subprocess.DEVNULL); cost[f"train_{k}_s"] = round(time.time() - t, 1)
+        t = time.time(); subprocess.run([PY, "v08/train_core.py", mode, "1", f"{OUT}/core_{k}.safetensors", "--init", ckpt, "--tokens", str(TOKENS), "--lr", "5e-4", "--data", f"{OUT}/corpus_{k}.jsonl"], check=True, stdout=subprocess.DEVNULL); cost[f"train_{k}_s"] = round(time.time() - t, 1)
     # 4. validation of each update on held-back day-1 jobs and on the fixture set (earlier skills); the sleep update is promoted or rolled back on it
     def score(ck, tag):
         res = {}
@@ -89,7 +92,7 @@ def night(ckpt, mode):
     t = time.time(); V = {"frozen": score(ckpt, "frozen")}
     for k in corp: V[k] = score(f"{OUT}/core_{k}.safetensors", k)
     cost["validation_s"] = round(time.time() - t, 1); promote = V["sleep"]["old"] >= V["frozen"]["old"] - 2.0 and V["sleep"]["new"] > V["frozen"]["new"]
-    info = {"starting_checkpoint": ckpt, "starting_sha256": sha(ckpt), "update_steps": STEPS, "mode": mode, "bank_entries": len(bank["entries"]), "bank_sha256": {k: sha(f"{OUT}/bank_{k}.json") for k in ("v0", "v1", "v1_priced")},
+    info = {"starting_checkpoint": ckpt, "starting_sha256": sha(ckpt), "update_token_budget": TOKENS, "mode": mode, "bank_entries": len(bank["entries"]), "bank_sha256": {k: sha(f"{OUT}/bank_{k}.json") for k in ("v0", "v1", "v1_priced")},
             "corpus_sha256": {k: sha(f"{OUT}/corpus_{k}.jsonl") for k in corp}, "corpus_records": {k: len(v) for k, v in corp.items()}, "checkpoints_sha256": {k: sha(f"{OUT}/core_{k}.safetensors") for k in corp}, "validation": V,
             "sleep_promoted": bool(promote), "promotion_rule": "earlier skills no more than 2 points below the frozen core and later skills above it, on held-back jobs", "cost": cost, "night_seconds": round(time.time() - t_start, 1)}
     json.dump(info, open(f"{OUT}/night.json", "w"), indent=1); print(json.dumps(info, indent=1)[:2500])

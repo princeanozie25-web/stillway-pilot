@@ -6,6 +6,7 @@ Every arm of every experiment gets exactly these operations.  A script is either
 (one operation per line) or, in `py` mode, Python that calls the same operations as functions.  One operation alone is
 the smallest script.  Each operation returns a short line of tokens and is counted in the ledger, inside scripts too.
 
+A failed proj check lists every field it asserts as `field exp X got Y`.
 proj:  CHECK c | DEPS m | SHOW m | PROBE m c | PATCH m slot variant | REVERT
 tab:   DIFF | FACT k | COPY k | KEEP k | DROP k | ADD k g | SKIP k | RECALC g | ROWS | CHECK c0|c1
 bank:  USE (run the procedure the memory bank offered for this job, if any)"""
@@ -70,11 +71,9 @@ class Ops:
         if isinstance(v, dict): return " ".join(f"{f} {ktok(v[f]) if f == 'first' else num(v[f])}" for f in FIELDS)
         return "v " + num(v)
     def _check_proj(self, c):
-        ck = json.loads(self._read("checks.json"))[c]; got = self._run(self.job["entry"], ck["data"])
-        for f in FIELDS:
-            if f in ck["expect"] and got[f] != ck["expect"][f]:
-                t = ktok if f == "first" else num; return f"FAIL {f} exp {t(ck['expect'][f])} got {t(got[f])}"
-        return "PASS"
+        ck = json.loads(self._read("checks.json"))[c]; got = self._run(self.job["entry"], ck["data"]); exp = ck["expect"]; t = lambda f, v: ktok(v) if f == "first" else num(v)
+        if all(got[f] == exp[f] for f in exp): return "PASS"
+        return "FAIL " + " ".join(f"{f} exp {t(f, exp[f])} got {t(f, got[f])}" for f in FIELDS if f in exp)      # every field the check asserts
     def PATCH(self, m, slot, variant):
         F = _frag(); text = self._read(m + ".py"); lines = text.split("\n")
         if (slot, variant) not in F or slot not in ROLE_SLOTS.get(self._role(m), ()): return "BAD"

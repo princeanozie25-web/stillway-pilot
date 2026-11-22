@@ -100,7 +100,7 @@ def proj_source(rng):
 
 def proj_job(rng, src, kind, slot=None, wrong=None, tries=400, also=()):
     """One job from a source project.  kind: valid | bug | unans | trap.  Returns (public, hidden) or None if no data makes
-    the job well posed (exactly one one-line change makes the failing visible checks pass).  A trap is a fault for which
+    the job well posed (exactly one one-line change makes the first failing visible check pass, and it is the repair).  A trap is a fault for which
     a second one-line change, in one of the slots `also`, passes every visible check too and is wrong."""
     true = src["cfg"]; cur = dict(true)
     if kind in ("bug", "trap"): cur[slot] = wrong
@@ -115,7 +115,7 @@ def proj_job(rng, src, kind, slot=None, wrong=None, tries=400, also=()):
             expect[i][f] = max(0, expect[i][f] + rng.choice([-2, -1, 1, 2, 3]))
         got = [stages(cur, d)["report"] for d in data]; failing = [i for i in range(2) if any(got[i][f] != expect[i][f] for f in expect[i])]
         passes = lambda c, idx: all(stages(c, data[i])["report"][f] == expect[i][f] for i in idx for f in expect[i])
-        fixes = [(s, v) for s, v in patches(cur) if passes(dict(cur, **{s: v}), failing)] if failing else []
+        fixes = [(s, v) for s, v in patches(cur) if passes(dict(cur, **{s: v}), failing[:1])] if failing else []     # judged on the first failing check alone: what a runner can see
         if kind == "valid" and failing: continue
         if kind == "bug" and (not failing or fixes != [(slot, true[slot])]): continue
         if kind == "unans" and (not failing or fixes): continue

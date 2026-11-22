@@ -11,6 +11,7 @@ workspace as it found it unless it reports PASS.  The gate is a table learned fr
 observation, which entries to try and in what order; an entry is tried only if its logged success rate times the cost
 of the fallback exceeds its own cost."""
 import collections, hashlib, json
+from stillway8.expert import mismatches
 
 VARIANTS = {"norm": ["none", "strip", "lower", "both"], "dedupe": ["off", "on"], "cmp": ["gt", "ge", "lt", "le"], "thr": [f"n{i}" for i in range(1, 10)], "col": ["val", "qty"], "func": ["sum", "mean", "max", "min", "count"],
             "by": ["key", "val"], "dir": ["asc", "desc"]}
@@ -53,7 +54,7 @@ def learn_gate(bank, experiences, cost_core, cost_try, price=0.0):
         c = e.get("memory_candidate")
         if c and c["signature"]["dom"] == "proj": seen["+".join(c["signature"]["reported"])][(c["procedure"]["role"], c["procedure"]["slot"])] += 1
         elif e["goal"].startswith("proj") and e["verdict"]["outcome"] == "verified" and e["steps"]:
-            rep = "+".join(sorted({o.split()[1] for o in e["steps"][0]["obs"] if o.startswith("FAIL")}))
+            rep = "+".join(sorted({x for o in e["steps"][0]["obs"] for x in mismatches(o)}))
             if rep: seen[rep][None] += 1                          # verified, but nothing the bank could have done (an ASK)
     have = {(e["role"], e["slot"]): e for e in bank["entries"] if e["dom"] == "proj" and not e.get("leave")}; gate = {}
     for sig, cnt in seen.items():
@@ -88,7 +89,9 @@ else:
 '''
     table = {sig: [(o["role"], o["slot"], VARIANTS[o["slot"]]) for o in order] for sig, order in gate["by_first_observation"].items()}; leave = any(e.get("leave") and e["dom"] == "proj" for e in bank["entries"])
     return f'''GATE = {table!r}; LEAVE = {leave!r}
-c = [check("c0"), check("c1")]; sig = "+".join(sorted({{x.split()[1] for x in c if x.startswith("FAIL")}})); result = "DECLINE"
+c = [check("c0"), check("c1")]; result = "DECLINE"
+def mm(x): w = x.split(); return [w[i] for i in range(1, len(w) - 3, 5) if w[i + 2] != w[i + 4]] if w[0] == "FAIL" else []
+sig = "+".join(sorted({{f for x in c for f in mm(x)}}))
 if not sig: result = "PASS" if LEAVE else "DECLINE"
 elif GATE.get(sig):
     mods, todo, seen = {{}}, [{entry_module!r}], set(); result = "FAIL"

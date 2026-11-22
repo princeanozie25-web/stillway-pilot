@@ -1,5 +1,5 @@
 {
- "experience": "x-proj-fixture-3529646f0e03-acfa9677",
+ "experience": "x-proj-fixture-3529646f0e03-a244a6f4",
  "job": "proj-fixture-3529646f0e03",
  "source": "teacher",
  "goal": "proj GOAL c0 ENTRY m4 MODS m1 m2 m3 m4 m6 m7",
@@ -25,10 +25,10 @@
     "CHECK c1"
    ],
    "obs": [
-    "FAIL total exp n2 got n3",
-    "FAIL total exp n5 got n2"
+    "FAIL count exp n3 got n3 groups exp n2 got n2 total exp n2 got n3",
+    "FAIL count exp n2 got n2 total exp n5 got n2"
    ],
-   "s": 0.078,
+   "s": 0.0742,
    "error": null
   },
   {
@@ -38,7 +38,7 @@
    "obs": [
     "m2 m6 m7"
    ],
-   "s": 0.0423,
+   "s": 0.0388,
    "error": null
   },
   {
@@ -52,7 +52,7 @@
     "role order by val dir desc",
     "role agg col qty func count"
    ],
-   "s": 0.0422,
+   "s": 0.0381,
    "error": null
   },
   {
@@ -62,7 +62,7 @@
    "obs": [
     "r kf n1 n2 r kb n5 n7 r kf n1 n2"
    ],
-   "s": 0.0741,
+   "s": 0.07,
    "error": null
   },
   {
@@ -76,7 +76,7 @@
     "PASS",
     "PASS"
    ],
-   "s": 0.0764,
+   "s": 0.0688,
    "error": null
   }
  ],
@@ -106,11 +106,11 @@
  "compute": {
   "calls": 6,
   "ops": 10,
-  "tokens_in": 383,
+  "tokens_in": 458,
   "tokens_out": 34,
-  "model_s": 0.0001,
-  "exec_s": 0.313,
-  "wall_s": 0.3158,
+  "model_s": 0.0,
+  "exec_s": 0.2899,
+  "wall_s": 0.2927,
   "predict_s": 0.0,
   "failed_checks": 2,
   "edit_scripts": 1
@@ -128,7 +128,7 @@
    "variant": "min"
   },
   "provenance": {
-   "experience": "x-proj-fixture-3529646f0e03-acfa9677",
+   "experience": "x-proj-fixture-3529646f0e03-a244a6f4",
    "verdict": "verified",
    "source": "teacher",
    "recovered": false

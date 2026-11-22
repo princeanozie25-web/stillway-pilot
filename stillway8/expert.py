@@ -25,6 +25,11 @@ def header(public):
     return ["BOS", "tab", "GOAL", "reconcile"]
 
 
+def mismatches(obs):
+    """The fields of a failed proj check whose expected and observed values differ."""
+    w = obs.split(); return [w[i] for i in range(1, len(w) - 3, 5) if w[i + 2] != w[i + 4]] if w and w[0] == "FAIL" else []
+
+
 def step_tokens(step):
     """(tokens, kinds) of one executed step, as the runner appends them."""
     a = " ; ".join(step["script"]).split() + ["EXEC"]; o = " | ".join(step["obs"]).split() + ["END"]
@@ -51,7 +56,7 @@ def teach_proj(sess, pub, hid, rng, noise):
     slip = lambda: rng is not None and rng.random() < noise
     o = do(["CHECK c0", "CHECK c1"]); fails = [i for i in (0, 1) if o[i].startswith("FAIL")]
     if not fails: return steps, "DONE"
-    reported = [o[i].split()[1] for i in fails]; cx = f"c{fails[0]}"; deps = do([f"DEPS {pub['entry']}"])[0].split()
+    reported = [f for i in fails for f in mismatches(o[i])]; cx = f"c{fails[0]}"; deps = do([f"DEPS {pub['entry']}"])[0].split()
     shows = do([f"SHOW {m}" for m in deps]); mod = {s.split()[1]: m for s, m in zip(shows, deps)}; cur = {}
     for s in shows: w = s.split()[2:]; cur.update(dict(zip(w[::2], w[1::2])))
     def wrong_patch():                                         # a plausible one-line change that is not the repair

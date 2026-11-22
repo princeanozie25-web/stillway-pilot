@@ -1,5 +1,5 @@
 {
- "experience": "x-proj-fixture-3529646f0e03-9eb25a81",
+ "experience": "x-proj-fixture-3529646f0e03-5e4d0b06",
  "job": "proj-fixture-3529646f0e03",
  "source": "constructed: two changes that satisfy the visible checks",
  "goal": "proj GOAL c0 ENTRY m4 MODS m1 m2 m3 m4 m6 m7",
@@ -25,10 +25,10 @@
     "CHECK c1"
    ],
    "obs": [
-    "FAIL total exp n2 got n3",
-    "FAIL total exp n5 got n2"
+    "FAIL count exp n3 got n3 groups exp n2 got n2 total exp n2 got n3",
+    "FAIL count exp n2 got n2 total exp n5 got n2"
    ],
-   "s": 0.0756,
+   "s": 0.0737,
    "error": null
   },
   {
@@ -44,7 +44,7 @@
     "PASS",
     "PASS"
    ],
-   "s": 0.0755,
+   "s": 0.0717,
    "error": null
   }
  ],
@@ -78,11 +78,11 @@
  "compute": {
   "calls": 3,
   "ops": 6,
-  "tokens_in": 112,
+  "tokens_in": 142,
   "tokens_out": 23,
   "model_s": 0.0,
-  "exec_s": 0.1511,
-  "wall_s": 0.1539,
+  "exec_s": 0.1454,
+  "wall_s": 0.148,
   "predict_s": 0.0,
   "failed_checks": 2,
   "edit_scripts": 1

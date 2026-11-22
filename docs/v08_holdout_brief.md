@@ -1,6 +1,6 @@
 # v0.8: brief for an independently authored holdout
 
-For Codex, via Prince Anozie. From Fable, 22 November 2026. Branch `v0.8`.
+For Codex, via Prince Anozie. From Fable, 22 November 2026. Branch `v0.8`. **Revision 2** (same day): a failed check now lists every field it asserts, and a fault must be identifiable from its first failing check alone; sections 2 and 4 changed, nothing else.
 
 **What I am asking for.** A set of jobs, written by you in the plain format below, that I have never seen. I run every frozen arm on the public half once, seal the raw outputs, and only then ask you for grades. Until your set arrives I develop against my own fixtures and my own author-made holdout, which will be labelled as such.
 
@@ -31,7 +31,7 @@ One JSON object per line in `public.jsonl`:
 
 | Operation | Returns |
 |---|---|
-| `CHECK c0` / `CHECK c1` | `PASS`, or the first disagreement. proj: `FAIL field exp X got Y`. tab c0 (summary agrees with ledger): `FAIL g exp X got Y`; tab c1 (every difference resolved): `FAIL k` |
+| `CHECK c0` / `CHECK c1` | `PASS`, or a failure. proj: `FAIL` followed by every field the check asserts, each as `field exp X got Y`. tab c0 (summary agrees with ledger): `FAIL g exp X got Y`; tab c1 (every difference resolved): `FAIL k` |
 | `DEPS m` | the modules `m` imports |
 | `SHOW m` | the stage and its settings, e.g. `role filter thr n3 cmp gt` |
 | `PROBE m c` | what module `m` returns on the data of check `c` |
@@ -59,7 +59,7 @@ Numbers are written `n0`..`n63`; a key `"A "` is written `kA_`.
 | tab | ledger of 3 to 5 rows; keys k0..k7; groups g0, g1, g2; amounts 1 to 9; at most three differences; at most one stale group total |
 | tab notes | amounts differ: `stmt_newer`, `ledger_newer`, `void` · only in ledger: `pending`, `void` · only in statement: `grp gX`, `dupstmt`, `pending` · absent note = unanswerable |
 
-A proj job with a fault is well posed when exactly one one-line change makes the failing visible checks pass, and that change is the true repair. The packer checks this and tells you which changes pass if it refuses.
+A proj job with a fault is well posed when exactly one one-line change makes the **first failing visible check** pass (all the fields it asserts), and that change is the true repair. This is what a runner can establish from one probe of that check's data. An unanswerable job is one where no one-line change makes the first failing check pass. The packer checks this and tells you which changes pass if it refuses.
 
 ## 5. What was and was not in training (so you can label groups)
 

@@ -1,15 +1,15 @@
 #!/bin/zsh
 # Milestone 3 in one place.   ./v08/run_m3.sh train | eval SPLIT | all SPLIT
-#   train       every arm in ARMS for every seed in SEEDS, STEPS optimiser steps each (skips checkpoints that exist)
+#   train       every arm in ARMS for every seed in SEEDS, TOKENS token positions each (skips checkpoints that exist)
 #   eval SPLIT  every checkpoint through the sandboxed runner on data/v08/SPLIT/public.jsonl, one job at a time; then grade and report
-# Environment: PY (python), ARMS (default "base exec shuf"), SEEDS (default "1 2 3"), STEPS (default 8000), TAG (default core)
+# Environment: PY (python), ARMS (default "base exec shuf"), SEEDS (default "1 2 3"), TOKENS (default 80e6), TAG (default core)
 set -eu
-PY=${PY:-$HOME/Developer/voxcpm-venv/bin/python}; ARMS=(${=ARMS:-base exec shuf}); SEEDS=(${=SEEDS:-1 2 3}); STEPS=${STEPS:-8000}; TAG=${TAG:-core}; EXTRA=(${=EXTRA:-})
+PY=${PY:-$HOME/Developer/voxcpm-venv/bin/python}; ARMS=(${=ARMS:-base exec shuf}); SEEDS=(${=SEEDS:-1 2 3}); TOKENS=${TOKENS:-80e6}; TAG=${TAG:-core}; EXTRA=(${=EXTRA:-})
 export PYTHONPATH=.; mkdir -p artifacts/v08 logs
 train() {
   for s in $SEEDS; do for a in $ARMS; do
     out=artifacts/v08/${TAG}_${a}_s${s}.safetensors
-    [[ -f $out ]] || $PY v08/train_core.py $a $s $out --steps $STEPS $EXTRA >> logs/v08_train_${TAG}.log 2>&1
+    [[ -f $out ]] || $PY v08/train_core.py $a $s $out --tokens $TOKENS $EXTRA >> logs/v08_train_${TAG}.log 2>&1
   done; done
 }
 evaluate() {

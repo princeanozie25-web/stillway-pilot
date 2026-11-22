@@ -20,10 +20,10 @@ def proj(j, n):
     want = [W.stages(true, d)["report"] for d in data]; expect = [{f: w[f] for f in W.FIELDS if f in c["fields"]} for w, c in zip(want, j["checks"])]
     for i, f, v in j.get("stale_expectation", []): expect[i][f] = v
     got = [W.stages(cur, d)["report"] for d in data]; failing = [i for i in range(2) if any(got[i][f] != expect[i][f] for f in expect[i])]
-    fixes = [(s, v) for s, v in W.patches(cur) if all(W.stages(dict(cur, **{s: v}), data[i])["report"][f] == expect[i][f] for i in failing for f in expect[i])] if failing else []
+    fixes = [(s, v) for s, v in W.patches(cur) if all(W.stages(dict(cur, **{s: v}), data[i])["report"][f] == expect[i][f] for i in failing[:1] for f in expect[i])] if failing else []
     slot = next(iter(j.get("fault", {})), None)
     if kind == "valid": assert not failing, "a valid job must pass both visible checks"
-    if kind == "bug": assert failing and fixes == [(slot, true[slot])], f"not well posed: one-line changes that satisfy the failing checks: {fixes}"
+    if kind == "bug": assert failing and fixes == [(slot, true[slot])], f"not well posed: one-line changes that satisfy the first failing check: {fixes}"
     if kind == "unans": assert failing and not fixes, f"a stale expectation must not be reachable by one change: {fixes}"
     ids = [f"m{i}" for i in range(8)]; rng.shuffle(ids); roles = ["load", "clean", "filter", "agg", "order", "report"]; name = dict(zip(roles, ids)); files = {name[r] + ".py": W.source(r, cur, name) for r in roles}
     for k, dec in enumerate(j.get("unused_modules", [])[:2]): files[ids[6 + k] + ".py"] = W.source(dec["role"], dict(cur, **dec["settings"]), name)

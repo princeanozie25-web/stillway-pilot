@@ -5,7 +5,7 @@ are appended, and so on until the core says DONE or ASK or a limit is reached.  
 record it returns holds only what a grader needs later (the final files) and what was spent."""
 import hashlib, json, time
 from stillway8 import expert as E
-from stillway8.model import decode
+from stillway8.model import Reader
 from stillway8.runner import Session
 
 LIMITS = {"calls": 16, "ops": 48, "seconds": 20.0, "tokens_per_call": 40}
@@ -16,14 +16,21 @@ EDITS = ("PATCH", "REVERT", "COPY", "KEEP", "DROP", "ADD", "SKIP", "RECALC", "US
 def episode(model, public, limits=LIMITS, propose=None, predict=False, procedure=None):
     """Returns a record.  `propose(tokens) -> token list` replaces the core (used for the teacher and other references)."""
     t0 = time.time(); sess = Session(public); toks = E.header(public); steps = []; end = "BUDGET"; model_s = 0.0; gen = 0; fed = 0; why = None; predict_s = 0.0
-    bank_ops = 0
+    bank_ops = 0; reader = Reader(model) if model is not None and not propose else None; fed_upto = 0
+    def ask(stop, n, keep=True, extra=()):                     # feed whatever the reader has not seen yet, then let it write
+        nonlocal fed_upto
+        reader.feed(E.ids(toks[fed_upto:])); fed_upto = len(toks)
+        if extra: saved = (reader.state, reader.logits, reader.n); reader.feed(E.ids(list(extra)))
+        out = [E.VOCAB[i] for i in reader.write(stop, n, keep)]
+        if extra: reader.state, reader.logits, reader.n = saved
+        return out
     try:
         if procedure:                                          # the bank goes first: one script; anything but PASS leaves the workspace as it was
             sess.set_procedure(procedure); r = sess.run("USE"); bank_ops = sess.ops(); steps.append({"script": ["USE"], "obs": r["obs"], "s": r["s"], "error": r["error"], "bank": True, "inner": [f"{l['op']} {' '.join(l['args'])}".strip() for l in r["ledger"][:-1]]})
             if r["obs"] == ["PASS"]: end = "DONE"
         while len(steps) < limits["calls"] and end != "DONE":
             toks.append("ACT"); t = time.time()
-            a = propose(toks) if propose else [E.VOCAB[i] for i in decode(model, E.ids(toks), STOP, limits["tokens_per_call"])]
+            a = propose(toks) if propose else ask(STOP, limits["tokens_per_call"], keep=False)
             model_s += time.time() - t; gen += len(a); fed += len(toks)
             if a and a[-1] in ("DONE", "ASK") and len(a) == 1: end = a[0]; break
             if not a or a[-1] != "EXEC": why = "malformed script"; break
@@ -31,7 +38,7 @@ def episode(model, public, limits=LIMITS, propose=None, predict=False, procedure
             if not lines or sess.ops() - bank_ops + len(lines) > limits["ops"]: why = "operation limit" if lines else "empty script"; break
             pred = None
             if predict and model is not None:                  # the effect the core expects, written down before anything runs
-                t = time.time(); pred = " ".join(E.VOCAB[i] for i in decode(model, E.ids(toks + a + ["OBS"]), {E.TOK["END"]}, 64)[:-1]).split(" | "); predict_s += time.time() - t
+                t = time.time(); pred = " ".join(ask({E.TOK["END"]}, 64, keep=False, extra=a + ["OBS"])[:-1]).split(" | "); predict_s += time.time() - t
             before = sess.files() if predict else None
             r = sess.run("\n".join(lines)); obs = r["obs"]; steps.append({"script": lines, "obs": obs, "s": r["s"], "error": r["error"]})
             if predict: now = sess.files(); steps[-1].update(predicted=pred, changed_files=sorted(n for n in now if now[n] != before.get(n)))

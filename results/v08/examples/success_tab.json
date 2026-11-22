@@ -1,5 +1,5 @@
 {
- "experience": "x-tab-fixture-7a068270c5bf-8cbfb5aa",
+ "experience": "x-tab-fixture-7a068270c5bf-0a58a821",
  "job": "tab-fixture-7a068270c5bf",
  "source": "teacher",
  "goal": "tab GOAL reconcile",
@@ -24,7 +24,7 @@
     "d k0 onlyS n7 d k6 g2 amt n6 n4 d k7 onlyS n4",
     "PASS"
    ],
-   "s": 0.0475,
+   "s": 0.0413,
    "error": null
   },
   {
@@ -38,7 +38,7 @@
     "stmt_newer",
     "dupstmt"
    ],
-   "s": 0.0419,
+   "s": 0.0403,
    "error": null
   },
   {
@@ -58,7 +58,7 @@
     "PASS",
     "PASS"
    ],
-   "s": 0.0452,
+   "s": 0.0394,
    "error": null
   }
  ],
@@ -93,8 +93,8 @@
   "tokens_in": 159,
   "tokens_out": 33,
   "model_s": 0.0,
-  "exec_s": 0.1346,
-  "wall_s": 0.1364,
+  "exec_s": 0.121,
+  "wall_s": 0.1227,
   "predict_s": 0.0,
   "failed_checks": 0,
   "edit_scripts": 1
@@ -116,14 +116,14 @@
   "procedure": {
    "rules": [
     [
-     "onlyS",
-     "dupstmt",
-     "SKIP"
-    ],
-    [
      "amt",
      "stmt_newer",
      "COPY"
+    ],
+    [
+     "onlyS",
+     "dupstmt",
+     "SKIP"
     ],
     [
      "onlyS",
@@ -133,7 +133,7 @@
    ]
   },
   "provenance": {
-   "experience": "x-tab-fixture-7a068270c5bf-8cbfb5aa",
+   "experience": "x-tab-fixture-7a068270c5bf-0a58a821",
    "verdict": "verified",
    "source": "teacher",
    "recovered": false

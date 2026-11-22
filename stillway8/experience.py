@@ -14,7 +14,7 @@ def signature(public, steps):
     """What a later job can be matched on before any repair is tried: the domain and what the first look showed."""
     if not steps: return None
     if public["dom"] == "proj":
-        f = sorted({o.split()[1] for o in steps[0]["obs"] if o.startswith("FAIL")}); return {"dom": "proj", "reported": f}
+        f = sorted({x for o in steps[0]["obs"] for x in E.mismatches(o)}); return {"dom": "proj", "reported": f}
     notes = []
     for s in steps:
         for line, o in zip(s["script"], s["obs"]):
