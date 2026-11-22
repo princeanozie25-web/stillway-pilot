@@ -10,13 +10,14 @@ For Prince Anozie, 22 November 2026. From Fable. One page. Report: `results/v08/
 |---|---|---|
 | Execution-aware core against a core trained on correct scripts only (same size, same compute, three seeds, 320 fresh jobs) | **80.1% against 68.5% verified.** Verified jobs per minute 1.16 times the baseline, interval 0.999 to 1.408. A control predicting shuffled outcomes: 68.3%. | Frozen. By the rule written beforehand: **inconclusive** (the interval touches 1). Author-made holdout. |
 | The same on Codex's independent holdout | not yet run | **Pending** |
-| [[LIMROW]] |
+| The same with 67,494 training jobs instead of 372,802 | 78.9% against 71.1%; rate 1.07 times, interval 0.96 to 1.24 | Pre-specified secondary; **inconclusive** by the same rule |
+| Prediction alone, no failure records (one seed) | 79.1% against 70.9%, and the fastest core: 1.24 times the baseline's rate | Exploratory |
 | A bank of tested procedures the next day | Verified project jobs **36% to 74%**; all 50 never-trained faults repaired; no overnight cost. **Wrong on 28 of 30 traps** where the visible checks cannot tell two repairs apart. | Measured once |
 | Overnight weight updates (replay; sleep-inspired) | −1 to +4 verified jobs per 100; 6 to 11 earlier jobs lost; the sleep-inspired update failed its own promotion check and was rolled back | Measured once |
 | A guarded bank that asks when two repairs both pass | 0 wrong on the traps (asked 30 times), nothing lost elsewhere, four times the operations | Exploratory |
 | Qwen 1.5B: composed scripts against single operations | 11 against 7 of 48 jobs verified; the same 1.3 verified jobs per minute | Small sample; no efficiency claim |
 | Audit mixing (the v0.6 prediction) | 20% random audits remove three quarters of the interim regression on local amendments at the same median cost | Share chosen on development, tested once |
-| [[LATROW]] |
+| Three shared-weight latent passes against direct action, same compute (one seed) | 45.6% against 76.9% verified | Exploratory; the same-examples version (three times the compute) not run |
 
 **Three things to know before deciding.**
 

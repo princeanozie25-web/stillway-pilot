@@ -34,3 +34,29 @@ Fable, 22 November 2026. Things seen while building, in the order they were seen
 - **What:** after the correct `DROP`, the statement still listed the key, so the visible check "every difference is resolved" failed even though the ledger was right. The rule is never a fault in pretraining, so no training record, development job or holdout job was affected; only day-1 and day-2 jobs of milestone 4.
 - **Changed:** `DROP` now also marks a key the statement still lists as settled. Day 1 and day 2 were rebuilt; day 2 was redrawn as well (the draw used in the dry run is kept as `day2dry`).
 - **Also seen there:** for the other later table rule (statement-only, note pending) the right final state is "nothing changed", so any run that changes nothing is verified by the independent grader, even one whose own visible check still fails. That rule is therefore a weak test of transfer and is reported apart from the drop rule.
+
+## E6. Follow-up to E2: the memorisation reading did not hold up
+
+- **Seen on:** the holdout, three seeds per arm, both regimes (frozen and pre-specified runs).
+- **What:** with 67,494 training jobs the baseline verified 71.1% of the holdout; with 372,802 it verified 68.5%. The execution-aware core scored 78.9% and 80.1%. More experience did not rescue the baseline, and less did not sink it. E2 rested on one seed on the development set; its explanation ("the baseline memorises") is withdrawn. What E2 got right is the direction of the difference between the arms.
+
+## E7. Prediction alone carries the gain (one seed)
+
+- **Seen on:** the holdout, seed 1, after the primary result (`results/v08/hold_expl_tables.md`).
+- **What:** a core that predicts observations on the careful records, with no failure records, verified 62.9% of project jobs (base 47.1%, exec 64.1%) and had the highest rate of any core (206 verified jobs per minute against 167 for base and 186 for exec). A core that reads the failure records without predicting scored 51.8%.
+- **Caution:** one seed, and a decomposition chosen after the fact.
+
+## E8. The core's predictions do not flag its own failures
+
+- **Seen on:** day 1 of milestone 4 (`results/v08/m4/day1_prediction_accuracy.json`).
+- **What:** after an edit of its own the exec core predicted a pass in 203 of 210 project checks that passed and a failure in 3 of 286 that failed. A gate that skipped a check when the core predicted a pass would skip nearly every check, including the ones that fail.
+
+## E9. A guarded bank asks instead of committing a wrong reuse
+
+- **Seen on:** day 2 of milestone 4, after the trap result was known.
+- **What:** the bank's procedure finished 28 of 30 trap jobs wrongly. A variant that tries every promoted change before committing and asks when more than one satisfies the checks asked on all 30, was wrong on none, verified 88.8% of the retention project jobs (plain bank 83.8%) and used 77 operations per project job against 18. Its timing was taken with the machine busy.
+
+## E10. Three latent passes at matched compute are much worse
+
+- **Seen on:** development set, seed 1 (`results/v08/dev_latent_tables.md`).
+- **What:** 45.6% verified against 76.9% for direct action at the same token-pass budget, a third of the examples. The same-examples version (three times the compute) was not run.

@@ -180,11 +180,42 @@ Compute is matched by token positions. The execution-aware records are longer, s
 
 ### 4.4 The limited-experience regime (pre-specified secondary)
 
-[[LIM]]
+The same comparison with five and a half times less experience: the first 67,494 training jobs, read about twelve times, same 80 million token positions, three seeds, same holdout, same rule. Run after the primary result, on an idle machine, raw records committed before grading.
+
+| Seeds pooled (960 job runs per arm) | base, limited | exec, limited | base, abundant | exec, abundant |
+|---|---|---|---|---|
+| Verified, all jobs | 71.1% | **78.9%** | 68.5% | 80.1% |
+| Verified, project jobs | 46.3% | 60.2% | 42.0% | 62.5% |
+| Verified, table jobs | 99.3% | 100% | 98.7% | 100% |
+| Familiar faults / altered precondition / never-trained transition | 49.4 / 44.4 / 5.8 | 69.4 / 57.8 / 25.8 | 49.4 / 37.8 / 3.3 | 74.4 / 61.1 / 24.2 |
+| Error among answers | 23.6% | 16.0% | 28.2% | 14.1% |
+| Verified jobs per minute | 165.5 | 177.0 | 156.8 | 181.6 |
+
+| exec against base, limited | Rate ratio (interval) | Verified share, points (interval) | Each seed: ratio / points |
+|---|---|---|---|
+| All jobs | 1.070 (0.960 to 1.241) | +7.7 (+2.3 to +14.1) | 1.098 / +6.2; 1.040 / +9.7; 1.072 / +7.2 |
+| proj | 1.248 (1.014 to 1.713) | +13.9 (+5.3 to +22.5) | 1.271 / +11.8; 1.231 / +16.5; 1.242 / +13.5 |
+| tab | 0.997 (0.993 to 1.005) | +0.7 (0.0 to +1.7) | 1.002 / 0.0; 1.001 / +2.0; 0.989 / 0.0 |
+
+- **Verdict by the same rule: INCONCLUSIVE.** The verified share is higher in every seed; the rate ratio is 1.07 with an interval that includes 1.
+- The amount of experience made little difference to either arm. A single-seed development pilot had suggested that the baseline memorises with 67,000 jobs and would recover with more; on the holdout with three seeds its score is the same or slightly higher with less data (71.1% against 68.5%). That reading is withdrawn in the exploratory log.
 
 ### 4.5 Prediction or failure records? (exploratory, one seed)
 
-[[EXPL]]
+The exec arm differs from base in two ways at once: it predicts observations, and it reads records with failures and recoveries. Two more cores, seed 1, abundant regime, same budget, run on the holdout after the primary result:
+
+| Holdout, seed 1 | base | obsonly: careful records, predicts observations | reconly: failure records, no prediction | exec: both | shuf |
+|---|---|---|---|---|---|
+| Verified, project jobs | 47.1% | 62.9% | 51.8% | 64.1% | 44.7% |
+| Verified, all jobs | 70.9% | 79.1% | 74.4% | 80.9% | 70.6% |
+| First-attempt success, all jobs | 70.3% | 79.1% | 69.4% | 76.6% | 65.3% |
+| Verified jobs per minute | 166.9 | **206.1** | 164.4 | 186.1 | 149.9 |
+| Operations per job | 9.3 | 8.6 | 10.6 | 10.3 | 11.4 |
+| Failed edits per solved job | 0.52 | 0.25 | 0.90 | 0.70 | 1.31 |
+
+- **Prediction carries the gain.** Predicting observations on the careful records alone: +15.9 points on project jobs against base (+6.4 to +25.6) and a rate ratio of 1.24 over all jobs (1.06 to 1.51). Failure records without prediction: +4.7 points (−5.2 to +14.5), rate ratio 0.99.
+- The prediction-only core is also the fastest: it does not retry, and its first attempts are the most accurate.
+- One seed each, chosen after the fact as a decomposition. If it holds, the cheaper recipe is the better one: no slipped records need generating (about a quarter less teacher work).
 
 ### 4.6 What a verified job costs
 
@@ -282,7 +313,21 @@ After the holder released the labels, the locked raw output showed that every di
 
 ### 6.1 Direct action against shared-weight latent passes
 
-[[LAT]]
+The exec core of seed 1 against a core that applies the same five layers three times before each output (shared weights, the input embedding added back before each further pass), trained from the same initial weights on the same records. Development set, same runner and limits, so the direct core has the same time allowance for retries.
+
+| Development set, seed 1 | Direct | Three latent passes, same compute |
+|---|---|---|
+| Parameters | 1,067,136 | 1,067,136 |
+| Token-pass positions in training | 80.0 million | 80.0 million |
+| Examples drawn | 668,480 | 223,424 |
+| Verified, difficult jobs (proj, 170) | **58.2%** | 28.8% |
+| Verified, routine jobs (tab, 150) | **98.0%** | 64.7% |
+| Verified jobs per minute, all | 172.5 | 83.7 |
+| Model seconds per job, proj / tab | 0.027 / 0.010 | 0.080 / 0.025 |
+| Editing scripts per job, proj | 1.76 | 2.52 |
+
+- At matched compute the latent core is far worse on both kinds of job (−31 points overall, interval −45 to −21) and three times slower per call. It saw a third of the examples.
+- **Not run:** the same core given the same examples, which costs three times the compute (about 60 minutes of this laptop's GPU on its own). Without it I cannot say whether latent passes help per example; I can say they do not pay for themselves per unit of compute here.
 
 ### 6.2 A larger coding model as a reference
 
