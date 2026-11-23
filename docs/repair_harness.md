@@ -2,7 +2,7 @@
 
 Fable, 23 November 2026, for Prince Anozie and Codex. Branch `repair-v0.1`, worktree `stillway-pilot-repair`. Asked for in point 6 of Codex's Q5 brief. Kept apart from Q5: its own branch, its own code under `repair/`, its own results under `results/repair/`. Nothing here touches a Q5 file.
 
-Status of everything in this document: **development**. The tasks are mine, I hold their hidden half, and the settings were adjusted while looking at them. No claim here is a blind result.
+Status of everything in this document: **development**. The tasks are mine, I hold their hidden half, and the settings were adjusted while looking at them. No claim here is a blind result. Results are in section 6.
 
 ## 1. What a task is
 
@@ -67,10 +67,12 @@ This is Q5's procedure carried over. In Q5 the candidates were one-line changes 
 - **Two confirmations.** If the user confirms the patch on two probed calls, remaining differences are taken as explained. If differences remain and no question is left, the job ends with a question.
 - **Fallback.** Any ending other than an accepted DONE puts the workspace back as it was found. The patch is kept aside in the record so that the grader can say whether a right patch was forgone.
 - **No evidence, no DONE.** If no example reproduces and no probe shows a difference, nothing the runner can run says the change does anything; it is not accepted.
-- **Runner-side tolerance for a weak model's examples.** Values are compared in one spelling (Python's own). A name the model put in the wrong module is bound from the module that defines it. Statements before a final expression are run first. An iterator is shown as the list of what it yields. An example whose two values were filed the wrong way round is turned round if the repository shows the value filed as expected.
+- **Runner-side tolerance for a weak model's examples.** Values are compared in one spelling (Python's own). A name the model put in the wrong module is bound from the module that defines it. Statements before a final expression are run first; a call made only of statements, such as an assert, reports whether it runs. An iterator is shown as the list of what it yields. An example whose two values were filed the wrong way round is turned round if the repository shows the value filed as expected.
+- **One program per call.** Whatever the runner repairs in a call, it repairs once, on the untouched copy. That exact program is then run on the patched workspace and sent to the user. The first full run did not do this and it cost two right patches (section 6).
+- **Models that take no JSON schema.** The guard's two model calls ask for JSON under a schema. Ollama's MLX runner refuses a schema, so for those models the schema goes into the prompt and the object is read out of the text. Every record counts its structured calls by route and by failure; a guard whose calls all fail can no longer look like a result.
 - **Respondent.** In development the questions are answered at once from the reference by `repair/respond.py`, which evaluates the probed call on the library as published. A sealed, two-round exchange like Q5's is not built.
 
-Fixtures, all passing, no model involved: `python repair/guard_selftest.py` (reference fix accepted with one confirmed question; an over-broad fix refused on a documented example with no question; a fix that works on lists and fails on iterators refused after one question, with the user's value as evidence; a change with no effect refused; a change that breaks a visible test refused; differences left with no question to spare reported as unresolved; the untouched copy unchanged). `python repair/loop_selftest.py` drives the plain loop and the guarded loop with the same scripted stand-in for a model and requires their records to agree call for call.
+Fixtures, all passing, no model involved: `python repair/guard_selftest.py` (eight fixtures: reference fix accepted with one confirmed question; an over-broad fix refused on a documented example with no question; a fix that works on lists and fails on iterators refused after one question, with the user's value as evidence; a change with no effect refused; a change that breaks a visible test refused; differences left with no question to spare reported as unresolved; a wrongly spelt probe repaired and the user asked about the repaired call; the untouched copy unchanged). `python repair/loop_selftest.py` drives the plain loop and the guarded loop with the same scripted stand-in for a model and requires their records to agree call for call.
 
 ## 5. Files
 
@@ -84,8 +86,48 @@ Fixtures, all passing, no model involved: `python repair/guard_selftest.py` (ref
 | `repair/grade.py`, `repair/report.py` | the grader and the tables |
 | `repair/guard_selftest.py`, `repair/loop_selftest.py` | fixtures |
 | `repair/x_formalise.py` | development measure: how many reports the model turns into correct runnable examples |
-| `repair/run_dev2.sh` | the development runs of section 6 |
+| `repair/run_dev2.sh`, `repair/run_dev3.sh` | the development runs of section 6: the plain arms, then the rerun of both guarded arms |
 
 Replay from a clean checkout: `python3.12 -m venv .venv-repair && .venv-repair/bin/pip install pytest==9.2.0`, `python repair/fetch.py`, `python repair/build_tasks.py data/repair/dev`, then the commands in section 6.
 
 Downloads made for this, on Prince's standing approval: pytest 9.2.0 with four dependencies into `.venv-repair` (26 MB installed), and five source archives from PyPI, 452 KB together: inflection 0.5.1, cachetools 7.2.8, toolz 1.2.0, boltons 26.2.0, tabulate 0.10.0. Each is at least three weeks old and checked against the digest PyPI publishes. Neither the archives nor the unpacked trees are committed.
+
+## 6. Development results, 23 November
+
+Twenty tasks, one seed, the same tools and limits for every model. Table and per-job detail: `results/repair/REPORT_dev.md`.
+
+| Arm | Verified | Wrong but declared done | Out of limits | Right patch in hand, whatever the ending |
+|---|---|---|---|---|
+| Small Qwen (2b), plain | 2 | 2 | 16 | 4 |
+| Small Qwen (2b), guard | 6 | 0 | 14 | 6 |
+| Larger Qwen (9b), plain | 14 | 1 | 5 | 16 |
+| Larger Qwen (9b), guard | 13 | 0 | 7 | 16 |
+| Gemma (12b), plain | 8 | 0 | 12 | 8 |
+
+**What I read from it**
+
+- **The guard removed every wrong DONE:** 2 to 0 for the small model, 1 to 0 for the larger.
+- **For the small model the guard also finished more jobs,** 6 against 2, because the runner ends the job when its checks pass. Paired: 5 jobs gained, 1 lost, sign test p = 0.22. On 20 tasks that is a direction, not a result.
+- **For the larger model the guard cost one verified job,** 13 against 14. It put back three right patches: two because the model had written the report's example with the wrong expected value, one because it produced no usable example at all.
+- **The questions caught nothing.** 23 questions were asked across the two guarded arms and the user's answer agreed with the patch every time. Every wrong patch was stopped earlier, by the report's own example or a documented example. On these tasks the questions were pure cost.
+- **The guard is only as good as the examples the model writes from the report.** A usable example was reproduced on 12 of 20 jobs (small) and 13 of 20 (larger). With none, the guard can only refuse.
+- **Model size mattered far more than the guard:** 2 to 14 verified from the small Qwen to the larger one.
+- **Gemma's count is mostly the token limit.** It spent its 12,000 tokens thinking on most unfinished jobs, and its chat template leaked markers into the text. I would not read its 8 as a measure of ability.
+
+**Two faults found by the first full run, both in my harness.** The first guarded runs are void and kept in `results/repair/dev/void/`.
+
+- **Larger Qwen, 0 of 20.** Ollama's MLX runner refuses a JSON schema; every model call of the guard failed without a trace and the guard refused every fix. Fixed as described in section 4.
+- **Small Qwen, 3 of 20.** The guard repaired a wrongly spelt probe call and ran the repaired one, but asked the user about the unrepaired one. Two right patches were refused on those answers. Fixed as described in section 4, with fixture 8.
+
+**Limits of this reading**
+
+- **My tasks, my hidden half, settings changed while looking.** The guard was reworked twice after seeing these same 20 tasks.
+- **The bugs are easier than real ones.** Each is one changed line that I wrote; 14 of the 20 contradict an example in the library's own documentation.
+- **One seed, 20 tasks.** No difference between a plain arm and its guarded arm is outside noise.
+- **The respondent is a stand-in** that answers at once from the reference. A sealed two-round exchange like Q5's is not built.
+- **One job was lost to the model server twice** (inflection-2, small model with the guard: HTTP 500 from Ollama both times). It is counted as out of limits.
+- **Not run:** Qwen2.5-Coder-1.5B, a guarded Gemma arm, more than one seed.
+
+**The cheapest test that could overturn this.** Twenty to thirty tasks written by Codex from real historical bug fixes in libraries I have not used here, with the hidden tests held by Codex, run once with this code as it stands. That would say whether "the guard removes wrong DONEs at little cost" survives bugs I did not write, and whether the questions ever earn their place.
+
+Replay: `repair/run_dev2.sh` (plain arms; its two guarded arms are the void ones) and `repair/run_dev3.sh` (both guarded arms), then `python repair/report.py results/repair/REPORT_dev.md LABEL=FILE ...` with the five graded files.
