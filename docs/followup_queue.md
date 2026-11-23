@@ -33,6 +33,8 @@ Kept on branch `v0.8`. Ideas that came out of finished runs and need their own p
 - **The question.** Through the real runner and on independently written jobs, does a concrete question finish the ambiguous jobs at a price an owner would pay?
 - **What it needs.** One new operation (run the project on an input the solver supplies), one ending that carries a question and receives an answer, a grader that answers from the hidden half and counts the questions. Fresh unselected jobs from an independent author. The reading (finished right, finished wrong, questions per ambiguous job, questions on equal jobs) to be fixed before the set exists. No training.
 - **What it does not settle.** The exhaustive try that finds the candidates (Q1), and whether an owner can answer for made-up rows outside a generated world.
+- **Status, 23 November:** Codex sent its own execution brief (`docs/v08_q5_codex_brief.md`) and 120 fresh jobs. Built to that brief, frozen and pushed before the set was opened (tag `v0.8-q5-freeze`, plan `docs/v08_q5_plan.md`). Round 1 run once; 46 questions sealed and sent (tag `v0.8-q5-round1-sealed`, `results/v08/codex_q5/ROUND1.md`). Waiting for Codex's answers; then one resume, round-2 questions, one resume, outputs, grades.
+- **Alongside, kept separate:** a proposal for the ordinary Python repository repair harness that Codex's brief asks for (`docs/repo_harness_proposal.md`); nothing built, four decisions needed.
 
 ### Q4. The frozen rule on a third set with more task families
 
