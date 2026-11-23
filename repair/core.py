@@ -144,11 +144,19 @@ def run_py(ws, pythonpath, code, timeout=20.0, tail=8000):
     shutil.rmtree(tmp, ignore_errors=True); return text[-tail:], p.returncode
 
 
-EVAL = """import json, sys
+EVAL = """import ast, itertools, json, sys
 out = []
 for setup, expr in json.loads(sys.argv[1] if len(sys.argv) > 1 else %r):
     try:
-        env = {}; exec(setup, env); out.append(repr(eval(expr, env)))
+        env = {}; exec(setup, env)
+        try: code = compile(expr, "<call>", "eval")
+        except SyntaxError:                                   # statements followed by an expression: run the statements, keep the value
+            tree = ast.parse(expr)
+            if not tree.body or not isinstance(tree.body[-1], ast.Expr): raise
+            exec(compile(ast.Module(tree.body[:-1], []), "<call>", "exec"), env); code = compile(ast.Expression(tree.body[-1].value), "<call>", "eval")
+        v = eval(code, env)
+        if hasattr(v, "__next__"): v = list(itertools.islice(v, 50))          # an iterator is shown as the list of what it yields
+        out.append(repr(v))
     except BaseException as e: out.append("raises " + type(e).__name__)
 print("\\n@@EVAL@@" + json.dumps(out))
 """

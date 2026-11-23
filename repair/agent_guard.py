@@ -5,7 +5,9 @@
 Same model settings, same tools and the same limits as the plain loop; the guard's own model calls are charged to the
 job's output-token limit and a refused done counts as a tool call.  Three things differ from the plain loop:
   the first message carries the report's examples as the runner reproduced them;
+  after every edit the runner runs its checks and adds the result to the edit's result; when they all pass it ends the job;
   done is accepted only if the guard's checks pass, otherwise its result says what failed and the job goes on;
+  a job that runs out of a limit with a change that passes every check ends with DONE;
   a job that ends without an accepted DONE hands the workspace back as it was found.
 --respond names the hidden half of a development set: questions are then answered at once by the stand-in respondent
 (repair/respond.py).  Without it the job stops at its first question (for a sealed, two-round exchange; not built yet)."""
@@ -30,7 +32,7 @@ def structured(model, prompt, schema, budget, timeout=180):
 
 def solve(model, task, ask, say=lambda s: None):
     L = A.LIMITS; files0 = snapshot(task); ws = Workspace(files0); tools = A.Tools(ws, task)
-    used = dict(calls=0, tests=0, tokens=0, prompt_tokens=0, turns=0, dropped=0, repeats=0, guard_tokens=0, refused=0); steps = []; end = None; silent = 0; last = None; t0 = time.time(); model_s = tool_s = guard_s = 0.0
+    used = dict(calls=0, tests=0, tokens=0, prompt_tokens=0, turns=0, dropped=0, repeats=0, guard_tokens=0, refused=0); steps = []; end = None; silent = 0; last = None; accepted_by = None; t0 = time.time(); model_s = tool_s = guard_s = 0.0
     def struct(prompt, schema):
         out, tok = structured(model, prompt, schema, L["tokens"] - used["tokens"]); used["tokens"] += tok; used["guard_tokens"] += tok; return out, tok
     guard = Guard(task, files0, struct, ask)
@@ -65,7 +67,7 @@ def solve(model, task, ask, say=lambda s: None):
                 if name == "done":                                                          # ---- the guard
                     t = time.time(); ok, why = guard.check(ws, len(guard.questions) + 1); dt = time.time() - t; guard_s += dt
                     step["calls"].append(dict(tool=name, args=args, accepted=ok, out=why[:4000], s=round(dt, 2))); say(f"    -- done {'accepted' if ok else 'refused: ' + why.splitlines()[0][:120] + (' | ' + why.splitlines()[1][:120] if len(why.splitlines()) > 1 else '')}")
-                    if ok: end = ("DONE", str(args.get("summary", ""))[:1000]); break
+                    if ok: accepted_by = "solver's done"; end = ("DONE", str(args.get("summary", ""))[:1000]); break
                     if guard.unresolved: q = guard.log[-1]; end = ("ASK", "The change alters calls the report does not mention and the question budget is spent."); break
                     used["refused"] += 1
                     if used["calls"] >= L["calls"]: end = ("LIMIT", "tool calls"); break
@@ -82,16 +84,29 @@ def solve(model, task, ask, say=lambda s: None):
                     except Exception as e: out = f"Tool error: {type(e).__name__}: {e}"[:300]
                 else: out = f"No such tool: {name}. The tools are list, read, search, edit, run, test, done, ask."
                 dt = time.time() - t; tool_s += dt; last = sig
+                if name == "edit" and out.startswith(("Edited", "Created")):                 # ---- the guard, after every edit
+                    t = time.time(); state, reason, text = guard.basic(ws)
+                    if state != "none" or reason == "no example": out += "\n" + text
+                    if state == "pass":
+                        ok, why = guard.check(ws)
+                        if ok: accepted_by = "runner, after an edit"; end = ("DONE", "Every check passed after an edit; the runner ended the job.")
+                        elif guard.unresolved: end = ("ASK", "The change alters calls the report does not mention and the question budget is spent.")
+                        else: out += "\n" + why
+                    guard_s += time.time() - t
                 step["calls"].append(dict(tool=name, args=args, out=out[:4000], s=round(dt, 2)))
+                if end: say(f"    {used['calls']:>2} {name} -> {end[0]}: {end[1]}"); break
                 msgs.append(dict(role="tool", tool_name=name, content=f"{out}\n[{L['calls'] - used['calls']} tool calls left, {L['tests'] - used['tests']} run or test calls left, {max(0, L['tokens'] - used['tokens'])} tokens left]"))
                 say(f"    {used['calls']:>2} {name} {json.dumps(args)[:110]} -> {out.splitlines()[0][:90] if out else ''}")
             if r.get("prompt_eval_count", 0) + r.get("eval_count", 0) > 0.7 * A.NUM_CTX: used["dropped"] += A.trim(msgs, int(0.25 * A.NUM_CTX))
         files1 = ws.files()
+        if end[0] == "LIMIT" and files1 != files0:                                               # ---- the guard, at the limit
+            t = time.time(); ok, why = guard.check(ws); guard_s += time.time() - t
+            if ok: accepted_by = "runner, at the limit"; end = ("DONE", f"Out of a limit ({end[1]}) with a change that passes every check; the runner ended the job.")
     finally: ws.close(); guard.close()
     left_as = {p: files1.get(p) for p in sorted(set(files0) | set(files1)) if files0.get(p) != files1.get(p)}
     changed = left_as if end[0] == "DONE" else {}                      # anything but an accepted DONE: the workspace goes back as it was found
     return dict(id=task["id"], repo=task["repo"], model=model, arm="guard", settings=A.SETTINGS, end=end[0], end_text=end[1], used=used, wall_s=round(time.time() - t0, 1), model_s=round(model_s, 1), tool_s=round(tool_s, 1), guard_s=round(guard_s, 1),
-                changed=changed, discarded={} if end[0] == "DONE" else left_as, start_hash=fhash(files0), final_hash=fhash(files1) if end[0] == "DONE" else fhash(files0), guard=guard.summary(), steps=steps)
+                changed=changed, discarded={} if end[0] == "DONE" else left_as, start_hash=fhash(files0), final_hash=fhash(files1) if end[0] == "DONE" else fhash(files0), accepted_by=accepted_by, guard=guard.summary(), steps=steps)
 
 
 def main():

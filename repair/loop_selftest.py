@@ -27,7 +27,8 @@ class Yes:
     questions = []; unresolved = False; log = []
     def __init__(self, *a): pass
     def start(self): return ""
-    def check(self, ws, n): return True, ""
+    def check(self, ws, n=0): return True, ""
+    def basic(self, ws): return "none", "", ""
     def summary(self): return {}
     def close(self): pass
 strip = lambda r: (r["end"], r["end_text"], r["changed"], r["final_hash"], {k: r["used"][k] for k in ("calls", "tests", "tokens", "prompt_tokens", "turns", "dropped", "repeats")}, [[(c["tool"], c["args"], c.get("out") or None) for c in s["calls"]] for s in r["steps"]])
