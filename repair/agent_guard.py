@@ -11,7 +11,7 @@ job's output-token limit and a refused done counts as a tool call.  Three things
   a job that ends without an accepted DONE hands the workspace back as it was found.
 --respond names the hidden half of a development set: questions are then answered at once by the stand-in respondent
 (repair/respond.py).  Without it the job stops at its first question (for a sealed, two-round exchange; not built yet)."""
-import json, os, sys, time, urllib.request
+import json, os, sys, time, urllib.request, urllib.error
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from repair import agent as A
 from repair.core import Workspace, snapshot, fhash
@@ -20,18 +20,45 @@ from repair.guard import Guard, ADDENDUM
 STRUCT_MAX = 600                                   # output tokens for one structured guard call
 
 
+NO_FORMAT = set()                                  # models whose backend refuses a JSON schema (Ollama's MLX runner answers 501)
+STRUCT = dict(schema=0, prose=0, failed=0)         # how the structured calls of this process went; copied into every record
+
+
+def _json_in(text):
+    """The first JSON object in a model's free text, or None."""
+    i = text.find("{")
+    while i >= 0:
+        try: out, _ = json.JSONDecoder().raw_decode(text[i:]); return out if isinstance(out, dict) else None
+        except ValueError: i = text.find("{", i + 1)
+    return None
+
+
 def structured(model, prompt, schema, budget, timeout=180):
+    """One model call returning JSON.  With a schema where the backend takes one; otherwise the schema goes into the prompt
+    and the object is read out of the text.  A call that fails is counted, never passed over in silence."""
     if budget < 40: return None, 0
-    body = dict(model=model, messages=[dict(role="user", content=prompt)], stream=False, think=False, format=schema, keep_alive="20m", options=dict(A.OPTIONS, num_predict=min(STRUCT_MAX, budget)))
-    try: r = json.load(urllib.request.urlopen(urllib.request.Request(A.URL, json.dumps(body).encode(), {"Content-Type": "application/json"}), timeout=timeout))
-    except (TimeoutError, OSError): return None, 0
-    try: out = json.loads(r.get("message", {}).get("content") or "")
-    except ValueError: out = None
-    return (out if isinstance(out, dict) else None), r.get("eval_count", 0)
+    def post(body):
+        return json.load(urllib.request.urlopen(urllib.request.Request(A.URL, json.dumps(body).encode(), {"Content-Type": "application/json"}), timeout=timeout))
+    base = dict(model=model, stream=False, think=False, keep_alive="20m", options=dict(A.OPTIONS, num_predict=min(STRUCT_MAX, budget)))
+    r = None
+    if model not in NO_FORMAT:
+        try: r = post(dict(base, messages=[dict(role="user", content=prompt)], format=schema)); how = "schema"
+        except urllib.error.HTTPError as e:
+            if e.code != 501: STRUCT["failed"] += 1; return None, 0
+            NO_FORMAT.add(model)
+        except (TimeoutError, OSError): STRUCT["failed"] += 1; return None, 0
+    if r is None:
+        try: r = post(dict(base, messages=[dict(role="user", content=prompt + "\n\nAnswer with one JSON object and nothing else. It must match this JSON schema:\n" + json.dumps(schema))])); how = "prose"
+        except (TimeoutError, OSError): STRUCT["failed"] += 1; return None, 0
+    text = r.get("message", {}).get("content") or ""
+    try: out = json.loads(text)
+    except ValueError: out = _json_in(text) if how == "prose" else None
+    if not isinstance(out, dict): STRUCT["failed"] += 1; return None, r.get("eval_count", 0)
+    STRUCT[how] += 1; return out, r.get("eval_count", 0)
 
 
 def solve(model, task, ask, say=lambda s: None):
-    L = A.LIMITS; files0 = snapshot(task); ws = Workspace(files0); tools = A.Tools(ws, task)
+    L = A.LIMITS; files0 = snapshot(task); ws = Workspace(files0); tools = A.Tools(ws, task); s0 = dict(STRUCT)
     used = dict(calls=0, tests=0, tokens=0, prompt_tokens=0, turns=0, dropped=0, repeats=0, guard_tokens=0, refused=0); steps = []; end = None; silent = 0; last = None; accepted_by = None; t0 = time.time(); model_s = tool_s = guard_s = 0.0
     def struct(prompt, schema):
         out, tok = structured(model, prompt, schema, L["tokens"] - used["tokens"]); used["tokens"] += tok; used["guard_tokens"] += tok; return out, tok
@@ -106,7 +133,7 @@ def solve(model, task, ask, say=lambda s: None):
     left_as = {p: files1.get(p) for p in sorted(set(files0) | set(files1)) if files0.get(p) != files1.get(p)}
     changed = left_as if end[0] == "DONE" else {}                      # anything but an accepted DONE: the workspace goes back as it was found
     return dict(id=task["id"], repo=task["repo"], model=model, arm="guard", settings=A.SETTINGS, end=end[0], end_text=end[1], used=used, wall_s=round(time.time() - t0, 1), model_s=round(model_s, 1), tool_s=round(tool_s, 1), guard_s=round(guard_s, 1),
-                changed=changed, discarded={} if end[0] == "DONE" else left_as, start_hash=fhash(files0), final_hash=fhash(files1) if end[0] == "DONE" else fhash(files0), accepted_by=accepted_by, guard=guard.summary(), steps=steps)
+                changed=changed, discarded={} if end[0] == "DONE" else left_as, start_hash=fhash(files0), final_hash=fhash(files1) if end[0] == "DONE" else fhash(files0), accepted_by=accepted_by, guard=guard.summary(), structured={k: STRUCT[k] - s0[k] for k in STRUCT}, steps=steps)
 
 
 def main():
@@ -127,7 +154,7 @@ def main():
     for t in tasks:
         if t["id"] in done: continue
         print(f"{t['id']}  ({model}, guard)", flush=True); r = solve(model, t, ask, say=lambda s: print(s, flush=True)); g = r["guard"]
-        print(f"  => {r['end']} ({r['end_text'][:100]})  calls {r['used']['calls']}, tests {r['used']['tests']}, tokens {r['used']['tokens']} (guard {r['used']['guard_tokens']}), {r['wall_s']} s, refused {r['used']['refused']}, questions {len(g['questions'])}, examples {len(g['examples'])}, files changed {list(r['changed'])}", flush=True)
+        print(f"  => {r['end']} ({r['end_text'][:100]})  calls {r['used']['calls']}, tests {r['used']['tests']}, tokens {r['used']['tokens']} (guard {r['used']['guard_tokens']}), {r['wall_s']} s, refused {r['used']['refused']}, questions {len(g['questions'])}, examples {len(g['examples'])}, structured {r['structured']}, files changed {list(r['changed'])}", flush=True)
         with open(out, "a") as f: f.write(json.dumps(r, sort_keys=True) + "\n")
 
 

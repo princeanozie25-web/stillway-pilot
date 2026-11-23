@@ -98,16 +98,22 @@ class Guard:
 
     def close(self): self.snap.close()
 
-    def _eval(self, ws, pairs):
-        """Each call runs after the packages are imported; the model's own setup lines are tried and may fail without spoiling the call."""
+    def _fix(self, pairs):
+        """The program for each call, fixed once on the untouched copy: the packages are imported, the model's own setup lines are
+        tried and may fail without spoiling the call, and a name the model placed in the wrong module is bound from where the
+        repository defines it.  Returns (values on the untouched copy, programs).  A program is the exact (setup, expression)
+        that is then run unchanged on the patched workspace and sent unchanged to the user: all three sides answer one question."""
         wrap = lambda s: self.pre + f"try: exec({s!r}, globals())\nexcept BaseException: pass\n"
-        self.probe_runs += 1; out = evaluate(ws, self.task["pythonpath"], [(wrap(s), c) for s, c in pairs])
+        progs = [(wrap(s), c) for s, c in pairs]; out = self._run(self.snap, progs)
         retry = [(i, self._resolve(c)) for i, (s, c) in enumerate(pairs) if out[i].startswith(("raises NameError", "raises AttributeError", "raises TypeError"))]; retry = [(i, x) for i, x in retry if x]
-        if retry:                                           # a name the model placed in the wrong module: bind it from where the repository defines it
-            self.probe_runs += 1; again = evaluate(ws, self.task["pythonpath"], [(wrap(pairs[i][0]) + imp, c) for i, (imp, c) in retry])
-            for (i, _), v in zip(retry, again):
-                if not v.startswith(("raises NameError", "raises AttributeError", "raises TypeError", "no result")): out[i] = v
-        return out
+        if retry:
+            alt = [(wrap(pairs[i][0]) + imp, c) for i, (imp, c) in retry]; again = self._run(self.snap, alt)
+            for (i, _), prog, v in zip(retry, alt, again):
+                if not v.startswith(("raises NameError", "raises AttributeError", "raises TypeError", "no result")): out[i] = v; progs[i] = prog
+        return out, progs
+
+    def _run(self, ws, progs):
+        self.probe_runs += 1; return evaluate(ws, self.task["pythonpath"], [tuple(p) for p in progs])
 
     def _resolve(self, call):
         names = [n for n in set(re.findall(r"[A-Za-z_]\w*", call)) if n in self.where]
@@ -122,12 +128,12 @@ class Guard:
         """Formalise the report.  Returns the lines to add to the solver's first message."""
         out, tok = self.structured(EX_PROMPT.format(report=self.task["report"], packages=", ".join(self.packages) or "(see the repository)"), EX_SCHEMA); self.tokens += tok
         cand = [(str(e.get("setup", "")), str(e.get("call", "")), _canon(e.get("expected", "")), _canon(e.get("observed", ""))) for e in (out or {}).get("examples", []) if isinstance(e, dict) and e.get("call")][:4]
-        before = self._eval(self.snap, [(s, c) for s, c, _, _ in cand]) if cand else []
-        for (s, c, want, saw), got in zip(cand, before):
+        before, progs = self._fix([(s, c) for s, c, _, _ in cand]) if cand else ([], [])
+        for (s, c, want, saw), got, prog in zip(cand, before, progs):
             if _canon(got) == want and saw and saw != want: want, saw = saw, want          # the repository gives the value filed as expected: the two were filed the wrong way round
             ok = _usable(got) and bool(want) and _canon(got) != want and (not saw or _canon(got) == saw)       # kept only if the repository shows exactly what the user saw
             self.log.append(dict(step="example", setup=s, expr=c, expected=want, observed=saw, before=got, reproduced=bool(ok)))
-            if ok: self.examples.append(dict(setup=s, expr=c, expected=want, before=got, source="report"))
+            if ok: self.examples.append(dict(setup=s, expr=c, prog=list(prog), expected=want, before=got, source="report"))
         if not self.examples: return ""
         return "\n\nThe runner ran the report's examples on the repository as it is now:\n" + "\n".join(f"  {e['expr']}  gives {e['before']}; the report expects {e['expected']}" for e in self.examples)
 
@@ -142,7 +148,7 @@ class Guard:
         if not changed: return result("none", "no change", "You have not changed any source file of the repository.")
         lines, bad = [], None
         if self.examples:
-            got = self._eval(ws, [(e["setup"], e["expr"]) for e in self.examples]); rec["examples"] = [dict(expr=e["expr"], expected=e["expected"], now=g) for e, g in zip(self.examples, got)]
+            got = self._run(ws, [e["prog"] for e in self.examples]); rec["examples"] = [dict(expr=e["expr"], expected=e["expected"], now=g) for e, g in zip(self.examples, got)]
             for e, g in zip(self.examples, got):
                 ok = _canon(g) == e["expected"]; lines.append(f"  {e['expr']}  gives {g}" + ("  (as expected)" if ok else f"; expected {e['expected']} ({'the user said so' if e['source'] == 'user' else 'from the report'})"))
                 if not ok: bad = bad or "example"
@@ -175,25 +181,25 @@ class Guard:
             if not isinstance(e, dict) or not e.get("call"): continue
             k = _norm(e["call"])
             if k not in seen and len(k) <= 300: seen.add(k); pairs.append((str(e.get("setup", "")), str(e["call"])))
-        pairs = pairs[:PROBES]; old = self._eval(self.snap, pairs) if pairs else []; new = self._eval(ws, pairs) if pairs else []
+        pairs = pairs[:PROBES]; old, progs = self._fix(pairs) if pairs else ([], []); new = self._run(ws, progs) if pairs else []
         rec["probes"] = [dict(setup=s, expr=c, before=o, after=n_) for (s, c), o, n_ in zip(pairs, old, new)]
         core = lambda c: re.sub(r"^list\((.*)\)$", r"\1", _norm(c)); told = [core(e["expr"]) for e in self.examples]        # a probe that restates an example is settled by check 3
         settled = lambda c: any(x.endswith(core(c)) or core(c).endswith(x) for x in told)
-        diffs = [(s, c, o, v) for (s, c), o, v in zip(pairs, old, new) if _usable(o) and _usable(v) and _canon(o) != _canon(v) and not settled(c)]
+        diffs = [(s, c, o, v, g) for (s, c), o, v, g in zip(pairs, old, new, progs) if _usable(o) and _usable(v) and _canon(o) != _canon(v) and not settled(c)]
         diffs.sort(key=lambda d: not d[3].startswith("raises"))                   # a change that makes a call fail is asked about first
         if not self.examples and not diffs: return no("no evidence", "Nothing the runner can run shows that your change alters the behaviour the report complains about. Reproduce the report's example with run, then change the code so that it gives the expected value.")
         confirmed = 0
-        for s, c, o, v in diffs:
+        for s, c, o, v, prog in diffs:
             if confirmed >= CONFIRM: break
             if len(self.questions) >= QUESTIONS:
                 self.unresolved = True; rec.update(accepted=False, reason="question budget")
                 return False, "Not accepted: your change alters the result of calls the report does not mention, and no question is left to settle whether that is intended."
-            q = dict(id=t["id"], round=len(self.questions) + 1, setup=s, expr=c, predictions=[o, v]); a = self.ask(dict(q, setup=self.pre + s)); ans = a["value"]
+            q = dict(id=t["id"], round=len(self.questions) + 1, setup=s, expr=c, program=list(prog), predictions=[o, v]); a = self.ask(dict(q, setup=prog[0], expr=prog[1])); ans = a["value"]     # the user is asked about the program that was run, not the model's spelling of it
             self.questions.append(dict(q, answer=ans, agrees_with="after" if _canon(ans) == _canon(v) else "before" if _canon(ans) == _canon(o) else "neither"))
             if _canon(ans) == _canon(v): confirmed += 1; continue
-            if _usable(ans): self.examples.append(dict(setup=s, expr=c, expected=_canon(ans), before=o, source="user"))
+            if _usable(ans): self.examples.append(dict(setup=s, expr=c, prog=list(prog), expected=_canon(ans), before=o, source="user"))
             self._basic.clear()
-            return no("question", f"The user was asked about a call the report does not mention.\n{c}  should give {ans}. Before your change it gave {o}; with your change it gives {v}.")
+            return no("question", f"The user was asked about a call the report does not mention.\n{prog[1]}  should give {ans}. Before your change it gave {o}; with your change it gives {v}.")
         rec.update(accepted=True, confirmed=confirmed, differences=len(diffs)); self._full[h] = (True, ""); return True, ""
 
     def summary(self):

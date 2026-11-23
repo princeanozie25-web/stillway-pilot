@@ -55,16 +55,19 @@ This is Q5's procedure carried over. In Q5 the candidates were one-line changes 
 
 | Step | When | What the runner does | Cost |
 |---|---|---|---|
-| Reproduce | at the start | has the model write the report's examples as runnable calls with the value the user expects; runs each on an untouched copy of the snapshot; keeps those that show the complaint; tells the solver what it found | one short model call, one sandbox run |
-| Visible tests | at `done` | must pass | one test run |
-| Documented examples | at `done` | examples in the docstrings of the changed files that held before the change must still hold (a public specification: no question needed) | two sandbox runs |
-| Report examples | at `done` | every reproduced example must give the value the user expects | one sandbox run |
-| Disposable probe | at `done` | has the model propose up to six other calls of the changed code; runs each on the untouched copy and on the patched workspace | one short model call, two sandbox runs |
+| Reproduce | at the start | has the model write the report's examples as runnable calls, with the value the user saw and the value the user expects; runs each on an untouched copy of the snapshot; keeps only those where the repository gives exactly what the user saw; tells the solver what it found | one short model call, one or two sandbox runs |
+| Check 1: report examples | after every edit | every kept example must give the value the user expects | one sandbox run |
+| Check 2: documented examples | after every edit | examples in the docstrings of the changed files that held before the change must still hold (a public specification: no question needed) | two sandbox runs |
+| Check 3: visible tests | after every edit | must pass | one test run |
+| Check 4: disposable probe | once checks 1 to 3 pass | has the model propose up to six other calls of the changed code; runs each on the untouched copy and on the patched workspace | one short model call, two sandbox runs |
 | One focused question | when a probe differs and the report does not say which side is right | this call, the value before, the value after: which is intended? The answer may be neither. Two questions a job at most | the user's time |
 
-- **Refusal.** A failed check comes back to the solver as the result of its `done` call, with the evidence: the failing example, or the user's value for the probed call. The job goes on within the same limits; a refused `done` counts as a tool call and the guard's model calls count against the job's own token limit.
+- **The runner ends the job.** The result of checks 1 to 3 is added to the result of every edit. When all four checks pass, the runner ends the job with DONE; the solver does not have to say so. The same happens when a limit runs out on a change that passes every check. This was added after the first trial: the small model had the right fix by its fifth call, kept re-checking it and ran out of limits.
+- **Refusal.** If the solver calls `done` itself and a check fails, the failure comes back as the result of that call, with the evidence: the failing example, or the user's value for the probed call. The job goes on within the same limits; a refused `done` counts as a tool call and the guard's model calls count against the job's own token limit.
 - **Two confirmations.** If the user confirms the patch on two probed calls, remaining differences are taken as explained. If differences remain and no question is left, the job ends with a question.
 - **Fallback.** Any ending other than an accepted DONE puts the workspace back as it was found. The patch is kept aside in the record so that the grader can say whether a right patch was forgone.
+- **No evidence, no DONE.** If no example reproduces and no probe shows a difference, nothing the runner can run says the change does anything; it is not accepted.
+- **Runner-side tolerance for a weak model's examples.** Values are compared in one spelling (Python's own). A name the model put in the wrong module is bound from the module that defines it. Statements before a final expression are run first. An iterator is shown as the list of what it yields. An example whose two values were filed the wrong way round is turned round if the repository shows the value filed as expected.
 - **Respondent.** In development the questions are answered at once from the reference by `repair/respond.py`, which evaluates the probed call on the library as published. A sealed, two-round exchange like Q5's is not built.
 
 Fixtures, all passing, no model involved: `python repair/guard_selftest.py` (reference fix accepted with one confirmed question; an over-broad fix refused on a documented example with no question; a fix that works on lists and fails on iterators refused after one question, with the user's value as evidence; a change with no effect refused; a change that breaks a visible test refused; differences left with no question to spare reported as unresolved; the untouched copy unchanged). `python repair/loop_selftest.py` drives the plain loop and the guarded loop with the same scripted stand-in for a model and requires their records to agree call for call.
@@ -80,6 +83,8 @@ Fixtures, all passing, no model involved: `python repair/guard_selftest.py` (ref
 | `repair/guard.py`, `repair/agent_guard.py`, `repair/respond.py` | the guard, the guarded loop, the development respondent |
 | `repair/grade.py`, `repair/report.py` | the grader and the tables |
 | `repair/guard_selftest.py`, `repair/loop_selftest.py` | fixtures |
+| `repair/x_formalise.py` | development measure: how many reports the model turns into correct runnable examples |
+| `repair/run_dev2.sh` | the development runs of section 6 |
 
 Replay from a clean checkout: `python3.12 -m venv .venv-repair && .venv-repair/bin/pip install pytest==9.2.0`, `python repair/fetch.py`, `python repair/build_tasks.py data/repair/dev`, then the commands in section 6.
 

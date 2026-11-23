@@ -152,7 +152,9 @@ for setup, expr in json.loads(sys.argv[1] if len(sys.argv) > 1 else %r):
         try: code = compile(expr, "<call>", "eval")
         except SyntaxError:                                   # statements followed by an expression: run the statements, keep the value
             tree = ast.parse(expr)
-            if not tree.body or not isinstance(tree.body[-1], ast.Expr): raise
+            if not tree.body: raise
+            if not isinstance(tree.body[-1], ast.Expr):       # statements only (an assert, say): what can be said is whether they run
+                exec(compile(tree, "<call>", "exec"), env); out.append("runs without error"); continue
             exec(compile(ast.Module(tree.body[:-1], []), "<call>", "exec"), env); code = compile(ast.Expression(tree.body[-1].value), "<call>", "eval")
         v = eval(code, env)
         if hasattr(v, "__next__"): v = list(itertools.islice(v, 50))          # an iterator is shown as the list of what it yields

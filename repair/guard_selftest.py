@@ -60,5 +60,13 @@ pr6 = [dict(setup=I, call=f"inflection.ordinalize({n})") for n in (111, 212, 313
 t, f0, g, w, _ = setup("inflection-1", ex1[:1], pr6, [("inflection/__init__.py", "if number % 10 in (11, 12, 13):", "if number % 100 in (11, 12, 13):")])
 g.questions.append(dict(id=t["id"], round=1, expr="spent", predictions=["a", "b"], answer="a", agrees_with="before")); ok, fb = g.check(w)
 say(6, not ok and g.unresolved and len(g.questions) == 2, f"four unexplained differences with one question left: accepted {ok}, unresolved {g.unresolved}, questions asked in all {len(g.questions)}"); snap_ok = snap_ok and g.snap.files() == f0; g.close(); w.close()
+# 8: a probe the model spelt wrongly (a method of a value, not the function).  The runner repairs the call; the user must be asked about
+# the repaired call, the one that was run.  Found on 23 November: the question carried the model's spelling, the user's answer was about
+# a call that fails for another reason, and a right patch was refused.
+from repair.core import base_files
+ex8 = [dict(setup="import toolz", call="toolz.get_in(['y'], {}, no_default=True)", observed="None", expected="raises KeyError")]
+pr8 = [dict(setup="from toolz import dicttoolz; d = dicttoolz.get_in(['a'], {'a': 1}, no_default=True)", call="d.get_in(['z'], {'a': 1}, no_default=True)")]
+t, f0, g, w, _ = setup("toolz-3", ex8, pr8, []); w.write("toolz/dicttoolz.py", base_files(t["repo"])["toolz/dicttoolz.py"]); ok, fb = g.check(w); q = g.questions
+say(8, ok and len(q) == 1 and q[0]["agrees_with"] == "after" and q[0]["program"][1] == "get_in(['z'], {'a': 1}, no_default=True)", f"wrongly spelt probe: reference fix accepted {ok}; asked about {q[0]['program'][1] if q else ''}; the user's answer {q[0]['answer'] if q else ''} agrees with {q[0]['agrees_with'] if q else ''}"); snap_ok = snap_ok and g.snap.files() == f0; g.close(); w.close()
 say(7, snap_ok, f"untouched copy unchanged: {snap_ok}")
 print("ALL PASS" if not fails else f"FAILED: {fails}"); sys.exit(1 if fails else 0)
