@@ -16,19 +16,26 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from repair.core import Workspace, base_files, is_test, run_tests
 
 
-def grade(rec, task, hid):
-    files = dict(base_files(task["repo"])); src = {p: t for p, t in rec["changed"].items() if not is_test(p)}
+def passes(changed, task, hid):
+    """Would these changed files pass every hidden test?  (ok, tests fixed, tests broken, source files changed, timed out)"""
+    files = dict(base_files(task["repo"])); src = {p: t for p, t in changed.items() if not is_test(p)}
     files.update({p: t for p, t in task["overlay"].items() if not is_test(p) and t is not None})      # the bug itself; the tests stay the repository's own
     for p, t in src.items():
         if t is None: files.pop(p, None)
         else: files[p] = t
     w = Workspace(files); r = run_tests(w, task["pythonpath"], task["tests"], timeout=180); w.close(); res = r["results"]
     f2p = [t for t in hid["fail_to_pass"] if res.get(t) == "passed"]; broken = [t for t in hid["pass_to_pass"] if res.get(t) != "passed"]
-    ok = len(f2p) == len(hid["fail_to_pass"]) and not broken
+    return len(f2p) == len(hid["fail_to_pass"]) and not broken, f2p, broken, src, r["timeout"]
+
+
+def grade(rec, task, hid):
+    ok, f2p, broken, src, timed_out = passes(rec["changed"], task, hid)
     outcome = {"DONE": "verified" if ok else "wrong", "ASK": "abstained", "LIMIT": "budget"}[rec["end"]]
-    g = {k: v for k, v in rec.items() if k != "steps"}; g.pop("changed")
+    g = {k: v for k, v in rec.items() if k not in ("steps", "discarded")}; g.pop("changed")
+    if "guard" in g: g["guard"] = {k: v for k, v in g["guard"].items() if k != "log"}
+    if rec.get("discarded"): g["discarded_ok"] = passes(rec["discarded"], task, hid)[0]          # a patch the guard arm put back: would it have passed?
     g.update(outcome=outcome, patch_ok=ok, f2p_passed=len(f2p), f2p_total=len(hid["fail_to_pass"]), p2p_broken=len(broken), p2p_broken_ids=broken[:5], source_changed=sorted(src), tests_changed=sorted(p for p in rec["changed"] if is_test(p)),
-             clean=not rec["changed"], bug_files=hid["bug_files"], right_file=bool(set(src) & set(hid["bug_files"])), kind=hid.get("kind", ""), grade_timeout=r["timeout"])
+             clean=not rec["changed"], bug_files=hid["bug_files"], right_file=bool(set(src) & set(hid["bug_files"])), kind=hid.get("kind", ""), grade_timeout=timed_out)
     return g
 
 

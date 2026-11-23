@@ -1,6 +1,8 @@
-"""Build development tasks from author-written bugs.   python repair/build_tasks.py OUTDIR
+"""Build tasks from a list of bugs.   python repair/build_tasks.py OUTDIR [BUGS.py]
 
-For every bug in repair/dev_bugs.py: put the bug into the pinned repository, run the repository's own tests, and split them.
+BUGS.py (default repair/dev_bugs.py) defines REPOS and BUGS in the format of that file; a task author with repositories of
+their own adds their archives to a manifest in repair/vendor/ (any file named MANIFEST*.json) and writes their own list.
+For every bug: put the bug into the pinned repository, run the repository's own tests, and split them.
   hidden   the tests the bug breaks (fail_to_pass) and every other test that passed before (pass_to_pass)
   visible  the repository's tests with the broken ones cut out, so that everything a solver can run passes at the start
 A task is kept only if the bug breaks at least one test and at most 60, the visible tests pass with the bug in place, and
@@ -8,7 +10,7 @@ they pass again on the reference.  Writes OUTDIR/public.jsonl (what a solver get
 import ast, json, os, sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from repair.core import Workspace, base_files, manifest, run_tests, evaluate
-from repair.dev_bugs import REPOS, BUGS
+import importlib.util
 
 
 def strip_tests(src, kill):
@@ -28,7 +30,8 @@ def run(files, cfg):
     w = Workspace(files); r = run_tests(w, cfg["pythonpath"], cfg["tests"]); w.close(); return r
 
 
-def main(out):
+def main(out, bugs=os.path.join(os.path.dirname(os.path.abspath(__file__)), "dev_bugs.py")):
+    spec = importlib.util.spec_from_file_location("bugs", bugs); mod = importlib.util.module_from_spec(spec); spec.loader.exec_module(mod); REPOS, BUGS = mod.REPOS, mod.BUGS
     os.makedirs(out, exist_ok=True); man = manifest(); base_runs = {}; pub, hid = [], []
     for b in BUGS:
         repo, cfg = b["repo"], REPOS[b["repo"]]; base = base_files(repo)
@@ -71,4 +74,4 @@ def main(out):
     print(f"{len(pub)} tasks written to {out}")
 
 
-if __name__ == "__main__": main(sys.argv[1])
+if __name__ == "__main__": main(*sys.argv[1:3])

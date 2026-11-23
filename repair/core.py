@@ -13,7 +13,9 @@ PROFILE = '(version 1)(allow default)(deny network*)(deny file-write*)(allow fil
 SKIP_DIRS = {"__pycache__", ".tmp", ".git", ".pytest_cache"}
 
 
-def manifest(): return {m["name"]: m for m in json.load(open(os.path.join(VENDOR, "MANIFEST.json")))}
+def manifest():
+    """Every pinned archive: the entries of all repair/vendor/MANIFEST*.json files, by repository name."""
+    return {m["name"]: m for f in sorted(os.listdir(VENDOR)) if f.startswith("MANIFEST") and f.endswith(".json") for m in json.load(open(os.path.join(VENDOR, f)))}
 
 
 def is_test(path):
@@ -82,14 +84,14 @@ def _limits():
     resource.setrlimit(resource.RLIMIT_CPU, (60, 60)); resource.setrlimit(resource.RLIMIT_FSIZE, (16 << 20, 16 << 20))
 
 
-def run_tests(ws, pythonpath, targets, timeout=90.0):
+def run_tests(ws, pythonpath, targets, timeout=90.0, extra=()):
     """Run pytest on targets inside the sandbox.  Returns {'results': {test id: passed|failed|error|skipped},
     'files': {test id: (file, class or None, function)}, 'text': pytest's output, 'rc', 's', 'timeout'}."""
     d = ws.dir; tmp = os.path.join(d, ".tmp"); shutil.rmtree(tmp, ignore_errors=True); os.makedirs(tmp)
     env = dict(PATH="/usr/bin:/bin", HOME=tmp, TMPDIR=tmp, PYTHONPATH=os.pathsep.join(os.path.join(d, p) for p in pythonpath.split(os.pathsep)),
                PYTHONDONTWRITEBYTECODE="1", PYTHONHASHSEED="0", LC_ALL="en_US.UTF-8", TZ="UTC", COLUMNS="100")
     cmd = ["/usr/bin/sandbox-exec", "-p", PROFILE % d, PY, "-m", "pytest", "-q", "--tb=short", "-p", "no:cacheprovider", "-o", "addopts=", "-o", "junit_family=xunit1",
-           "-o", "console_output_style=classic", "--junitxml", os.path.join(tmp, "junit.xml"), *targets]
+           "-o", "console_output_style=classic", "--junitxml", os.path.join(tmp, "junit.xml"), *extra, *targets]
     t = time.time(); p = subprocess.Popen(cmd, cwd=d, env=env, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, errors="replace", preexec_fn=_limits); timed_out = False
     try: text, _ = p.communicate(timeout=timeout)
     except subprocess.TimeoutExpired:
@@ -128,7 +130,7 @@ def brief(run, lines=40):
     return head + "\nFailing: " + ", ".join(t.split(".")[-1] for t in bad[:8]) + (f" and {len(bad) - 8} more" if len(bad) > 8 else "") + "\nFirst failure:\n" + "\n".join(shown)
 
 
-def run_py(ws, pythonpath, code, timeout=20.0):
+def run_py(ws, pythonpath, code, timeout=20.0, tail=8000):
     """Run a Python snippet inside the sandbox with the repository importable.  Returns (stdout+stderr, return code)."""
     d = ws.dir; tmp = os.path.join(d, ".tmp"); os.makedirs(tmp, exist_ok=True)
     env = dict(PATH="/usr/bin:/bin", HOME=tmp, TMPDIR=tmp, PYTHONPATH=os.pathsep.join(os.path.join(d, p) for p in pythonpath.split(os.pathsep)),
@@ -139,7 +141,7 @@ def run_py(ws, pythonpath, code, timeout=20.0):
         try: os.killpg(p.pid, signal.SIGKILL)
         except ProcessLookupError: pass
         text, _ = p.communicate(); text += "\nTIMEOUT"
-    shutil.rmtree(tmp, ignore_errors=True); return text[-8000:], p.returncode
+    shutil.rmtree(tmp, ignore_errors=True); return text[-tail:], p.returncode
 
 
 EVAL = """import json, sys
@@ -152,7 +154,43 @@ print("\\n@@EVAL@@" + json.dumps(out))
 """
 
 
-def evaluate(ws, pythonpath, pairs):
-    """repr of each expression (after its setup lines) in this workspace, or 'raises <Error>'.  pairs: [(setup, expr)]."""
-    text, _ = run_py(ws, pythonpath, EVAL % json.dumps([list(p) for p in pairs]))
-    return json.loads(text.rsplit("@@EVAL@@", 1)[1]) if "@@EVAL@@" in text else [f"no result: {text.strip()[-200:]}"] * len(pairs)
+def evaluate(ws, pythonpath, pairs, timeout=20.0):
+    """repr of each expression (after its setup lines) in this workspace, or 'raises <Error>'.  pairs: [(setup, expr)].
+    One sandboxed process for the batch; if that gives nothing (a hang, a crash), each pair gets a process of its own."""
+    if not pairs: return []
+    text, _ = run_py(ws, pythonpath, EVAL % json.dumps([list(p) for p in pairs]), timeout)
+    if "@@EVAL@@" in text:
+        try: return json.loads(text.rsplit("@@EVAL@@", 1)[1])
+        except ValueError: pass
+    if len(pairs) == 1: return ["no result (timeout or crash)"]
+    return [evaluate(ws, pythonpath, [p], 6.0)[0] for p in pairs]
+
+
+DOCEX = """import doctest, importlib, json, sys
+out = {}
+class R(doctest.DocTestRunner):
+    def report_start(self, out_, test, example): pass
+    def report_success(self, out_, test, example, got): out[f"{test.name}#{test.examples.index(example)}: {example.source.strip()[:120]}"] = "passed"
+    def report_failure(self, out_, test, example, got): out[f"{test.name}#{test.examples.index(example)}: {example.source.strip()[:120]}"] = "failed: got " + got.strip()[:200]
+    def report_unexpected_exception(self, out_, test, example, exc_info): out[f"{test.name}#{test.examples.index(example)}: {example.source.strip()[:120]}"] = "failed: raises " + exc_info[0].__name__
+for name in json.loads(%r):
+    try: mod = importlib.import_module(name)
+    except BaseException as e: out[f"{name}: import"] = "failed: raises " + type(e).__name__; continue
+    for t in doctest.DocTestFinder(exclude_empty=True).find(mod, name):
+        try: R(verbose=False, optionflags=doctest.ELLIPSIS | doctest.NORMALIZE_WHITESPACE).run(t, out=lambda s: None)
+        except BaseException as e: out[f"{t.name}: run"] = "failed: raises " + type(e).__name__
+print("\\n@@DOC@@" + json.dumps(out))
+"""
+
+
+def doc_examples(ws, pythonpath, files):
+    """Run the documented examples (doctests) of the given source files, one result per example.  {example id: 'passed' | 'failed: ...'}"""
+    roots = pythonpath.split(os.pathsep); names = []
+    for f in files:
+        for r in roots:
+            rel = os.path.relpath(f, r)
+            if not rel.startswith(".."): names.append(rel[:-3].replace("/", ".").removesuffix(".__init__")); break
+    if not names: return {}
+    text, _ = run_py(ws, pythonpath, DOCEX % json.dumps(names), timeout=30.0, tail=2_000_000)
+    try: return json.loads(text.rsplit("@@DOC@@", 1)[1]) if "@@DOC@@" in text else {}
+    except ValueError: return {}
