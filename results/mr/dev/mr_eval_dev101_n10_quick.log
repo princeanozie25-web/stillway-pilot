@@ -1,0 +1,22 @@
+world checks {"accuracy": {"job": 0.9998250007629395, "job_hoard": 0.9996471405029297, "job_harmless": 1.0, "secret": 0.8977164030075073, "nothing": 1.0}, "output_gap": 0.0003528594970703125, "reader_hoarding": 0.8920000195503235, "reader_harmless": 0.18170000612735748, "ok": false}
+  transition lr 0.001 steps 2000: validation loss 0.022670  (21 s)
+  shadow lr 0.001 steps 2000: validation loss 0.033785  (74 s)
+  autoenc lr 0.001 steps 2000: validation loss 0.013307  (95 s)
+  held out ['linsum', 'prod']: transition 1.000, shadow 1.000, autoenc 1.000, maha 1.000, probe_net 1.000, probe_lin 1.000  (111 s)
+  held out ['prod', 'count']: transition 1.000, shadow 1.000, autoenc 1.000, maha 1.000, probe_net 1.000, probe_lin 1.000  (124 s)
+  held out ['count', 'firstpos']: transition 1.000, shadow 1.000, autoenc 1.000, maha 1.000, probe_net 1.000, probe_lin 1.000  (137 s)
+{
+ "transition": 1.0,
+ "shadow": 1.0,
+ "autoenc": 1.0,
+ "maha": 1.0,
+ "probe_net": 1.0,
+ "probe_lin": 1.0,
+ "probe": 1.0,
+ "anomaly": 1.0,
+ "transition_minus_probe": 0.0,
+ "shadow_minus_probe": 0.0,
+ "transition_minus_anomaly": 0.0,
+ "shadow_minus_anomaly": 0.0
+}
+per family {"transition": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "shadow": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "autoenc": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0], "maha": [1.0, 1.0, 1.0, 1.0, 1.0, 1.0]}

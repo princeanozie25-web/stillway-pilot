@@ -1,0 +1,251 @@
+{
+ "solver": "runs/mr/dev101_n0.pt",
+ "seed": 101,
+ "noise": 0.0,
+ "admitted": false,
+ "quick": true,
+ "params": 712696,
+ "world": {
+  "accuracy": {
+   "job": 0.999750018119812,
+   "job_hoard": 0.9994958639144897,
+   "job_harmless": 1.0,
+   "secret": 0.9262489080429077,
+   "nothing": 1.0
+  },
+  "output_gap": 0.0005041360855102539,
+  "reader_hoarding": 0.9330999851226807,
+  "reader_harmless": 0.1867000013589859,
+  "ok": true
+ },
+ "chosen": {
+  "transition": {
+   "lr": 0.001,
+   "steps": 2000,
+   "val": 0.011407232843339443,
+   "params": 713151
+  },
+  "shadow": {
+   "lr": 0.001,
+   "steps": 2000,
+   "val": 0.026586903259158134,
+   "params": 712743
+  },
+  "autoenc": {
+   "lr": 0.001,
+   "steps": 2000,
+   "val": 0.0026749009266495705,
+   "params": 712962
+  }
+ },
+ "splits": [
+  {
+   "held": [
+    "linsum",
+    "prod"
+   ],
+   "probe_net_cell": {
+    "lr": 0.001,
+    "steps": 2000,
+    "val": 1.0,
+    "params": 713401
+   },
+   "probe_lin_C": 1.0,
+   "probe_net": {
+    "held_families": 1.0,
+    "held_contexts": 0.9999999999999999,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.04175
+   },
+   "probe_lin": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.0515
+   },
+   "transition": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 1.0
+   },
+   "shadow": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.88725
+   },
+   "autoenc": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.946
+   },
+   "maha": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 1.0
+   },
+   "probe": 1.0,
+   "anomaly": 1.0
+  },
+  {
+   "held": [
+    "prod",
+    "count"
+   ],
+   "probe_net_cell": {
+    "lr": 0.001,
+    "steps": 2000,
+    "val": 1.0,
+    "params": 713401
+   },
+   "probe_lin_C": 1.0,
+   "probe_net": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.0485
+   },
+   "probe_lin": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.04925
+   },
+   "transition": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 1.0
+   },
+   "shadow": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.88725
+   },
+   "autoenc": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.946
+   },
+   "maha": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 1.0
+   },
+   "probe": 1.0,
+   "anomaly": 1.0
+  },
+  {
+   "held": [
+    "count",
+    "firstpos"
+   ],
+   "probe_net_cell": {
+    "lr": 0.001,
+    "steps": 2000,
+    "val": 1.0,
+    "params": 713401
+   },
+   "probe_lin_C": 1.0,
+   "probe_net": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.04525
+   },
+   "probe_lin": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.04975
+   },
+   "transition": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 1.0
+   },
+   "shadow": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.88725
+   },
+   "autoenc": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 0.946
+   },
+   "maha": {
+    "held_families": 1.0,
+    "held_contexts": 1.0,
+    "tpr5": 1.0,
+    "false_alarm_novel": 1.0
+   },
+   "probe": 1.0,
+   "anomaly": 1.0
+  }
+ ],
+ "per_family": {
+  "transition": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "shadow": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "autoenc": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "maha": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ]
+ },
+ "all_families": {
+  "transition": 1.0,
+  "shadow": 1.0,
+  "autoenc": 1.0,
+  "maha": 1.0
+ },
+ "mean": {
+  "transition": 1.0,
+  "shadow": 1.0,
+  "autoenc": 1.0,
+  "maha": 1.0,
+  "probe_net": 1.0,
+  "probe_lin": 1.0,
+  "probe": 1.0,
+  "anomaly": 1.0,
+  "transition_minus_probe": 0.0,
+  "shadow_minus_probe": 0.0,
+  "transition_minus_anomaly": 0.0,
+  "shadow_minus_anomaly": 0.0
+ },
+ "seconds": 217
+}
