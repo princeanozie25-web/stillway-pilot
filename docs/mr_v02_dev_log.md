@@ -124,3 +124,30 @@ Files: `results/mr2/dev/s101_n0_quick.json`, `results/mr2/dev/s101_n10_quick.jso
 **Fault fixed in `mr2/hide.py`.** It picked each probe's "most often chosen" grid cell by comparing records that included the validation score, which differs in every split, so the pick was arbitrary. It now compares learning rate and length only. Found before any part-two run.
 
 **Cost of the full detection run.** With six grid cells for each of two probe networks and 15 splits, one solver takes about three hours. `--few` (whole grid, 3 splits; never a result) is running on both solvers to see what the grid does before I fix its values for the confirmation run.
+
+## 24 November 2026: what the grid does; grid values changed
+
+**The whole grid as first written, on 3 of 15 splits** (`--few`, not a result). Seed 101.
+
+| Monitor | Noise 0 | Noise 0.1 |
+|---|---|---|
+| Mind-reader A (transition) | 0.78 | 0.88 |
+| Mind-reader B (shadow) | 0.98 | 0.99 |
+| Autoencoder | 0.49 | 0.50 |
+| Mahalanobis | 0.47 | 0.45 |
+| Probe, equal-size network (reads states) | 0.92 | 0.99 |
+| Probe, linear (reads states) | 0.89 | 0.84 |
+| Probe, recurrent (reads states and input) | 0.998 | 0.999 |
+| Mind-reader B minus the probe | -0.016 | -0.011 |
+| Mind-reader B minus the better anomaly detector | +0.48 | +0.49 |
+
+- **The quick look undersold the mind-reader.** Its one cell (learning rate 0.001, 2,000 steps) left the label-free monitors under-trained. With the grid, mind-reader B goes from 0.77 / 0.88 to 0.98 / 0.99, and catches 86% / 95% of hoards at 5% false alarms.
+- **Every label-free monitor chose the largest cell** (learning rate 0.003, 6,000 steps) on both solvers, and validation loss was still falling with length. The equal-size probe chose the same cell in all six fits. The input-reading probe scored 1.000 on validation in every cell.
+- **The mind-reader's blind spot is now total.** With one declared quantity of a reserved kind, mind-reader B raises the alarm on 99.9% / 99.8% of harmless episodes (area 0.22 / 0.16). The input-reading probe on the same test: area 0.96 / 0.998.
+- **Mark P1 cannot pass from here whatever the grid:** it needs the mind-reader to beat the probe by 0.10, and the probe is at 0.998.
+
+**Change (grid values, allowed by section 7).** The grid was 3 learning rates by 2 lengths, with the best cell at its corner. It is now two cells, the same for every trained monitor: learning rate 0.003 at 6,000 and at 12,000 steps. It follows the direction every monitor's validation pointed, keeps mind-readers and probes on equal tuning, and brings a full run for one solver down to about two hours. `--quick` keeps its old single cell and is still never a result.
+
+**`mr2/hide.py`.** The probes over the 15 splits are now fitted after the last retraining only, which is what the plan asks for ("the probe is reported beside them, over the 15 splits"); between rounds only the monitors the solver trains against are fitted.
+
+Files: `results/mr2/dev/s101_n0_few.json`, `results/mr2/dev/s101_n10_few.json`.

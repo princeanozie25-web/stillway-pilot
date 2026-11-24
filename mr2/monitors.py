@@ -14,7 +14,7 @@ its squared error, each state unit divided by that unit's error variance on held
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 from mr2.solver import D, EMB, to
 
-GRID = [(lr, steps) for lr in (3e-4, 1e-3, 3e-3) for steps in (2000, 6000)]
+GRID = [(3e-3, 6000), (3e-3, 12000)]          # (learning rate, steps), the same for every trained monitor.  First written as 3e-4, 1e-3, 3e-3 by 2000, 6000; changed in development (docs/mr_v02_dev_log.md, 24 November): the largest cell won everywhere
 BATCH = 512
 
 

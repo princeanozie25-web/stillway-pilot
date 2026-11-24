@@ -118,7 +118,7 @@ def main():
     for p in solver.parameters(): p.requires_grad_(False)
     res = dict(solver=a[0], seed=seed, noise=meta["noise"], admitted=meta["admitted"], quick=quick or few, params=meta["params"])
     res["world"] = world_checks(solver, w, np.random.default_rng(seed + 400), dev, seed); say("world checks", json.dumps(res["world"]))
-    r, _, _ = detect(solver, w, seed, dev, meta["params"], M.GRID[2:3] if quick else M.GRID, (1.0,) if quick else (0.1, 1.0, 10.0), ALL_SPLITS[::6] if quick or few else ALL_SPLITS, say); res.update(r)
+    r, _, _ = detect(solver, w, seed, dev, meta["params"], [(1e-3, 2000)] if quick else M.GRID, (1.0,) if quick else (0.1, 1.0, 10.0), ALL_SPLITS[::6] if quick or few else ALL_SPLITS, say); res.update(r)
     res["seconds"] = round(time.time() - t0); os.makedirs(os.path.dirname(os.path.abspath(a[1])), exist_ok=True); json.dump(res, open(a[1], "w"), indent=1)
     say(json.dumps(res["mean"], indent=1)); say("also", json.dumps(res["also"])); say("label-free, all families", json.dumps(res["all_families"]))
 
