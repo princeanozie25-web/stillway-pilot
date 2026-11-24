@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from mr2.world import FAMILIES, World
 
 D, EMB = 256, 64
-CFG = dict(batch=4096, lr=2e-3, steps=12000, beta=1.0, reader_lr=2e-3, warm=2000, aux=1.0, forget_pos=4)
+CFG = dict(batch=4096, lr=2e-3, steps=12000, beta=1.0, reader_lr=2e-3, warm=2000, aux=1.0, forget_pos=4, hold_w=[1, 1, 1, 1, 1, 1])     # hold_w: weight of each family in the running-value loss
 
 
 class Solver(nn.Module):
@@ -65,9 +65,12 @@ def forget_rows(world, b, H, gen, n_pos):
     return f(H[rows, pos]), f(b["traj"][rows, step]), f(kept_run), f(b["kept"][:, None, :].expand(B, n_pos, w.n_inst)), f(k), f(pos), f(b["S"].gather(1, k))
 
 
-def hold_loss(model, w, b, H):
+def hold_loss(model, w, b, H, fam_w=None):
+    """The running value of every quantity being kept, at every monitored position.  fam_w: a weight per family (training setting)."""
     logits = model.hold(H[:, :w.L]).view(-1, w.L, w.n_inst, w.P); target = torch.where(b["kept"][:, None, :], b["run"].permute(0, 2, 1), torch.full_like(b["run"].permute(0, 2, 1), -1))
-    return F.cross_entropy(logits.reshape(-1, w.P), target.reshape(-1), ignore_index=-1)
+    if fam_w is None or len(set(fam_w)) == 1: return F.cross_entropy(logits.reshape(-1, w.P), target.reshape(-1), ignore_index=-1)
+    ce = F.cross_entropy(logits.reshape(-1, w.P), target.reshape(-1), ignore_index=-1, reduction="none").view(target.shape); m = (target >= 0).float()
+    wt = torch.as_tensor(fam_w, dtype=torch.float32, device=H.device)[torch.as_tensor(w.inst_family, device=H.device)]; return (ce * wt[None, None, :] * m).sum() / m.sum()
 
 
 @torch.no_grad()
@@ -95,7 +98,7 @@ def train(seed, noise, out, steps=None, dev="cpu", world=None, cfg=None, say=lam
     for step in range(1, steps + 1):
         b = to(w.sample(cfg["batch"], np.arange(w.n_ctx), rng), dev); H = model.states(b["tok"]); job, sec = model.heads(H)
         l_job = F.cross_entropy(job.reshape(-1, w.P), b["final"].reshape(-1)); l_sec = F.cross_entropy(sec, b["ans"])
-        l_aux = F.cross_entropy(model.aux(H[:, st]).reshape(-1, w.P), b["traj"][:, (st - w.A).clamp(max=w.T)].reshape(-1)); l_hold = hold_loss(model, w, b, H)
+        l_aux = F.cross_entropy(model.aux(H[:, st]).reshape(-1, w.P), b["traj"][:, (st - w.A).clamp(max=w.T)].reshape(-1)); l_hold = hold_loss(model, w, b, H, cfg["hold_w"])
         h, regs, kr, kept, k, pos, y = forget_rows(w, b, H, g, cfg["forget_pos"])
         l_read = F.cross_entropy(full(h.detach(), regs, kr, kept, k, pos), y) + F.cross_entropy(base(None, regs, kr, kept, k, pos), y); ropt.zero_grad(); l_read.backward(); ropt.step()      # the readers learn
         with torch.no_grad(): target = F.softmax(base(None, regs, kr, kept, k, pos), -1)
