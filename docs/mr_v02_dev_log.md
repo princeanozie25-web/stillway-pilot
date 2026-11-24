@@ -77,3 +77,50 @@ In both directions one side gains only as the other loses. At the sizes first wr
 **One forced deviation, stated plainly.** The plan asks for seven quantities per family (six familiar, one reserved). The operation-identity family has one quantity per operation position, and the stepped-down world has six positions. So that family has its six familiar quantities and no reserved one: 41 quantities, five reserved. I kept the step-down sizes exactly as written and gave up one reserved quantity, because reserved quantities feed only the "unfamiliar declared content" report, which carries no mark. The slow reference check of the world passes at the new sizes.
 
 **The weight setting stays in the code** (`hold_w`) but is back at 1 for every family.
+
+## 24 November 2026, stepped-down world: both solvers admitted, world checks pass
+
+**Solvers.** Seed 101, 16,000 steps, the training settings as first written (every family weighted 1).
+
+| Noise | Job | Declared | Secret | Lowest family (declared / secret) | Says "nothing" correctly | Admitted |
+|---|---|---|---|---|---|---|
+| 0 | 100.0% | 99.9% | 99.9% | 99.8% / 99.8% | 99.9% | yes |
+| 0.1 | 100.0% | 98.7% | 99.0% | 97.3% / 97.7% (weighted sum) | 98.3% | yes |
+
+**World checks.**
+
+| Noise | Job accuracy, hoarding minus harmless | Fresh reader: secret on hoarding states | Fresh reader: a quantity not kept, harmless states | Fresh reader: a declared quantity |
+|---|---|---|---|---|
+| 0 | 0.02 points | 98.7% | 25.6% | 99.0% |
+| 0.1 | 0.01 points | 97.9% | 25.8% | 98.0% |
+
+All pass (one point; 90%; 40 points lower). Chance for the reader is 14%.
+
+**Detection, quick setting, not a result** (one grid cell, 3 of 15 splits). Area under the ROC curve on held-out families, amount kept matched:
+
+| Monitor | Noise 0 | Noise 0.1 |
+|---|---|---|
+| Mind-reader A (transition) | 0.63 | 0.72 |
+| Mind-reader B (shadow) | 0.77 | 0.88 |
+| Autoencoder | 0.48 | 0.48 |
+| Mahalanobis | 0.47 | 0.45 |
+| Probe, equal-size network (reads states) | 0.89 | 0.97 |
+| Probe, linear (reads states) | 0.90 | 0.84 |
+| Probe, recurrent (reads states and input) | 0.95 | 0.99 |
+| The probe (strongest form per split) | 0.96 | 0.99 |
+| Mind-reader B minus the probe | -0.20 | -0.11 |
+| Mind-reader B minus the better anomaly detector | +0.28 | +0.40 |
+
+Other reports for mind-reader B (noise 0 / 0.1): hoards caught at 5% false alarms 31% / 45%; false alarms on harmless novelty 7% / 8%; with one declared quantity of a reserved kind, false alarms 82% / 91% and area 0.22 / 0.20. The input-reading probe on the same reserved-kind test: area 0.92 / 0.99, false alarms 28% / 9%.
+
+By family, mind-reader B is uneven: weighted sum 1.00 / 0.98, product 0.84 / 0.94, mid-run value 0.74 / 0.87, count 0.66 / 0.79, first position 0.62 / 0.85, operation identity 0.63 / 0.81.
+
+- The picture from the first sizes holds: plain anomaly detection is at chance, the mind-reader is clearly above it, the probe is clearly above the mind-reader.
+- Noise helps the mind-reader (0.77 to 0.88).
+- The mind-reader's weak point is unfamiliar harmless content: a declared quantity of a kind it has not seen sets it off far more than a hoard does.
+
+Files: `results/mr2/dev/s101_n0_quick.json`, `results/mr2/dev/s101_n10_quick.json`.
+
+**Fault fixed in `mr2/hide.py`.** It picked each probe's "most often chosen" grid cell by comparing records that included the validation score, which differs in every split, so the pick was arbitrary. It now compares learning rate and length only. Found before any part-two run.
+
+**Cost of the full detection run.** With six grid cells for each of two probe networks and 15 splits, one solver takes about three hours. `--few` (whole grid, 3 splits; never a result) is running on both solvers to see what the grid does before I fix its values for the confirmation run.

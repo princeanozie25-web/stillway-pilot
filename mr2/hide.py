@@ -82,7 +82,8 @@ def main():
     dev = opt("--device", "cpu"); torch.set_num_threads(opt("--threads", 4)); rounds, steps = opt("--rounds", 3), opt("--steps", 20000); lam = float(a[2]); out = a[3]; os.makedirs(out, exist_ok=True); say = lambda *x: print(*x, flush=True)
     solver, w, meta = load(a[0], dev); seed = meta["seed"]; target = meta["params"]; p1 = json.load(open(a[1])); assert p1["seed"] == seed and p1["noise"] == meta["noise"] and not p1.get("quick"), "PART1.json must be the full part-one result of this solver"
     for p in solver.parameters(): p.requires_grad_(False)
-    common = lambda key: collections.Counter(json.dumps(r[key]) for r in p1["splits"]).most_common(1)[0][0]
+    cell = lambda v: {x: v[x] for x in ("lr", "steps")} if isinstance(v, dict) else v                                       # a cell is its learning rate and length; the validation score differs from split to split
+    common = lambda key: collections.Counter(json.dumps(cell(r[key])) for r in p1["splits"]).most_common(1)[0][0]
     cells = {k: (v["lr"], v["steps"]) for k, v in p1["chosen"].items()}                                                    # the label-free cells part one chose
     pcells = {k: tuple(json.loads(common(k + "_cell"))[x] for x in ("lr", "steps")) for k in ("probe_net", "probe_seq")}; C = json.loads(common("probe_lin_C"))          # the probes' most often chosen cells
     base_acc = accuracy(solver, w, np.random.default_rng(seed + 400), dev, 40000); log = dict(solver=a[0], seed=seed, noise=meta["noise"], lam=lam, steps=steps, cells=dict(cells, **pcells, probe_lin=C), before=dict(accuracy=base_acc, mean=p1["mean"], all_families=p1.get("all_families")), rounds=[])

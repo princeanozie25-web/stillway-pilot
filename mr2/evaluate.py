@@ -5,7 +5,8 @@
 Writes the world checks, every monitor's chosen grid cell, and for each of the 15 splits (two held-out families) the area
 under the ROC curve of every monitor: hoarding episodes whose secret is of a held-out family (0 to 2 quantities declared)
 against harmless-novelty test episodes (1 to 3 declared), so that both keep 1 to 3 quantities.
---quick is for smoke tests only: one grid cell, three splits; never a result."""
+--quick is for smoke tests only: one grid cell, three splits; never a result.  --few: the whole grid on three splits, to
+see what the grid does in development; never a result either."""
 import itertools, json, os, sys, time
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -80,7 +81,7 @@ def fit_probes(X, seen, seed, dev, w, target, grid, Cs, fixed=None):
         fits = []
         for lr, steps in ([tuple(fixed[kind])] if fixed else grid):
             m = M.fit_probe(kind, Pos, X["tr_neg"], lr, steps, seed, dev, w, target); fits.append((M.auroc(M.score_probe(m, PosV, dev), M.score_probe(m, X["va_neg"], dev)), lr, steps, m))
-        val, lr, steps, out[kind] = max(fits, key=lambda f: f[0]); cells[kind + "_cell"] = dict(lr=lr, steps=steps, val=val, params=M.count(out[kind]))
+        val, lr, steps, out[kind] = max(fits, key=lambda f: f[0]); cells[kind + "_cell"] = dict(lr=lr, steps=steps, val=val, params=M.count(out[kind])); cells[kind + "_grid"] = [dict(lr=f[1], steps=f[2], val=f[0]) for f in fits]     # every cell's validation score, for the record
     lin = lambda m, H: m.decision_function(M.lin_features(H))
     cells["probe_lin_C"], out["probe_lin"] = max([(C, M.fit_probe_lin(Pos[0], X["tr_neg"][0], C)) for C in Cs], key=lambda f: M.auroc(lin(f[1], PosV[0]), lin(f[1], X["va_neg"][0])))
     return out, cells
@@ -112,12 +113,12 @@ def detect(solver, w, seed, dev, target, grid, Cs, splits, say=lambda *x: None, 
 
 def main():
     a = sys.argv[1:]; opt = lambda name, default: type(default)(a[a.index(name) + 1]) if name in a else default
-    dev = opt("--device", "cpu"); torch.set_num_threads(opt("--threads", 4)); quick = "--quick" in a; t0 = time.time(); say = lambda *x: print(*x, flush=True)
+    dev = opt("--device", "cpu"); torch.set_num_threads(opt("--threads", 4)); quick = "--quick" in a; few = "--few" in a; t0 = time.time(); say = lambda *x: print(*x, flush=True)
     solver, w, meta = load(a[0], dev); seed = meta["seed"]
     for p in solver.parameters(): p.requires_grad_(False)
-    res = dict(solver=a[0], seed=seed, noise=meta["noise"], admitted=meta["admitted"], quick=quick, params=meta["params"])
+    res = dict(solver=a[0], seed=seed, noise=meta["noise"], admitted=meta["admitted"], quick=quick or few, params=meta["params"])
     res["world"] = world_checks(solver, w, np.random.default_rng(seed + 400), dev, seed); say("world checks", json.dumps(res["world"]))
-    r, _, _ = detect(solver, w, seed, dev, meta["params"], M.GRID[2:3] if quick else M.GRID, (1.0,) if quick else (0.1, 1.0, 10.0), ALL_SPLITS[::6] if quick else ALL_SPLITS, say); res.update(r)
+    r, _, _ = detect(solver, w, seed, dev, meta["params"], M.GRID[2:3] if quick else M.GRID, (1.0,) if quick else (0.1, 1.0, 10.0), ALL_SPLITS[::6] if quick or few else ALL_SPLITS, say); res.update(r)
     res["seconds"] = round(time.time() - t0); os.makedirs(os.path.dirname(os.path.abspath(a[1])), exist_ok=True); json.dump(res, open(a[1], "w"), indent=1)
     say(json.dumps(res["mean"], indent=1)); say("also", json.dumps(res["also"])); say("label-free, all families", json.dumps(res["all_families"]))
 
