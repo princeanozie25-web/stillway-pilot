@@ -1,12 +1,13 @@
 """Part one of docs/mr_v02_plan.md (detection) for one solver.
 
-    python mr2/evaluate.py SOLVER.pt OUT.json [--device cpu|mps] [--threads N] [--quick]
+    python mr2/evaluate.py SOLVER.pt OUT.json [--device cpu|mps] [--threads N] [--probe-device cpu|mps] [--workers N] [--quick|--few]
 
 Writes the world checks, every monitor's chosen grid cell, and for each of the 15 splits (two held-out families) the area
 under the ROC curve of every monitor: hoarding episodes whose secret is of a held-out family (0 to 2 quantities declared)
 against harmless-novelty test episodes (1 to 3 declared), so that both keep 1 to 3 quantities.
 --quick is for smoke tests only: one grid cell, three splits; never a result.  --few: the whole grid on three splits, to
-see what the grid does in development; never a result either."""
+see what the grid does in development; never a result either.  --probe-device cpu --workers N fits the probes of N splits
+at once on the CPU, one thread each, while everything else stays on --device."""
 import itertools, json, os, sys, time
 import numpy as np, torch, torch.nn as nn, torch.nn.functional as F
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -91,16 +92,34 @@ def probe_fn(pm, name, dev):
     return (lambda e: pm[name].decision_function(M.lin_features(e[0]))) if name == "probe_lin" else (lambda e: M.score_probe(pm[name], e, dev).numpy())
 
 
-def detect(solver, w, seed, dev, target, grid, Cs, splits, say=lambda *x: None, fixed=None):
-    """Every monitor trained from nothing on this solver and scored.  Returns (results, label-free monitors, sets)."""
+def split_row(X, held, seed, dev, w, target, grid, Cs, fixed):
+    """The three probes of one split, fitted and measured."""
+    seen = [f for f in range(NF) if f not in held]; pm, cells = fit_probes(X, seen, seed, dev, w, target, grid, Cs, fixed)
+    return dict(held=[FAMILIES[f] for f in held], **cells, **{name: measures(all_scores(probe_fn(pm, name, dev), X), held, seen) for name in PROBES})
+
+
+def _init(X, args):
+    global _X, _ARGS; _X, _ARGS = X, args; torch.set_num_threads(1)
+
+
+def _work(held): return split_row(_X, held, *_ARGS)
+
+
+def detect(solver, w, seed, dev, target, grid, Cs, splits, say=lambda *x: None, fixed=None, pdev=None, workers=1):
+    """Every monitor trained from nothing on this solver and scored.  Returns (results, label-free monitors, sets).
+    pdev: the device the probes of the splits are fitted on (default: dev).  workers: with pdev cpu, how many splits are fitted at once, one thread each."""
     t0 = time.time(); rng = np.random.default_rng(seed + 500); mons, chosen = label_free(solver, w, seed, dev, target, grid, say); X = sets(solver, w, rng, dev); res = dict(chosen=chosen)
-    S = {n: all_scores(lambda e, n=n: score(mons, n, *e), X) for n in LABEL_FREE}; rows = []
-    for held in splits:
-        seen = [f for f in range(NF) if f not in held]; pm, cells = fit_probes(X, seen, seed, dev, w, target, grid, Cs, fixed); row = dict(held=[FAMILIES[f] for f in held], **cells)
-        for name in PROBES: row[name] = measures(all_scores(probe_fn(pm, name, dev), X), held, seen)
+    S = {n: all_scores(lambda e, n=n: score(mons, n, *e), X) for n in LABEL_FREE}; rows = []; args = (seed, pdev or dev, w, target, grid, Cs, fixed); pool = None
+    if workers > 1 and len(splits) > 1:
+        assert args[1] == "cpu", "several workers fit on the CPU"; cpu = lambda e: tuple(t.cpu() for t in e); Xc = {k: [cpu(e) for e in v] if isinstance(v, list) else cpu(v) for k, v in X.items()}
+        pool = torch.multiprocessing.get_context("spawn").Pool(min(workers, len(splits)), initializer=_init, initargs=(Xc, args)); it = pool.imap(_work, splits)
+    else: it = (split_row(X, held, *args) for held in splits)
+    for held, row in zip(splits, it):
+        seen = [f for f in range(NF) if f not in held]
         for name in LABEL_FREE: row[name] = measures(S[name], held, seen)
         row["probe"] = max(row[n]["held_families"] for n in PROBES); row["anomaly"] = max(row["autoenc"]["held_families"], row["maha"]["held_families"]); rows.append(row)
         say(f"  held out {row['held']}: " + ", ".join(f"{n} {row[n]['held_families']:.3f}" for n in NAMES) + f"  ({time.time() - t0:.0f} s)")
+    if pool: pool.close(); pool.join()
     mean = lambda f: float(np.mean([f(r) for r in rows])) if rows else None; res["splits"] = rows; allf = list(range(NF))
     res["per_family"] = {n: [M.auroc(s["fam"][f], s["neg"]) for f in allf] for n, s in S.items()}
     res["all_families"] = {n: measures(s, allf, allf) for n, s in S.items()}                                               # for a label-free monitor every family is held out
@@ -118,7 +137,7 @@ def main():
     for p in solver.parameters(): p.requires_grad_(False)
     res = dict(solver=a[0], seed=seed, noise=meta["noise"], admitted=meta["admitted"], quick=quick or few, params=meta["params"])
     res["world"] = world_checks(solver, w, np.random.default_rng(seed + 400), dev, seed); say("world checks", json.dumps(res["world"]))
-    r, _, _ = detect(solver, w, seed, dev, meta["params"], [(1e-3, 2000)] if quick else M.GRID, (1.0,) if quick else (0.1, 1.0, 10.0), ALL_SPLITS[::6] if quick or few else ALL_SPLITS, say); res.update(r)
+    r, _, _ = detect(solver, w, seed, dev, meta["params"], [(1e-3, 2000)] if quick else M.GRID, (1.0,) if quick else (0.1, 1.0, 10.0), ALL_SPLITS[::6] if quick or few else ALL_SPLITS, say, pdev=opt("--probe-device", dev), workers=opt("--workers", 1)); res.update(r)
     res["seconds"] = round(time.time() - t0); os.makedirs(os.path.dirname(os.path.abspath(a[1])), exist_ok=True); json.dump(res, open(a[1], "w"), indent=1)
     say(json.dumps(res["mean"], indent=1)); say("also", json.dumps(res["also"])); say("label-free, all families", json.dumps(res["all_families"]))
 
