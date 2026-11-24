@@ -20,7 +20,7 @@ APART = 0.25                     # share of pairs of familiar quantities that ne
 
 
 class World:
-    def __init__(self, P=11, R=4, T=8):
+    def __init__(self, P=7, R=3, T=6):                 # the stepped-down sizes (docs/mr_v02_dev_log.md, 24 November); the sizes first written were P=11, R=4, T=8
         self.P, self.R, self.T = P, R, T; rng = np.random.default_rng(WORLD_SEED); NF = len(FAMILIES)
         ops = [("addreg", i, j) for i in range(R) for j in range(R) if i != j] + [("mulc", i, k) for i in range(R) for k in (2, 3)] \
             + [("addc", i, k) for i in range(R) for k in (1, 2, 3)] + [("swap", i, j) for i in range(R) for j in range(i + 1, R)]
@@ -42,9 +42,10 @@ class World:
         some = lambda options: [options[i] for i in rng.permutation(len(options))[:N_INST + 1]]
         fam = dict(linsum=distinct(vec), prod=distinct(lambda: (*pairs[int(rng.integers(0, len(pairs)))], int(rng.integers(0, P)))),
                    mid=some([(i, s) for i in range(R) for s in (1, 2, 3)]), count=some(preds), firstpos=some(preds), opid=some(list(range(T))))
-        self.inst = [(f, fam[f][i]) for f in FAMILIES for i in range(N_INST)] + [(f, fam[f][N_INST]) for f in FAMILIES]
+        res = [f for f in FAMILIES if len(fam[f]) > N_INST]                               # at the stepped-down sizes there are only six operation positions, so that family has no reserved quantity
+        self.inst = [(f, fam[f][i]) for f in FAMILIES for i in range(N_INST)] + [(f, fam[f][N_INST]) for f in res]
         self.n_inst, self.n_fam = len(self.inst), NF * N_INST; assert len(set(self.inst)) == self.n_inst, "quantities must be distinct"
-        self.inst_family = np.array([FAMILIES.index(f) for f, _ in self.inst]); self.inst_index = np.r_[np.tile(np.arange(N_INST), NF), np.full(NF, N_INST)]
+        self.inst_family = np.array([FAMILIES.index(f) for f, _ in self.inst]); self.inst_index = np.r_[np.tile(np.arange(N_INST), NF), np.full(len(res), N_INST)]
         self.reserved = np.arange(self.n_fam, self.n_inst)
         a = np.triu(rng.random((self.n_fam, self.n_fam)) < APART, 1); self.apart = np.zeros((self.n_inst, self.n_inst), bool); self.apart[:self.n_fam, :self.n_fam] = a | a.T
         # ---- the 72 contexts

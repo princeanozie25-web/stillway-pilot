@@ -49,3 +49,31 @@ On the weighted-sum family, which this solver does not hold, every label-free mo
 - A note on the matched test: its harmless side declares one more quantity than its hoarding side. A monitor that only reacts to how much is declared scores below 0.5, so the bias runs against the mind-readers.
 
 File: `results/mr2/dev/notadmitted_101_n0_quick.json`.
+
+## 24 November 2026, later: the weight does not rescue the first sizes; the world steps down once
+
+**From scratch with the weighted-sum family weighted 30 times, 20,000 steps, seed 101.**
+
+| Noise | Job | Declared | Secret | Weighted sum | Other five families (declared) |
+|---|---|---|---|---|---|
+| 0 | 99.9% | 49.1% | 51.2% | 98.7% | 9% to 73% |
+| 0.1 | 0.9% | 6% | 7% | not learned | not learned |
+
+The weight moves the problem instead of solving it: the weighted sum is learned and the others are not. With noise the solver does not even learn its job.
+
+**Two staged schedules, tried on the saved solvers (4,000 steps each).**
+
+| Start | Change | Weighted sum (answer) | Other families (answer) |
+|---|---|---|---|
+| the weight-30 solver, noise 0 | weight back to 1 | 99.4% to 92.2% | 37.9% to 51.6% |
+| the first noise 0.1 solver | weight 30, learning rate doubled | 2.3% to 23.7% | 94.0% to 84.5% |
+
+In both directions one side gains only as the other loses. At the sizes first written, the six families compete for room in this solver, and I found no training setting in six attempts that holds all of them at 95%.
+
+**Decision: the pre-written kill check applies** (section 7 of the first plan, carried into v0.2: "If no development solver is admitted at the sizes of section 3, the world steps down once, to numbers 0 to 6, three registers and six operations, and stays there"). No development solver was admitted in four full trainings, so the world steps down, once, and stays there. The solver, the monitors, the measures and the marks are unchanged.
+
+**The stepped-down world.** Numbers 0 to 6, three registers, six operations per episode, 24 kinds of operation, 14 monitored symbols. Everything else in section 3 is as written.
+
+**One forced deviation, stated plainly.** The plan asks for seven quantities per family (six familiar, one reserved). The operation-identity family has one quantity per operation position, and the stepped-down world has six positions. So that family has its six familiar quantities and no reserved one: 41 quantities, five reserved. I kept the step-down sizes exactly as written and gave up one reserved quantity, because reserved quantities feed only the "unfamiliar declared content" report, which carries no mark. The slow reference check of the world passes at the new sizes.
+
+**The weight setting stays in the code** (`hold_w`) but is back at 1 for every family.
